@@ -1,0 +1,48 @@
+{
+  "name": "@daily/services",
+  "version": "0.0.0",
+  "description": "Shared services for the apps",
+  "author": "Ido Shamun <ido@elegantmonkeys.com>",
+  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elegantmonkeys/daily-apps.git"
+  },
+  "scripts": {
+    "test": "jest",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.8",
+    "@types/nock": "^9.3.0",
+    "jest": "^23.6.0",
+    "nock": "^10.0.1",
+    "ts-jest": "^23.10.4",
+    "typescript": "^3.1.3"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "retry-axios": "^0.3.2"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.json"
+      }
+    },
+    "testMatch": [
+      "**/__tests__/*.+(ts|tsx|js)"
+    ]
+  }
+}
