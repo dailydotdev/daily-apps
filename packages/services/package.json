@@ -4,26 +4,33 @@
   "description": "Shared services for the apps",
   "author": "Ido Shamun <ido@elegantmonkeys.com>",
   "private": true,
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/elegantmonkeys/daily-apps.git"
   },
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "test": "jest",
-    "build": "tsc"
+    "build": "rollup -c",
+    "watch": "rollup -cw"
   },
   "devDependencies": {
     "@types/jest": "^23.3.8",
     "@types/nock": "^9.3.0",
     "jest": "^23.6.0",
     "nock": "^10.0.1",
+    "rollup": "^0.67.0",
+    "rollup-plugin-typescript2": "^0.17.2",
     "ts-jest": "^23.10.4",
     "typescript": "^3.1.3"
   },
   "dependencies": {
+    "@types/es6-promise": "^3.3.0",
     "axios": "^0.18.0",
     "retry-axios": "^0.3.2"
   },

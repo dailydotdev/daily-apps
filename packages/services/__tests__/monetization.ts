@@ -3,8 +3,7 @@ import axios from 'axios';
 import httpAdapter from 'axios/lib/adapters/http';
 // @ts-ignore
 import nock from 'nock';
-import {MonetizationServiceImpl} from '../src/monetization';
-import {Ad} from '../src/types';
+import {Ad, MonetizationServiceImpl} from '../src';
 
 axios.defaults.adapter = httpAdapter;
 
