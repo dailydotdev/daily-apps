@@ -1,5 +1,4 @@
 import axios, {AxiosInstance} from 'axios';
-import {attach as raxAttach} from 'retry-axios';
 import {dateReviver, reviveJSON} from './utils';
 
 export interface AccessToken {
@@ -41,13 +40,6 @@ export class AuthServiceImpl implements AuthService {
             withCredentials: true,
             timeout: 2000,
         });
-
-        this.request.defaults = Object.assign({}, this.request.defaults, {
-            raxConfig: {
-                instance: this.request,
-            }
-        });
-        raxAttach(this.request);
     }
 
     async refreshToken(token: string): Promise<AccessToken> {

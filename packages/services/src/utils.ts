@@ -1,4 +1,4 @@
-export function ratioToSize(ratio: number): string {
+function getSizeFromRatio(ratio: number): string {
     if (ratio > 1.5) {
         return 'small';
     }
@@ -8,6 +8,17 @@ export function ratioToSize(ratio: number): string {
     }
 
     return 'medium';
+}
+
+export function ratioToSize(obj: any, def: string = 'small'): any {
+    const newObj = Object.assign({}, obj);
+    if (newObj.ratio) {
+        newObj.size = getSizeFromRatio(newObj.ratio);
+    } else {
+        newObj.size = def;
+    }
+    delete newObj.ratio;
+    return newObj;
 }
 
 type Reviver = (key: any, value: any) => any;
@@ -21,15 +32,17 @@ export function dateReviver(_: string, value: string): any {
     return value;
 }
 
-export function reviveJSON(data: any, revivers: (Reviver | Reviver[]) = []): any {
-    let reviversArray: Reviver[];
-    if (!(revivers instanceof Array)) {
-        reviversArray = [revivers];
-    } else {
-        reviversArray = revivers;
+function reviveValue(data: any, key: string, revivers: Reviver[]): any {
+    if (data[key] && data[key].constructor === Object) {
+        return reviveJSON(data[key], revivers)
     }
+
+    return revivers.reduce((val: any, reviver: Reviver) => reviver(key, val), data[key])
+}
+
+export function reviveJSON(data: any, revivers: (Reviver | Reviver[]) = []): any {
+    const reviversArray: Reviver[] = revivers instanceof Array ? revivers : [revivers];
     return Object.keys(data).reduce((res: any, key: string) => {
-        const newVal: any = reviversArray.reduce((val: any, reviver: Reviver) => reviver(key, val), data[key]);
-        return Object.assign({}, res, {[key]: newVal});
+        return Object.assign({}, res, {[key]: reviveValue(data, key, reviversArray)});
     }, {});
 }
