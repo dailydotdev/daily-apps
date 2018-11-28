@@ -80,7 +80,7 @@ export class ContentServiceImpl implements ContentService {
 
     async fetchPublications(): Promise<Publication[]> {
         const res = await this.request.get('/v1/publications');
-        return res.data.map((x: Publication) => reviveJSON(x, dateReviver));
+        return res.data.map((x: any) => reviveJSON(x, dateReviver));
     }
 
     async fetchLatestPosts(latest: Date, page: number, pubs?: string[]): Promise<Post[]> {
