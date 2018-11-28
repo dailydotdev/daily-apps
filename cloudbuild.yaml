@@ -1,0 +1,7 @@
+steps:
+- name: node:10.12.0
+  entrypoint: 'npx'
+  args: ['lerna', 'bootstrap']
+- name: node:10.12.0
+  entrypoint: 'npx'
+  args: ['lerna', 'run', 'test']
