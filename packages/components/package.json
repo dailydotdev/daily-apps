@@ -4,12 +4,10 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name components src/index.js",
+    "build": "vue-cli-service build --target lib --name components src/components/index.js",
     "lint": "vue-cli-service lint"
   },
-  "dependencies": {
-    "vue": "^2.5.17"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.0",
     "@vue/cli-plugin-eslint": "^3.2.0",
