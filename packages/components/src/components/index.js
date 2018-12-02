@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import Vue from 'vue';
 
 const requireComponent = require.context('.', false, /Daily[\w-]+.vue$/);
