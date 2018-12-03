@@ -14,6 +14,15 @@
       </div>
     </section>
     <section>
+      <h3>Logos</h3>
+      <div class="icons">
+        <div v-for="(item, index) in logos" :key="index" class="icons_container">
+          <img :src="`/logos/${item}.svg`"/>
+          <div class="icons_container__text micro1">{{item}}</div>
+        </div>
+      </div>
+    </section>
+    <section>
       <h3>Switch</h3>
       <div class="switches">
         <DaSwitch icon="bookmark"></DaSwitch>
@@ -36,11 +45,14 @@ const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
 icons.forEach(requireIcons);
 
+const logos = require.context('../../logos', false, /.svg$/).keys();
+
 export default {
   name: 'Demo',
   components: { DaIconToggle, DaSwitch },
   created() {
     this.icons = icons.map(r => r.substr(2, r.length - 5));
+    this.logos = logos.map(l => l.substr(2, l.length - 6));
   },
 };
 </script>
@@ -106,5 +118,6 @@ h3 {
 
 .switch {
   margin: 16px 0;
+  width: 180px;
 }
 </style>

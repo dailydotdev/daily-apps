@@ -90,7 +90,7 @@
     "src/*",
     "public/*",
     "icons/*",
-    "assets/*"
+    "logos/*"
   ],
   "main": "./dist/components.common.js",
   "peerDependencies": {
