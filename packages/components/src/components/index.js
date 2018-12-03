@@ -1,7 +1,6 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Vue from 'vue';
 
-const requireComponent = require.context('.', false, /Daily[\w-]+.vue$/);
+const requireComponent = require.context('.', false, /Da[\w-]+.vue$/);
 
 requireComponent.keys().forEach((filename) => {
   // Get Component Config

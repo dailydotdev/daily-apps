@@ -1,6 +1,10 @@
 @import "colors.pcss";
 @import "typography.pcss";
 
+html {
+    --shadow-offset: 8px;
+}
+
 .svg-icon, .icon-selector {
     width: 24px;
     height: 24px;
@@ -10,4 +14,12 @@
 .svg-fill {
     fill: currentColor;
     stroke: none;
+}
+
+.switch {
+    --da-switch-color: var(--color-pepper-30);
+    --da-switch-checked-color: var(--color-water-50);
+    --da-switch-width: 48px;
+    --da-switch-height: 24px;
+    --da-switch-slider-height: 16px;
 }
