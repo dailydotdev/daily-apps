@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="demo">
     <h1>
       <svgicon icon="logo" class="title__icon"/>
       Daily Components Demo
@@ -21,11 +21,16 @@
         <DaSwitch icon="moon" label="Checked" checked></DaSwitch>
       </div>
     </section>
+    <section>
+      <h3>Icon Toggle</h3>
+      <DaIconToggle pressed-icon="sun" icon="moon"/>
+    </section>
   </div>
 </template>
 
 <script>
 import DaSwitch from './DaSwitch.vue';
+import DaIconToggle from './DaIconToggle.vue';
 
 const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
@@ -33,7 +38,7 @@ icons.forEach(requireIcons);
 
 export default {
   name: 'Demo',
-  components: { DaSwitch },
+  components: { DaIconToggle, DaSwitch },
   created() {
     this.icons = icons.map(r => r.substr(2, r.length - 5));
   },
@@ -41,8 +46,14 @@ export default {
 </script>
 
 <style scoped>
+.demo {
+  display: flex;
+  flex-direction: column;
+}
+
 h1 {
   display: flex;
+  margin: 16px 0;
   flex-direction: row;
   align-items: center;
   color: var(--color-salt-90);
@@ -55,7 +66,12 @@ h1 {
   color: var(--color-salt-90);
 }
 
+section {
+  margin: 16px 0;
+}
+
 h3 {
+  margin: 16px 0;
   color: var(--color-salt-10);
 }
 

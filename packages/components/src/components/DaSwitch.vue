@@ -4,8 +4,7 @@
       <input
         type="checkbox"
         :checked="checked"
-        @change="onChange"
-        ref="input">
+        @change="toggle">
       <span class="slider"/>
       <span class="handle" ref="handle">
         <svgicon
@@ -39,10 +38,10 @@ export default {
   },
 
   methods: {
-    onChange() {
+    toggle(event) {
       this.$refs.handle.addEventListener('transitionend', () => {
         requestAnimationFrame(() => {
-          this.$emit('toggle', this.$refs.input.checked);
+          this.$emit('toggle', event.target.checked);
         });
       }, { once: true });
     },
