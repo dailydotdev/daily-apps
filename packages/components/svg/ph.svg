@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>product hunt</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="product-hunt-disabeld" fill="#FFFFFF">
+            <path d="M22,12 C22,17.5228333 17.5228333,22 12,22 C6.47716667,22 2,17.5228333 2,12 C2,6.47716667 6.47716667,2 12,2 C17.5228333,2 22,6.47716667 22,12 Z M13.3333333,6.99995833 L8.5,6.99995833 L8.5,16.9999583 L10.5,16.9999583 L10.5,13.9999583 L13.3333333,13.9999583 C15.2663333,13.9999583 16.8333333,12.4329583 16.8333333,10.4999583 C16.8333333,8.56704167 15.2663333,6.99995833 13.3333333,6.99995833 Z M13.3333333,11.9999583 L10.5,11.9999583 L10.5,8.99995833 L13.3333333,8.99995833 C14.16175,8.99995833 14.8333333,9.671625 14.8333333,10.4999583 C14.8333333,11.328375 14.16175,11.9999583 13.3333333,11.9999583 Z" id="Fill"></path>
+        </g>
+    </g>
+</svg>

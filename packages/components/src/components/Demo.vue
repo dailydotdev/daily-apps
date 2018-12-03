@@ -1,6 +1,9 @@
 <template>
-  <div class="hello">
-    <h1>Daily Components Demo</h1>
+  <div>
+    <h1>
+      <svgicon icon="logo" class="title__icon"/>
+      Daily Components Demo
+    </h1>
     <section>
       <h3>Icons</h3>
       <div class="icons">
@@ -14,7 +17,7 @@
       <h3>Switch</h3>
       <div class="switches">
         <DaSwitch icon="bookmark"></DaSwitch>
-        <DaSwitch icon="line" label="With label"></DaSwitch>
+        <DaSwitch icon="link" label="With label"></DaSwitch>
         <DaSwitch icon="moon" label="Checked" checked></DaSwitch>
       </div>
     </section>
@@ -39,6 +42,16 @@ export default {
 
 <style scoped>
 h1 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: var(--color-salt-90);
+}
+
+.title__icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 16px;
   color: var(--color-salt-90);
 }
 
@@ -55,9 +68,10 @@ h3 {
 
 .icons_container {
   display: flex;
+  width: 110px;
+  margin: 16px 0;
   flex-direction: column;
   align-items: center;
-  margin: 16px;
 
   & .svg-icon, & .icon-selector {
     color: var(--color-salt-90);
@@ -71,9 +85,10 @@ h3 {
 .switches {
   display: flex;
   flex-direction: column;
+  margin: -16px 0;
 }
 
 .switch {
-  margin: 8px 0;
+  margin: 16px 0;
 }
 </style>
