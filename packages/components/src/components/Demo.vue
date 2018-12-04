@@ -34,12 +34,17 @@
       <h3>Icon Toggle</h3>
       <DaIconToggle pressed-icon="sun" icon="moon"/>
     </section>
+    <section>
+      <h3>Spinner</h3>
+      <DaSpinner/>
+    </section>
   </div>
 </template>
 
 <script>
 import DaSwitch from './DaSwitch.vue';
 import DaIconToggle from './DaIconToggle.vue';
+import DaSpinner from './DaSpinner';
 
 const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
@@ -49,7 +54,7 @@ const logos = require.context('../../logos', false, /.svg$/).keys();
 
 export default {
   name: 'Demo',
-  components: { DaIconToggle, DaSwitch },
+  components: { DaSpinner, DaIconToggle, DaSwitch },
   created() {
     this.icons = icons.map(r => r.substr(2, r.length - 5));
     this.logos = logos.map(l => l.substr(2, l.length - 6));
