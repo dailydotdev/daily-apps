@@ -113,7 +113,7 @@ input:checked {
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  background: var(--color-salt-10);
+  background: var(--theme-secondary);
   will-change: transform, background-color;
   transition: background-color 0.2s linear, transform 0.2s linear;
   box-shadow: 0 var(--shadow-offset) 16px 0 rgba(0, 0, 0, 0.1);
@@ -128,6 +128,6 @@ input:checked {
 
 .label {
   margin-left: 24px;
-  color: var(--color-salt-50);
+  color: var(--theme-secondary);
 }
 </style>

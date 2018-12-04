@@ -50,7 +50,7 @@ export default {
   cursor: pointer;
 
   &:hover .svg-icon {
-    color: var(--color-salt-90);
+    color: var(--theme-primary);
   }
 }
 

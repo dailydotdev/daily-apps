@@ -33,7 +33,7 @@ export default {
   & > div {
     width: 18px;
     height: 18px;
-    background-color: var(--color-pepper-90);
+    background-color: var(--theme-disabeld);
 
     border-radius: 100%;
     display: inline-block;

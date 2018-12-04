@@ -73,14 +73,14 @@ h1 {
   margin: 16px 0;
   flex-direction: row;
   align-items: center;
-  color: var(--color-salt-90);
+  color: var(--theme-primary);
 }
 
 .title__icon {
   width: 40px;
   height: 40px;
   margin-right: 16px;
-  color: var(--color-salt-90);
+  color: var(--theme-primary);
 }
 
 section {
@@ -89,7 +89,7 @@ section {
 
 h3 {
   margin: 16px 0;
-  color: var(--color-salt-10);
+  color: var(--theme-secondary);
 }
 
 .icons {
@@ -107,12 +107,12 @@ h3 {
   align-items: center;
 
   & .svg-icon, & .icon-selector {
-    color: var(--color-salt-90);
+    color: var(--theme-primary);
   }
 }
 
 .icons_container__text {
-  color: var(--color-salt-90);
+  color: var(--theme-primary);
 }
 
 .switches {
