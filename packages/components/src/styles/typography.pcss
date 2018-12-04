@@ -5,102 +5,61 @@ html, html > * {
 }
 
 .nuggets {
-    font-size: 11px;
-    font-weight: bold;
-    letter-spacing: 1.6px;
-    line-height: 16px;
-    text-transform: uppercase;
+    @mixin nuggets;
 }
 
 .micro2 {
-    font-size: 12px;
-    font-style: italic;
-    letter-spacing: 0.4px;
-    line-height: 18px;
+    @mixin micro2;
 }
 
 .micro1 {
-    font-size: 13px;
-    font-weight: 300;
-    letter-spacing: 0.3px;
-    line-height: 20px;
+    @mixin micro1;
 }
 
 .lil2 {
-    font-size: 14px;
-    font-weight: bold;
-    letter-spacing: 0.8px;
-    line-height: 20px;
-    text-transform: uppercase;
+    @mixin lil2;
 }
 
 .lil1 {
-    font-size: 14px;
-    font-weight: 300;
-    letter-spacing: 0.56px;
-    line-height: 20px;
+    @mixin lil1;
 }
 
 .jr {
-    font-size: 16px;
-    font-style: italic;
-    letter-spacing: 0.16px;
-    line-height: 24px;
+    @mixin jr;
 }
 
 .double {
-    font-size: 18px;
-    font-weight: bold;
-    letter-spacing: 0.32px;
-    line-height: 24px;
+    @mixin double;
 }
 
 .triple {
-    font-size: 20px;
-    font-weight: 300;
-    letter-spacing: 0.16px;
-    line-height: 28px;
+    @mixin triple;
 }
 
 .quarter {
-    font-size: 24px;
-    font-weight: bold;
-    letter-spacing: 0.4px;
-    line-height: 32px;
+    @mixin quarter;
 }
 
 .big {
-    font-size: 32px;
-    font-weight: 300;
-    letter-spacing: 0.4px;
-    line-height: 40px;
+    @mixin big;
 }
 
 .grand {
-    font-size: 48px;
-    font-weight: 300;
-    letter-spacing: -0.24px;
-    line-height: 56px;
+    @mixin grand;
 }
 
 .mega {
-    font-size: 56px;
-    font-style: italic;
-    letter-spacing: -0.16px;
-    line-height: 72px;
+    @mixin mega;
 }
 
 .giga {
-    font-size: 80px;
-    font-weight: 300;
-    letter-spacing: -1.6px;
-    line-height: 96px;
+    @mixin giga;
 }
 
 h1 {
-    @extend .quarter;
+    @mixin quarter;
 }
 
 h3 {
-    @extend .triple;
+    @mixin triple;
 }

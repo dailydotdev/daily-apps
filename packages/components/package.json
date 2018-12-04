@@ -25,6 +25,7 @@
     "eslint-plugin-vue": "^5.0.0-0",
     "postcss-custom-media": "^7.0.7",
     "postcss-extend": "^1.0.5",
+    "postcss-mixins": "^6.2.0",
     "postcss-nesting": "^7.0.0",
     "vue": "^2.5.17",
     "vue-svgicon": "^3.2.1",
@@ -50,6 +51,9 @@
   "postcss": {
     "plugins": {
       "autoprefixer": {},
+      "postcss-mixins": {
+        "mixinsDir": "./src/styles/mixins"
+      },
       "postcss-extend": {},
       "postcss-nesting": {},
       "postcss-custom-media": {}
