@@ -3,6 +3,7 @@
     <h1>
       <svgicon icon="logo" class="title__icon"/>
       Daily Components Demo
+      <DaIconToggle pressed-icon="moon" icon="sun" class="theme-selector" @toggle="toggleTheme"/>
     </h1>
     <section>
       <h2>Buttons</h2>
@@ -96,6 +97,15 @@ export default {
     this.icons = icons.map(r => r.substr(2, r.length - 5));
     this.logos = logos.map(l => l.substr(2, l.length - 6));
   },
+  methods: {
+    toggleTheme(checked) {
+      if (checked) {
+        document.documentElement.classList.add('bright');
+      } else {
+        document.documentElement.classList.remove('bright');
+      }
+    }
+  },
 };
 </script>
 
@@ -111,6 +121,10 @@ h1 {
   flex-direction: row;
   align-items: center;
   color: var(--theme-primary);
+}
+
+.theme-selector {
+  margin-left: auto;
 }
 
 .title__icon {

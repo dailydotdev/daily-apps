@@ -48,6 +48,7 @@ export default {
   border: none;
   outline: 0;
   cursor: pointer;
+  user-select: none;
 
   &:hover .svg-icon {
     color: var(--theme-primary);
