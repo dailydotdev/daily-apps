@@ -1,0 +1,71 @@
+[
+  {
+    "id": "65945b8288720ce356cb73e4c49658fc",
+    "title": "The Future of Love is Interesting",
+    "url": "https://app.dailynow.co/r/65945b8288720ce356cb73e4c49658fc",
+    "publishedAt": "2018-12-05T08:20:27.000Z",
+    "createdAt": "2018-12-05T08:20:33.000Z",
+    "publication": {
+      "id": "swlh",
+      "name": "The Startup",
+      "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/swlh"
+    },
+    "image": "https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/255f14916cc30b253cc5ed3b039013fb",
+    "placeholder": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAPAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAABQb/xAAjEAACAQMEAQUAAAAAAAAAAAABAgMABAUREiFhMQYTIjPS/8QAFQEBAQAAAAAAAAAAAAAAAAAABAX/xAAbEQEBAAIDAQAAAAAAAAAAAAABAgADBREhcf/aAAwDAQACEQMRAD8ANvsNgbNcRczwtPO8ixKqXI3oCPizDTgA6gnriiZcDilkcHHXzkEjcJVAPfipTHeuRBjvZKauiMqKSx2g9+aAbPRsxYwMSefvk/VI18hM1SyovmTdvEVcQFgh09fc/9k=",
+    "size": "large",
+    "views": 238,
+    "tags": [
+      "Love",
+      "Relationships",
+      "ArtificialIntelligence",
+      "Technology",
+      "Future"
+    ]
+  },
+  {
+    "id": "6565eb24c0617cdab5f5ca167544a852",
+    "title": "How Airbnb is Moving 10x Faster at Scale with GraphQL and Apollo",
+    "url": "https://app.dailynow.co/r/6565eb24c0617cdab5f5ca167544a852",
+    "publishedAt": "2018-12-05T07:55:28.000Z",
+    "createdAt": "2018-12-05T07:55:35.000Z",
+    "publication": {
+      "id": "airbnb",
+      "name": "Airbnb Engineering",
+      "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/airbnb"
+    },
+    "image": "https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/f52ac8bb66be1b082a60b821cff85780",
+    "placeholder": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAJAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABwID/8QAJhAAAgEBBAsAAAAAAAAAAAAAAQIDAAQGERMFBxUhMjNBQnFygv/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/8QAFxEBAQEBAAAAAAAAAAAAAAAAAQARIf/aAAwDAQACEQMRAD8ARdVMV9YLw6Ulvk9t2eysLOtpdMtWzd2GBPb1pZE0AAAlXD2rA8n6ql4R4qrvWX//2Q==",
+    "size": "medium",
+    "views": 395,
+    "tags": [
+      "GraphQL",
+      "Airbnb",
+      "JavaScript",
+      "FrontEndDevelopment"
+    ],
+    "bookmarked": true
+  },
+  {
+    "id": "5fd22353c9e02f5e9d90805f95632bfe",
+    "title": "How to get your own GitHub Student Developer Pack",
+    "url": "https://app.dailynow.co/r/5fd22353c9e02f5e9d90805f95632bfe",
+    "publishedAt": "2018-12-04T16:37:29.000Z",
+    "createdAt": "2018-12-04T16:37:35.000Z",
+    "publication": {
+      "id": "freecodecamp",
+      "name": "freeCodeCamp",
+      "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/freecodecamp"
+    },
+    "image": "https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/fe53c8c08d7e93c96315274b25facd78",
+    "placeholder": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAFAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAHxAAAAYBBQAAAAAAAAAAAAAAAAECAwQRBRVBUpGx/8QAFQEBAQAAAAAAAAAAAAAAAAAABAX/xAAYEQEBAQEBAAAAAAAAAAAAAAABAgAxIf/aAAwDAQACEQMRAD8A3WSyt/KRppumSmCpKast79FLUJHIugATZphWXvrlMlAJzf/Z",
+    "size": "small",
+    "views": 457,
+    "tags": [
+      "Github",
+      "Students",
+      "Developer",
+      "Technology",
+      "Open Source"
+    ]
+  }
+]

@@ -1,19 +1,19 @@
 <template>
   <label class="switch">
-    <span class="switch-container">
+    <span class="switch__container">
       <input
         type="checkbox"
         :checked="checked"
         @change="toggle">
-      <span class="slider"/>
-      <span class="handle" ref="handle">
+      <span class="switch__slider"/>
+      <span class="switch__handle" ref="handle">
         <svgicon
           :name="icon"
           v-if="icon"/>
       </span>
     </span>
     <span
-      class="label lil1"
+      class="switch__label lil1"
       v-if="label">{{ label }}</span>
   </label>
 </template>
@@ -61,7 +61,7 @@ export default {
   }
 }
 
-.switch-container {
+.switch__container {
   display: block;
   position: relative;
   width: var(--da-switch-width);
@@ -73,12 +73,12 @@ input {
 }
 
 input:checked {
-  & ~ .slider {
+  & ~ .switch__slider {
     background: var(--da-switch-checked-color);
     opacity: 0.5;
   }
 
-  & ~ .handle {
+  & ~ .switch__handle {
     transform: translateX(100%);
     background: var(--da-switch-checked-color);
 
@@ -88,7 +88,7 @@ input:checked {
   }
 }
 
-.slider {
+.switch__slider {
   position: absolute;
   left: 0;
   top: 0;
@@ -102,7 +102,7 @@ input:checked {
   transition: background-color 0.2s linear, opacity 0.2s linear;
 }
 
-.handle {
+.switch__handle {
   position: absolute;
   display: flex;
   left: 0;
@@ -116,7 +116,7 @@ input:checked {
   background: var(--theme-secondary);
   will-change: transform, background-color;
   transition: background-color 0.2s linear, transform 0.2s linear;
-  box-shadow: 0 var(--shadow-offset) 16px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 var(--theme-shadow-offset) 16px 0 rgba(0, 0, 0, 0.1);
 }
 
 .svg-icon {
@@ -126,7 +126,7 @@ input:checked {
   transition: color 0.2s linear;
 }
 
-.label {
+.switch__label {
   margin-left: 24px;
   color: var(--theme-secondary);
 }

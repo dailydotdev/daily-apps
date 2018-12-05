@@ -3,8 +3,8 @@
 @import "themes.pcss";
 @import "buttons.pcss";
 
-html {
-    --shadow-offset: 8px;
+* {
+    box-sizing: border-box;
 }
 
 .svg-icon, .icon-toggle {
@@ -28,4 +28,8 @@ html {
     --da-switch-width: 48px;
     --da-switch-height: 24px;
     --da-switch-slider-height: 16px;
+}
+
+.shadow {
+    box-shadow: 0 var(--theme-shadow-offset) 16px 0 rgba(0, 0, 0, 0.1);
 }

@@ -10,6 +10,12 @@ button:focus, button:active {
 .btn-icon {
     display: inline-block;
     background: none;
+    padding: 0;
+
+    &.btn-small .svg-icon {
+        width: 20px;
+        height: 20px;
+    }
 }
 
 .btn {
@@ -45,10 +51,6 @@ button:focus, button:active {
 
     &.btn-water-cheese {
         background: linear-gradient(270deg, var(--color-water-60) 0%, var(--color-blue-cheese-80) 100%);
-    }
-
-    &.btn-shadow {
-        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
     }
 
     &.btn-hollow {

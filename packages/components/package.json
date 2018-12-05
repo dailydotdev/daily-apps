@@ -10,7 +10,10 @@
     "icons": "vsvg -s ./svg -t ./icons",
     "test:unit": "vue-cli-service test:unit"
   },
-  "dependencies": {},
+  "dependencies": {
+    "lazysizes": "^4.1.4",
+    "vue-svgicon": "^3.2.1"
+  },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.0",
     "@vue/cli-plugin-eslint": "^3.2.0",
@@ -28,7 +31,6 @@
     "postcss-mixins": "^6.2.0",
     "postcss-nesting": "^7.0.0",
     "vue": "^2.5.17",
-    "vue-svgicon": "^3.2.1",
     "vue-template-compiler": "^2.5.17",
     "webpack": "^4.26.1"
   },

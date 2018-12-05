@@ -1,4 +1,8 @@
 import Vue from 'vue';
+import svgicon from 'vue-svgicon';
+import '../filters';
+
+Vue.use(svgicon);
 
 const requireComponent = require.context('.', false, /Da[\w-]+.vue$/);
 

@@ -6,10 +6,19 @@
       <DaIconToggle pressed-icon="moon" icon="sun" class="theme-selector" @toggle="toggleTheme"/>
     </h1>
     <section>
+      <h2>Cards</h2>
+      <div class="vertical_container">
+        <h3>Posts</h3>
+        <div class="horizontal_container cards">
+          <DaCardPost :post="item" v-for="(item, index) in posts" :key="index"/>
+        </div>
+      </div>
+    </section>
+    <section>
       <h2>Buttons</h2>
       <div class="vertical_container buttons">
         <div class="horizontal_container">
-          <h3>Buttons</h3>
+          <h3>Regular Buttons</h3>
           <button class="btn btn-water-cheese">
             Sign in
           </button>
@@ -17,7 +26,7 @@
             <svgicon icon="user_daily"/>
             <span>Sign in</span>
           </button>
-          <button class="btn btn-highlight btn-shadow invert">
+          <button class="btn btn-highlight shadow invert">
             <span>Sign in</span>
             <svgicon icon="user_daily"/>
           </button>
@@ -27,7 +36,7 @@
           <button class="btn btn-big btn-hollow">
             No
           </button>
-          <button class="btn btn-big btn-highlight btn-shadow invert">
+          <button class="btn btn-big btn-highlight shadow invert">
             Yes, I'd love to
           </button>
         </div>
@@ -83,6 +92,8 @@
 import DaSwitch from './DaSwitch.vue';
 import DaIconToggle from './DaIconToggle.vue';
 import DaSpinner from './DaSpinner.vue';
+import DaCardPost from './DaCardPost.vue';
+import posts from '../posts.json';
 
 const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
@@ -92,10 +103,16 @@ const logos = require.context('../../logos', false, /.svg$/).keys();
 
 export default {
   name: 'Demo',
-  components: { DaSpinner, DaIconToggle, DaSwitch },
+  components: {
+    DaCardPost,
+    DaSpinner,
+    DaIconToggle,
+    DaSwitch,
+  },
   created() {
     this.icons = icons.map(r => r.substr(2, r.length - 5));
     this.logos = logos.map(l => l.substr(2, l.length - 6));
+    this.posts = posts;
   },
   methods: {
     toggleTheme(checked) {
@@ -104,7 +121,7 @@ export default {
       } else {
         document.documentElement.classList.remove('bright');
       }
-    }
+    },
   },
 };
 </script>
@@ -152,6 +169,11 @@ h3 {
   flex-direction: column;
   align-items: flex-start;
   margin: -16px 0;
+
+  & .horizontal_container {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 
 .horizontal_container {
@@ -183,13 +205,17 @@ h3 {
 }
 
 .buttons {
-  & .horizontal_container {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
   & button, & a, & h3 {
     margin: 16px;
   }
+}
+
+.cards {
+  align-items: flex-start;
+}
+
+.card {
+  width: 282px;
+  margin: 16px;
 }
 </style>
