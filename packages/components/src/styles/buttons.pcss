@@ -1,0 +1,62 @@
+button:focus, button:active {
+    outline: none;
+}
+
+.btn, .btn-icon {
+    border: none;
+    cursor: pointer;
+}
+
+.btn-icon {
+    display: inline-block;
+    background: none;
+}
+
+.btn {
+    display: flex;
+    height: 32px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 12px;
+    border-radius: 4px;
+    color: var(--theme-primary);
+
+    @mixin lil2;
+
+    & .svg-icon {
+        color: var(--theme-primary);
+
+        &:first-child {
+            margin-left: -4px;
+            margin-right: 8px;
+        }
+
+        &:last-child {
+            margin-left: 8px;
+            margin-right: -4px;
+        }
+    }
+
+    &.btn-big {
+        height: 40px;
+        border-radius: 8px;
+        padding: 0 16px;
+    }
+
+    &.btn-water-cheese {
+        background: linear-gradient(270deg, var(--color-water-60) 0%, var(--color-blue-cheese-80) 100%);
+    }
+
+    &.btn-shadow {
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    &.btn-hollow {
+        background: none;
+        border: 1px solid var(--theme-primary);
+    }
+
+    &.btn-highlight {
+        background: var(--theme-background-highlight);
+    }
+}

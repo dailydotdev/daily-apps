@@ -1,4 +1,5 @@
-html, html > * {
+html, html > *,
+input, textarea, select, button {
     font-family: 'DejaVuSansMono', monospace, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -60,6 +61,10 @@ h1 {
     @mixin quarter;
 }
 
-h3 {
+h2 {
     @mixin triple;
+}
+
+h3 {
+    @mixin double;
 }

@@ -1,6 +1,6 @@
 <template>
   <label
-    class="icon-selector">
+    class="icon-toggle">
     <input type="checkbox"
            :checked="pressed"
            @change="toggle">
@@ -40,7 +40,7 @@ export default {
 </script>
 
 <style scoped>
-.icon-selector {
+.icon-toggle {
   display: flex;
   margin: 0;
   padding: 0;

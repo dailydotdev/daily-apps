@@ -5,8 +5,45 @@
       Daily Components Demo
     </h1>
     <section>
-      <h3>Icons</h3>
-      <div class="icons">
+      <h2>Buttons</h2>
+      <div class="vertical_container buttons">
+        <div class="horizontal_container">
+          <h3>Buttons</h3>
+          <button class="btn btn-water-cheese">
+            Sign in
+          </button>
+          <button class="btn btn-hollow">
+            <svgicon icon="user_daily"/>
+            <span>Sign in</span>
+          </button>
+          <button class="btn btn-highlight btn-shadow invert">
+            <span>Sign in</span>
+            <svgicon icon="user_daily"/>
+          </button>
+        </div>
+        <div class="horizontal_container">
+          <h3>Big Buttons</h3>
+          <button class="btn btn-big btn-hollow">
+            No
+          </button>
+          <button class="btn btn-big btn-highlight btn-shadow invert">
+            Yes, I'd love to
+          </button>
+        </div>
+        <div class="horizontal_container">
+          <h3>Icon Buttons</h3>
+          <button class="btn-icon" title="button">
+            <svgicon icon="mobile"/>
+          </button>
+          <a href="https://www.dailynow.co" target="_blank" title="anchor">
+            <svgicon icon="bag"/>
+          </a>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Icons</h2>
+      <div class="horizontal_container">
         <div v-for="(item, index) in icons" :key="index" class="icons_container">
           <svgicon :icon="item"/>
           <div class="icons_container__text micro1">{{item}}</div>
@@ -14,8 +51,8 @@
       </div>
     </section>
     <section>
-      <h3>Logos</h3>
-      <div class="icons">
+      <h2>Logos</h2>
+      <div class="horizontal_container">
         <div v-for="(item, index) in logos" :key="index" class="icons_container">
           <img :src="`/logos/${item}.svg`"/>
           <div class="icons_container__text micro1">{{item}}</div>
@@ -23,19 +60,19 @@
       </div>
     </section>
     <section>
-      <h3>Switch</h3>
-      <div class="switches">
+      <h2>Switch</h2>
+      <div class="vertical_container">
         <DaSwitch icon="bookmark"></DaSwitch>
         <DaSwitch icon="link" label="With label"></DaSwitch>
         <DaSwitch icon="moon" label="Checked" checked></DaSwitch>
       </div>
     </section>
     <section>
-      <h3>Icon Toggle</h3>
+      <h2>Icon Toggle</h2>
       <DaIconToggle pressed-icon="sun" icon="moon"/>
     </section>
     <section>
-      <h3>Spinner</h3>
+      <h2>Spinner</h2>
       <DaSpinner/>
     </section>
   </div>
@@ -44,7 +81,7 @@
 <script>
 import DaSwitch from './DaSwitch.vue';
 import DaIconToggle from './DaIconToggle.vue';
-import DaSpinner from './DaSpinner';
+import DaSpinner from './DaSpinner.vue';
 
 const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
@@ -87,15 +124,27 @@ section {
   margin: 16px 0;
 }
 
-h3 {
+h2 {
   margin: 16px 0;
   color: var(--theme-secondary);
 }
 
-.icons {
+h3 {
+  color: var(--theme-primary);
+}
+
+.vertical_container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: -16px 0;
+}
+
+.horizontal_container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: center;
   margin: -16px;
 }
 
@@ -106,7 +155,7 @@ h3 {
   flex-direction: column;
   align-items: center;
 
-  & .svg-icon, & .icon-selector {
+  & .svg-icon, & .icon-toggle {
     color: var(--theme-primary);
   }
 }
@@ -115,14 +164,18 @@ h3 {
   color: var(--theme-primary);
 }
 
-.switches {
-  display: flex;
-  flex-direction: column;
-  margin: -16px 0;
-}
-
 .switch {
   margin: 16px 0;
-  width: 180px;
+}
+
+.buttons {
+  & .horizontal_container {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  & button, & a, & h3 {
+    margin: 16px;
+  }
 }
 </style>

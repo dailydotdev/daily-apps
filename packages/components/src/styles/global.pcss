@@ -1,15 +1,20 @@
 @import "colors.pcss";
 @import "typography.pcss";
 @import "themes.pcss";
+@import "buttons.pcss";
 
 html {
     --shadow-offset: 8px;
 }
 
-.svg-icon, .icon-selector {
+.svg-icon, .icon-toggle {
     width: 24px;
     height: 24px;
     color: var(--theme-secondary);
+
+    &:hover {
+        color: var(--theme-primary);
+    }
 }
 
 .svg-fill {
