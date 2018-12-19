@@ -3,18 +3,6 @@ import '../src/filters';
 import DaCardPost from '../src/components/DaCardPost.vue';
 import posts from '../src/posts';
 
-it('should set card class to large', () => {
-  const post = posts[0];
-  const wrapper = shallowMount(DaCardPost, { propsData: { post } });
-  expect(wrapper.element.classList.contains('large')).toEqual(true);
-});
-
-it('should set card class to small', () => {
-  const post = posts[2];
-  const wrapper = shallowMount(DaCardPost, { propsData: { post } });
-  expect(wrapper.element.classList.contains('small')).toEqual(true);
-});
-
 it('should emit bookmark event on click', () => {
   const post = posts[0];
   const wrapper = shallowMount(DaCardPost, { propsData: { post } });
@@ -50,5 +38,5 @@ it('should set bookmarked class when bookmarked', () => {
 it('should set tags title', () => {
   const post = posts[1];
   const wrapper = shallowMount(DaCardPost, { propsData: { post } });
-  expect(wrapper.find('.card__tags').element.title).toEqual('#GraphQL,#Airbnb,#JavaScript,#FrontEndDevelopment');
+  expect(wrapper.find('.card__tags').element.title).toEqual('#GraphQL, #Airbnb, #JavaScript, #FrontEndDevelopment');
 });

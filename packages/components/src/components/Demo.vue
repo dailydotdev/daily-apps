@@ -7,10 +7,16 @@
     </h1>
     <section>
       <h2>Cards</h2>
-      <div class="vertical_container">
+      <div>
         <h3>Posts</h3>
         <div class="horizontal_container cards">
           <DaCardPost :post="item" v-for="(item, index) in posts" :key="index"/>
+        </div>
+      </div>
+      <div>
+        <h3>Ads</h3>
+        <div class="horizontal_container cards">
+          <DaCardAd :ad="item" v-for="(item, index) in ads" :key="index"/>
         </div>
       </div>
     </section>
@@ -93,7 +99,9 @@ import DaSwitch from './DaSwitch.vue';
 import DaIconToggle from './DaIconToggle.vue';
 import DaSpinner from './DaSpinner.vue';
 import DaCardPost from './DaCardPost.vue';
+import DaCardAd from './DaCardAd.vue';
 import posts from '../posts.json';
+import ads from '../ads.json';
 
 const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
@@ -104,6 +112,7 @@ const logos = require.context('../../logos', false, /.svg$/).keys();
 export default {
   name: 'Demo',
   components: {
+    DaCardAd,
     DaCardPost,
     DaSpinner,
     DaIconToggle,
@@ -113,6 +122,7 @@ export default {
     this.icons = icons.map(r => r.substr(2, r.length - 5));
     this.logos = logos.map(l => l.substr(2, l.length - 6));
     this.posts = posts;
+    this.ads = ads;
   },
   methods: {
     toggleTheme(checked) {

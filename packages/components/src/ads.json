@@ -1,0 +1,28 @@
+[
+  {
+    "description": "Gitcoin 💰Use your Javascript skills to grow Open Source, while getting paid.",
+    "image": "https://cdn.codefund.io/28676b5a-a038-497b-bfcd-94c34dafd9d4_gitcoin-512x320.jpg",
+    "link": "https://codefund.io/c/014fd8d9-1d11-41c8-b46f-56d4bfa25f71",
+    "source": "CodeFund",
+    "size": "large"
+  },
+  {
+    "description": "Gitcoin 💰Use your Javascript skills to grow Open Source, while getting paid.",
+    "image": "https://cdn.codefund.io/28676b5a-a038-497b-bfcd-94c34dafd9d4_gitcoin-512x320.jpg",
+    "link": "https://codefund.io/c/014fd8d9-1d11-41c8-b46f-56d4bfa25f71",
+    "source": "BSA",
+    "company": "CodeFund",
+    "backgroundColor": "#121643",
+    "size": "medium"
+  },
+  {
+    "description": "Rollbar Real-time error monitoring, alerting, and analytics for JavaScript developers 🚀",
+    "image": "https://cdn.codefund.io/44a1c0e0-15b2-474c-a37e-8be8740f076e_rollbar-512x320.jpg",
+    "link": "https://codefund.io/c/b84b2925-65ba-4483-bc55-97b459c06136",
+    "source": "CodeFund",
+    "company": "CodeFund",
+    "pixel": [
+      "https://codefund.io/p/b84b2925-65ba-4483-bc55-97b459c06136/pixel.png"
+    ]
+  }
+]
