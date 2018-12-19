@@ -52,6 +52,8 @@ export default {
 <style>
 .card--post .card__content {
   border-bottom: 1px solid var(--theme-background-primary);
+
+  @mixin shadow;
 }
 
 .card__tags {

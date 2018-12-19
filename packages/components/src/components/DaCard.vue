@@ -6,7 +6,7 @@
              :data-lowsrc="placeholder"
              :data-src="image"/>
       </div>
-      <div class="card__content shadow">
+      <div class="card__content">
         <h5 class="card__title">{{title | cardTitle}}</h5>
         <slot name="content"></slot>
       </div>
