@@ -39,7 +39,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .icon-toggle {
   display: flex;
   margin: 0;
@@ -53,29 +53,29 @@ export default {
   &:hover .svg-icon {
     color: var(--theme-primary);
   }
-}
 
-input {
-  display: none;
-}
+  & input {
+    display: none;
 
-input:checked {
-  & ~ .svg-icon {
+    &:checked {
+      & ~ .svg-icon {
+        display: none;
+      }
+
+      & ~ .pressed {
+        display: block;
+      }
+    }
+  }
+
+  & .svg-icon {
+    width: 100%;
+    height: 100%;
+    color: inherit;
+  }
+
+  & .pressed {
     display: none;
   }
-
-  & ~ .pressed {
-    display: block;
-  }
-}
-
-.svg-icon {
-  width: 100%;
-  height: 100%;
-  color: inherit;
-}
-
-.pressed {
-  display: none;
 }
 </style>

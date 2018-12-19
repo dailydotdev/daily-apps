@@ -20,8 +20,7 @@ export default {
     transform: scale(1.0);
   }
 }
-</style>
-<style scoped>
+
 .spinner {
   display: flex;
   width: 80px;

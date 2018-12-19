@@ -49,7 +49,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .switch {
   display: flex;
   flex-direction: row;
@@ -59,6 +59,33 @@ export default {
   &:active {
     background: none;
   }
+
+  & input {
+    display: none;
+
+    &:checked {
+      & ~ .switch__slider {
+        background: var(--da-switch-checked-color);
+        opacity: 0.5;
+      }
+
+      & ~ .switch__handle {
+        transform: translateX(100%);
+        background: var(--da-switch-checked-color);
+
+        & .svg-icon {
+          color: white;
+        }
+      }
+    }
+  }
+
+  & .svg-icon {
+    width: calc(var(--da-switch-height) - 4px);
+    height: calc(var(--da-switch-height) - 4px);
+    color: var(--da-switch-color);
+    transition: color 0.2s linear;
+  }
 }
 
 .switch__container {
@@ -66,26 +93,6 @@ export default {
   position: relative;
   width: var(--da-switch-width);
   height: var(--da-switch-height);
-}
-
-input {
-  display: none;
-}
-
-input:checked {
-  & ~ .switch__slider {
-    background: var(--da-switch-checked-color);
-    opacity: 0.5;
-  }
-
-  & ~ .switch__handle {
-    transform: translateX(100%);
-    background: var(--da-switch-checked-color);
-
-    & .svg-icon {
-      color: white;
-    }
-  }
 }
 
 .switch__slider {
@@ -117,13 +124,6 @@ input:checked {
   will-change: transform, background-color;
   transition: background-color 0.2s linear, transform 0.2s linear;
   box-shadow: 0 var(--theme-shadow-offset) 16px 0 rgba(0, 0, 0, 0.1);
-}
-
-.svg-icon {
-  width: calc(var(--da-switch-height) - 4px);
-  height: calc(var(--da-switch-height) - 4px);
-  color: var(--da-switch-color);
-  transition: color 0.2s linear;
 }
 
 .switch__label {
