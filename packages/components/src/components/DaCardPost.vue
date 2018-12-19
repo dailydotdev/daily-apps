@@ -2,13 +2,13 @@
   <DaCard class="card--post" :class="cls" :title="post.title" :url="post.url" :image="post.image"
           :placeholder="post.placeholder" :size="post.size">
     <div slot="content" class="card__tags nuggets"
-         :title="post.tags.map(t => `#${t}`).join(', ')">{{post.tags | cardTags}}
+         :title="(post.tags || []).map(t => `#${t}`).join(', ')">{{post.tags | cardTags}}
     </div>
     <template slot="footer">
       <img class="card__footer__icon lazyload"
            :data-src="post.publication.image"
            :alt="post.publication.name" :title="post.publication.name"/>
-      <span class="card__footer__views micro2">// {{post.views}} views</span>
+      <span class="card__footer__views micro2">// {{post.views}} Views</span>
       <button class="btn-icon btn-small card__footer__bookmark"
               :title="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
               @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import 'lazysizes';
 import DaCard from './DaCard.vue';
 
 export default {

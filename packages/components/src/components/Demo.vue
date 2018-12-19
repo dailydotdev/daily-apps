@@ -21,6 +21,21 @@
       </div>
     </section>
     <section>
+      <h2>Insane</h2>
+      <div>
+        <h3>Posts</h3>
+        <div class="vertical_container no-margin">
+          <DaInsanePost :post="item" v-for="(item, index) in posts" :key="index"/>
+        </div>
+      </div>
+      <div>
+        <h3>Ads</h3>
+        <div class="vertical_container no-margin">
+          <DaInsandeAd :ad="item" v-for="(item, index) in ads" :key="index"/>
+        </div>
+      </div>
+    </section>
+    <section>
       <h2>Buttons</h2>
       <div class="vertical_container buttons">
         <div class="horizontal_container">
@@ -100,6 +115,8 @@ import DaIconToggle from './DaIconToggle.vue';
 import DaSpinner from './DaSpinner.vue';
 import DaCardPost from './DaCardPost.vue';
 import DaCardAd from './DaCardAd.vue';
+import DaInsanePost from './DaInsanePost.vue';
+import DaInsaneAd from './DaInsaneAd.vue';
 import posts from '../posts.json';
 import ads from '../ads.json';
 
@@ -112,6 +129,8 @@ const logos = require.context('../../logos', false, /.svg$/).keys();
 export default {
   name: 'Demo',
   components: {
+    DaInsanePost,
+    DaInsandeAd: DaInsaneAd,
     DaCardAd,
     DaCardPost,
     DaSpinner,
@@ -150,6 +169,10 @@ h1 {
   color: var(--theme-primary);
 }
 
+h3 {
+  margin: 16px 0;
+}
+
 .theme-selector {
   margin-left: auto;
 }
@@ -180,7 +203,7 @@ h3 {
   align-items: flex-start;
   margin: -16px 0;
 
-  & .horizontal_container {
+  & .horizontal_container, &.no-margin {
     margin-top: 0;
     margin-bottom: 0;
   }
