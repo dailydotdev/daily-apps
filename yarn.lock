@@ -7068,7 +7068,7 @@ loglevel@^1.4.1:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.1.tgz#e0fc95133b6ef276cdc8887cdaf24aa6f156f8fa"
   integrity sha1-4PyVEztu8nbNyIh82vJKpvFW+Po=
 
-loose-envify@^1.0.0:
+loose-envify@^1.0.0, loose-envify@^1.2.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
   integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==
@@ -10907,6 +10907,21 @@ vm-browserify@0.0.4:
   integrity sha1-XX6kW7755Kb/ZflUOOCofDV9WnM=
   dependencies:
     indexof "0.0.1"
+
+vue-clickaway@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/vue-clickaway/-/vue-clickaway-2.2.2.tgz#cecf6839575e8b2afc5d3edb3efb616d293dbb44"
+  integrity sha512-25SpjXKetL06GLYoLoC8pqAV6Cur9cQ//2g35GRFBV4FgoljbZZjTINR8g2NuVXXDMLSUXaKx5dutgO4PaDE7A==
+  dependencies:
+    loose-envify "^1.2.0"
+
+vue-context@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/vue-context/-/vue-context-3.4.0.tgz#6b9e68d60187a7514f04114852045ed40a80a948"
+  integrity sha512-YAbp2eUedV3ckIBe6MxgNI9w89SUexVp5NLZrHZV34Dct7Dt+MNqjmfSBqmibNW4oDS8QyP8/EsLQzrHnGNbEw==
+  dependencies:
+    vue "^2.5.17"
+    vue-clickaway "^2.2.2"
 
 vue-eslint-parser@^2.0.3:
   version "2.0.3"

@@ -31,7 +31,7 @@
       <div>
         <h3>Ads</h3>
         <div class="vertical_container no-margin">
-          <DaInsandeAd :ad="item" v-for="(item, index) in ads" :key="index"/>
+          <DaInsaneAd :ad="item" v-for="(item, index) in ads" :key="index"/>
         </div>
       </div>
     </section>
@@ -66,7 +66,7 @@
           <button class="btn-icon" title="button">
             <svgicon icon="mobile"/>
           </button>
-          <a href="https://www.dailynow.co" target="_blank" title="anchor">
+          <a href="https://www.dailynow.co" target="_blank" class="btn-icon" title="anchor">
             <svgicon icon="bag"/>
           </a>
         </div>
@@ -92,7 +92,7 @@
     </section>
     <section>
       <h2>Switch</h2>
-      <div class="vertical_container">
+      <div class="vertical_container highlight">
         <DaSwitch icon="bookmark"></DaSwitch>
         <DaSwitch icon="link" label="With label"></DaSwitch>
         <DaSwitch icon="moon" label="Checked" checked></DaSwitch>
@@ -103,9 +103,19 @@
       <DaIconToggle pressed-icon="sun" icon="moon"/>
     </section>
     <section>
+      <h2>Context Menu</h2>
+      <button class="btn-icon" title="Open context menu" @click.prevent="openMenu">
+        <svgicon icon="menu"/>
+      </button>
+    </section>
+    <section>
       <h2>Spinner</h2>
       <DaSpinner/>
     </section>
+    <DaContext ref="context">
+      <button class="context__item">Broken link</button>
+      <button class="context__item">Report NSFW</button>
+    </DaContext>
   </div>
 </template>
 
@@ -117,6 +127,7 @@ import DaCardPost from './DaCardPost.vue';
 import DaCardAd from './DaCardAd.vue';
 import DaInsanePost from './DaInsanePost.vue';
 import DaInsaneAd from './DaInsaneAd.vue';
+import DaContext from './DaContext.vue';
 import posts from '../posts.json';
 import ads from '../ads.json';
 
@@ -129,8 +140,9 @@ const logos = require.context('../../logos', false, /.svg$/).keys();
 export default {
   name: 'Demo',
   components: {
+    DaContext,
     DaInsanePost,
-    DaInsandeAd: DaInsaneAd,
+    DaInsaneAd,
     DaCardAd,
     DaCardPost,
     DaSpinner,
@@ -150,6 +162,9 @@ export default {
       } else {
         document.documentElement.classList.remove('bright');
       }
+    },
+    openMenu(event) {
+      this.$refs.context.open(event);
     },
   },
 };
@@ -195,6 +210,10 @@ h2 {
 
 h3 {
   color: var(--theme-primary);
+}
+
+.highlight {
+  background: var(--theme-background-secondary);
 }
 
 .vertical_container {
@@ -250,5 +269,9 @@ h3 {
 .card {
   width: 282px;
   margin: 16px;
+}
+
+.v-context.context {
+  width: 130px;
 }
 </style>

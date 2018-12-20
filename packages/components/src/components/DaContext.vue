@@ -1,0 +1,51 @@
+<template>
+  <VueContext class="context" ref="context">
+    <slot></slot>
+  </VueContext>
+</template>
+
+<script>
+import { VueContext } from 'vue-context';
+
+export default {
+  name: 'DaContext',
+  components: { VueContext },
+
+  methods: {
+    open(event) {
+      this.$nextTick(() => this.$refs.context.open(event));
+    },
+  },
+};
+</script>
+
+<style>
+.context__item {
+  display: flex;
+  height: 40px;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+  color: var(--theme-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  @mixin nuggets;
+
+  &:hover {
+    background: var(--theme-background-secondary);
+  }
+}
+</style>
+<style scoped>
+.v-context.context {
+  display: flex;
+  flex-direction: column;
+  background: var(--theme-background-highlight);
+  border-radius: 4px;
+  border: none;
+  box-shadow: 0 var(--theme-shadow-offset) 32px 16px rgba(0, 0, 0, 0.32);
+}
+</style>

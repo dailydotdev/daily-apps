@@ -19,7 +19,7 @@ export default {
 @import './styles/global.pcss';
 
 html {
-  background: var(--theme-background-secondary);
+  background: var(--theme-background-primary);
 }
 
 body {

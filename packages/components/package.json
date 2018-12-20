@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "lazysizes": "^4.1.4",
+    "vue-context": "^3.4.0",
     "vue-svgicon": "^3.2.1"
   },
   "devDependencies": {
