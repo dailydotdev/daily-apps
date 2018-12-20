@@ -19,6 +19,7 @@
         <svgicon icon="menu"/>
       </button>
     </template>
+    <svgicon icon="menu" class="card__menu--duplicate" slot="other" v-if="menuOpened"/>
   </DaCard>
 </template>
 
@@ -34,12 +35,17 @@ export default {
       type: Object,
       required: true,
     },
+    menuOpened: {
+      type: Boolean,
+      default: false,
+    }
   },
 
   computed: {
     cls() {
       return {
         bookmarked: this.post.bookmarked,
+        'menu-opened': this.menuOpened,
       };
     },
   },
@@ -51,10 +57,30 @@ export default {
 };
 </script>
 <style>
+.card--post {
+  position: relative;
+}
+
 .card--post .card__content {
   border-bottom: 1px solid var(--theme-background-primary);
 
   @mixin shadow;
+}
+
+.card--post .card__menu--duplicate {
+  position: absolute;
+  display: block;
+  right: 16px;
+  bottom: 14px;
+  width: 20px;
+  height: 20px;
+  color: var(--theme-primary);
+}
+
+.menu-opened.card--post {
+  & .card__link, & .card__footer {
+    opacity: 0.4;
+  }
 }
 
 .card__tags {

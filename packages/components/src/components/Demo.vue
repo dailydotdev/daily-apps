@@ -10,7 +10,7 @@
       <div>
         <h3>Posts</h3>
         <div class="horizontal_container cards">
-          <DaCardPost :post="item" v-for="(item, index) in posts" :key="index"/>
+          <DaCardPost :post="item" v-for="(item, index) in posts" :key="index" :menu-opened="index === 1"/>
         </div>
       </div>
       <div>

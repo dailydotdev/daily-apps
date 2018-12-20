@@ -14,6 +14,7 @@
     <div class="card__footer shadow">
       <slot name="footer"></slot>
     </div>
+    <slot name="other"></slot>
   </div>
 </template>
 
