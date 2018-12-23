@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "extension",
-  "homepage_url": "http://localhost/",
-  "description": "A Vue Browser Extension",
+  "name": "Daily - Source for Busy Developers",
+  "short_name": "Daily",
+  "description": "Daily gathers the latest dev & tech posts in your new tab",
+  "homepage_url": "https://www.dailynow.co",
   "icons": {
     "16": "icons/16.png",
     "48": "icons/48.png",
@@ -12,15 +13,16 @@
     "newtab": "index.html"
   },
   "permissions": [
-    "<all_urls>",
-    "*://*/*"
+    "storage",
+    "alarms",
+    "topSites",
+    "https://logo.clearbit.com/"
   ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
   },
   "browser_action": {
-    "default_title": "extension",
     "default_icon": {
       "19": "icons/19.png",
       "38": "icons/38.png"
