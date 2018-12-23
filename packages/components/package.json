@@ -13,8 +13,7 @@
   "dependencies": {
     "dialog-polyfill": "^0.4.10",
     "lazysizes": "^4.1.4",
-    "vue-context": "^3.4.0",
-    "vue-svgicon": "^3.2.1"
+    "vue-context": "^3.4.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.0",
@@ -33,6 +32,7 @@
     "postcss-mixins": "^6.2.0",
     "postcss-nesting": "^7.0.0",
     "vue": "^2.5.17",
+    "vue-svgicon": "^3.2.2",
     "vue-template-compiler": "^2.5.17",
     "webpack": "^4.26.1"
   },
@@ -50,17 +50,6 @@
     },
     "parserOptions": {
       "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {},
-      "postcss-mixins": {
-        "mixinsDir": "./src/styles/mixins"
-      },
-      "postcss-extend": {},
-      "postcss-nesting": {},
-      "postcss-custom-media": {}
     }
   },
   "browserslist": [
@@ -100,8 +89,8 @@
     "icons/*",
     "logos/*"
   ],
-  "main": "./dist/components.common.js",
   "peerDependencies": {
-    "vue": "^2.5.17"
+    "vue": "^2.5.17",
+    "vue-svgicon": "^3.2.2"
   }
 }
