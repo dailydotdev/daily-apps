@@ -10,7 +10,8 @@
       <div>
         <h3>Posts</h3>
         <div class="horizontal_container cards">
-          <DaCardPost :post="item" v-for="(item, index) in posts" :key="index" :menu-opened="index === 1"/>
+          <DaCardPost :post="item" v-for="(item, index) in posts" :key="index"
+                      :menu-opened="index === 1"/>
         </div>
       </div>
       <div>
@@ -109,6 +110,12 @@
       </button>
     </section>
     <section>
+      <h2>Modal</h2>
+      <button class="btn-icon" title="Open modal" @click.prevent="showModal = true">
+        <svgicon icon="terminal"/>
+      </button>
+    </section>
+    <section>
       <h2>Spinner</h2>
       <DaSpinner/>
     </section>
@@ -116,10 +123,29 @@
       <button class="context__item">Broken link</button>
       <button class="context__item">Report NSFW</button>
     </DaContext>
+    <DaModal class="demo-modal" v-if="showModal" @close="showModal = false" ref="modal">
+      <p class="demo-modal__text">
+        To improve Daily we use analytics platforms.
+        We kindly ask your approval for tracking your activity here.
+        We promise to never misuse it.<br/><br/>
+        Do you agree to opt-in?
+      </p>
+      <div class="demo-modal__buttons">
+        <button class="btn btn-big btn-highlight shadow invert"
+                @click.prevent="$refs.modal.close()">
+          Yes, I'd love to
+        </button>
+        <button class="btn btn-big btn-hollow" @click.prevent="$refs.modal.close()">
+          No
+        </button>
+      </div>
+    </DaModal>
   </div>
 </template>
 
 <script>
+import posts from '../posts.json';
+import ads from '../ads.json';
 import DaSwitch from './DaSwitch.vue';
 import DaIconToggle from './DaIconToggle.vue';
 import DaSpinner from './DaSpinner.vue';
@@ -128,8 +154,7 @@ import DaCardAd from './DaCardAd.vue';
 import DaInsanePost from './DaInsanePost.vue';
 import DaInsaneAd from './DaInsaneAd.vue';
 import DaContext from './DaContext.vue';
-import posts from '../posts.json';
-import ads from '../ads.json';
+import DaModal from './DaModal.vue';
 
 const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
@@ -140,6 +165,7 @@ const logos = require.context('../../logos', false, /.svg$/).keys();
 export default {
   name: 'Demo',
   components: {
+    DaModal,
     DaContext,
     DaInsanePost,
     DaInsaneAd,
@@ -155,6 +181,11 @@ export default {
     this.posts = posts;
     this.ads = ads;
   },
+  data() {
+    return {
+      showModal: false,
+    };
+  },
   methods: {
     toggleTheme(checked) {
       if (checked) {
@@ -169,7 +200,11 @@ export default {
   },
 };
 </script>
-
+<style>
+.demo-modal .modal__container {
+  width: 455px
+}
+</style>
 <style scoped>
 .demo {
   display: flex;
@@ -273,5 +308,23 @@ h3 {
 
 .v-context.context {
   width: 130px;
+}
+
+.demo-modal__text {
+  color: var(--theme-secondary);
+  text-align: center;
+
+  @mixin jr;
+}
+
+.demo-modal__buttons {
+  display: flex;
+  margin: 24px -8px 0;
+  flex-direction: row;
+  justify-content: center;
+
+  & button {
+    margin: 0 8px;
+  }
 }
 </style>

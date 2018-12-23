@@ -38,7 +38,7 @@ export default {
     menuOpened: {
       type: Boolean,
       default: false,
-    }
+    },
   },
 
   computed: {

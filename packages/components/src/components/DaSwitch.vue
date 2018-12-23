@@ -123,7 +123,8 @@ export default {
   background: var(--theme-secondary);
   will-change: transform, background-color;
   transition: background-color 0.2s linear, transform 0.2s linear;
-  box-shadow: 0 var(--theme-shadow-offset) 16px 0 rgba(0, 0, 0, 0.1);
+
+  @mixin shadow;
 }
 
 .switch__label {
