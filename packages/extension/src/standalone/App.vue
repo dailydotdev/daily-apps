@@ -1,21 +1,14 @@
 <template>
   <div>
-    <DaSwitch icon="bookmark"></DaSwitch>
+    <DaHeader></DaHeader>
   </div>
 </template>
 
 <script>
-import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
+import DaHeader from '../components/DaHeader.vue';
 
 export default {
-  components: { DaSwitch },
-  data() {
-    return {};
-  },
-
-  mounted() {
-    import('@daily/components/icons/bookmark');
-  },
+  components: { DaHeader },
 };
 </script>
 
@@ -24,6 +17,17 @@ export default {
 
 html {
   background: var(--theme-background-primary);
+}
+
+body {
+  margin: 0;
+}
+
+.separator {
+  display: block;
+  border-left: 1px dotted var(--theme-separator);
+  height: 32px;
+  width: 1px;
 }
 </style>
 <style scoped>

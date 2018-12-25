@@ -21,8 +21,10 @@
   },
   "devDependencies": {
     "@types/jest": "^23.3.8",
+    "@types/jsdom": "^12.2.0",
     "@types/nock": "^9.3.0",
     "jest": "^23.6.0",
+    "jsdom": "^13.1.0",
     "nock": "^10.0.1",
     "rollup": "^0.67.0",
     "rollup-plugin-typescript2": "^0.17.2",

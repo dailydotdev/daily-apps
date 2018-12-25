@@ -42,8 +42,6 @@ export default {
 <style>
 .icon-toggle {
   display: flex;
-  margin: 0;
-  padding: 0;
   background: none;
   border: none;
   outline: 0;
