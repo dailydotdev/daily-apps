@@ -175,6 +175,8 @@ export default {
     width: var(--da-switch-width);
     height: var(--da-switch-height);
     margin: auto;
+
+    --da-switch-checked-color: var(--color-burger-60);
   }
 
   & .header__sign-in {
