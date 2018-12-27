@@ -6,8 +6,8 @@
         :checked="checked"
         @change="toggle">
       <span class="switch__slider"/>
-      <span class="switch__handle" ref="handle">
-        <svgicon
+      <span class="switch__handle switch" ref="handle">
+        <svgicon class="no-hover"
           :name="icon"
           v-if="icon"/>
       </span>
@@ -123,8 +123,6 @@ export default {
   background: var(--theme-secondary);
   will-change: transform, background-color;
   transition: background-color 0.2s linear, transform 0.2s linear;
-
-  @mixin shadow;
 }
 
 .switch__label {

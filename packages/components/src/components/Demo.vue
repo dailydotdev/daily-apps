@@ -100,6 +100,13 @@
       </div>
     </section>
     <section>
+      <h2>Mode Switch</h2>
+      <div class="vertical_container highlight">
+        <DaModeSwitch first-icon="link" second-icon="hashtag" title="Change filter"
+                      :checked="modeSwitchChecked" @toggle="modeSwitchChecked = $event"/>
+      </div>
+    </section>
+    <section>
       <h2>Icon Toggle</h2>
       <DaIconToggle pressed-icon="sun" icon="moon"/>
     </section>
@@ -155,6 +162,7 @@ import DaInsanePost from './DaInsanePost.vue';
 import DaInsaneAd from './DaInsaneAd.vue';
 import DaContext from './DaContext.vue';
 import DaModal from './DaModal.vue';
+import DaModeSwitch from './DaModeSwitch.vue';
 
 const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
@@ -174,6 +182,7 @@ export default {
     DaSpinner,
     DaIconToggle,
     DaSwitch,
+    DaModeSwitch,
   },
   created() {
     this.icons = icons.map(r => r.substr(2, r.length - 5));
@@ -184,6 +193,7 @@ export default {
   data() {
     return {
       showModal: false,
+      modeSwitchChecked: false,
     };
   },
   methods: {
