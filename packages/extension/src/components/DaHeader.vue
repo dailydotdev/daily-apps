@@ -150,6 +150,7 @@ export default {
   padding: 0 8px;
   background: var(--theme-background-highlight);
   border-bottom: 1px solid var(--theme-separator);
+  z-index: 2;
 
   & > * {
     margin: 0 4px;

@@ -6,10 +6,8 @@
         :checked="checked"
         @change="toggle">
       <span class="switch__slider"/>
-      <span class="switch__handle switch" ref="handle">
-        <svgicon class="no-hover"
-          :name="icon"
-          v-if="icon"/>
+      <span class="switch__handle" ref="handle">
+        <svgicon :name="icon" v-if="icon"/>
       </span>
     </span>
     <span
@@ -85,6 +83,10 @@ export default {
     height: calc(var(--da-switch-height) - 4px);
     color: var(--da-switch-color);
     transition: color 0.2s linear;
+
+    &:hover {
+      color: var(--da-switch-color);
+    }
   }
 }
 

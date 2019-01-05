@@ -5,6 +5,10 @@ button:focus, button:active {
 .btn, .btn-icon {
     border: none;
     cursor: pointer;
+
+    &[disabled] {
+        cursor: not-allowed;
+    }
 }
 
 .btn-icon {

@@ -1,6 +1,7 @@
 <template>
   <div class="app">
     <da-header></da-header>
+    <da-sidebar ref="sidebar"></da-sidebar>
     <div class="content">
       <div class="content__header">
         <h4>/# News for developers #/</h4>
@@ -17,10 +18,11 @@
 
 <script>
 import DaHeader from '../components/DaHeader.vue';
+import DaSidebar from '../components/DaSidebar.vue';
 import ctas from './ctas';
 
 export default {
-  components: { DaHeader },
+  components: { DaSidebar, DaHeader },
 
   data() {
     return {
@@ -34,11 +36,16 @@ export default {
     },
   },
 
-  mounted() {
+  async mounted() {
     if (this.cta.icon) {
       import(`@daily/components/icons/${this.cta.icon}`);
     }
-  }
+
+    this.$nextTick(() => this.$refs.sidebar.invalidate());
+
+    await this.$store.dispatch('feed/fetchPublications');
+    await this.$store.dispatch('feed/fetchTags');
+  },
 };
 </script>
 
@@ -77,7 +84,7 @@ a {
 .content {
   display: flex;
   flex-direction: column;
-  margin: 76px 42px 76px 76px;
+  margin: 72px 42px 76px 76px;
 }
 
 .content__header {
@@ -93,6 +100,7 @@ a {
 
 .header__cta {
   display: flex;
+  height: 32px;
   flex-direction: row;
   align-items: center;
   margin-left: auto;
@@ -100,7 +108,7 @@ a {
 }
 
 .header__cta__text {
-  margin: 8px 8px 8px 16px;
+  margin: 0 8px 0 16px;
 
   @mixin micro2;
 }
@@ -108,7 +116,7 @@ a {
 .header__cta__image {
   width: 20px;
   height: 20px;
-  margin: 8px;
+  margin: 0 8px;
   color: var(--color-salt-10);
 }
 </style>

@@ -1,15 +1,13 @@
 <template>
   <label class="mode-switch">
-    <span class="mode-switch__container">
-      <input
-        type="checkbox"
-        :checked="checked"
-        @change="toggle">
-      <span class="mode-switch__slider"/>
-      <span class="mode-switch__handle shadow" ref="handle"/>
-      <svgicon :icon="firstIcon" class="mode-switch__icon mode-switch__icon--first"/>
-      <svgicon :icon="secondIcon" class="mode-switch__icon mode-switch__icon--second"/>
-    </span>
+    <input
+      type="checkbox"
+      :checked="checked"
+      @change="toggle">
+    <span class="mode-switch__slider"/>
+    <span class="mode-switch__handle shadow" ref="handle"/>
+    <svgicon :icon="firstIcon" class="mode-switch__icon mode-switch__icon--first"/>
+    <svgicon :icon="secondIcon" class="mode-switch__icon mode-switch__icon--second"/>
   </label>
 </template>
 
@@ -47,8 +45,13 @@ export default {
 <style>
 .mode-switch {
   display: flex;
+  position: relative;
+  width: 112px;
+  height: 32px;
   flex-direction: row;
+  justify-content: space-around;
   align-items: center;
+  z-index: 1;
   cursor: pointer;
 
   &:active {
@@ -64,17 +67,6 @@ export default {
       }
     }
   }
-}
-
-.mode-switch__container {
-  display: flex;
-  position: relative;
-  width: 112px;
-  height: 32px;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 1;
 }
 
 .mode-switch__icon.svg-icon {
