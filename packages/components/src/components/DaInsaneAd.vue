@@ -3,7 +3,7 @@
     <a :href="ad.link" target="_blank" class="insane__link" @click="$emit('click')">
       <h5 class="insane__title">{{ad.description | cardTitle}}</h5>
     </a>
-    <span class="insane__promoted micro2">/# {{ promoted }} #/</span>
+    <span class="insane__promoted micro2">/* {{ promoted }} */</span>
     <img v-for="(item, index) in pixel" :key="index" :src="item" class="insane__pixel"/>
   </div>
 </template>

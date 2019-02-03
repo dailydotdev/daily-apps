@@ -23,6 +23,6 @@ describe('card tags filter', () => {
 
   it('should create an hashtag comma delimited string with only two tags', () => {
     const wrapper = mount(CardTags, { propsData: { tags: ['webdev', 'frontend', 'javascript', 'opensource', 'css'] } });
-    expect(wrapper.text()).toEqual('#webdev,#frontend +3');
+    expect(wrapper.text()).toEqual('#webdev,#frontend,+3');
   });
 });

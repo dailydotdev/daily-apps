@@ -8,7 +8,7 @@
       <img class="card__footer__icon lazyload"
            :data-src="post.publication.image"
            :alt="post.publication.name" :title="post.publication.name"/>
-      <span class="card__footer__views micro2">// {{post.views}} Views</span>
+      <span class="card__footer__views micro2" v-if="post.views">// {{post.views}} Views</span>
       <button class="btn-icon btn-small card__footer__bookmark"
               :title="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
               @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">

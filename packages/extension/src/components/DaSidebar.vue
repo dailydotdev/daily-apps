@@ -259,7 +259,7 @@ export default {
   left: 0;
   top: 0;
   height: 100%;
-  z-index: 1;
+  z-index: 20;
 
   --trigger-width: 36px;
   --content-width: 256px;
@@ -293,7 +293,6 @@ export default {
   top: 0;
   width: var(--content-width);
   height: 100%;
-  padding-top: 48px;
   background: var(--theme-background-primary);
   border-right: 1px solid var(--theme-background-primary);
   box-shadow: var(--theme-shadow-offset) 0 16px 0 rgba(0, 0, 0, .1);
@@ -365,6 +364,7 @@ export default {
 
 .sidebar__filter {
   display: flex;
+  padding-top: 48px;
   background: var(--theme-background-highlight);
 }
 

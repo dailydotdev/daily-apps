@@ -5,7 +5,7 @@
     <template slot="content">
       <img v-for="(item, index) in pixel" :key="index" :src="item" class="card__pixel"/>
     </template>
-    <span slot="footer" class="card__footer__promoted micro2">/# {{ promoted }} #/</span>
+    <span slot="footer" class="card__footer__promoted micro2">/* {{ promoted }} */</span>
   </DaCard>
 </template>
 

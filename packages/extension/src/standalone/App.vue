@@ -4,7 +4,7 @@
     <da-sidebar ref="sidebar"></da-sidebar>
     <div class="content">
       <div class="content__header">
-        <h4>/# News for developers #/</h4>
+        <h4>/* News for developers */</h4>
         <a class="header__cta shadow " :href="cta.link" target="_blank"
            @mouseup="ctaClick" :style="cta.style">
           <span class="header__cta__text">// {{cta.text}}</span>
@@ -12,21 +12,51 @@
           <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
         </a>
       </div>
+      <div class="content__insane" v-if="insaneMode">
+        <template v-if="!showBookmarks">
+          <DaInsaneAd v-for="(item, index) in ads" :key="index" :ad="item"/>
+        </template>
+        <DaInsanePost v-for="item in posts" :key="item.id" :post="item"/>
+      </div>
+      <masonry class="content__cards" :cols="cols" :gutter="32" v-else>
+        <template v-if="!showBookmarks">
+          <DaCardAd v-for="(item, index) in ads" :key="index" :ad="item"/>
+        </template>
+        <DaCardPost v-for="item in posts" :key="item.id" :post="item"/>
+      </masonry>
     </div>
+    <div id="anchor" ref="anchor"></div>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+import DaCardPost from '@daily/components/src/components/DaCardPost.vue';
+import DaCardAd from '@daily/components/src/components/DaCardAd.vue';
+import DaInsanePost from '@daily/components/src/components/DaInsanePost.vue';
+import DaInsaneAd from '@daily/components/src/components/DaInsaneAd.vue';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
 import ctas from './ctas';
 
 export default {
-  components: { DaSidebar, DaHeader },
+  components: {
+    DaSidebar, DaHeader, DaCardPost, DaCardAd, DaInsanePost, DaInsaneAd,
+  },
 
   data() {
     return {
       cta: ctas[Math.floor(Math.random() * ctas.length)],
+      cols: {
+        default: 7,
+        2050: 6,
+        2030: 5,
+        1710: 4,
+        1390: 3,
+        1070: 2,
+      },
+      ads: [],
+      showBookmarks: false,
     };
   },
 
@@ -34,17 +64,58 @@ export default {
     ctaClick() {
       // ga('send', 'event', this.cta.name, 'Click');
     },
+
+    updateLines() {
+      this.$nextTick(() => this.$refs.sidebar.invalidate());
+    },
+
+    ...mapActions({
+      fetchNextFeedPage: 'feed/fetchNextFeedPage',
+    }),
+  },
+
+  computed: {
+    ...mapState({
+      posts(state) {
+        return state.feed.posts;
+      },
+      insaneMode(state) {
+        return state.ui.insaneMode;
+      },
+    }),
+  },
+
+  watch: {
+    posts() {
+      this.updateLines();
+    },
+  },
+
+  created() {
+    this.contentObserver = new IntersectionObserver(async (entries) => {
+      if (entries[0].isIntersecting) {
+        if (await this.fetchNextFeedPage() && this.page > 0) {
+          // ga('send', 'event', 'Feed', 'Scroll', 'Next Page', this.page);
+        }
+      }
+    }, { root: null, rootMargin: '0px', threshold: 1 });
   },
 
   async mounted() {
+    // TODO: add page view analytics
+    // TODO: fetch ads
+
     if (this.cta.icon) {
       import(`@daily/components/icons/${this.cta.icon}`);
     }
 
-    this.$nextTick(() => this.$refs.sidebar.invalidate());
+    this.updateLines();
 
     await this.$store.dispatch('feed/fetchPublications');
     await this.$store.dispatch('feed/fetchTags');
+    await this.fetchNextFeedPage();
+
+    this.contentObserver.observe(this.$refs.anchor);
   },
 };
 </script>
@@ -72,25 +143,24 @@ a {
 }
 
 .app {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
   color: var(--theme-primary);
-
-  & .header {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  margin: 72px 42px 76px 76px;
+  margin: 24px 42px 76px 76px;
 }
 
 .content__header {
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-bottom: 24px;
 
   & h4 {
     text-transform: uppercase;
@@ -118,5 +188,27 @@ a {
   height: 20px;
   margin: 0 8px;
   color: var(--color-salt-10);
+}
+
+.content__cards {
+  margin: -32px 0;
+
+  & .card {
+    margin: 32px 0;
+  }
+}
+
+.content__insane {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#anchor {
+  position: absolute;
+  bottom: 100vh;
+  left: 0;
+  height: 1px;
+  width: 1px;
+  opacity: 0;
 }
 </style>
