@@ -21,8 +21,8 @@ describe('card tags filter', () => {
     expect(wrapper.text()).toEqual('#webdev,#frontend');
   });
 
-  it('should create an hashtag comma delimited string with only two tags', () => {
+  it('should create an hashtag comma delimited string limit to 28 chars', () => {
     const wrapper = mount(CardTags, { propsData: { tags: ['webdev', 'frontend', 'javascript', 'opensource', 'css'] } });
-    expect(wrapper.text()).toEqual('#webdev,#frontend,+3');
+    expect(wrapper.text()).toEqual('#webdev,#frontend,#css,+2');
   });
 });

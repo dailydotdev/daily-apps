@@ -14,9 +14,17 @@ Vue.filter('cardTags', (value) => {
     return '';
   }
 
-  const suffix = value.length > 2 ? `,+${value.length - 2}` : '';
-  const str = value
-    .slice(0, Math.min(2, value.length))
+  const tags = [];
+  let len = 0;
+  for (let i = 0; i < value.length; i++) {
+    if (len + value[i].length < 24) {
+      len += value[i].length + 2;
+      tags.push(value[i]);
+    }
+  }
+
+  const suffix = tags.length < value.length ? `,+${value.length - tags.length}` : '';
+  const str = tags
     .map(tag => `#${tag}`)
     .join(',');
   return `${str}${suffix}`;
