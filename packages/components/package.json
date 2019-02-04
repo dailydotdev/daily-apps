@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name components src/components/index.js",
+    "build": "yarn icons && vue-cli-service build --target lib --name components src/components/index.js",
     "test": "yarn lint && vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "icons": "vsvg -s ./svg -t ./icons",
