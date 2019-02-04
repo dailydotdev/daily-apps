@@ -4,7 +4,7 @@
     <da-sidebar ref="sidebar"></da-sidebar>
     <div class="content">
       <div class="content__header">
-        <h4>/* News for developers */</h4>
+        <h4>/* {{ title }} */</h4>
         <a class="header__cta shadow " :href="cta.link" target="_blank"
            @mouseup="ctaClick" :style="cta.style">
           <span class="header__cta__text">// {{cta.text}}</span>
@@ -16,13 +16,15 @@
         <template v-if="!showBookmarks">
           <DaInsaneAd v-for="(item, index) in ads" :key="index" :ad="item"/>
         </template>
-        <DaInsanePost v-for="item in posts" :key="item.id" :post="item"/>
+        <DaInsanePost v-for="item in posts" :key="item.id" :post="item"
+                      @bookmark="onBookmark"/>
       </div>
       <masonry class="content__cards" :cols="cols" :gutter="32" v-else>
         <template v-if="!showBookmarks">
           <DaCardAd v-for="(item, index) in ads" :key="index" :ad="item"/>
         </template>
-        <DaCardPost v-for="item in posts" :key="item.id" :post="item"/>
+        <DaCardPost v-for="item in posts" :key="item.id" :post="item"
+                    @bookmark="onBookmark"/>
       </masonry>
     </div>
     <div id="anchor" ref="anchor"></div>
@@ -30,7 +32,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 import DaCardPost from '@daily/components/src/components/DaCardPost.vue';
 import DaCardAd from '@daily/components/src/components/DaCardAd.vue';
 import DaInsanePost from '@daily/components/src/components/DaInsanePost.vue';
@@ -56,7 +58,6 @@ export default {
         1070: 2,
       },
       ads: [],
-      showBookmarks: false,
     };
   },
 
@@ -69,18 +70,48 @@ export default {
       this.$nextTick(() => this.$refs.sidebar.invalidate());
     },
 
+    onBookmark({ post, bookmarked }) {
+      // TODO: analytics
+      this.toggleBookmarks({ id: post.id, bookmarked });
+    },
+
     ...mapActions({
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
+    }),
+
+    ...mapMutations({
+      toggleBookmarks: 'feed/toggleBookmarks',
     }),
   },
 
   computed: {
     ...mapState({
       posts(state) {
+        if (this.showBookmarks) {
+          return state.feed.bookmarks;
+        }
+
         return state.feed.posts;
       },
       insaneMode(state) {
         return state.ui.insaneMode;
+      },
+      showBookmarks(state) {
+        return state.feed.showBookmarks;
+      },
+      title(state) {
+        let res = '';
+        if (state.feed.showBookmarks) {
+          res += 'your personal bookmarks';
+        } else {
+          res += 'news for developers';
+        }
+
+        if (state.ui.insaneMode) {
+          res += ' - insane mode';
+        }
+
+        return res;
       },
     }),
   },

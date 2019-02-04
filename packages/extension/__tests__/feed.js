@@ -75,3 +75,64 @@ it('should set enabled of specific tag in state', () => {
     enabled: true,
   }]);
 });
+
+it('should set a post as bookmarked and add it to bookmarks', () => {
+  const state = {
+    posts: [{
+      id: '1',
+    }, {
+      id: '2',
+    }, {
+      id: '3',
+    }],
+    bookmarks: [],
+  };
+  module.mutations.toggleBookmarks(state, { id: '2', bookmarked: true });
+  expect(state.posts).toEqual([{
+    id: '1',
+  }, {
+    id: '2',
+    bookmarked: true,
+  }, {
+    id: '3',
+  }]);
+  expect(state.bookmarks).toEqual([{
+    id: '2',
+    bookmarked: true,
+  }]);
+});
+
+it('should set a post as not bookmarked and remove it from bookmarks', () => {
+  const state = {
+    posts: [{
+      id: '1',
+      bookmarked: true,
+    }, {
+      id: '2',
+    }, {
+      id: '3',
+      bookmarked: true,
+    }],
+    bookmarks: [{
+      id: '1',
+      bookmarked: true,
+    }, {
+      id: '3',
+      bookmarked: true,
+    }],
+  };
+  module.mutations.toggleBookmarks(state, { id: '3', bookmarked: false });
+  expect(state.posts).toEqual([{
+    id: '1',
+    bookmarked: true,
+  }, {
+    id: '2',
+  }, {
+    id: '3',
+    bookmarked: false
+  }]);
+  expect(state.bookmarks).toEqual([{
+    id: '1',
+    bookmarked: true,
+  }]);
+});

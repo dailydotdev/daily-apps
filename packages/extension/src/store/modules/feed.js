@@ -1,6 +1,12 @@
 import Vue from 'vue';
 import { contentService } from '../../common/services';
 
+const setPostBookmark = (state, id, value) => {
+  const index = state.posts.findIndex(post => post.id === id);
+  Vue.set(state.posts, index, Object.assign({}, state.posts[index], { bookmarked: value }));
+  return index;
+};
+
 const initialState = () => ({
   tags: [],
   publications: [],
@@ -8,6 +14,7 @@ const initialState = () => ({
   page: 0,
   loading: false,
   posts: [],
+  bookmarks: [],
   latest: null,
 });
 
@@ -46,6 +53,16 @@ export default {
     },
     setLoading(state, loading) {
       state.loading = loading;
+    },
+    toggleBookmarks(state, { id, bookmarked }) {
+      const postIndex = setPostBookmark(state, id, bookmarked);
+
+      if (!bookmarked) {
+        const index = state.bookmarks.findIndex(bookmark => bookmark.id === id);
+        state.bookmarks.splice(index, 1);
+      } else {
+        state.bookmarks.unshift(state.posts[postIndex]);
+      }
     },
   },
   actions: {
