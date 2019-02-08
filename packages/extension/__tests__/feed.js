@@ -5,6 +5,7 @@ import { contentService } from '../src/common/services';
 jest.mock('../src/common/services', () => ({
   contentService: {
     fetchPublications: jest.fn(),
+    fetchPopularTags: jest.fn(),
   },
 }));
 
@@ -135,4 +136,14 @@ it('should set a post as not bookmarked and remove it from bookmarks', () => {
     id: '1',
     bookmarked: true,
   }]);
+});
+
+it('should fetch tags and update state', async () => {
+  const tags = [{ name: 'javascript' }];
+  contentService.fetchPopularTags.mockReturnValue(tags);
+  const state = { tags: [] };
+  await testAction(module.actions.fetchTags, undefined, state, [
+    { type: 'setTags', payload: tags.map(t => ({ ...t, enabled: true })) },
+  ]);
+  expect(contentService.fetchPopularTags).toBeCalledTimes(1);
 });

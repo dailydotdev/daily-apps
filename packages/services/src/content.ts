@@ -25,6 +25,10 @@ export interface FeedPublication {
     enabled: boolean,
 }
 
+export interface Tag {
+    name: string;
+}
+
 export interface ContentService {
     setAccessToken(token: string): void;
 
@@ -43,6 +47,8 @@ export interface ContentService {
     addBookmarks(ids: string[]): Promise<void>;
 
     removeBookmark(id: string): Promise<void>;
+
+    fetchPopularTags(): Promise<Tag[]>;
 }
 
 export class ContentServiceImpl implements ContentService {
@@ -108,5 +114,10 @@ export class ContentServiceImpl implements ContentService {
 
     async removeBookmark(id: string): Promise<void> {
         await this.request.delete(`/v1/posts/${id}/bookmark`);
+    }
+
+    async fetchPopularTags(): Promise<Tag[]> {
+        const res = await this.request.get('/v1/tags/popular');
+        return res.data.map((x: any) => reviveJSON(x, dateReviver));
     }
 }

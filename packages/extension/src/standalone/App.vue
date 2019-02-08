@@ -24,7 +24,7 @@
           <DaCardAd v-for="(item, index) in ads" :key="index" :ad="item"/>
         </template>
         <DaCardPost v-for="item in posts" :key="item.id" :post="item"
-                    @bookmark="onBookmark"/>
+                    @bookmark="onBookmark" @menu="onPostMenu"/>
       </masonry>
     </div>
     <div id="anchor" ref="anchor"></div>
@@ -75,8 +75,14 @@ export default {
       this.toggleBookmarks({ id: post.id, bookmarked });
     },
 
+    // eslint-disable-next-line
+    onPostMenu({ post }) {
+
+    },
+
     ...mapActions({
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
+      fetchTags: 'feed/fetchTags',
     }),
 
     ...mapMutations({
@@ -143,8 +149,8 @@ export default {
     this.updateLines();
 
     await this.$store.dispatch('feed/fetchPublications');
-    await this.$store.dispatch('feed/fetchTags');
     await this.fetchNextFeedPage();
+    await this.fetchTags();
 
     this.contentObserver.observe(this.$refs.anchor);
   },

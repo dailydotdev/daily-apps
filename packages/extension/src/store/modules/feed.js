@@ -71,19 +71,8 @@ export default {
       commit('setPublications', pubs);
     },
     async fetchTags({ commit }) {
-      commit('setTags', [{
-        name: 'javascript',
-        enabled: true,
-      }, {
-        name: 'linux',
-        enabled: true,
-      }, {
-        name: 'product',
-        enabled: false,
-      }, {
-        name: 'startup',
-        enabled: false,
-      }]);
+      const tags = (await contentService.fetchPopularTags()).map(t => ({ ...t, enabled: true }));
+      commit('setTags', tags);
     },
     async fetchNextFeedPage({ commit, state }) {
       if (state.loading || state.page >= 5) {

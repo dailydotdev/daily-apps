@@ -3,7 +3,7 @@ import axios from 'axios';
 import httpAdapter from 'axios/lib/adapters/http';
 // @ts-ignore
 import nock from 'nock';
-import {ContentServiceImpl, FeedPublication, Publication} from '../src';
+import {ContentServiceImpl, FeedPublication, Publication, Tag} from '../src';
 import {expected as latestExpected, response as latestResponse} from './fixtures/latest';
 import {expected as bookExpected, response as bookResponse} from './fixtures/bookmarks';
 import {expected as feedPubsExpected, response as feedPubsResponse} from './fixtures/feedPubs';
@@ -167,4 +167,18 @@ it('should remove bookmark', async () => {
     service.setAccessToken('token');
 
     await service.removeBookmark(id);
+});
+
+it('should fetch popular tags from server', async () => {
+    const expected: Tag[] = require('./fixtures/tags.json');
+
+    nock(baseURL)
+        .get('/v1/tags/popular')
+        .reply(200, expected);
+
+    service.setAccessToken('token');
+
+    const actual = await service.fetchPopularTags();
+
+    expect(actual).toEqual(expected);
 });
