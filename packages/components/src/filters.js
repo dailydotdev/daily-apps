@@ -16,7 +16,7 @@ Vue.filter('cardTags', (value) => {
 
   const tags = [];
   let len = 0;
-  for (let i = 0; i < value.length; i++) {
+  for (let i = 0; i < value.length; i += 1) {
     if (len + value[i].length < 24) {
       len += value[i].length + 2;
       tags.push(value[i]);

@@ -37,6 +37,7 @@
     "postcss-mixins": "^6.2.1",
     "postcss-nesting": "^7.0.0",
     "vue-cli-plugin-browser-extension": "^0.12.1",
+    "vue-svg-inline-loader": "^1.2.10",
     "vue-template-compiler": "^2.5.17"
   },
   "eslintConfig": {

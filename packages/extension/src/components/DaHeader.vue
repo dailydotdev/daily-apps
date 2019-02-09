@@ -27,7 +27,7 @@
       <svgicon icon="ph"/>
     </a>
     <div class="separator"></div>
-    <button class="btn-icon" title="Daily Go">
+    <button class="btn-icon" title="Daily Go" @click="$emit('go')">
       <svgicon icon="mobile"/>
     </button>
     <button class="btn-icon" title="Notifications">
