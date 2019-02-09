@@ -4,7 +4,7 @@
     <da-sidebar ref="sidebar"></da-sidebar>
     <div class="content">
       <div class="content__header">
-        <h4>/* {{ title }} */</h4>
+        <h4 v-if="!emptyBookmarks">/* {{ title }} */</h4>
         <a class="header__cta shadow " :href="cta.link" target="_blank"
            @mouseup="ctaClick" :style="cta.style">
           <span class="header__cta__text">// {{cta.text}}</span>
@@ -12,15 +12,20 @@
           <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
         </a>
       </div>
+      <div class="content__empty-bookmarks" v-if="emptyBookmarks">
+        <img src="/bookmark.svg" alt="No bookmarks"/>
+        <h1 class="content__empty-bookmarks__title">Nothing is here</h1>
+        <p class="content__empty-bookmarks__text">Save article and it will be shown here.</p>
+      </div>
       <div class="content__insane" v-if="insaneMode">
-        <template v-if="!showBookmarks">
+        <template v-if="showAd">
           <DaInsaneAd v-for="(item, index) in ads" :key="index" :ad="item"/>
         </template>
         <DaInsanePost v-for="item in posts" :key="item.id" :post="item"
                       @bookmark="onBookmark"/>
       </div>
       <masonry class="content__cards" :cols="cols" :gutter="32" v-else>
-        <template v-if="!showBookmarks">
+        <template v-if="showAd">
           <DaCardAd v-for="(item, index) in ads" :key="index" :ad="item"/>
         </template>
         <DaCardPost v-for="item in posts" :key="item.id" :post="item"
@@ -77,7 +82,9 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex';
+import {
+  mapState, mapActions, mapMutations, mapGetters,
+} from 'vuex';
 import DaCardPost from '@daily/components/src/components/DaCardPost.vue';
 import DaCardAd from '@daily/components/src/components/DaCardAd.vue';
 import DaInsanePost from '@daily/components/src/components/DaInsanePost.vue';
@@ -147,13 +154,6 @@ export default {
 
   computed: {
     ...mapState({
-      posts(state) {
-        if (this.showBookmarks) {
-          return state.feed.bookmarks;
-        }
-
-        return state.feed.posts;
-      },
       insaneMode(state) {
         return state.ui.insaneMode;
       },
@@ -175,6 +175,15 @@ export default {
         return res;
       },
     }),
+
+    ...mapGetters({
+      posts: 'feed/feed',
+      showAd: 'feed/showAd',
+    }),
+
+    emptyBookmarks() {
+      return !this.posts.length && this.showBookmarks;
+    },
   },
 
   watch: {
@@ -223,6 +232,10 @@ body {
   margin: 0;
 }
 
+html, body {
+  height: 100%;
+}
+
 a {
   text-decoration: none;
 }
@@ -237,6 +250,7 @@ a {
 .app {
   position: relative;
   display: flex;
+  min-height: 100%;
   flex-direction: column;
   justify-content: stretch;
   color: var(--theme-primary);
@@ -293,6 +307,30 @@ a {
 .content__insane {
   border-radius: 8px;
   overflow: hidden;
+}
+
+.content__empty-bookmarks {
+  display: flex;
+  margin-top: 120px;
+  flex-direction: column;
+  align-items: center;
+
+  & img {
+    height: 185px;
+  }
+}
+
+.content__empty-bookmarks__title {
+  margin: 32px 0 8px;
+  color: var(--theme-primary);
+  text-transform: uppercase;
+}
+
+.content__empty-bookmarks__text {
+  margin: 8px 0;
+  color: var(--theme-secondary);
+
+  @mixin jr;
 }
 
 #anchor {

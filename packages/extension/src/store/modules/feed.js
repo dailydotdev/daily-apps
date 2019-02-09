@@ -21,6 +21,16 @@ const initialState = () => ({
 export default {
   namespaced: true,
   state: initialState(),
+  getters: {
+    feed: (state) => {
+      if (state.showBookmarks) {
+        return state.bookmarks;
+      }
+
+      return state.posts;
+    },
+    showAd: state => !state.showBookmarks,
+  },
   mutations: {
     setShowBookmarks(state, value) {
       state.showBookmarks = value;
