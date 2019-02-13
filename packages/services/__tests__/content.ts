@@ -65,6 +65,46 @@ it('should fetch personal latest posts from server', async () => {
     expect(actual).toEqual(latestExpected);
 });
 
+it('should fetch posts by publication from server', async () => {
+    nock(baseURL)
+        .get('/v1/posts/publication')
+        .query({
+            latest: '2018-11-28T08:27:45.612Z',
+            page: 0,
+            pageSize: 5,
+            pub: 'airbnb',
+        })
+        .reply(200, latestResponse);
+
+    const actual = await service.fetchPostsByPublication(
+        new Date('2018-11-28T08:27:45.612Z'),
+        0,
+        'airbnb',
+    );
+
+    expect(actual).toEqual(latestExpected);
+});
+
+it('should fetch posts by tag from server', async () => {
+    nock(baseURL)
+        .get('/v1/posts/tag')
+        .query({
+            latest: '2018-11-28T09:27:45.612Z',
+            page: 0,
+            pageSize: 5,
+            tag: 'webdev',
+        })
+        .reply(200, latestResponse);
+
+    const actual = await service.fetchPostsByTag(
+        new Date('2018-11-28T09:27:45.612Z'),
+        0,
+        'webdev',
+    );
+
+    expect(actual).toEqual(latestExpected);
+});
+
 it('should clear access token', async () => {
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')

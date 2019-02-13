@@ -38,6 +38,10 @@ export interface ContentService {
 
     fetchLatestPosts(latest: Date, page: number, pubs?: string[]): Promise<Post[]>;
 
+    fetchPostsByPublication(latest: Date, page: number, pub: string): Promise<Post[]>;
+
+    fetchPostsByTag(latest: Date, page: number, tag: string): Promise<Post[]>;
+
     fetchBookmarks(latest: Date, page: number): Promise<Post[]>;
 
     updateFeedPublications(pubs: FeedPublication[]): Promise<void>;
@@ -91,6 +95,16 @@ export class ContentServiceImpl implements ContentService {
 
     async fetchLatestPosts(latest: Date, page: number, pubs?: string[]): Promise<Post[]> {
         const res = await this.request.get(`/v1/posts/latest?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}${pubs ? `&pubs=${pubs.join(',')}` : ''}`);
+        return res.data.map((p: any) => this.mapPost(p));
+    }
+
+    async fetchPostsByPublication(latest: Date, page: number, pub: string): Promise<Post[]> {
+        const res = await this.request.get(`/v1/posts/publication?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}&pub=${pub}`);
+        return res.data.map((p: any) => this.mapPost(p));
+    }
+
+    async fetchPostsByTag(latest: Date, page: number, tag: string): Promise<Post[]> {
+        const res = await this.request.get(`/v1/posts/tag?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}&tag=${tag}`);
         return res.data.map((p: any) => this.mapPost(p));
     }
 
