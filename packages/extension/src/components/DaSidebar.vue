@@ -14,7 +14,7 @@
                   @click.prevent="viewTag(item)">
             <span class="invert sidebar__tag">#{{item.name}}</span>
             <button class="sidebar__content__element__button btn-icon" title="Remove this tag"
-                    @click.prevent="setEnableTag(item, false)">
+                    @click.prevent.stop="setEnableTag(item, false)">
               <svgicon name="x"/>
             </button>
           </button>
@@ -26,7 +26,7 @@
                   @click.prevent="viewTag(item)">
             <span>#{{item.name}}</span>
             <button class="sidebar__content__element__button show btn-icon" title="Add this source"
-                    @click.prevent="setEnableTag(item, true)">
+                    @click.prevent.stop="setEnableTag(item, true)">
               <svgicon name="plus"/>
             </button>
           </button>
@@ -65,7 +65,7 @@
                  class="sidebar__content__element__image lazyload"/>
             <span>{{item.name}}</span>
             <button class="sidebar__content__element__button btn-icon" title="Remove this source"
-                    @click.prevent="setEnablePublication(item, false)">
+                    @click.prevent.stop="setEnablePublication(item, false)">
               <svgicon name="x"/>
             </button>
           </button>
@@ -79,7 +79,7 @@
                  class="sidebar__content__element__image lazyload"/>
             <span>{{item.name}}</span>
             <button class="sidebar__content__element__button show btn-icon" title="Add this source"
-                    @click.prevent="setEnablePublication(item, true)">
+                    @click.prevent.stop="setEnablePublication(item, true)">
               <svgicon name="plus"/>
             </button>
           </button>
