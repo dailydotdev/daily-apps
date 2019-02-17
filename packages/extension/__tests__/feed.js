@@ -41,6 +41,13 @@ it('should set enabled of specific publication in state', () => {
   }]);
 });
 
+it('should set filter in state', () => {
+  const state = {};
+  const filter = { type: 'publication', info: { id: 'angular', name: 'Angular' } };
+  module.mutations.setFilter(state, filter);
+  expect(state.filter).toEqual(filter);
+});
+
 it('should fetch publications and update state', async () => {
   const pubs = [{ name: 'angular', enabled: true }];
   contentService.fetchPublications.mockReturnValue(pubs);
@@ -143,7 +150,150 @@ it('should fetch tags and update state', async () => {
   contentService.fetchPopularTags.mockReturnValue(tags);
   const state = { tags: [] };
   await testAction(module.actions.fetchTags, undefined, state, [
-    { type: 'setTags', payload: tags.map(t => ({ ...t, enabled: true })) },
+    { type: 'setTags', payload: tags.map(t => ({ ...t, enabled: false })) },
   ]);
   expect(contentService.fetchPopularTags).toBeCalledTimes(1);
+});
+
+it('should return hasFilter false when no filter', () => {
+  const state = {
+    filter: null,
+  };
+  const result = module.getters.hasFilter(state);
+  expect(result).toEqual(false);
+});
+
+it('should return hasFilter true when publication exists and enabled', () => {
+  const state = {
+    publications: [{
+      id: 'angular',
+      enabled: true,
+    }, {
+      id: 'vue',
+      enabled: false,
+    }],
+    filter: {
+      type: 'publication',
+      info: {
+        id: 'angular',
+      },
+    },
+  };
+  const result = module.getters.hasFilter(state);
+  expect(result).toEqual(true);
+});
+
+it('should return hasFilter false when publication exists and disabled', () => {
+  const state = {
+    publications: [{
+      id: 'angular',
+      enabled: true,
+    }, {
+      id: 'vue',
+      enabled: false,
+    }],
+    filter: {
+      type: 'publication',
+      info: {
+        id: 'vue',
+      },
+    },
+  };
+  const result = module.getters.hasFilter(state);
+  expect(result).toEqual(false);
+});
+
+it('should return hasFilter true when tag exists and enabled', () => {
+  const state = {
+    tags: [{
+      name: 'angular',
+      enabled: true,
+    }, {
+      name: 'vue',
+      enabled: false,
+    }],
+    filter: {
+      type: 'tag',
+      info: {
+        name: 'angular',
+      },
+    },
+  };
+  const result = module.getters.hasFilter(state);
+  expect(result).toEqual(true);
+});
+
+it('should return hasFilter false when tag exists and disabled', () => {
+  const state = {
+    tags: [{
+      name: 'angular',
+      enabled: true,
+    }, {
+      name: 'vue',
+      enabled: false,
+    }],
+    filter: {
+      type: 'tag',
+      info: {
+        name: 'vue',
+      },
+    },
+  };
+  const result = module.getters.hasFilter(state);
+  expect(result).toEqual(false);
+});
+
+it('should reset feed', () => {
+  const state = {
+    posts: [{
+      id: '1',
+      bookmarked: true,
+    }],
+    page: 1,
+  };
+  module.mutations.resetFeed(state);
+  expect(state.posts).toEqual([]);
+  expect(state.page).toEqual(0);
+});
+
+it('should enable publication from filter', async () => {
+  const state = {
+    publications: [{
+      id: 'angular',
+      enabled: true,
+    }, {
+      id: 'vue',
+      enabled: false,
+    }],
+    filter: {
+      type: 'publication',
+      info: {
+        id: 'vue',
+      },
+    },
+  };
+  await testAction(module.actions.addFilterToFeed, undefined, state, [
+    { type: 'setEnablePublication', payload: { index: 1, enabled: true } },
+  ]);
+});
+
+it('should enable tag from filter', async () => {
+  const state = {
+    tags: [{
+      name: 'angular',
+      enabled: true,
+    }, {
+      name: 'vue',
+      enabled: false,
+    }],
+    filter: {
+      type: 'tag',
+      info: {
+        name: 'vue',
+      },
+    },
+  };
+  await testAction(module.actions.addFilterToFeed, undefined, state, [
+    { type: 'setEnableTag', payload: { index: 1, enabled: true } },
+  ]);
 });

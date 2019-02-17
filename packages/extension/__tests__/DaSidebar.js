@@ -62,6 +62,9 @@ beforeEach(() => {
       setTags: jest.fn(),
       setEnableTag: jest.fn(),
     },
+    actions: {
+      setFilter: jest.fn(),
+    },
   };
 
   store = new Vuex.Store({
@@ -196,6 +199,37 @@ it('should enable submit when input is a valid url', (done) => {
     wrapper.vm.$refs.request.value = 'https://dailynow.co';
     wrapper.find('.sidebar__sources__request').trigger('input');
     expect(wrapper.vm.disableSubmit).toEqual(false);
+    done();
+  });
+});
+
+it('should dispatch "setFilter" with publication filter', (done) => {
+  const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.vm.$nextTick(() => {
+    wrapper
+      .find('.sidebar__sources .sidebar__content__disabled')
+      .find('.sidebar__content__element').trigger('click');
+    expect(feed.actions.setFilter)
+      .toBeCalledWith(expect.anything(), {
+        type: 'publication',
+        info: feed.state.publications[1],
+      }, undefined);
+    done();
+  });
+});
+
+it('should dispatch "setFilter" with tag filter', (done) => {
+  const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.vm.filterChecked = true;
+  wrapper.vm.$nextTick(() => {
+    wrapper
+      .find('.sidebar__tags .sidebar__content__disabled')
+      .find('.sidebar__content__element').trigger('click');
+    expect(feed.actions.setFilter)
+      .toBeCalledWith(expect.anything(), {
+        type: 'tag',
+        info: feed.state.tags[2],
+      }, undefined);
     done();
   });
 });

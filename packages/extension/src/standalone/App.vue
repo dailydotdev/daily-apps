@@ -4,13 +4,30 @@
     <da-sidebar ref="sidebar"></da-sidebar>
     <div class="content">
       <div class="content__header">
-        <h4 v-if="!emptyBookmarks">/* {{ title }} */</h4>
-        <a class="header__cta shadow " :href="cta.link" target="_blank"
-           @mouseup="ctaClick" :style="cta.style">
-          <span class="header__cta__text">// {{cta.text}}</span>
-          <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>
-          <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
-        </a>
+        <template v-if="filter">
+          <button class="btn content__header__back-home" @click="onBackHome">
+            <svgicon icon="arrow"/>
+            <span>Back Home</span>
+          </button>
+          <img :src="filter.info.image" :alt="filter.info.name"
+               v-if="filter.type === 'publication'" class="content__header__pub-image"/>
+          <h4>// {{ filter.info.name }}</h4>
+          <transition name="fade">
+            <button class="btn content__header__add-filter" @click="onAddFilter" v-if="!hasFilter">
+              <svgicon icon="plus"/>
+              <span>Add To Feed</span>
+            </button>
+          </transition>
+        </template>
+        <template v-else>
+          <h4 v-if="!emptyBookmarks" class="uppercase">/* {{ title }} */</h4>
+          <a class="header__cta shadow " :href="cta.link" target="_blank"
+             @mouseup="ctaClick" :style="cta.style">
+            <span class="header__cta__text">// {{cta.text}}</span>
+            <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>
+            <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
+          </a>
+        </template>
       </div>
       <div class="content__empty-bookmarks" v-if="emptyBookmarks">
         <img src="/bookmark.svg" alt="No bookmarks"/>
@@ -142,9 +159,21 @@ export default {
       this.showGoModal = true;
     },
 
+    onBackHome() {
+      // TODO: analytics
+      this.clearFilter();
+    },
+
+    onAddFilter() {
+      // TODO: analytics
+      this.addFilterToFeed();
+    },
+
     ...mapActions({
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       fetchTags: 'feed/fetchTags',
+      clearFilter: 'feed/clearFilter',
+      addFilterToFeed: 'feed/addFilterToFeed',
     }),
 
     ...mapMutations({
@@ -174,11 +203,15 @@ export default {
 
         return res;
       },
+      filter(state) {
+        return state.feed.filter;
+      },
     }),
 
     ...mapGetters({
       posts: 'feed/feed',
       showAd: 'feed/showAd',
+      hasFilter: 'feed/hasFilter',
     }),
 
     emptyBookmarks() {
@@ -205,6 +238,9 @@ export default {
   async mounted() {
     // TODO: add page view analytics
     // TODO: fetch ads
+
+    import('@daily/components/icons/arrow');
+    import('@daily/components/icons/plus');
 
     if (this.cta.icon) {
       import(`@daily/components/icons/${this.cta.icon}`);
@@ -269,8 +305,41 @@ a {
   margin-bottom: 24px;
 
   & h4 {
-    text-transform: uppercase;
     color: var(--theme-secondary);
+
+    &.uppercase {
+      text-transform: uppercase;
+    }
+  }
+
+  & .btn .svg-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+  }
+
+  & .content__header__back-home {
+    background: var(--theme-background-highlight);
+    color: var(--theme-secondary);
+    margin-right: 16px;
+
+    & .svg-icon {
+      color: var(--theme-secondary);
+      transform: rotate(-90deg);
+    }
+  }
+
+  & .content__header__pub-image {
+    width: 24px;
+    height: 24px;
+    margin: 0 8px 0 0;
+    border-radius: 4px;
+  }
+
+  & .content__header__add-filter {
+    margin-left: auto;
+    background: var(--color-water-50);
+    color: var(--color-salt-10);
   }
 }
 
@@ -466,5 +535,13 @@ a {
   & .request__graphics {
     height: 268px;
   }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.15s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>

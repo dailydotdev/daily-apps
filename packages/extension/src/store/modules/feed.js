@@ -16,7 +16,20 @@ const initialState = () => ({
   posts: [],
   bookmarks: [],
   latest: null,
+  filter: null,
 });
+
+const fetchPosts = (state) => {
+  if (state.filter) {
+    if (state.filter.type === 'publication') {
+      return contentService.fetchPostsByPublication(state.latest, state.page, state.filter.info.id);
+    }
+
+    return contentService.fetchPostsByTag(state.latest, state.page, state.filter.info.name);
+  }
+
+  return contentService.fetchLatestPosts(state.latest, state.page);
+};
 
 export default {
   namespaced: true,
@@ -30,6 +43,17 @@ export default {
       return state.posts;
     },
     showAd: state => !state.showBookmarks,
+    hasFilter: (state) => {
+      if (!state.filter) {
+        return false;
+      }
+
+      if (state.filter.type === 'publication') {
+        return state.publications.find(p => p.id === state.filter.info.id).enabled;
+      }
+
+      return state.tags.find(t => t.name === state.filter.info.name).enabled;
+    },
   },
   mutations: {
     setShowBookmarks(state, value) {
@@ -74,6 +98,13 @@ export default {
         state.bookmarks.unshift(state.posts[postIndex]);
       }
     },
+    setFilter(state, filter) {
+      state.filter = filter;
+    },
+    resetFeed(state) {
+      state.page = 0;
+      state.posts = [];
+    },
   },
   actions: {
     async fetchPublications({ commit }) {
@@ -81,11 +112,12 @@ export default {
       commit('setPublications', pubs);
     },
     async fetchTags({ commit }) {
-      const tags = (await contentService.fetchPopularTags()).map(t => ({ ...t, enabled: true }));
+      // TODO: merge correctly enabled field
+      const tags = (await contentService.fetchPopularTags()).map(t => ({ ...t, enabled: false }));
       commit('setTags', tags);
     },
     async fetchNextFeedPage({ commit, state }) {
-      if (state.loading || state.page >= 5) {
+      if (state.loading) {
         return false;
       }
 
@@ -95,7 +127,7 @@ export default {
 
       commit('setLoading', true);
 
-      const posts = await contentService.fetchLatestPosts(state.latest, state.page);
+      const posts = await fetchPosts(state);
 
       if (!state.page) {
         commit('setPosts', posts);
@@ -110,6 +142,31 @@ export default {
       }
 
       return true;
+    },
+    async setFilter({ commit, dispatch }, filter) {
+      commit('setFilter', filter);
+      commit('resetFeed');
+      return dispatch('fetchNextFeedPage');
+    },
+    async clearFilter({ dispatch }) {
+      return dispatch('setFilter', null);
+    },
+    addFilterToFeed({ commit, state }) {
+      if (!state.filter) {
+        return;
+      }
+
+      if (state.filter.type === 'publication') {
+        commit('setEnablePublication', {
+          index: state.publications.findIndex(p => p.id === state.filter.info.id),
+          enabled: true,
+        });
+      } else {
+        commit('setEnableTag', {
+          index: state.tags.findIndex(t => t.name === state.filter.info.name),
+          enabled: true,
+        });
+      }
     },
   },
 };

@@ -108,7 +108,7 @@
 
 <script>
 import 'lazysizes';
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 
 export default {
@@ -192,6 +192,7 @@ export default {
     // eslint-disable-next-line no-unused-vars
     viewPublication(pub) {
       // TODO: add analytics
+      this.setFilter({ type: 'publication', info: pub });
     },
     activateRequest() {
       // TODO: add analytics
@@ -224,11 +225,16 @@ export default {
     // eslint-disable-next-line no-unused-vars
     viewTag(tag) {
       // TODO: add analytics
+      this.setFilter({ type: 'tag', info: tag });
     },
     updateFormValidity() {
       this.disableSubmit = !this.$refs.form.checkValidity();
       this.submitError = false;
     },
+
+    ...mapActions({
+      setFilter: 'feed/setFilter',
+    }),
   },
 
   created() {
