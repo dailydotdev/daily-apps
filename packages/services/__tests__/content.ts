@@ -32,6 +32,7 @@ it('should fetch latest posts from server', async () => {
             page: 0,
             pageSize: 5,
             pubs: 'airbnb,alligator,angular',
+            tags: 'angular,vue,webdev',
         })
         .reply(200, latestResponse);
 
@@ -39,6 +40,7 @@ it('should fetch latest posts from server', async () => {
         new Date('2018-11-28T08:27:45.612Z'),
         0,
         ['airbnb', 'alligator', 'angular'],
+        ['angular', 'vue', 'webdev'],
     );
 
     expect(actual).toEqual(latestExpected);

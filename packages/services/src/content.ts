@@ -36,7 +36,7 @@ export interface ContentService {
 
     fetchPublications(): Promise<Publication[]>;
 
-    fetchLatestPosts(latest: Date, page: number, pubs?: string[]): Promise<Post[]>;
+    fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]>;
 
     fetchPostsByPublication(latest: Date, page: number, pub: string): Promise<Post[]>;
 
@@ -80,6 +80,10 @@ export class ContentServiceImpl implements ContentService {
             {url: this.redirectLink(data)});
     }
 
+    private static mapQueryArray(key: string, value?: any[]): string {
+        return (value && value.length) ? `&${key}=${value.join(',')}` : '';
+    }
+
     setAccessToken(token: string): void {
         this.request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
@@ -93,8 +97,9 @@ export class ContentServiceImpl implements ContentService {
         return res.data.map((x: any) => reviveJSON(x, dateReviver));
     }
 
-    async fetchLatestPosts(latest: Date, page: number, pubs?: string[]): Promise<Post[]> {
-        const res = await this.request.get(`/v1/posts/latest?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}${pubs ? `&pubs=${pubs.join(',')}` : ''}`);
+    async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]> {
+        // TODO: add tests for tags
+        const res = await this.request.get(`/v1/posts/latest?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}${ContentServiceImpl.mapQueryArray('pubs', pubs)}${ContentServiceImpl.mapQueryArray('tags', tags)}`);
         return res.data.map((p: any) => this.mapPost(p));
     }
 
