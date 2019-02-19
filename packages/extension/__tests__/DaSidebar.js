@@ -58,12 +58,12 @@ beforeEach(() => {
     },
     mutations: {
       setPublications: jest.fn(),
-      setEnablePublication: jest.fn(),
       setTags: jest.fn(),
-      setEnableTag: jest.fn(),
     },
     actions: {
       setFilter: jest.fn(),
+      setEnablePublication: jest.fn(),
+      setEnableTag: jest.fn(),
     },
   };
 
@@ -113,8 +113,8 @@ it('should commit "setEnablePublication" when removing publication', (done) => {
     wrapper
       .find('.sidebar__sources .sidebar__content__enabled')
       .find('.sidebar__content__element__button').trigger('click');
-    expect(feed.mutations.setEnablePublication)
-      .toBeCalledWith(expect.anything(), { index: 0, enabled: false });
+    expect(feed.actions.setEnablePublication)
+      .toBeCalledWith(expect.anything(), { index: 0, enabled: false }, undefined);
     done();
   });
 });
@@ -126,8 +126,8 @@ it('should commit "setEnablePublication" when adding publication', (done) => {
     wrapper
       .find('.sidebar__sources .sidebar__content__disabled')
       .find('.sidebar__content__element__button').trigger('click');
-    expect(feed.mutations.setEnablePublication)
-      .toBeCalledWith(expect.anything(), { index: 1, enabled: true });
+    expect(feed.actions.setEnablePublication)
+      .toBeCalledWith(expect.anything(), { index: 1, enabled: true }, undefined);
     done();
   });
 });
@@ -161,8 +161,8 @@ it('should commit "setEnableTag" when removing tag', (done) => {
     wrapper
       .find('.sidebar__tags .sidebar__content__enabled')
       .find('.sidebar__content__element__button').trigger('click');
-    expect(feed.mutations.setEnableTag)
-      .toBeCalledWith(expect.anything(), { index: 0, enabled: false });
+    expect(feed.actions.setEnableTag)
+      .toBeCalledWith(expect.anything(), { index: 0, enabled: false }, undefined);
     done();
   });
 });
@@ -174,8 +174,8 @@ it('should commit "setEnableTag" when adding tag', (done) => {
     wrapper
       .find('.sidebar__tags .sidebar__content__disabled')
       .find('.sidebar__content__element__button').trigger('click');
-    expect(feed.mutations.setEnableTag)
-      .toBeCalledWith(expect.anything(), { index: 2, enabled: true });
+    expect(feed.actions.setEnableTag)
+      .toBeCalledWith(expect.anything(), { index: 2, enabled: true }, undefined);
     done();
   });
 });

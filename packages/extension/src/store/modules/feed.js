@@ -28,7 +28,10 @@ const fetchPosts = (state) => {
     return contentService.fetchPostsByTag(state.latest, state.page, state.filter.info.name);
   }
 
-  return contentService.fetchLatestPosts(state.latest, state.page);
+  const enabledPubs = state.publications.filter(p => p.enabled).map(p => p.id);
+  const pubs = enabledPubs.length === state.publications.length ? [] : enabledPubs;
+  const tags = state.tags.filter(t => t.enabled).map(t => t.name);
+  return contentService.fetchLatestPosts(state.latest, state.page, pubs, tags);
 };
 
 export default {
@@ -117,6 +120,7 @@ export default {
       commit('setTags', tags);
     },
     async fetchNextFeedPage({ commit, state }) {
+      // TODO: add tests
       if (state.loading) {
         return false;
       }
@@ -167,6 +171,24 @@ export default {
           enabled: true,
         });
       }
+    },
+    async refreshFeed({ commit, dispatch, state }) {
+      if (!state.filter && !state.showBookmarks) {
+        commit('resetFeed');
+        return dispatch('fetchNextFeedPage');
+      }
+
+      return false;
+    },
+    async setEnablePublication({ commit, dispatch }, payload) {
+      // TODO: add tests
+      commit('setEnablePublication', payload);
+      return dispatch('refreshFeed');
+    },
+    async setEnableTag({ commit, dispatch }, payload) {
+      // TODO: add tests
+      commit('setEnableTag', payload);
+      return dispatch('refreshFeed');
     },
   },
 };

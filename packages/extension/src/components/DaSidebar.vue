@@ -187,7 +187,9 @@ export default {
     setEnablePublication(pub, enabled) {
       // TODO: add analytics
       const index = this.publications.findIndex(p => p.id === pub.id);
-      this.$store.commit('feed/setEnablePublication', { index, enabled });
+      this.$store.dispatch('feed/setEnablePublication', { index, enabled })
+      // eslint-disable-next-line
+        .catch(console.error);
     },
     // eslint-disable-next-line no-unused-vars
     viewPublication(pub) {
@@ -220,7 +222,9 @@ export default {
     setEnableTag(tag, enabled) {
       // TODO: add analytics
       const index = this.tags.findIndex(t => t.name === tag.name);
-      this.$store.commit('feed/setEnableTag', { index, enabled });
+      this.$store.dispatch('feed/setEnableTag', { index, enabled })
+      // eslint-disable-next-line
+        .catch(console.error);
     },
     // eslint-disable-next-line no-unused-vars
     viewTag(tag) {
