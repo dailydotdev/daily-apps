@@ -218,9 +218,24 @@ it('should fetch popular tags from server', async () => {
         .get('/v1/tags/popular')
         .reply(200, expected);
 
-    service.setAccessToken('token');
-
     const actual = await service.fetchPopularTags();
+
+    expect(actual).toEqual(expected);
+});
+
+it('should send search tags request to server', async () => {
+    const tags: Tag[] = require('./fixtures/tags.json');
+    const expected = {
+        query: 'dev',
+        hits: tags,
+    };
+
+    nock(baseURL)
+        .get('/v1/tags/search')
+        .query({query: 'dev'})
+        .reply(200, expected);
+
+    const actual = await service.searchTags('dev');
 
     expect(actual).toEqual(expected);
 });

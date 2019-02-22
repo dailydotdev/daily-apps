@@ -29,6 +29,11 @@ export interface Tag {
     name: string;
 }
 
+export interface TagsSearchResult {
+    query: string;
+    hits: Tag[];
+}
+
 export interface ContentService {
     setAccessToken(token: string): void;
 
@@ -53,6 +58,8 @@ export interface ContentService {
     removeBookmark(id: string): Promise<void>;
 
     fetchPopularTags(): Promise<Tag[]>;
+
+    searchTags(query: string): Promise<TagsSearchResult>;
 }
 
 export class ContentServiceImpl implements ContentService {
@@ -98,7 +105,6 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]> {
-        // TODO: add tests for tags
         const res = await this.request.get(`/v1/posts/latest?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}${ContentServiceImpl.mapQueryArray('pubs', pubs)}${ContentServiceImpl.mapQueryArray('tags', tags)}`);
         return res.data.map((p: any) => this.mapPost(p));
     }
@@ -138,5 +144,10 @@ export class ContentServiceImpl implements ContentService {
     async fetchPopularTags(): Promise<Tag[]> {
         const res = await this.request.get('/v1/tags/popular');
         return res.data.map((x: any) => reviveJSON(x, dateReviver));
+    }
+
+    async searchTags(query: string): Promise<TagsSearchResult> {
+        const res = await this.request.get(`/v1/tags/search?query=${query}`);
+        return reviveJSON(res.data, dateReviver);
     }
 }
