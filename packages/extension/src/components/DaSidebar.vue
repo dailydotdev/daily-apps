@@ -27,11 +27,13 @@
           </div>
           <div class="sidebar__content__disabled" v-if="disabledTags.length > 0">
             <div class="sidebar__content__header">More tags</div>
-            <button class="sidebar__content__element disabled" title="Click to view only this tag"
+            <button class="sidebar__content__element disabled"
+                    title="Click to view only this tag"
                     v-for="item in disabledTags" :key="item.name"
                     @click.prevent="viewTag(item)">
               <span>#{{item.name}}</span>
-              <button class="sidebar__content__element__button show btn-icon" title="Add this source"
+              <button class="sidebar__content__element__button show btn-icon"
+                      title="Add this source"
                       @click.prevent.stop="setEnableTag(item, true)">
                 <svgicon name="plus"/>
               </button>
@@ -78,13 +80,15 @@
           </div>
           <div class="sidebar__content__disabled" v-if="disabledPubs.length > 0">
             <div class="sidebar__content__header">More sources</div>
-            <button class="sidebar__content__element disabled" title="Click to view only this source"
+            <button class="sidebar__content__element disabled"
+                    title="Click to view only this source"
                     v-for="item in disabledPubs" :key="item.id"
                     @click.prevent="viewPublication(item)">
               <img :data-src="item.image" :alt="item.name"
                    class="sidebar__content__element__image lazyload"/>
               <span>{{item.name}}</span>
-              <button class="sidebar__content__element__button show btn-icon" title="Add this source"
+              <button class="sidebar__content__element__button show btn-icon"
+                      title="Add this source"
                       @click.prevent.stop="setEnablePublication(item, true)">
                 <svgicon name="plus"/>
               </button>
