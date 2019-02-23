@@ -3,6 +3,13 @@ import Vuex from 'vuex';
 import svgicon from 'vue-svgicon';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
+import { contentService } from '../src/common/services';
+
+jest.mock('../src/common/services', () => ({
+  contentService: {
+    searchTags: jest.fn(),
+  },
+}));
 
 const localVue = createLocalVue();
 
@@ -197,7 +204,7 @@ it('should enable submit when input is a valid url', (done) => {
   wrapper.vm.$nextTick(() => {
     expect(wrapper.vm.disableSubmit).toEqual(true);
     wrapper.vm.$refs.request.value = 'https://dailynow.co';
-    wrapper.find('.sidebar__sources__request').trigger('input');
+    wrapper.find('.sidebar__sources .sidebar__input').trigger('input');
     expect(wrapper.vm.disableSubmit).toEqual(false);
     done();
   });
@@ -231,5 +238,27 @@ it('should dispatch "setFilter" with tag filter', (done) => {
         info: feed.state.tags[2],
       }, undefined);
     done();
+  });
+});
+
+it('should search for tags and update the tag list', (done) => {
+  const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.vm.filterChecked = true;
+  wrapper.vm.$nextTick(() => {
+    contentService.searchTags.mockReturnValue({
+      query: 'java',
+      hits: [{ name: 'javascript' }, { name: 'java' }],
+    });
+    wrapper.vm.$refs.searchTags.value = 'java';
+    wrapper.find('.sidebar__tags__search .sidebar__input').trigger('input');
+    wrapper.vm.$nextTick(() => {
+      expect(contentService.searchTags).toBeCalledTimes(1);
+      expect(contentService.searchTags).toBeCalledWith('java');
+      expect(wrapper.vm.activeTags).toEqual([
+        { name: 'javascript', enabled: true },
+        { name: 'java', enabled: false },
+      ]);
+      done();
+    });
   });
 });

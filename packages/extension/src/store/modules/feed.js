@@ -45,7 +45,7 @@ export default {
 
       return state.posts;
     },
-    showAd: state => !state.showBookmarks,
+    showAd: state => !state.showBookmarks && !state.filter,
     hasFilter: (state) => {
       if (!state.filter) {
         return false;

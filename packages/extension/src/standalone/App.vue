@@ -110,6 +110,7 @@ import DaModal from '@daily/components/src/components/DaModal.vue';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
 import ctas from './ctas';
+import { monetizationService } from '../common/services';
 
 export default {
   components: {
@@ -247,6 +248,12 @@ export default {
     }
 
     this.updateLines();
+
+    // TODO: handle error
+    monetizationService.fetchAd()
+      .then((ads) => {
+        this.ads = ads;
+      });
 
     await this.$store.dispatch('feed/fetchPublications');
     await this.fetchNextFeedPage();
