@@ -130,6 +130,13 @@ export default {
     DaModeSwitch,
   },
 
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   data() {
     return {
       lines: 1,
@@ -140,6 +147,7 @@ export default {
       disableSubmit: true,
       submitError: false,
       searchedTags: [],
+      query: '',
     };
   },
 
@@ -165,7 +173,7 @@ export default {
       return this.activeTags.filter(x => !x.enabled);
     },
     activeTags() {
-      if (this.searchedTags && this.searchedTags.length) {
+      if (this.query.length) {
         return this.searchedTags;
       }
       return this.tags;
@@ -183,7 +191,8 @@ export default {
       });
     },
     open() {
-      if (this.transitioning || this.opened) {
+      // TODO: add tests disabled
+      if (this.transitioning || this.opened || this.disabled) {
         return;
       }
 
@@ -257,6 +266,7 @@ export default {
     },
     async updateSearch(event) {
       const query = event.target.value;
+      this.query = query;
       if (!query.length) {
         this.searchedTags = [];
       } else {

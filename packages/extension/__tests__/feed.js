@@ -58,10 +58,10 @@ it('should fetch publications and update state', async () => {
   expect(contentService.fetchPublications).toBeCalledTimes(1);
 });
 
-it('should set tags in state', () => {
-  const state = {};
-  module.mutations.setTags(state, []);
-  expect(state.tags).toEqual([]);
+it('should merge tags in state', () => {
+  const state = { tags: [] };
+  module.mutations.mergeTags(state, [{ name: 'java' }]);
+  expect(state.tags).toEqual([{ name: 'java', enabled: false }]);
 });
 
 it('should set enabled of specific tag in state', () => {
@@ -150,7 +150,7 @@ it('should fetch tags and update state', async () => {
   contentService.fetchPopularTags.mockReturnValue(tags);
   const state = { tags: [] };
   await testAction(module.actions.fetchTags, undefined, state, [
-    { type: 'setTags', payload: tags.map(t => ({ ...t, enabled: false })) },
+    { type: 'mergeTags', payload: tags },
   ]);
   expect(contentService.fetchPopularTags).toBeCalledTimes(1);
 });

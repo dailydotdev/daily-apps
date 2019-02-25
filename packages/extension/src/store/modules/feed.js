@@ -19,7 +19,18 @@ const initialState = () => ({
   filter: null,
 });
 
-const fetchPosts = (state) => {
+const addBookmarked = (state, posts) => {
+  if (state.bookmarks) {
+    return posts.map(post => ({
+      ...post,
+      bookmarked: state.bookmarks.findIndex(bookmark => bookmark.id === post.id) > -1,
+    }));
+  }
+
+  return posts;
+};
+
+const fetchPosts = async (state) => {
   if (state.filter) {
     if (state.filter.type === 'publication') {
       return contentService.fetchPostsByPublication(state.latest, state.page, state.filter.info.id);
@@ -69,8 +80,14 @@ export default {
       Vue.set(state.publications, index,
         Object.assign({}, state.publications[index], { enabled }));
     },
-    setTags(state, tags) {
-      state.tags = tags;
+    mergeTags(state, tags) {
+      // TODO: add tests merge logic
+      tags.forEach((t) => {
+        const index = state.tags.findIndex(t2 => t.name === t2.name);
+        if (index < 0) {
+          state.tags.push({ ...t, enabled: !!t.enabled });
+        }
+      });
     },
     setEnableTag(state, { index, enabled }) {
       Vue.set(state.tags, index,
@@ -115,9 +132,8 @@ export default {
       commit('setPublications', pubs);
     },
     async fetchTags({ commit }) {
-      // TODO: merge correctly enabled field
-      const tags = (await contentService.fetchPopularTags()).map(t => ({ ...t, enabled: false }));
-      commit('setTags', tags);
+      const tags = await contentService.fetchPopularTags();
+      commit('mergeTags', tags);
     },
     async fetchNextFeedPage({ commit, state }) {
       // TODO: add tests
@@ -131,7 +147,8 @@ export default {
 
       commit('setLoading', true);
 
-      const posts = await fetchPosts(state);
+      // TODO: add tests addBookmarked
+      const posts = addBookmarked(state, await fetchPosts(state));
 
       if (!state.page) {
         commit('setPosts', posts);

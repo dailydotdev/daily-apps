@@ -1,10 +1,10 @@
 <template>
   <div class="app">
     <da-header @go="onGoClicked"></da-header>
-    <da-sidebar ref="sidebar"></da-sidebar>
+    <da-sidebar ref="sidebar" :disabled="showBookmarks"></da-sidebar>
     <div class="content">
       <div class="content__header">
-        <template v-if="filter">
+        <template v-if="filter && !showBookmarks">
           <button class="btn content__header__back-home" @click="onBackHome">
             <svgicon icon="arrow"/>
             <span>Back Home</span>
@@ -36,17 +36,17 @@
       </div>
       <div class="content__insane" v-if="insaneMode">
         <template v-if="showAd">
-          <DaInsaneAd v-for="(item, index) in ads" :key="index" :ad="item"/>
+          <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
         </template>
-        <DaInsanePost v-for="item in posts" :key="item.id" :post="item"
-                      @bookmark="onBookmark"/>
+        <da-insane-post v-for="item in posts" :key="item.id" :post="item"
+                        @bookmark="onBookmark"/>
       </div>
       <masonry class="content__cards" :cols="cols" :gutter="32" v-else>
         <template v-if="showAd">
-          <DaCardAd v-for="(item, index) in ads" :key="index" :ad="item"/>
+          <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
         </template>
-        <DaCardPost v-for="item in posts" :key="item.id" :post="item"
-                    @bookmark="onBookmark" @menu="onPostMenu"/>
+        <da-card-post v-for="item in posts" :key="item.id" :post="item"
+                      @bookmark="onBookmark" @menu="onPostMenu"/>
       </masonry>
     </div>
     <div id="anchor" ref="anchor"></div>
@@ -102,6 +102,7 @@
 import {
   mapState, mapActions, mapMutations, mapGetters,
 } from 'vuex';
+import { applyTheme } from '@daily/services';
 import DaCardPost from '@daily/components/src/components/DaCardPost.vue';
 import DaCardAd from '@daily/components/src/components/DaCardAd.vue';
 import DaInsanePost from '@daily/components/src/components/DaInsanePost.vue';
@@ -111,6 +112,7 @@ import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
 import ctas from './ctas';
 import { monetizationService } from '../common/services';
+import { getCache } from '../common/cache';
 
 export default {
   components: {
@@ -179,6 +181,7 @@ export default {
 
     ...mapMutations({
       toggleBookmarks: 'feed/toggleBookmarks',
+      loadFromCache: 'loadFromCache',
     }),
   },
 
@@ -248,6 +251,13 @@ export default {
     }
 
     this.updateLines();
+
+    const state = await getCache('state', {});
+    this.loadFromCache(state);
+    // TODO: find a better place apply theme after cache
+    if (state.ui && state.ui.theme) {
+      applyTheme(window.document, state.ui.theme, null);
+    }
 
     // TODO: handle error
     monetizationService.fetchAd()
