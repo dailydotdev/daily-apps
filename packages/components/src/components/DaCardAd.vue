@@ -1,7 +1,7 @@
 <template>
   <DaCard class="card--ad" :class="ad.source" :title="ad.description" :url="ad.link"
           :image="ad.image" :placeholder="ad.placeholder" :size="size"
-          :image-background="ad.backgroundColor">
+          :image-background="ad.backgroundColor" @click="$emit('click', ad)">
     <template slot="content">
       <img v-for="(item, index) in pixel" :key="index" :src="item" class="card__pixel"/>
     </template>
@@ -41,7 +41,7 @@ export default {
   },
 
   mounted() {
-    this.$emit('impression');
+    this.$emit('impression', this.ad);
   },
 };
 </script>

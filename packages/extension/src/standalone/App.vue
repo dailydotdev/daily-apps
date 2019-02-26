@@ -36,21 +36,24 @@
       </div>
       <div class="content__insane" v-if="insaneMode">
         <template v-if="showAd">
-          <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
+          <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item"
+                        @click="onAdClick" @impression="onAdImpression"/>
         </template>
         <da-insane-post v-for="item in posts" :key="item.id" :post="item"
-                        @bookmark="onBookmark"/>
+                        @bookmark="onBookmark" @menu="onPostMenu"
+                        @click="onPostClick"/>
       </div>
       <masonry class="content__cards" :cols="cols" :gutter="32" v-else>
         <template v-if="showAd">
           <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
         </template>
         <da-card-post v-for="item in posts" :key="item.id" :post="item"
-                      @bookmark="onBookmark" @menu="onPostMenu"/>
+                      @bookmark="onBookmark" @menu="onPostMenu"
+                      @click="onPostClick"/>
       </masonry>
     </div>
     <div id="anchor" ref="anchor"></div>
-    <DaModal class="go-modal" v-if="showGoModal" @close="showGoModal = false">
+    <da-modal class="go-modal" v-if="showGoModal" @close="showGoModal = false">
       <div class="go-modal__graphics">
         <img svg-inline src="../svg/arrow.svg" alt="Arrow"
              class="go-modal__arrow left first"/>
@@ -69,32 +72,32 @@
       </div>
       <h1><a href="https://go.dailynow.co">go.dailynow.co</a></h1>
       <p>Welcome to our community! We value each new member and we hope you will enjoy… </p>
-    </DaModal>
-    <DaModal class="congrats-modal full" v-if="showCongratsModal"
-             @close="showCongratsModal = false" ref="congratsModal">
+    </da-modal>
+    <da-modal class="congrats-modal full" v-if="showCongratsModal"
+              @close="showCongratsModal = false" ref="congratsModal">
       <img svg-inline src="../svg/happy_card.svg" alt="Happy card cartoon"
            class="congrats__graphics"/>
       <!--TODO: update to user name-->
       <h1>Good news, Tsahi!</h1>
       <p>Welcome to our community! We value each new member and we hope you will enjoy… </p>
       <button class="btn btn-big" @click="$refs.congratsModal.close()">F*** Yeah!</button>
-    </DaModal>
-    <DaModal class="request-modal full" v-if="showRequestModal"
-             @close="showRequestModal = false" ref="requestModal">
+    </da-modal>
+    <da-modal class="request-modal full" v-if="showRequestModal"
+              @close="showRequestModal = false" ref="requestModal">
       <img svg-inline src="../svg/source_box.svg" alt="Flying box cartoon"
            class="request__graphics"/>
       <h1 class="overlap">Request sent</h1>
       <p>Your request has been recieved and we’ll be contacting you shortly by email.</p>
       <button class="btn btn-big" @click="$refs.requestModal.close()">OK, I’ll wait</button>
-    </DaModal>
-    <DaModal class="ready-modal full" v-if="showReadyModal"
-             @close="showReadyModal = false" ref="readyModal">
+    </da-modal>
+    <da-modal class="ready-modal full" v-if="showReadyModal"
+              @close="showReadyModal = false" ref="readyModal">
       <img svg-inline src="../svg/all_set.svg" alt="All set"
            class="ready__graphics"/>
       <h1 class="overlap">Hello world</h1>
       <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
       <button class="btn btn-big" @click="$refs.readyModal.close()">Use Daily now!</button>
-    </DaModal>
+    </da-modal>
   </div>
 </template>
 
@@ -108,11 +111,15 @@ import DaCardAd from '@daily/components/src/components/DaCardAd.vue';
 import DaInsanePost from '@daily/components/src/components/DaInsanePost.vue';
 import DaInsaneAd from '@daily/components/src/components/DaInsaneAd.vue';
 import DaModal from '@daily/components/src/components/DaModal.vue';
+import mixpanel from 'mixpanel-browser';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
 import ctas from './ctas';
 import { monetizationService } from '../common/services';
 import { getCache } from '../common/cache';
+import initializeAnalytics from '../common/analytics';
+import { browserName } from '../common/browser';
+import { version } from '../common/config';
 
 export default {
   components: {
@@ -140,7 +147,7 @@ export default {
 
   methods: {
     ctaClick() {
-      // ga('send', 'event', this.cta.name, 'Click');
+      ga('send', 'event', this.cta.name, 'Click');
     },
 
     updateLines() {
@@ -148,8 +155,14 @@ export default {
     },
 
     onBookmark({ post, bookmarked }) {
-      // TODO: analytics
+      ga('send', 'event', 'Post', 'Bookmark', bookmarked ? 'Add' : 'Remove');
+      mixpanel.track('Post Bookmark', { source: post.source, toggle: bookmarked });
       this.toggleBookmarks({ id: post.id, bookmarked });
+    },
+
+    onPostClick(post) {
+      ga('send', 'event', 'Post', 'Click', post.source);
+      mixpanel.track('Post Click', { source: post.source });
     },
 
     // eslint-disable-next-line
@@ -157,18 +170,27 @@ export default {
 
     },
 
+    onAdClick(ad) {
+      ga('send', 'event', 'Ad', 'Click', ad.source);
+      mixpanel.track('Ad Click', { source: ad.source });
+    },
+
+    onAdImpression(ad) {
+      ga('send', 'event', 'Ad', 'Impression', ad.source);
+    },
+
     onGoClicked() {
-      // TODO: analytics
+      ga('send', 'event', 'Header', 'Go');
       this.showGoModal = true;
     },
 
     onBackHome() {
-      // TODO: analytics
+      ga('send', 'event', 'Feed', 'Home');
       this.clearFilter();
     },
 
     onAddFilter() {
-      // TODO: analytics
+      ga('send', 'event', 'Feed', 'Add Filter');
       this.addFilterToFeed();
     },
 
@@ -227,22 +249,46 @@ export default {
     posts() {
       this.updateLines();
     },
+    showBookmarks() {
+      this.trackPageView();
+    },
+    filter() {
+      this.trackPageView();
+    },
   },
 
   created() {
+    this.trackPageView = () => {
+      const { showBookmarks, filter } = this;
+
+      const prefix = browserName ? '/extension' : '/';
+      const suffix = browserName ? `v=${version}&b=${browserName}` : `v=${version}`;
+
+      if (showBookmarks) {
+        ga('set', 'page', `${prefix}/bookmarks?${suffix}`);
+        mixpanel.track('Extension Bookmarks');
+      } else if (filter) {
+        ga('set', 'page', `${prefix}/${filter.type}/${filter.info.id || filter.info.name}?${suffix}`);
+        mixpanel.track(`Extension ${filter.type}`);
+      } else {
+        ga('set', 'page', `${prefix}?${suffix}`);
+        mixpanel.track('Extension Home');
+      }
+      ga('send', 'pageview');
+    };
+
+    this.trackPageView();
+
     this.contentObserver = new IntersectionObserver(async (entries) => {
       if (entries[0].isIntersecting) {
         if (await this.fetchNextFeedPage() && this.page > 0) {
-          // ga('send', 'event', 'Feed', 'Scroll', 'Next Page', this.page);
+          ga('send', 'event', 'Feed', 'Scroll', 'Next Page', this.page);
         }
       }
     }, { root: null, rootMargin: '0px', threshold: 1 });
   },
 
   async mounted() {
-    // TODO: add page view analytics
-    // TODO: fetch ads
-
     import('@daily/components/icons/arrow');
     import('@daily/components/icons/plus');
 
@@ -263,6 +309,9 @@ export default {
     monetizationService.fetchAd()
       .then((ads) => {
         this.ads = ads;
+        if (!ads.length) {
+          ga('send', 'event', 'Ad', 'NotAvailable');
+        }
       });
 
     await this.$store.dispatch('feed/fetchPublications');
@@ -270,6 +319,12 @@ export default {
     await this.fetchTags();
 
     this.contentObserver.observe(this.$refs.anchor);
+
+    // TODO: analytics consent
+    initializeAnalytics(true)
+    // TODO: handle error
+    // eslint-disable-next-line no-console
+      .catch(console.error);
   },
 };
 </script>
@@ -283,6 +338,7 @@ html {
 
 body {
   margin: 0;
+  overflow-y: scroll;
 }
 
 html, body {

@@ -33,7 +33,7 @@
                     @click.prevent="viewTag(item)">
               <span>#{{item.name}}</span>
               <button class="sidebar__content__element__button show btn-icon"
-                      title="Add this source"
+                      title="Add this tag"
                       @click.prevent.stop="setEnableTag(item, true)">
                 <svgicon name="plus"/>
               </button>
@@ -196,7 +196,7 @@ export default {
         return;
       }
 
-      // TODO: add analytics
+      ga('send', 'event', 'Sidebar', 'Toggle', 'Open');
       this.setOpened(true);
     },
     close() {
@@ -204,16 +204,16 @@ export default {
         return;
       }
 
-      // TODO: add analytics
+      ga('send', 'event', 'Sidebar', 'Toggle', 'Close');
       this.resetRequest();
       this.setOpened(false);
     },
     toggleFilter(checked) {
-      // TODO: add analytics
+      ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');
       this.filterChecked = checked;
     },
     setEnablePublication(pub, enabled) {
-      // TODO: add analytics
+      ga('send', 'event', 'Publications', 'Toggle', enabled ? 'Check' : 'Uncheck');
       const index = this.publications.findIndex(p => p.id === pub.id);
       this.$store.dispatch('feed/setEnablePublication', { index, enabled })
       // TODO: handle error
@@ -222,18 +222,18 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     viewPublication(pub) {
-      // TODO: add analytics
+      ga('send', 'event', 'Publications', 'Single');
       this.setFilter({ type: 'publication', info: pub });
     },
     activateRequest() {
-      // TODO: add analytics
+      ga('send', 'event', 'Request Source', 'Activate');
       this.requestActive = true;
       this.$nextTick(() => {
         this.$refs.request.focus();
       });
     },
     cancelRequest() {
-      // TODO: add analytics
+      ga('send', 'event', 'Request Source', 'Cancel');
       this.resetRequest();
     },
     resetRequest() {
@@ -244,12 +244,12 @@ export default {
       }
     },
     submitRequest() {
-      // TODO: add analytics and submit
+      ga('send', 'event', 'Request Source', 'Submit');
       this.$refs.request.value = '';
       this.requestActive = false;
     },
     setEnableTag(tag, enabled) {
-      // TODO: add analytics
+      ga('send', 'event', 'Tags', 'Toggle', enabled ? 'Check' : 'Uncheck');
       const index = this.tags.findIndex(t => t.name === tag.name);
       this.$store.dispatch('feed/setEnableTag', { index, enabled })
       // TODO: handle error
@@ -257,7 +257,7 @@ export default {
         .catch(console.error);
     },
     viewTag(tag) {
-      // TODO: add analytics
+      ga('send', 'event', 'Tags', 'Single');
       this.setFilter({ type: 'tag', info: tag });
     },
     updateFormValidity() {
@@ -265,6 +265,9 @@ export default {
       this.submitError = false;
     },
     async updateSearch(event) {
+      if (!this.query.length) {
+        ga('send', 'event', 'Tags', 'Search');
+      }
       const query = event.target.value;
       this.query = query;
       if (!query.length) {

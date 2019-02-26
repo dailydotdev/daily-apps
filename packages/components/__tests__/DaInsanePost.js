@@ -7,7 +7,7 @@ it('should emit click event', () => {
   const post = posts[0];
   const wrapper = shallowMount(DaInsanePost, { propsData: { post } });
   wrapper.find('.insane__link').trigger('click');
-  expect(wrapper.emitted().click[0]).toEqual([]);
+  expect(wrapper.emitted().click[0]).toEqual([post]);
 });
 
 it('should emit bookmark event on click', () => {

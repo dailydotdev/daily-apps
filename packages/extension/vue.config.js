@@ -1,3 +1,5 @@
+process.env.VUE_APP_VERSION = require('./package.json').version;
+
 module.exports = {
   pages: {
     'standalone/standalone': {
@@ -15,7 +17,7 @@ module.exports = {
       },
       api: 'browser',
       usePolyfill: true,
-      autoImportPolyfill: false,
+      autoImportPolyfill: true,
       componentOptions: {
         background: {
           entry: 'src/background.js',

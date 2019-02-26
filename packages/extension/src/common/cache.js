@@ -1,6 +1,5 @@
-import browser from 'webextension-polyfill';
-
 export const STATE_KEY = 'state';
+export const ANALYTICS_ID_KEY = 'analyticsId';
 
 export function setCache(key, value) {
   return browser.storage.local.set({ [key]: value });

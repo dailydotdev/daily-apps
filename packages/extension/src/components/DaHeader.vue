@@ -102,7 +102,7 @@ export default {
     },
 
     getTopSites() {
-      return import('webextension-polyfill')
+      return Promise.resolve()
         .then((browser) => {
           if ('topSites' in browser) {
             return browser.topSites.get();
@@ -116,24 +116,24 @@ export default {
       return `https://logo.clearbit.com/${domain}`;
     },
 
-    mouseUp() {
-      // ga('send', 'event', 'Header', 'Click', data);
+    mouseUp(data) {
+      ga('send', 'event', 'Header', 'Click', data);
     },
 
     switchTheme(pressed) {
       const newTheme = pressed ? themes[1] : themes[0];
       this.$store.dispatch('ui/setTheme', newTheme);
-      // ga('send', 'event', 'Header', 'Theme', this.currentTheme);
+      ga('send', 'event', 'Header', 'Theme', this.theme);
     },
 
     toggleInsane(pressed) {
       this.$store.commit('ui/setInsaneMode', pressed);
-      // ga('send', 'event', 'Header', 'Insane', pressed);
+      ga('send', 'event', 'Header', 'Insane', pressed);
     },
 
     toggleBookmarks(pressed) {
       this.$store.commit('feed/setShowBookmarks', pressed);
-      // ga('send', 'event', 'Header', 'Bookmarks', pressed);
+      ga('send', 'event', 'Header', 'Bookmarks', pressed);
     },
   },
 };

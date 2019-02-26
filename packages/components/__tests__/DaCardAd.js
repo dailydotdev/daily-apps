@@ -6,7 +6,7 @@ import ads from '../src/ads';
 it('should emit impression event', () => {
   const ad = ads[0];
   const wrapper = shallowMount(DaCardAd, { propsData: { ad } });
-  expect(wrapper.emitted().impression[0]).toEqual([]);
+  expect(wrapper.emitted().impression[0]).toEqual([ad]);
 });
 
 it('should set pixel to an empty array when not defined', () => {

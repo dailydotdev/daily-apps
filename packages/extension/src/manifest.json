@@ -22,6 +22,7 @@
     "scripts": ["background.js"],
     "persistent": false
   },
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com; object-src 'self'",
   "browser_action": {
     "default_icon": {
       "19": "icons/19.png",

@@ -13,6 +13,7 @@
     "@daily/components": "^0.1.0",
     "@daily/services": "^0.0.0",
     "lazysizes": "^4.1.5",
+    "mixpanel-browser": "^2.26.0",
     "vue": "^2.5.17",
     "vue-masonry-css": "^1.0.3",
     "vue-svgicon": "^3.2.2",
@@ -45,6 +46,10 @@
     "env": {
       "node": true,
       "webextensions": true
+    },
+    "globals": {
+      "ga": true,
+      "browser": true
     },
     "extends": [
       "plugin:vue/essential",

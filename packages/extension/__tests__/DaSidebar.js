@@ -21,6 +21,9 @@ let feed;
 let store;
 
 beforeEach(() => {
+  window.ga = () => {
+  };
+
   feed = {
     namespaced: true,
     state: {

@@ -1,6 +1,6 @@
 <template>
   <DaCard class="card--post" :class="cls" :title="post.title" :url="post.url" :image="post.image"
-          :placeholder="post.placeholder" :size="post.size">
+          :placeholder="post.placeholder" :size="post.size" @click="$emit('click', post)">
     <div slot="content" class="card__tags nuggets"
          :title="(post.tags || []).map(t => `#${t}`).join(', ')">{{post.tags | cardTags}}
     </div>

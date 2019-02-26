@@ -1,6 +1,6 @@
 <template>
   <div class="insane insane--post" :class="cls">
-    <a :href="post.url" target="_blank" class="insane__link" @click="$emit('click')">
+    <a :href="post.url" target="_blank" class="insane__link" @click="$emit('click', post)">
       <h5 class="insane__title">{{post.title | cardTitle}}</h5>
       <div class="insane__tags micro1">{{ tags }}</div>
     </a>

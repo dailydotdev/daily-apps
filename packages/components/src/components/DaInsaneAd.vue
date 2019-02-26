@@ -1,6 +1,6 @@
 <template>
   <div class="insane insane--ad">
-    <a :href="ad.link" target="_blank" class="insane__link" @click="$emit('click')">
+    <a :href="ad.link" target="_blank" class="insane__link" @click="$emit('click', ad)">
       <h5 class="insane__title">{{ad.description | cardTitle}}</h5>
     </a>
     <span class="insane__promoted micro2">/* {{ promoted }} */</span>
@@ -33,7 +33,7 @@ export default {
   },
 
   mounted() {
-    this.$emit('impression');
+    this.$emit('impression', this.ad);
   },
 };
 </script>
