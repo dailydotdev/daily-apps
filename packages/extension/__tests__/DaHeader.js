@@ -32,6 +32,8 @@ beforeEach(() => {
     },
     mutations: {
       setInsaneMode: jest.fn(),
+      hideNotifications: jest.fn(),
+      showNotifications: jest.fn(),
     },
   };
 
@@ -87,6 +89,25 @@ it('should commit "setShowBookmarks" when switch is toggled', (done) => {
   wrapper.find('.header__switch').find('.switch__handle').trigger('transitionend');
   setTimeout(() => {
     expect(feed.mutations.setShowBookmarks).toBeCalledWith(expect.anything(), true);
+    done();
+  }, 100);
+});
+
+it('should commit "showNotifications" when terminal button is clicked', (done) => {
+  const wrapper = mount(DaHeader, { store, localVue });
+  wrapper.find('.btn-terminal').trigger('click');
+  setTimeout(() => {
+    expect(ui.mutations.showNotifications).toBeCalledWith(expect.anything(), undefined);
+    done();
+  }, 100);
+});
+
+it('should commit "hideNotifications" when terminal button is clicked', (done) => {
+  store.state.ui.showNotifications = true;
+  const wrapper = mount(DaHeader, { store, localVue });
+  wrapper.find('.btn-terminal').trigger('click');
+  setTimeout(() => {
+    expect(ui.mutations.hideNotifications).toBeCalledWith(expect.anything(), undefined);
     done();
   }, 100);
 });

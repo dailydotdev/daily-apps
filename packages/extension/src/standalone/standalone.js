@@ -15,6 +15,14 @@ new Vue({
   render: h => h(App),
 });
 
+// TODO: add tests
+Vue.filter('terminalTime', value => value.toLocaleString('en-US', {
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+  hour12: true,
+}));
+
 window.onbeforeunload = () => {
   window.scrollTo(0, 0);
 };

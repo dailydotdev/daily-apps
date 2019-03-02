@@ -98,6 +98,19 @@
       <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
       <button class="btn btn-big" @click="$refs.readyModal.close()">Use Daily now!</button>
     </da-modal>
+    <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
+      <template slot="title">Terminal</template>
+      <template slot="content">
+        <div class="notifications__item" v-for="(item, index) in notifications" :key="index">
+          <div class="notifications__item__time">{{ item.timestamp | terminalTime }}</div>
+          <div v-html="item.html"></div>
+        </div>
+        <div class="notifications__empty" v-if="!notifications.length">
+          From time to time the terminal will announce
+          new product releases and other surprises so stay tuned
+        </div>
+      </template>
+    </da-terminal>
   </div>
 </template>
 
@@ -111,6 +124,7 @@ import DaCardAd from '@daily/components/src/components/DaCardAd.vue';
 import DaInsanePost from '@daily/components/src/components/DaInsanePost.vue';
 import DaInsaneAd from '@daily/components/src/components/DaInsaneAd.vue';
 import DaModal from '@daily/components/src/components/DaModal.vue';
+import DaTerminal from '@daily/components/src/components/DaTerminal.vue';
 import mixpanel from 'mixpanel-browser';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
@@ -123,7 +137,7 @@ import { version } from '../common/config';
 
 export default {
   components: {
-    DaSidebar, DaHeader, DaCardPost, DaCardAd, DaInsanePost, DaInsaneAd, DaModal,
+    DaSidebar, DaHeader, DaCardPost, DaCardAd, DaInsanePost, DaInsaneAd, DaModal, DaTerminal,
   },
 
   data() {
@@ -131,7 +145,7 @@ export default {
       cta: ctas[Math.floor(Math.random() * ctas.length)],
       cols: {
         default: 7,
-        2050: 6,
+        2350: 6,
         2030: 5,
         1710: 4,
         1390: 3,
@@ -199,11 +213,13 @@ export default {
       fetchTags: 'feed/fetchTags',
       clearFilter: 'feed/clearFilter',
       addFilterToFeed: 'feed/addFilterToFeed',
+      fetchNotifications: 'ui/fetchNotifications',
     }),
 
     ...mapMutations({
       toggleBookmarks: 'feed/toggleBookmarks',
       loadFromCache: 'loadFromCache',
+      hideNotifications: 'ui/hideNotifications',
     }),
   },
 
@@ -212,9 +228,11 @@ export default {
       insaneMode(state) {
         return state.ui.insaneMode;
       },
+
       showBookmarks(state) {
         return state.feed.showBookmarks;
       },
+
       title(state) {
         let res = '';
         if (state.feed.showBookmarks) {
@@ -229,8 +247,17 @@ export default {
 
         return res;
       },
+
       filter(state) {
         return state.feed.filter;
+      },
+
+      notifications(state) {
+        return state.ui.notifications;
+      },
+
+      showNotifications(state) {
+        return state.ui.showNotifications;
       },
     }),
 
@@ -317,6 +344,12 @@ export default {
     await this.$store.dispatch('feed/fetchPublications');
     await this.fetchNextFeedPage();
     await this.fetchTags();
+
+    // TODO: analytics consent
+    this.fetchNotifications()
+    // TODO: handle error
+    // eslint-disable-next-line no-console
+      .catch(console.error);
 
     this.contentObserver.observe(this.$refs.anchor);
 
@@ -607,6 +640,52 @@ a {
 
   & .request__graphics {
     height: 268px;
+  }
+}
+
+.notifications {
+  position: fixed;
+  width: 300px;
+  height: 234px;
+  right: 35px;
+  top: 44px;
+  z-index: 100;
+
+  & .notifications__item {
+    margin: 16px 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    & > * {
+      margin: 4px 0;
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  & .notifications__item__time {
+    color: var(--theme-disabeld);
+  }
+
+  & a {
+    text-decoration: none;
+    color: var(--theme-primary);
+
+    &:visited, &:active {
+      color: inherit;
+    }
   }
 }
 

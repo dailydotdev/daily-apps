@@ -20,6 +20,14 @@ export default new Vuex.Store({
         Object.keys(cached).forEach((key) => {
           state[key] = Object.assign({}, state[key], cached[key]);
         });
+
+        if (cached.ui.lastNotificationTime) {
+          state.ui.lastNotificationTime = new Date(cached.ui.lastNotificationTime);
+        }
+
+        if (cached.feed.latest) {
+          state.feed.latest = new Date(cached.feed.latest);
+        }
       }
 
       state.initialized = true;

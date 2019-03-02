@@ -30,8 +30,10 @@
     <button class="btn-icon" title="Daily Go" @click="$emit('go')">
       <svgicon icon="mobile"/>
     </button>
-    <button class="btn-icon" title="Notifications">
+    <button class="btn-icon relative btn-terminal" title="Notifications"
+            :class="{ 'active': notificationsOpened }" @click="toggleNotifications">
       <svgicon icon="terminal"/>
+      <span class="header__badge" v-if="showNotificationBadge"></span>
     </button>
     <button class="btn btn-water-cheese header__sign-in">
       <svgicon icon="user_daily"/>
@@ -41,7 +43,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 import { themes } from '@daily/services';
 
 export default {
@@ -74,6 +76,14 @@ export default {
 
       showBookmarks(state) {
         return state.feed.showBookmarks;
+      },
+
+      showNotificationBadge(state) {
+        return state.ui.showNotificationBadge;
+      },
+
+      notificationsOpened(state) {
+        return state.ui.showNotifications;
       },
     }),
   },
@@ -135,6 +145,19 @@ export default {
       this.$store.commit('feed/setShowBookmarks', pressed);
       ga('send', 'event', 'Header', 'Bookmarks', pressed);
     },
+
+    toggleNotifications() {
+      if (this.notificationsOpened) {
+        this.hideNotifications();
+      } else {
+        this.showNotifications();
+      }
+    },
+
+    ...mapMutations({
+      hideNotifications: 'ui/hideNotifications',
+      showNotifications: 'ui/showNotifications',
+    }),
   },
 };
 </script>
@@ -198,6 +221,34 @@ export default {
 
   & .space {
     flex: 1;
+  }
+
+  & .btn-icon.relative {
+    position: relative;
+  }
+
+  & .btn-icon.active .svg-icon {
+    color: var(--theme-primary);
+  }
+}
+
+.header__badge {
+  position: absolute;
+  left: 14px;
+  bottom: 13px;
+  width: 10px;
+  height: 10px;
+  padding: 2px;
+  background: var(--theme-background-highlight);
+  border-radius: 100%;
+
+  &:before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--color-water-30);
+    border-radius: 100%;
   }
 }
 </style>
