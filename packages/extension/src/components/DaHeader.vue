@@ -147,6 +147,7 @@ export default {
     },
 
     toggleNotifications() {
+      ga('send', 'event', 'Header', 'Terminal', !this.notificationsOpened);
       if (this.notificationsOpened) {
         this.hideNotifications();
       } else {
