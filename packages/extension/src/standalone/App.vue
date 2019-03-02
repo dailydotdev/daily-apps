@@ -21,7 +21,7 @@
         </template>
         <template v-else>
           <h4 v-if="!emptyBookmarks" class="uppercase">/* {{ title }} */</h4>
-          <a class="header__cta shadow " :href="cta.link" target="_blank"
+          <a class="header__cta shadow1 " :href="cta.link" target="_blank"
              @mouseup="ctaClick" :style="cta.style">
             <span class="header__cta__text">// {{cta.text}}</span>
             <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>

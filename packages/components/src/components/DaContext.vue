@@ -1,5 +1,5 @@
 <template>
-  <VueContext class="context" ref="context">
+  <VueContext class="context shadow2" ref="context">
     <slot></slot>
   </VueContext>
 </template>
@@ -46,6 +46,5 @@ export default {
   background: var(--theme-background-highlight);
   border-radius: 4px;
   border: none;
-  box-shadow: 0 var(--theme-shadow-offset) 32px 16px rgba(0, 0, 0, 0.32);
 }
 </style>

@@ -18,7 +18,7 @@
             <button class="sidebar__content__element" title="Click to view only this tag"
                     v-for="item in enabledTags" :key="item.name"
                     @click.prevent="viewTag(item)">
-              <span class="invert sidebar__tag">#{{item.name}}</span>
+              <span class="invert sidebar__tag shadow1">#{{item.name}}</span>
               <button class="sidebar__content__element__button btn-icon" title="Remove this tag"
                       @click.prevent.stop="setEnableTag(item, false)">
                 <svgicon name="x"/>
@@ -584,8 +584,6 @@ form.sidebar__content__element {
   color: var(--theme-primary);
   background: var(--theme-background-highlight);
   border-radius: 4px;
-
-  @mixin shadow;
 }
 
 .sidebar__tags__search {

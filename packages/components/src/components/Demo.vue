@@ -48,7 +48,7 @@
             <svgicon icon="user_daily"/>
             <span>Sign in</span>
           </button>
-          <button class="btn btn-highlight shadow invert">
+          <button class="btn btn-highlight shadow1 invert">
             <span>Sign in</span>
             <svgicon icon="user_daily"/>
           </button>
@@ -58,7 +58,7 @@
           <button class="btn btn-big btn-hollow">
             No
           </button>
-          <button class="btn btn-big btn-highlight shadow invert">
+          <button class="btn btn-big btn-highlight shadow1 invert">
             Yes, I'd love to
           </button>
         </div>
@@ -126,6 +126,17 @@
       <h2>Spinner</h2>
       <DaSpinner/>
     </section>
+    <section>
+      <h2>Terminal</h2>
+      <DaTerminal>
+        <span slot="title">Terminal</span>
+        <div slot="content" class="terminal-content">
+          <div style="color: var(--color-pepper-10)">Today</div>
+          <div style="color: var(--color-salt-10)">Terminal notification</div>
+          <a style="color: var(--color-water-50)" href="#">Call to action</a>
+        </div>
+      </DaTerminal>
+    </section>
     <DaContext ref="context">
       <button class="context__item">Broken link</button>
       <button class="context__item">Report NSFW</button>
@@ -138,7 +149,7 @@
         Do you agree to opt-in?
       </p>
       <div class="demo-modal__buttons">
-        <button class="btn btn-big btn-highlight shadow invert"
+        <button class="btn btn-big btn-highlight shadow1 invert"
                 @click.prevent="$refs.modal.close()">
           Yes, I'd love to
         </button>
@@ -163,6 +174,7 @@ import DaInsaneAd from './DaInsaneAd.vue';
 import DaContext from './DaContext.vue';
 import DaModal from './DaModal.vue';
 import DaModeSwitch from './DaModeSwitch.vue';
+import DaTerminal from './DaTerminal.vue';
 
 const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
@@ -173,6 +185,7 @@ const logos = require.context('../../logos', false, /.svg$/).keys();
 export default {
   name: 'Demo',
   components: {
+    DaTerminal,
     DaModal,
     DaContext,
     DaInsanePost,
@@ -318,6 +331,23 @@ h3 {
 
 .v-context.context {
   width: 130px;
+}
+
+.terminal {
+  width: 300px;
+  height: 234px;
+}
+
+.terminal-content > * {
+  margin: 4px 0;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .demo-modal__text {

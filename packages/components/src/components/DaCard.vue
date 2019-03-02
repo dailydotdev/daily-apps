@@ -11,7 +11,7 @@
         <slot name="content"></slot>
       </div>
     </a>
-    <div class="card__footer shadow">
+    <div class="card__footer shadow1">
       <slot name="footer"></slot>
     </div>
     <slot name="other"></slot>

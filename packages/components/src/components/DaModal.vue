@@ -2,7 +2,7 @@
   <transition name="modal">
     <dialog class="modal" ref="dialog">
       <div class="modal__backdrop" @click="close"></div>
-      <div class="modal__container">
+      <div class="modal__container shadow2">
         <slot></slot>
       </div>
     </dialog>
@@ -112,7 +112,6 @@ dialog.fixed {
   padding: 40px;
   background: var(--theme-background-highlight);
   border-radius: 16px;
-  box-shadow: 0 var(--theme-shadow-offset) 32px 16px rgba(0, 0, 0, 0.32);
   transition: all .3s ease;
 }
 
