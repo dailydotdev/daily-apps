@@ -122,7 +122,7 @@ it('should commit "setEnablePublication" when removing publication', (done) => {
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__sources .sidebar__content__enabled')
-      .find('.sidebar__content__element__button').trigger('click');
+      .find('.sidebar__content__element__button-hidden').trigger('click');
     expect(feed.actions.setEnablePublication)
       .toBeCalledWith(expect.anything(), { index: 0, enabled: false }, undefined);
     done();
@@ -135,7 +135,7 @@ it('should commit "setEnablePublication" when adding publication', (done) => {
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__sources .sidebar__content__disabled')
-      .find('.sidebar__content__element__button').trigger('click');
+      .find('.sidebar__content__element__button-hidden').trigger('click');
     expect(feed.actions.setEnablePublication)
       .toBeCalledWith(expect.anything(), { index: 1, enabled: true }, undefined);
     done();
@@ -170,7 +170,7 @@ it('should commit "setEnableTag" when removing tag', (done) => {
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__tags .sidebar__content__enabled')
-      .find('.sidebar__content__element__button').trigger('click');
+      .find('.sidebar__content__element__button-hidden').trigger('click');
     expect(feed.actions.setEnableTag)
       .toBeCalledWith(expect.anything(), { index: 0, enabled: false }, undefined);
     done();
@@ -183,7 +183,7 @@ it('should commit "setEnableTag" when adding tag', (done) => {
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__tags .sidebar__content__disabled')
-      .find('.sidebar__content__element__button').trigger('click');
+      .find('.sidebar__content__element__button-hidden').trigger('click');
     expect(feed.actions.setEnableTag)
       .toBeCalledWith(expect.anything(), { index: 2, enabled: true }, undefined);
     done();
@@ -218,7 +218,7 @@ it('should dispatch "setFilter" with publication filter', (done) => {
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__sources .sidebar__content__disabled')
-      .find('.sidebar__content__element').trigger('click');
+      .find('.sidebar__content__element__button').trigger('click');
     expect(feed.actions.setFilter)
       .toBeCalledWith(expect.anything(), {
         type: 'publication',
@@ -234,7 +234,7 @@ it('should dispatch "setFilter" with tag filter', (done) => {
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__tags .sidebar__content__disabled')
-      .find('.sidebar__content__element').trigger('click');
+      .find('.sidebar__content__element__button').trigger('click');
     expect(feed.actions.setFilter)
       .toBeCalledWith(expect.anything(), {
         type: 'tag',

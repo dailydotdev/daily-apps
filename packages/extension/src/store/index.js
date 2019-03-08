@@ -21,11 +21,11 @@ export default new Vuex.Store({
           state[key] = Object.assign({}, state[key], cached[key]);
         });
 
-        if (cached.ui.lastNotificationTime) {
+        if (cached.ui && cached.ui.lastNotificationTime) {
           state.ui.lastNotificationTime = new Date(cached.ui.lastNotificationTime);
         }
 
-        if (cached.feed.latest) {
+        if (cached.feed && cached.feed.latest) {
           state.feed.latest = new Date(cached.feed.latest);
         }
       }

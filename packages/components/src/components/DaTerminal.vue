@@ -76,6 +76,7 @@ export default {
   background: var(--color-pepper-90);
   overflow-y: auto;
   word-break: break-word;
+  scrollbar-width: none;
 
   & a {
     text-decoration: none;

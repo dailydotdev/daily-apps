@@ -15,29 +15,31 @@
         <div class="sidebar__tags" v-if="filterChecked">
           <div class="sidebar__content__enabled">
             <div class="sidebar__content__header">My tags</div>
-            <button class="sidebar__content__element" title="Click to view only this tag"
-                    v-for="item in enabledTags" :key="item.name"
-                    @click.prevent="viewTag(item)">
-              <span class="invert sidebar__tag shadow1">#{{item.name}}</span>
-              <button class="sidebar__content__element__button btn-icon" title="Remove this tag"
-                      @click.prevent.stop="setEnableTag(item, false)">
+            <div class="sidebar__content__element" v-for="item in enabledTags" :key="item.name">
+              <button class="sidebar__content__element__button"
+                      title="Click to view only this tag" @click.prevent="viewTag(item)">
+                <span class="invert sidebar__tag shadow1">#{{item.name}}</span>
+              </button>
+              <button class="sidebar__content__element__button-hidden btn-icon"
+                      title="Remove this tag" @click.prevent.stop="setEnableTag(item, false)">
                 <svgicon name="x"/>
               </button>
-            </button>
+            </div>
           </div>
           <div class="sidebar__content__disabled" v-if="disabledTags.length > 0">
             <div class="sidebar__content__header">More tags</div>
-            <button class="sidebar__content__element disabled"
-                    title="Click to view only this tag"
-                    v-for="item in disabledTags" :key="item.name"
-                    @click.prevent="viewTag(item)">
-              <span>#{{item.name}}</span>
-              <button class="sidebar__content__element__button show btn-icon"
+            <div class="sidebar__content__element disabled" v-for="item in disabledTags"
+                 :key="item.name">
+              <button class="sidebar__content__element__button"
+                      title="Click to view only this tag" @click.prevent="viewTag(item)">
+                <span>#{{item.name}}</span>
+              </button>
+              <button class="sidebar__content__element__button-hidden show btn-icon"
                       title="Add this tag"
                       @click.prevent.stop="setEnableTag(item, true)">
                 <svgicon name="plus"/>
               </button>
-            </button>
+            </div>
           </div>
         </div>
         <div class="sidebar__sources" v-else>
@@ -66,33 +68,38 @@
                 </div>
               </transition>
             </form>
-            <button class="sidebar__content__element" title="Click to view only this source"
-                    v-for="item in enabledPubs" :key="item.id"
-                    @click.prevent="viewPublication(item)">
-              <img :data-src="item.image" :alt="item.name"
-                   class="sidebar__content__element__image lazyload"/>
-              <span>{{item.name}}</span>
-              <button class="sidebar__content__element__button btn-icon" title="Remove this source"
+            <div class="sidebar__content__element" v-for="item in enabledPubs"
+                 :key="item.id">
+              <button class="sidebar__content__element__button"
+                      title="Click to view only this source" @click.prevent="viewPublication(item)">
+                <img :data-src="item.image" :alt="item.name"
+                     class="sidebar__content__element__image lazyload"/>
+                <span>{{item.name}}</span>
+              </button>
+              <button class="sidebar__content__element__button-hidden btn-icon"
+                      title="Remove this source"
                       @click.prevent.stop="setEnablePublication(item, false)">
                 <svgicon name="x"/>
               </button>
-            </button>
+            </div>
           </div>
           <div class="sidebar__content__disabled" v-if="disabledPubs.length > 0">
             <div class="sidebar__content__header">More sources</div>
-            <button class="sidebar__content__element disabled"
-                    title="Click to view only this source"
-                    v-for="item in disabledPubs" :key="item.id"
-                    @click.prevent="viewPublication(item)">
-              <img :data-src="item.image" :alt="item.name"
-                   class="sidebar__content__element__image lazyload"/>
-              <span>{{item.name}}</span>
-              <button class="sidebar__content__element__button show btn-icon"
+            <div class="sidebar__content__element disabled" v-for="item in disabledPubs"
+                 :key="item.id">
+              <button class="sidebar__content__element__button"
+                      title="Click to view only this source"
+                      @click.prevent="viewPublication(item)">
+                <img :data-src="item.image" :alt="item.name"
+                     class="sidebar__content__element__image lazyload"/>
+                <span>{{item.name}}</span>
+              </button>
+              <button class="sidebar__content__element__button-hidden show btn-icon"
                       title="Add this source"
                       @click.prevent.stop="setEnablePublication(item, true)">
                 <svgicon name="plus"/>
               </button>
-            </button>
+            </div>
           </div>
         </div>
       </div>
@@ -365,6 +372,7 @@ export default {
   width: 100%;
   height: 100%;
   overflow-y: scroll;
+  scrollbar-width: none;
 
   &::-webkit-scrollbar {
     width: 0 !important;
@@ -449,29 +457,42 @@ export default {
   height: 40px;
 }
 
-.sidebar__content__element {
+.sidebar__content__element, .sidebar__content__element .sidebar__content__element__button {
   display: flex;
-  width: 100%;
   flex-direction: row;
   align-items: center;
-  padding: 0 16px;
   border: none;
   background: none;
   color: var(--theme-secondary);
   cursor: pointer;
 
   @mixin micro1;
+}
 
-  &:hover {
-    background: var(--theme-background-primary);
+.sidebar__content__element {
+  width: 100%;
+  padding: 0 16px;
 
-    & .sidebar__content__element__button {
-      display: flex;
-    }
+  & .sidebar__content__element__button {
+    display: flex;
+    height: 100%;
+    padding: 0;
   }
 
   &.disabled:hover {
     color: var(--theme-primary);
+
+    & .sidebar__content__element__button {
+      color: var(--theme-primary);
+    }
+  }
+
+  &:hover {
+    background: var(--theme-background-primary);
+
+    & .sidebar__content__element__button-hidden {
+      display: flex;
+    }
   }
 
   & .sidebar__content__element__image {
@@ -481,7 +502,7 @@ export default {
     margin-right: 16px;
   }
 
-  & .sidebar__content__element__button {
+  & .sidebar__content__element__button-hidden {
     display: none;
     margin-left: auto;
 
