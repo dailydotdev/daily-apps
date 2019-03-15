@@ -1,5 +1,5 @@
 <template>
-  <label class="switch">
+  <label class="switch" :class="{ checked }">
     <span class="switch__container">
       <input
         type="checkbox"
@@ -23,7 +23,6 @@ export default {
   props: {
     icon: {
       type: String,
-      required: true,
     },
     checked: {
       type: Boolean,
@@ -63,8 +62,7 @@ export default {
 
     &:checked {
       & ~ .switch__slider {
-        background: var(--da-switch-checked-color);
-        opacity: 0.5;
+        background: var(--da-switch-checked-background);
       }
 
       & ~ .switch__handle {
@@ -128,7 +126,7 @@ export default {
 }
 
 .switch__label {
-  margin-left: 24px;
+  margin-left: 16px;
   color: var(--theme-secondary);
 }
 </style>

@@ -2,6 +2,9 @@
   <transition name="modal">
     <dialog class="modal" ref="dialog">
       <div class="modal__backdrop" @click="close"></div>
+      <div class="modal__background">
+        <slot name="background"></slot>
+      </div>
       <div class="modal__container shadow2">
         <slot></slot>
       </div>
@@ -44,7 +47,8 @@ export default {
 /** dialog polyfill **/
 dialog {
   position: absolute;
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
   width: -moz-fit-content;
   width: -webkit-fit-content;
   width: fit-content;
@@ -65,13 +69,19 @@ dialog:not([open]) {
 
 dialog + .backdrop {
   position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
-  background: rgba(0,0,0,0.1);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 ._dialog_overlay {
   position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 dialog.fixed {
@@ -79,6 +89,7 @@ dialog.fixed {
   top: 50%;
   transform: translate(0, -50%);
 }
+
 /********************/
 
 .modal {
@@ -97,15 +108,23 @@ dialog.fixed {
   transition: opacity .3s ease;
 }
 
-.modal__backdrop {
+.modal__background, .modal__backdrop {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
+}
+
+.modal__backdrop {
   background: var(--color-pepper-80);
   opacity: 0.56;
+  z-index: -2;
+}
+
+.modal__background {
   z-index: -1;
+  pointer-events: none;
 }
 
 .modal__container {
