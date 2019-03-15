@@ -185,6 +185,41 @@ it('should update feed pubs', async () => {
     await service.updateFeedPublications(body);
 });
 
+it('should fetch user tags from server', async () => {
+    nock(baseURL)
+        .matchHeader('authorization', 'Bearer token')
+        .get('/v1/feeds/tags')
+        .reply(200, [{tag: 'javascript'}, {tag: 'golang'}]);
+
+    service.setAccessToken('token');
+
+    const actual = await service.fetchUserTags();
+
+    expect(actual).toEqual(['javascript', 'golang']);
+});
+
+it('should add user tags', async () => {
+    nock(baseURL)
+        .matchHeader('authorization', 'Bearer token')
+        .post('/v1/feeds/tags', [{tag: 'javascript'}])
+        .reply(204);
+
+    service.setAccessToken('token');
+
+    await service.addUserTags(['javascript']);
+});
+
+it('should delete user tags', async () => {
+    nock(baseURL)
+        .matchHeader('authorization', 'Bearer token')
+        .delete('/v1/feeds/tags', {tag: 'javascript'})
+        .reply(204);
+
+    service.setAccessToken('token');
+
+    await service.deleteUserTag('javascript');
+});
+
 it('should add bookmarks', async () => {
     const body: string[] = ['id'];
 

@@ -53,6 +53,12 @@ export interface ContentService {
 
     fetchFeedPublications(): Promise<object>;
 
+    fetchUserTags(): Promise<string[]>;
+
+    addUserTags(tags: string[]): Promise<void>;
+
+    deleteUserTag(tag: string): Promise<void>;
+
     addBookmarks(ids: string[]): Promise<void>;
 
     removeBookmark(id: string): Promise<void>;
@@ -131,6 +137,19 @@ export class ContentServiceImpl implements ContentService {
 
     async updateFeedPublications(pubs: FeedPublication[]): Promise<void> {
         await this.request.post<void>('/v1/feeds/publications', pubs);
+    }
+
+    async fetchUserTags(): Promise<string[]> {
+        const res = await this.request.get('/v1/feeds/tags');
+        return res.data.map((t: any) => t.tag);
+    }
+
+    async addUserTags(tags: string[]): Promise<void> {
+        await this.request.post<void>('/v1/feeds/tags', tags.map((tag: string) => ({tag})));
+    }
+
+    async deleteUserTag(tag: string): Promise<void> {
+        await this.request.delete('/v1/feeds/tags', {data: {tag}});
     }
 
     async addBookmarks(ids: string[]): Promise<void> {
