@@ -1,9 +1,10 @@
-export const testAction = (action, payload, state, expectedMutations) =>
+export const testAction = (action, payload, state, expectedMutations = [], expectedActions = [], rootState = {}) =>
   new Promise((resolve, reject) => {
-    let count = 0;
+    let commitCount = 0;
+    let dispatchCount = 0;
     // mock commit
     const commit = (type, payload) => {
-      const mutation = expectedMutations[count];
+      const mutation = expectedMutations[commitCount];
 
       try {
         expect(type).toEqual(mutation.type);
@@ -14,18 +15,31 @@ export const testAction = (action, payload, state, expectedMutations) =>
         return reject(error);
       }
 
-      count++;
-      if (count >= expectedMutations.length) {
-        return resolve();
+      commitCount++;
+    };
+
+    const dispatch = (type, payload) => {
+      const action = expectedActions[dispatchCount];
+
+      try {
+        expect(type).toEqual(action.type);
+        if (payload) {
+          expect(payload).toEqual(action.payload);
+        }
+      } catch (error) {
+        return reject(error);
       }
+
+      dispatchCount++;
     };
 
     // call the action with mocked store and arguments
-    action({ commit, state }, payload);
-
-    // check if no mutations should have been dispatched
-    if (expectedMutations.length === 0) {
-      expect(count).toEqual(0);
-      return resolve();
-    }
+    Promise.resolve()
+      .then(() => action({ commit, dispatch, state, rootState }, payload))
+      .then((res) => {
+        expect(commitCount).toEqual(expectedMutations.length);
+        expect(dispatchCount).toEqual(expectedActions.length);
+        return resolve(res);
+      })
+      .catch(reject);
   });

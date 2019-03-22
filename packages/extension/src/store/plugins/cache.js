@@ -9,17 +9,24 @@ const stateToCache = (state) => {
   delete toCache.initialized;
   toCache.feed = {
     tags: state.feed.tags.filter(t => t.enabled),
+    publications: state.feed.publications,
     posts: state.feed.posts.slice(0, contentService.pageSize),
     bookmarks: state.feed.bookmarks,
     latest: cacheTime(state.feed.latest),
   };
   toCache.ui = {
-    theme: state.ui.theme,
-    insaneMode: state.ui.insaneMode,
-    showTopSites: state.ui.showTopSites,
-    notifications: state.ui.notifications,
+    ...toCache.ui,
     lastNotificationTime: cacheTime(state.ui.lastNotificationTime),
   };
+
+  if (state.user.profile && state.user.profile.expiresIn) {
+    toCache.user = {
+      profile: {
+        ...toCache.user.profile,
+        expiresIn: cacheTime(state.user.profile.expiresIn),
+      },
+    };
+  }
 
   return toCache;
 };

@@ -6,6 +6,9 @@ jest.mock('../src/common/services', () => ({
   contentService: {
     fetchPublications: jest.fn(),
     fetchPopularTags: jest.fn(),
+    updateFeedPublications: jest.fn(),
+    addUserTags: jest.fn(),
+    deleteUserTag: jest.fn(),
   },
 }));
 
@@ -13,6 +16,23 @@ it('should set show bookmarks in state', () => {
   const state = {};
   module.mutations.setShowBookmarks(state, true);
   expect(state.showBookmarks).toEqual(true);
+});
+
+it('should commit set show bookmarks', async () => {
+  const state = {};
+  await testAction(module.actions.setShowBookmarks, true, state,
+    [{ type: 'setShowBookmarks', payload: true }],
+    [], { user: { profile: null } },
+  );
+});
+
+it('should commit set show bookmarks and refresh feed', async () => {
+  const state = {};
+  await testAction(module.actions.setShowBookmarks, true, state,
+    [{ type: 'setShowBookmarks', payload: true }],
+    [{ type: 'refreshFeed' }],
+    { user: { profile: { name: 'John' } } },
+  );
 });
 
 it('should set publications in state', () => {
@@ -41,6 +61,24 @@ it('should set enabled of specific publication in state', () => {
   }]);
 });
 
+it('should set enabled publication and refresh feed', async () => {
+  const pubs = { index: 0, enabled: true };
+  const state = {};
+  await testAction(module.actions.setEnablePublication, pubs, state,
+    [{ type: 'setEnablePublication', payload: pubs }],
+    [{ type: 'refreshFeed' }], { user: { profile: null } });
+});
+
+it('should set enabled publication, refresh feed and update user', async () => {
+  const pubs = { index: 0, enabled: true };
+  const state = { publications: [{ id: 'angular' }] };
+  await testAction(module.actions.setEnablePublication, pubs, state,
+    [{ type: 'setEnablePublication', payload: pubs }],
+    [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
+  expect(contentService.updateFeedPublications)
+    .toBeCalledWith([{ publicationId: 'angular', enabled: true }]);
+});
+
 it('should set filter in state', () => {
   const state = {};
   const filter = { type: 'publication', info: { id: 'angular', name: 'Angular' } };
@@ -58,10 +96,10 @@ it('should fetch publications and update state', async () => {
   expect(contentService.fetchPublications).toBeCalledTimes(1);
 });
 
-it('should merge tags in state', () => {
+it('should set tags in state', () => {
   const state = { tags: [] };
-  module.mutations.mergeTags(state, [{ name: 'java' }]);
-  expect(state.tags).toEqual([{ name: 'java', enabled: false }]);
+  module.mutations.setTags(state, [{ name: 'java' }]);
+  expect(state.tags).toEqual([{ name: 'java' }]);
 });
 
 it('should set enabled of specific tag in state', () => {
@@ -82,6 +120,32 @@ it('should set enabled of specific tag in state', () => {
     name: 'vue',
     enabled: true,
   }]);
+});
+
+it('should set enabled tag and refresh feed', async () => {
+  const tags = { index: 0, enabled: true };
+  const state = {};
+  await testAction(module.actions.setEnableTag, tags, state,
+    [{ type: 'setEnableTag', payload: tags }],
+    [{ type: 'refreshFeed' }], { user: { profile: null } });
+});
+
+it('should set enabled tag, refresh feed and add user tag', async () => {
+  const tags = { index: 0, enabled: true };
+  const state = { tags: [{ name: 'angular' }] };
+  await testAction(module.actions.setEnableTag, tags, state,
+    [{ type: 'setEnableTag', payload: tags }],
+    [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
+  expect(contentService.addUserTags).toBeCalledWith(['angular']);
+});
+
+it('should set enabled tag, refresh feed and delete user tag', async () => {
+  const tags = { index: 0, enabled: false };
+  const state = { tags: [{ name: 'angular' }] };
+  await testAction(module.actions.setEnableTag, tags, state,
+    [{ type: 'setEnableTag', payload: tags }],
+    [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
+  expect(contentService.deleteUserTag).toBeCalledWith('angular');
 });
 
 it('should set a post as bookmarked and add it to bookmarks', () => {
@@ -150,7 +214,7 @@ it('should fetch tags and update state', async () => {
   contentService.fetchPopularTags.mockReturnValue(tags);
   const state = { tags: [] };
   await testAction(module.actions.fetchTags, undefined, state, [
-    { type: 'mergeTags', payload: tags },
+    { type: 'setTags', payload: tags },
   ]);
   expect(contentService.fetchPopularTags).toBeCalledTimes(1);
 });
@@ -296,4 +360,61 @@ it('should enable tag from filter', async () => {
   await testAction(module.actions.addFilterToFeed, undefined, state, [
     { type: 'setEnableTag', payload: { index: 1, enabled: true } },
   ]);
+});
+
+it('should reset personalization', () => {
+  const state = {
+    filter: { type: 'tag' },
+    tags: [{
+      name: 'angular',
+      enabled: true,
+    }, {
+      name: 'vue',
+      enabled: false,
+    }],
+    publications: [{
+      id: 'angular',
+      enabled: true,
+    }, {
+      id: 'vue',
+      enabled: false,
+    }],
+    showBookmarks: true,
+    bookmarks: [{
+      id: '1',
+      bookmarked: true,
+    }, {
+      id: '3',
+      bookmarked: true,
+    }],
+  };
+  module.mutations.resetPersonalization(state);
+  expect(state.filter).toEqual(null);
+  expect(state.tags).toEqual([{
+    name: 'angular',
+    enabled: false,
+  }, {
+    name: 'vue',
+    enabled: false,
+  }]);
+  expect(state.publications).toEqual([{
+    id: 'angular',
+    enabled: true,
+  }, {
+    id: 'vue',
+    enabled: true,
+  }]);
+  expect(state.showBookmarks).toEqual(false);
+  expect(state.bookmarks).toEqual([]);
+});
+
+it('should reset everything', async () => {
+  const state = {};
+  await testAction(
+    module.actions.reset,
+    undefined,
+    state,
+    [{ type: 'resetPersonalization', payload: null }],
+    [{ type: 'refreshFeed', payload: null }],
+  );
 });

@@ -35,7 +35,11 @@
       <svgicon icon="terminal"/>
       <span class="header__badge" v-if="showNotificationBadge"></span>
     </button>
-    <button class="btn btn-water-cheese header__sign-in">
+    <button class="btn-icon header__profile" v-if="logged" @click="$emit('profile')">
+      <img :src="profileImage" alt="Profile image"/>
+    </button>
+    <button class="btn btn-water-cheese header__sign-in" v-else
+            @click="$emit('login')">
       <svgicon icon="user_daily"/>
       <span>Sign in</span>
     </button>
@@ -85,6 +89,18 @@ export default {
       notificationsOpened(state) {
         return state.ui.showNotifications;
       },
+
+      logged(state) {
+        return !!state.user.profile;
+      },
+
+      profileImage(state) {
+        if (this.logged) {
+          return state.user.profile.image;
+        }
+
+        return '';
+      },
     }),
   },
 
@@ -111,19 +127,19 @@ export default {
       import('@daily/components/icons/github');
     },
 
-    getTopSites() {
-      return Promise.resolve()
-        .then((browser) => {
-          if ('topSites' in browser) {
-            return browser.topSites.get();
-          }
-          return [];
-        }).catch(() => []);
+    async getTopSites() {
+      try {
+        if ('topSites' in browser) {
+          return await browser.topSites.get();
+        }
+        return [];
+      } catch {
+        return [];
+      }
     },
 
     getIconUrl(url) {
-      const domain = url.split('/')[2];
-      return `https://logo.clearbit.com/${domain}`;
+      return `https://app.dailynow.co/icon?url=${url}&size=20`;
     },
 
     mouseUp(data) {
@@ -142,7 +158,7 @@ export default {
     },
 
     toggleBookmarks(pressed) {
-      this.$store.commit('feed/setShowBookmarks', pressed);
+      this.$store.dispatch('feed/setShowBookmarks', pressed);
       ga('send', 'event', 'Header', 'Bookmarks', pressed);
     },
 
@@ -202,6 +218,7 @@ export default {
     margin: auto;
 
     --da-switch-checked-color: var(--color-burger-60);
+    --da-switch-checked-background: var(--color-burger-90);
   }
 
   & .header__sign-in {
@@ -230,6 +247,19 @@ export default {
 
   & .btn-icon.active .svg-icon {
     color: var(--theme-primary);
+  }
+
+  & .header__profile {
+    width: 30px;
+    height: 30px;
+    margin: 0 8px 0 14px;
+    border-radius: 4px;
+    overflow: hidden;
+
+    & img {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 

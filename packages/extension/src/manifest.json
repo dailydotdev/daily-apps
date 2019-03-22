@@ -1,5 +1,6 @@
 {
   "manifest_version": 2,
+  "version": "0.0.0",
   "name": "Daily - Source for Busy Developers",
   "short_name": "Daily",
   "description": "Daily gathers the latest dev & tech posts in your new tab",
@@ -15,11 +16,12 @@
   "permissions": [
     "storage",
     "alarms",
-    "topSites",
-    "https://logo.clearbit.com/"
+    "topSites"
   ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "background.js"
+    ],
     "persistent": false
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com; object-src 'self'",
@@ -28,5 +30,8 @@
       "19": "icons/19.png",
       "38": "icons/38.png"
     }
-  }
+  },
+  "web_accessible_resources": [
+    "index.html"
+  ]
 }

@@ -68,7 +68,7 @@ beforeEach(() => {
     },
     mutations: {
       setPublications: jest.fn(),
-      mergeTags: jest.fn(),
+      setTags: jest.fn(),
     },
     actions: {
       setFilter: jest.fn(),

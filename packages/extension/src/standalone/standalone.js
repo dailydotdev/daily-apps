@@ -23,6 +23,14 @@ Vue.filter('terminalTime', value => value.toLocaleString('en-US', {
   hour12: true,
 }));
 
+Vue.filter('provider', (value) => {
+  if (value === 'github') {
+    return 'GitHub';
+  }
+
+  return value.replace(/^\w/, c => c.toUpperCase());
+});
+
 window.onbeforeunload = () => {
   window.scrollTo(0, 0);
 };

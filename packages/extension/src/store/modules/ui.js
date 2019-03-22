@@ -10,6 +10,7 @@ const initialState = () => ({
   showNotificationBadge: false,
   lastNotificationTime: null,
   showNotifications: false,
+  enableCardAnimations: true,
 });
 
 export default {
@@ -28,6 +29,10 @@ export default {
       state.showTopSites = value;
     },
 
+    setEnableCardAnimations(state, value) {
+      state.enableCardAnimations = value;
+    },
+
     showNotifications(state) {
       state.lastNotificationTime = new Date(state.notifications[0].timestamp.getTime() + 1);
       state.showNotificationBadge = false;
@@ -44,6 +49,13 @@ export default {
         .map(n => Object.assign({}, n, { html: DOMPurify.sanitize(n.html) }));
       state.showNotificationBadge = !since || !!notifications.find(n => n.timestamp > since);
     },
+
+    resetSettings(state) {
+      const def = initialState();
+      state.insaneMode = def.insaneMode;
+      state.showTopSites = def.showTopSites;
+      state.enableCardAnimations = def.enableCardAnimations;
+    },
   },
   actions: {
     setTheme({ commit, state }, theme) {
@@ -55,6 +67,12 @@ export default {
       const since = state.lastNotificationTime;
       const notifications = await profileService.fetchNotifications(since);
       commit('setNotifications', { notifications, since });
+    },
+
+    reset({ commit, dispatch }) {
+      const state = initialState();
+      commit('resetSettings');
+      return dispatch('setTheme', state.theme);
     },
   },
 };

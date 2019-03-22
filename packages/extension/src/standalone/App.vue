@@ -1,116 +1,130 @@
 <template>
-  <div class="app">
-    <da-header @go="onGoClicked"></da-header>
-    <da-sidebar ref="sidebar" :disabled="showBookmarks"></da-sidebar>
-    <div class="content">
-      <div class="content__header">
-        <template v-if="filter && !showBookmarks">
-          <button class="btn content__header__back-home" @click="onBackHome">
-            <svgicon icon="arrow"/>
-            <span>Back Home</span>
-          </button>
-          <img :src="filter.info.image" :alt="filter.info.name"
-               v-if="filter.type === 'publication'" class="content__header__pub-image"/>
-          <h4>// {{ filter.info.name }}</h4>
-          <transition name="fade">
-            <button class="btn content__header__add-filter" @click="onAddFilter" v-if="!hasFilter">
-              <svgicon icon="plus"/>
-              <span>Add To Feed</span>
+  <div class="app" :class="clsObj">
+    <da-spinner v-if="loading" class="loading"></da-spinner>
+    <template v-else>
+      <da-header @go="onGoClicked" @login="onLogin" @profile="onProfile"></da-header>
+      <da-sidebar ref="sidebar" :disabled="showBookmarks"></da-sidebar>
+      <div class="content">
+        <div class="content__header">
+          <template v-if="filter && !showBookmarks">
+            <button class="btn content__header__back-home" @click="onBackHome">
+              <svgicon icon="arrow"/>
+              <span>Back Home</span>
             </button>
-          </transition>
-        </template>
-        <template v-else>
-          <h4 v-if="!emptyBookmarks" class="uppercase">/* {{ title }} */</h4>
-          <a class="header__cta shadow1 " :href="cta.link" target="_blank"
-             @mouseup="ctaClick" :style="cta.style">
-            <span class="header__cta__text">// {{cta.text}}</span>
-            <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>
-            <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
-          </a>
-        </template>
-      </div>
-      <div class="content__empty-bookmarks" v-if="emptyBookmarks">
-        <img src="/bookmark.svg" alt="No bookmarks"/>
-        <h1 class="content__empty-bookmarks__title">Nothing is here</h1>
-        <p class="content__empty-bookmarks__text">Save article and it will be shown here.</p>
-      </div>
-      <div class="content__insane" v-if="insaneMode">
-        <template v-if="showAd">
-          <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item"
-                        @click="onAdClick" @impression="onAdImpression"/>
-        </template>
-        <da-insane-post v-for="item in posts" :key="item.id" :post="item"
+            <img :src="filter.info.image" :alt="filter.info.name"
+                 v-if="filter.type === 'publication'" class="content__header__pub-image"/>
+            <h4>// {{ filter.info.name }}</h4>
+            <transition name="fade">
+              <button class="btn content__header__add-filter" v-if="!hasFilter"
+                      @click="onAddFilter">
+                <svgicon icon="plus"/>
+                <span>Add To Feed</span>
+              </button>
+            </transition>
+          </template>
+          <template v-else>
+            <h4 v-if="!emptyBookmarks" class="uppercase">/* {{ title }} */</h4>
+            <a class="header__cta shadow1 " :href="cta.link" target="_blank"
+               @mouseup="ctaClick" :style="cta.style">
+              <span class="header__cta__text">// {{cta.text}}</span>
+              <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>
+              <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
+            </a>
+          </template>
+        </div>
+        <div class="content__empty-bookmarks" v-if="emptyBookmarks">
+          <img src="/bookmark.svg" alt="No bookmarks"/>
+          <h1 class="content__empty-bookmarks__title">Nothing is here</h1>
+          <p class="content__empty-bookmarks__text">Save article and it will be shown here.</p>
+        </div>
+        <div class="content__insane" v-if="insaneMode">
+          <template v-if="showAd">
+            <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item"
+                          @click="onAdClick" @impression="onAdImpression"/>
+          </template>
+          <da-insane-post v-for="item in posts" :key="item.id" :post="item"
+                          @bookmark="onBookmark" @menu="onPostMenu"
+                          @click="onPostClick"/>
+        </div>
+        <masonry class="content__cards" :cols="cols" :gutter="32" v-else>
+          <template v-if="showAd">
+            <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
+          </template>
+          <da-card-post v-for="item in posts" :key="item.id" :post="item"
                         @bookmark="onBookmark" @menu="onPostMenu"
                         @click="onPostClick"/>
+        </masonry>
       </div>
-      <masonry class="content__cards" :cols="cols" :gutter="32" v-else>
-        <template v-if="showAd">
-          <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
+      <div id="anchor" ref="anchor"></div>
+      <da-modal class="go-modal" v-if="showGoModal" @close="showGoModal = false">
+        <div class="go-modal__graphics">
+          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
+               class="go-modal__arrow left first"/>
+          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
+               class="go-modal__arrow left second"/>
+          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
+               class="go-modal__arrow left third"/>
+          <img svg-inline src="../svg/barcode.svg" alt="QR code"
+               class="go-modal__barcode"/>
+          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
+               class="go-modal__arrow third"/>
+          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
+               class="go-modal__arrow second"/>
+          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
+               class="go-modal__arrow first"/>
+        </div>
+        <h1><a href="https://go.dailynow.co">go.dailynow.co</a></h1>
+        <p>Welcome to our community! We value each new member and we hope you will enjoy… </p>
+      </da-modal>
+      <da-modal class="congrats-modal full" v-if="showCongratsModal"
+                @close="showCongratsModal = false" ref="congratsModal">
+        <img svg-inline src="../svg/happy_card.svg" alt="Happy card cartoon"
+             class="congrats__graphics"/>
+        <!--TODO: update to user name-->
+        <h1>Good news, {{ userFirstName }}!</h1>
+        <p>Welcome to our community! We value each new member and we hope you will enjoy… </p>
+        <button class="btn btn-big btn-modal" @click="$refs.congratsModal.close()">
+          F*** Yeah!
+        </button>
+      </da-modal>
+      <da-modal class="request-modal full" v-if="showRequestModal"
+                @close="showRequestModal = false" ref="requestModal">
+        <img svg-inline src="../svg/source_box.svg" alt="Flying box cartoon"
+             class="request__graphics"/>
+        <h1 class="overlap">Request sent</h1>
+        <p>Your request has been recieved and we’ll be contacting you shortly by email.</p>
+        <button class="btn btn-big btn-modal" @click="$refs.requestModal.close()">
+          OK, I’ll wait
+        </button>
+      </da-modal>
+      <da-modal class="ready-modal full" v-if="showReadyModal"
+                @close="showReadyModal = false" ref="readyModal">
+        <img svg-inline src="../svg/all_set.svg" alt="All set"
+             class="ready__graphics"/>
+        <h1 class="overlap">Hello world</h1>
+        <p>
+          Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+        </p>
+        <button class="btn btn-big btn-modal" @click="$refs.readyModal.close()">
+          Use Daily now!
+        </button>
+      </da-modal>
+      <da-login v-if="showLoginModal" @close="showLoginModal = false"/>
+      <da-profile v-if="showProfileModal" @close="showProfileModal = false"/>
+      <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
+        <template slot="title">Terminal</template>
+        <template slot="content">
+          <div class="notifications__item" v-for="(item, index) in notifications" :key="index">
+            <div class="notifications__item__time">{{ item.timestamp | terminalTime }}</div>
+            <div v-html="item.html"></div>
+          </div>
+          <div class="notifications__empty" v-if="!notifications.length">
+            From time to time the terminal will announce
+            new product releases and other surprises so stay tuned
+          </div>
         </template>
-        <da-card-post v-for="item in posts" :key="item.id" :post="item"
-                      @bookmark="onBookmark" @menu="onPostMenu"
-                      @click="onPostClick"/>
-      </masonry>
-    </div>
-    <div id="anchor" ref="anchor"></div>
-    <da-modal class="go-modal" v-if="showGoModal" @close="showGoModal = false">
-      <div class="go-modal__graphics">
-        <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-             class="go-modal__arrow left first"/>
-        <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-             class="go-modal__arrow left second"/>
-        <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-             class="go-modal__arrow left third"/>
-        <img svg-inline src="../svg/barcode.svg" alt="QR code"
-             class="go-modal__barcode"/>
-        <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-             class="go-modal__arrow third"/>
-        <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-             class="go-modal__arrow second"/>
-        <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-             class="go-modal__arrow first"/>
-      </div>
-      <h1><a href="https://go.dailynow.co">go.dailynow.co</a></h1>
-      <p>Welcome to our community! We value each new member and we hope you will enjoy… </p>
-    </da-modal>
-    <da-modal class="congrats-modal full" v-if="showCongratsModal"
-              @close="showCongratsModal = false" ref="congratsModal">
-      <img svg-inline src="../svg/happy_card.svg" alt="Happy card cartoon"
-           class="congrats__graphics"/>
-      <!--TODO: update to user name-->
-      <h1>Good news, Tsahi!</h1>
-      <p>Welcome to our community! We value each new member and we hope you will enjoy… </p>
-      <button class="btn btn-big" @click="$refs.congratsModal.close()">F*** Yeah!</button>
-    </da-modal>
-    <da-modal class="request-modal full" v-if="showRequestModal"
-              @close="showRequestModal = false" ref="requestModal">
-      <img svg-inline src="../svg/source_box.svg" alt="Flying box cartoon"
-           class="request__graphics"/>
-      <h1 class="overlap">Request sent</h1>
-      <p>Your request has been recieved and we’ll be contacting you shortly by email.</p>
-      <button class="btn btn-big" @click="$refs.requestModal.close()">OK, I’ll wait</button>
-    </da-modal>
-    <da-modal class="ready-modal full" v-if="showReadyModal"
-              @close="showReadyModal = false" ref="readyModal">
-      <img svg-inline src="../svg/all_set.svg" alt="All set"
-           class="ready__graphics"/>
-      <h1 class="overlap">Hello world</h1>
-      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-      <button class="btn btn-big" @click="$refs.readyModal.close()">Use Daily now!</button>
-    </da-modal>
-    <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
-      <template slot="title">Terminal</template>
-      <template slot="content">
-        <div class="notifications__item" v-for="(item, index) in notifications" :key="index">
-          <div class="notifications__item__time">{{ item.timestamp | terminalTime }}</div>
-          <div v-html="item.html"></div>
-        </div>
-        <div class="notifications__empty" v-if="!notifications.length">
-          From time to time the terminal will announce
-          new product releases and other surprises so stay tuned
-        </div>
-      </template>
-    </da-terminal>
+      </da-terminal>
+    </template>
   </div>
 </template>
 
@@ -125,6 +139,7 @@ import DaInsanePost from '@daily/components/src/components/DaInsanePost.vue';
 import DaInsaneAd from '@daily/components/src/components/DaInsaneAd.vue';
 import DaModal from '@daily/components/src/components/DaModal.vue';
 import DaTerminal from '@daily/components/src/components/DaTerminal.vue';
+import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import mixpanel from 'mixpanel-browser';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
@@ -137,7 +152,17 @@ import { version } from '../common/config';
 
 export default {
   components: {
-    DaSidebar, DaHeader, DaCardPost, DaCardAd, DaInsanePost, DaInsaneAd, DaModal, DaTerminal,
+    DaSidebar,
+    DaHeader,
+    DaCardPost,
+    DaCardAd,
+    DaInsanePost,
+    DaInsaneAd,
+    DaModal,
+    DaTerminal,
+    DaSpinner,
+    DaLogin: () => import('../components/DaLogin.vue'),
+    DaProfile: () => import('../components/DaProfile.vue'),
   },
 
   data() {
@@ -156,6 +181,9 @@ export default {
       showCongratsModal: false,
       showRequestModal: false,
       showReadyModal: false,
+      showLoginModal: false,
+      showProfileModal: false,
+      loading: false,
     };
   },
 
@@ -165,7 +193,11 @@ export default {
     },
 
     updateLines() {
-      this.$nextTick(() => this.$refs.sidebar.invalidate());
+      this.$nextTick(() => {
+        if (this.$refs.sidebar) {
+          this.$refs.sidebar.invalidate();
+        }
+      });
     },
 
     onBookmark({ post, bookmarked }) {
@@ -198,6 +230,18 @@ export default {
       this.showGoModal = true;
     },
 
+    onLogin() {
+      ga('send', 'event', 'Header', 'Login');
+      mixpanel.track('Login Click');
+      this.showLoginModal = true;
+    },
+
+    onProfile() {
+      ga('send', 'event', 'Header', 'Profile');
+      mixpanel.track('Profile Click');
+      this.showProfileModal = true;
+    },
+
     onBackHome() {
       ga('send', 'event', 'Feed', 'Home');
       this.clearFilter();
@@ -208,12 +252,77 @@ export default {
       this.addFilterToFeed();
     },
 
+    async initHome() {
+      this.updateLines();
+
+      Promise.all([
+        this.fetchPublications(),
+        this.fetchTags(),
+      ]).then(() => this.fetchNextFeedPage())
+        .then(() => this.contentObserver.observe(this.$refs.anchor))
+        // TODO: handle error
+        // eslint-disable-next-line no-console
+        .catch(console.error);
+
+      // TODO: handle error
+      monetizationService.fetchAd()
+        .then((ads) => {
+          this.ads = ads;
+          if (!ads.length) {
+            ga('send', 'event', 'Ad', 'NotAvailable');
+          }
+        })
+        // TODO: handle error
+        // eslint-disable-next-line no-console
+        .catch(console.error);
+
+      // TODO: analytics consent
+      this.fetchNotifications()
+      // TODO: handle error
+      // eslint-disable-next-line no-console
+        .catch(console.error);
+    },
+
+    checkLogin() {
+      const query = decodeURI(window.location.search)
+        .replace('?', '')
+        .split('&')
+        .map(param => param.split('='))
+        .reduce((values, [key, value]) => ({ ...values, [key]: value }), {});
+      if (query.provider && query.code) {
+        this.query = query;
+        this.loading = true;
+      }
+    },
+
+    trackPageView() {
+      const { showBookmarks, filter } = this;
+
+      const prefix = browserName ? '/extension' : '/';
+      const suffix = browserName ? `v=${version}&b=${browserName}` : `v=${version}`;
+
+      if (showBookmarks) {
+        ga('set', 'page', `${prefix}/bookmarks?${suffix}`);
+        mixpanel.track('Extension Bookmarks');
+      } else if (filter) {
+        ga('set', 'page', `${prefix}/${filter.type}/${filter.info.id || filter.info.name}?${suffix}`);
+        mixpanel.track(`Extension ${filter.type}`);
+      } else {
+        ga('set', 'page', `${prefix}?${suffix}`);
+        mixpanel.track('Extension Home');
+      }
+      ga('send', 'pageview');
+    },
+
     ...mapActions({
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       fetchTags: 'feed/fetchTags',
+      fetchPublications: 'feed/fetchPublications',
       clearFilter: 'feed/clearFilter',
       addFilterToFeed: 'feed/addFilterToFeed',
       fetchNotifications: 'ui/fetchNotifications',
+      authenticate: 'user/authenticate',
+      refreshToken: 'user/refreshToken',
     }),
 
     ...mapMutations({
@@ -259,6 +368,20 @@ export default {
       showNotifications(state) {
         return state.ui.showNotifications;
       },
+
+      userFirstName(state) {
+        if (!state.user.profile) {
+          return '';
+        }
+
+        return state.user.profile.name.split(' ')[0];
+      },
+
+      clsObj(state) {
+        return {
+          'animate-cards': state.ui.enableCardAnimations,
+        };
+      },
     }),
 
     ...mapGetters({
@@ -285,25 +408,7 @@ export default {
   },
 
   created() {
-    this.trackPageView = () => {
-      const { showBookmarks, filter } = this;
-
-      const prefix = browserName ? '/extension' : '/';
-      const suffix = browserName ? `v=${version}&b=${browserName}` : `v=${version}`;
-
-      if (showBookmarks) {
-        ga('set', 'page', `${prefix}/bookmarks?${suffix}`);
-        mixpanel.track('Extension Bookmarks');
-      } else if (filter) {
-        ga('set', 'page', `${prefix}/${filter.type}/${filter.info.id || filter.info.name}?${suffix}`);
-        mixpanel.track(`Extension ${filter.type}`);
-      } else {
-        ga('set', 'page', `${prefix}?${suffix}`);
-        mixpanel.track('Extension Home');
-      }
-      ga('send', 'pageview');
-    };
-
+    this.checkLogin();
     this.trackPageView();
 
     this.contentObserver = new IntersectionObserver(async (entries) => {
@@ -323,8 +428,6 @@ export default {
       import(`@daily/components/icons/${this.cta.icon}`);
     }
 
-    this.updateLines();
-
     const state = await getCache('state', {});
     this.loadFromCache(state);
     // TODO: find a better place apply theme after cache
@@ -332,32 +435,24 @@ export default {
       applyTheme(window.document, state.ui.theme, null);
     }
 
-    // TODO: handle error
-    monetizationService.fetchAd()
-      .then((ads) => {
-        this.ads = ads;
-        if (!ads.length) {
-          ga('send', 'event', 'Ad', 'NotAvailable');
-        }
-      });
-
-    await this.$store.dispatch('feed/fetchPublications');
-    await this.fetchNextFeedPage();
-    await this.fetchTags();
-
     // TODO: analytics consent
-    this.fetchNotifications()
+    initializeAnalytics(true, state.user.profile ? state.user.profile.id : null)
     // TODO: handle error
     // eslint-disable-next-line no-console
       .catch(console.error);
 
-    this.contentObserver.observe(this.$refs.anchor);
+    if (this.loading) {
+      const profile = await this.authenticate(this.query);
+      if (profile) {
+        this.showCongratsModal = profile.newUser;
+      }
 
-    // TODO: analytics consent
-    initializeAnalytics(true)
-    // TODO: handle error
-    // eslint-disable-next-line no-console
-      .catch(console.error);
+      window.history.replaceState({}, document.title, 'index.html');
+      this.loading = false;
+    }
+
+    await this.refreshToken();
+    await this.initHome();
   },
 };
 </script>
@@ -548,7 +643,7 @@ a {
     @mixin jr;
   }
 
-  & .btn {
+  & .btn.btn-modal {
     width: 180px;
     margin-top: 32px;
     color: var(--color-pepper-80);
@@ -687,6 +782,15 @@ a {
       color: inherit;
     }
   }
+}
+
+.loading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
 }
 
 .fade-enter-active, .fade-leave-active {

@@ -198,7 +198,6 @@ export default {
       });
     },
     open() {
-      // TODO: add tests disabled
       if (this.transitioning || this.opened || this.disabled) {
         return;
       }

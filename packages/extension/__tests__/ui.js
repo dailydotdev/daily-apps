@@ -39,6 +39,12 @@ it('should set show top sites in state', () => {
   expect(state.showTopSites).toEqual(true);
 });
 
+it('should set enable card animation in state', () => {
+  const state = {};
+  module.mutations.setEnableCardAnimations(state, true);
+  expect(state.enableCardAnimations).toEqual(true);
+});
+
 it('should show notifications and set state', () => {
   const state = {
     showNotificationBadge: true,
@@ -91,4 +97,33 @@ it('should fetch notifications and update state', async () => {
     { type: 'setNotifications', payload: { notifications, since: undefined } },
   ]);
   expect(profileService.fetchNotifications).toBeCalledTimes(1);
+});
+
+it('should reset settings', () => {
+  const notifications =
+    [{ timestamp: new Date() }, { timestamp: new Date(Date.now() - 1000) }];
+  const state = {
+    insaneMode: true,
+    showTopSites: false,
+    enableCardAnimations: false,
+    showNotificationBadge: true,
+    notifications,
+  };
+  module.mutations.resetSettings(state);
+  expect(state).toEqual({
+    insaneMode: false,
+    showTopSites: true,
+    enableCardAnimations: true,
+    showNotificationBadge: true,
+    notifications,
+  });
+});
+
+it('should reset everything', async () => {
+  await testAction(module.actions.reset,
+    undefined,
+    {},
+    [{ type: 'resetSettings', payload: null }],
+    [{ type: 'setTheme', payload: null }],
+  );
 });

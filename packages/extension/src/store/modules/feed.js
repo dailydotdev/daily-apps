@@ -19,8 +19,14 @@ const initialState = () => ({
   filter: null,
 });
 
-const addBookmarked = (state, posts) => {
-  if (state.bookmarks) {
+const isLoggedIn = state => !!state.user.profile;
+
+const addBookmarked = (state, posts, loggedIn) => {
+  if (loggedIn) {
+    if (state.showBookmarks) {
+      return posts.map(post => ({ ...post, bookmarked: true }));
+    }
+  } else if (state.bookmarks) {
     return posts.map(post => ({
       ...post,
       bookmarked: state.bookmarks.findIndex(bookmark => bookmark.id === post.id) > -1,
@@ -30,13 +36,21 @@ const addBookmarked = (state, posts) => {
   return posts;
 };
 
-const fetchPosts = async (state) => {
+const fetchPosts = async (state, loggedIn) => {
+  if (loggedIn && state.showBookmarks) {
+    return contentService.fetchBookmarks(state.latest, state.page);
+  }
+
   if (state.filter) {
     if (state.filter.type === 'publication') {
       return contentService.fetchPostsByPublication(state.latest, state.page, state.filter.info.id);
     }
 
     return contentService.fetchPostsByTag(state.latest, state.page, state.filter.info.name);
+  }
+
+  if (loggedIn) {
+    return contentService.fetchLatestPosts(state.latest, state.page);
   }
 
   const enabledPubs = state.publications.filter(p => p.enabled).map(p => p.id);
@@ -77,27 +91,22 @@ export default {
       state.publications = pubs;
     },
     setEnablePublication(state, { index, enabled }) {
-      Vue.set(state.publications, index,
-        Object.assign({}, state.publications[index], { enabled }));
+      Vue.set(state.publications, index, { ...state.publications[index], enabled });
     },
-    mergeTags(state, tags) {
-      // TODO: add tests merge logic
-      tags.forEach((t) => {
-        const index = state.tags.findIndex(t2 => t.name === t2.name);
-        if (index < 0) {
-          state.tags.push({ ...t, enabled: !!t.enabled });
-        }
-      });
+    setTags(state, tags) {
+      state.tags = tags;
     },
     setEnableTag(state, { index, enabled }) {
       Vue.set(state.tags, index,
         Object.assign({}, state.tags[index], { enabled }));
     },
-    setPosts(state, posts) {
-      state.posts = posts;
+    setPosts(state, { posts, type }) {
+      // TODO: add tests
+      state[type] = posts;
     },
-    addPosts(state, posts) {
-      state.posts = state.posts.concat(posts);
+    addPosts(state, { posts, type }) {
+      // TODO: add tests
+      state[type] = state[type].concat(posts);
     },
     setLatest(state, latest) {
       state.latest = latest;
@@ -125,17 +134,43 @@ export default {
       state.page = 0;
       state.posts = [];
     },
+    resetPersonalization(state) {
+      // TODO: add tests
+      state.filter = null;
+      state.bookmarks = [];
+      state.publications = state.publications.map(p => ({ ...p, enabled: true }));
+      state.tags = state.tags.map(t => ({ ...t, enabled: false }));
+      state.showBookmarks = false;
+    },
   },
   actions: {
-    async fetchPublications({ commit }) {
+    async fetchPublications({ commit, state }) {
       const pubs = await contentService.fetchPublications();
-      commit('setPublications', pubs);
+      commit('setPublications', pubs.map((p) => {
+        const index = state.publications.findIndex(p2 => p.id === p2.id);
+        if (index < 0) {
+          return p;
+        }
+
+        return { ...p, enabled: p.enabled && state.publications[index].enabled };
+      }));
     },
-    async fetchTags({ commit }) {
+
+    async fetchTags({ commit, state }) {
       const tags = await contentService.fetchPopularTags();
-      commit('mergeTags', tags);
+      const mergedTags = tags.reduce((acc, t) => {
+        const index = acc.findIndex(t2 => t.name === t2.name);
+        if (index < 0) {
+          acc.push(t);
+        } else {
+          acc[index] = { ...t, enabled: t.enabled || state.tags[index].enabled };
+        }
+        return acc;
+      }, state.tags);
+      commit('setTags', mergedTags);
     },
-    async fetchNextFeedPage({ commit, state }) {
+
+    async fetchNextFeedPage({ commit, state, rootState }) {
       // TODO: add tests
       if (state.loading) {
         return false;
@@ -147,13 +182,15 @@ export default {
 
       commit('setLoading', true);
 
+      const type = state.showBookmarks ? 'bookmarks' : 'posts';
+      const loggedIn = !!rootState.user.profile;
       // TODO: add tests addBookmarked
-      const posts = addBookmarked(state, await fetchPosts(state));
+      const posts = addBookmarked(state, await fetchPosts(state, loggedIn), loggedIn);
 
       if (!state.page) {
-        commit('setPosts', posts);
+        commit('setPosts', { posts, type });
       } else {
-        commit('addPosts', posts);
+        commit('addPosts', { posts, type });
       }
 
       commit('setLoading', false);
@@ -164,14 +201,17 @@ export default {
 
       return true;
     },
+
     async setFilter({ commit, dispatch }, filter) {
       commit('setFilter', filter);
       commit('resetFeed');
       return dispatch('fetchNextFeedPage');
     },
+
     async clearFilter({ dispatch }) {
       return dispatch('setFilter', null);
     },
+
     addFilterToFeed({ commit, state }) {
       if (!state.filter) {
         return;
@@ -189,23 +229,65 @@ export default {
         });
       }
     },
-    async refreshFeed({ commit, dispatch, state }) {
-      if (!state.filter && !state.showBookmarks) {
+
+    async refreshFeed({
+                        commit, dispatch, state, rootState,
+                      }) {
+      if (!state.filter && (!state.showBookmarks || rootState.user.profile)) {
         commit('resetFeed');
         return dispatch('fetchNextFeedPage');
       }
 
       return false;
     },
-    async setEnablePublication({ commit, dispatch }, payload) {
-      // TODO: add tests
+
+    async setEnablePublication({
+                                 commit, dispatch, state, rootState,
+                               }, payload) {
       commit('setEnablePublication', payload);
+
+      if (isLoggedIn(rootState)) {
+        // TODO: handle error
+        await contentService.updateFeedPublications([{
+          publicationId: state.publications[payload.index].id,
+          enabled: payload.enabled,
+        }]);
+      }
+
       return dispatch('refreshFeed');
     },
-    async setEnableTag({ commit, dispatch }, payload) {
-      // TODO: add tests
+
+    async setEnableTag({
+                         commit, dispatch, state, rootState,
+                       }, payload) {
       commit('setEnableTag', payload);
+
+      if (isLoggedIn(rootState)) {
+        if (payload.enabled) {
+          // TODO: handle error
+          await contentService.addUserTags([state.tags[payload.index].name]);
+        } else {
+          // TODO: handle error
+          await contentService.deleteUserTag(state.tags[payload.index].name);
+        }
+      }
+
       return dispatch('refreshFeed');
+    },
+
+    reset({ commit, dispatch }) {
+      commit('resetPersonalization');
+      return dispatch('refreshFeed');
+    },
+
+    setShowBookmarks({ commit, dispatch, rootState }, value) {
+      // TODO: add tests
+      commit('setShowBookmarks', value);
+      if (rootState.user.profile) {
+        return dispatch('refreshFeed');
+      }
+
+      return Promise.resolve();
     },
   },
 };

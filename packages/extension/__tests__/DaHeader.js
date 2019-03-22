@@ -15,6 +15,7 @@ localVue.component('da-switch', DaSwitch);
 let ui;
 let feed;
 let store;
+let user;
 
 beforeEach(() => {
   window.ga = () => {
@@ -42,13 +43,20 @@ beforeEach(() => {
     state: {
       showBookmarks: false,
     },
-    mutations: {
+    actions: {
       setShowBookmarks: jest.fn(),
     },
   };
 
+  user = {
+    namespaced: true,
+    state: {
+      profile: null,
+    },
+  };
+
   store = new Vuex.Store({
-    modules: { ui, feed },
+    modules: { ui, feed, user },
   });
 });
 
@@ -88,7 +96,7 @@ it('should commit "setShowBookmarks" when switch is toggled', (done) => {
   wrapper.find('.header__switch').trigger('click');
   wrapper.find('.header__switch').find('.switch__handle').trigger('transitionend');
   setTimeout(() => {
-    expect(feed.mutations.setShowBookmarks).toBeCalledWith(expect.anything(), true);
+    expect(feed.actions.setShowBookmarks).toBeCalledWith(expect.anything(), true, undefined);
     done();
   }, 100);
 });
@@ -110,4 +118,17 @@ it('should commit "hideNotifications" when terminal button is clicked', (done) =
     expect(ui.mutations.hideNotifications).toBeCalledWith(expect.anything(), undefined);
     done();
   }, 100);
+});
+
+it('should emit "login" on sign-in button click', () => {
+  const wrapper = mount(DaHeader, { store, localVue });
+  wrapper.find('.header__sign-in').trigger('click');
+  expect(wrapper.emitted().login[0]).toEqual([]);
+});
+
+it('should emit "profile" on profile button click', () => {
+  const wrapper = mount(DaHeader, { store, localVue });
+  store.state.user.profile = { image: 'http://image.com' };
+  wrapper.find('.header__profile').trigger('click');
+  expect(wrapper.emitted().profile[0]).toEqual([]);
 });
