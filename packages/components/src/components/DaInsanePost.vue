@@ -4,7 +4,7 @@
       <h5 class="insane__title">{{post.title | cardTitle}}</h5>
       <div class="insane__tags micro1">{{ tags }}</div>
     </a>
-    <span class="insane__views micro2 reveal">// {{post.views}} Views</span>
+    <span class="insane__views micro2 reveal" v-if="post.readTime">// {{post.readTime}}m read</span>
     <img class="insane__icon lazyload reveal"
          :data-src="post.publication.image"
          :alt="post.publication.name" :title="post.publication.name"/>

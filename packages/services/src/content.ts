@@ -18,6 +18,8 @@ export interface Post {
     size: string;
     placeholder: string;
     bookmarked?: boolean;
+    views: number;
+    readTime?: number;
 }
 
 export interface FeedPublication {
