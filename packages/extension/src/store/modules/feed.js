@@ -163,6 +163,7 @@ export default {
         if (index < 0) {
           acc.push(t);
         } else {
+          // eslint-disable-next-line no-param-reassign
           acc[index] = { ...t, enabled: t.enabled || state.tags[index].enabled };
         }
         return acc;
@@ -231,8 +232,8 @@ export default {
     },
 
     async refreshFeed({
-                        commit, dispatch, state, rootState,
-                      }) {
+      commit, dispatch, state, rootState,
+    }) {
       if (!state.filter && (!state.showBookmarks || rootState.user.profile)) {
         commit('resetFeed');
         return dispatch('fetchNextFeedPage');
@@ -242,8 +243,8 @@ export default {
     },
 
     async setEnablePublication({
-                                 commit, dispatch, state, rootState,
-                               }, payload) {
+      commit, dispatch, state, rootState,
+    }, payload) {
       commit('setEnablePublication', payload);
 
       if (isLoggedIn(rootState)) {
@@ -258,8 +259,8 @@ export default {
     },
 
     async setEnableTag({
-                         commit, dispatch, state, rootState,
-                       }, payload) {
+      commit, dispatch, state, rootState,
+    }, payload) {
       commit('setEnableTag', payload);
 
       if (isLoggedIn(rootState)) {

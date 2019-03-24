@@ -55,6 +55,7 @@ const mergeEnabledArray = (curr, update, defaultState, key) => {
     if (index < 0) {
       acc.push(t);
     } else {
+      // eslint-disable-next-line no-param-reassign
       acc[index] = { ...t, enabled: t.enabled };
     }
     return acc;
@@ -75,15 +76,14 @@ const plugin = (store) => {
         state.feed.publications.map(p => ({ ...p, enabled: true })));
       const pr1 = store.dispatch('ui/setTheme', settings.theme);
       const pr2 = contentService.fetchFeedPublications()
-        .then(pubs =>
-          Object.keys(pubs).forEach(p => store.commit('feed/setEnablePublication', {
-            index: state.feed.publications.findIndex(p2 => p2.id === p),
-            enabled: pubs[p],
-          })));
+        .then(pubs => Object.keys(pubs).forEach(p => store.commit('feed/setEnablePublication', {
+          index: state.feed.publications.findIndex(p2 => p2.id === p),
+          enabled: pubs[p],
+        })));
       const pr3 = contentService.fetchUserTags()
         .then(tags => store.commit('feed/setTags', mergeEnabledArray(state.feed.tags, tags.map(t => ({
           name: t,
-          enabled: true
+          enabled: true,
         })), false, 'name')));
       await Promise.all([pr1, pr2, pr3]);
     } finally {
