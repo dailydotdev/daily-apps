@@ -3,7 +3,8 @@
     <da-spinner v-if="loading" class="loading"></da-spinner>
     <template v-else>
       <da-header @go="onGoClicked" @login="onLogin" @profile="onProfile"></da-header>
-      <da-sidebar ref="sidebar" :disabled="showBookmarks"></da-sidebar>
+      <da-sidebar ref="sidebar" :disabled="showBookmarks"
+                  @requested-source="showRequestModal = true"></da-sidebar>
       <div class="content">
         <div class="content__header">
           <template v-if="filter && !showBookmarks">

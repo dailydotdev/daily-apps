@@ -59,20 +59,20 @@ export default {
 
   computed: {
     ...mapState({
-      logged(state) {
+      isLoggedIn(state) {
         return !!state.user.profile;
       },
 
       name(state) {
-        return this.logged ? state.user.profile.name.split(' ')[0] : '';
+        return this.isLoggedIn ? state.user.profile.name.split(' ')[0] : '';
       },
 
       profileImage(state) {
-        return this.logged ? state.user.profile.image : '';
+        return this.isLoggedIn ? state.user.profile.image : '';
       },
 
       provider(state) {
-        return this.logged ? state.user.profile.providers[0] : '';
+        return this.isLoggedIn ? state.user.profile.providers[0] : '';
       },
 
       showTopSites(state) {

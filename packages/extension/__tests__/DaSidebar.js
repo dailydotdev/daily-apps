@@ -18,6 +18,7 @@ localVue.use(svgicon);
 localVue.component('da-mode-switch', DaModeSwitch);
 
 let feed;
+let user;
 let store;
 
 beforeEach(() => {
@@ -77,8 +78,18 @@ beforeEach(() => {
     },
   };
 
+  user = {
+    namespaced: true,
+    state: {
+      profile: null,
+    },
+    getters: {
+      isLoggedIn: state => !!state.profile,
+    },
+  };
+
   store = new Vuex.Store({
-    modules: { feed },
+    modules: { feed, user },
   });
 });
 
@@ -191,6 +202,7 @@ it('should commit "setEnableTag" when adding tag', (done) => {
 });
 
 it('should activate request source form', (done) => {
+  user.state.profile = { name: 'John' };
   const wrapper = mount(DaSidebar, { store, localVue });
   wrapper.vm.$nextTick(() => {
     expect(wrapper.vm.requestActive).toEqual(false);
@@ -202,6 +214,7 @@ it('should activate request source form', (done) => {
 });
 
 it('should enable submit when input is a valid url', (done) => {
+  user.state.profile = { name: 'John' };
   const wrapper = mount(DaSidebar, { store, localVue });
   wrapper.vm.requestActive = true;
   wrapper.vm.$nextTick(() => {

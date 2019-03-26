@@ -23,6 +23,11 @@ export default {
       state.profile = { ...state.profile, ...newToken };
     },
   },
+  getters: {
+    isLoggedIn(state) {
+      return !!state.profile;
+    },
+  },
   actions: {
     async authenticate({ commit }, { provider, code }) {
       try {

@@ -43,6 +43,10 @@ export interface ContentService {
 
     fetchPublications(): Promise<Publication[]>;
 
+    requestPublication(source: string): Promise<void>;
+
+    reportPost(postId: string, reason: string): Promise<void>;
+
     fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]>;
 
     fetchPostsByPublication(latest: Date, page: number, pub: string): Promise<Post[]>;
@@ -110,6 +114,14 @@ export class ContentServiceImpl implements ContentService {
     async fetchPublications(): Promise<Publication[]> {
         const res = await this.request.get('/v1/publications');
         return res.data.map((x: any) => reviveJSON(x, dateReviver));
+    }
+
+    async requestPublication(source: string): Promise<void> {
+        await this.request.post('/v1/publications/request', {source});
+    }
+
+    async reportPost(postId: string, reason: string): Promise<void> {
+        await this.request.post(`/v1/posts/${postId}/report`, {reason});
     }
 
     async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]> {

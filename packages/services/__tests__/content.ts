@@ -24,6 +24,31 @@ it('should fetch publications from server', async () => {
     expect(actual).toEqual(expected);
 });
 
+it('should send publication request', async () => {
+    const body = {source: 'https://www.dailynow.co'};
+    nock(baseURL)
+        .matchHeader('authorization', 'Bearer token')
+        .post('/v1/publications/request', body)
+        .reply(204);
+
+    service.setAccessToken('token');
+
+    await service.requestPublication(body.source);
+});
+
+it('should report post', async () => {
+    const reason = 'nsfw';
+    const postId = '12345';
+    nock(baseURL)
+        .matchHeader('authorization', 'Bearer token')
+        .post(`/v1/posts/${postId}/report`, {reason})
+        .reply(204);
+
+    service.setAccessToken('token');
+
+    await service.reportPost(postId, reason);
+});
+
 it('should fetch latest posts from server', async () => {
     nock(baseURL)
         .get('/v1/posts/latest')

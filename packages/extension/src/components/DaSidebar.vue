@@ -45,29 +45,31 @@
         <div class="sidebar__sources" v-else>
           <div class="sidebar__content__enabled">
             <div class="sidebar__content__header">My sources</div>
-            <button class="sidebar__content__element sidebar__sources__activate-request"
-                    @click.prevent="activateRequest" v-if="!requestActive">
-              <svgicon name="plus" class="sidebar__content__element__image no-hover"/>
-              <span>Request source</span>
-            </button>
-            <form class="sidebar__content__element" v-else @click.prevent="$refs.request.focus()"
-                  ref="form">
-              <button type="button" class="btn-icon btn-small" @click="cancelRequest">
-                <svgicon name="x" class="sidebar__content__element__image"/>
+            <template v-if="isLoggedIn">
+              <button class="sidebar__content__element sidebar__sources__activate-request"
+                      @click.prevent="activateRequest" v-if="!requestActive">
+                <svgicon name="plus" class="sidebar__content__element__image no-hover"/>
+                <span>Request source</span>
               </button>
-              <input class="sidebar__input" type="url" placeholder="Paste URL" required
-                     ref="request" @input="updateFormValidity">
-              <button type="submit" class="sidebar__sources__submit btn-icon"
-                      :class="{invert: !disableSubmit}" :disabled="disableSubmit"
-                      @click.prevent="submitRequest">
-                <svgicon name="v" class="invert"/>
-              </button>
-              <transition name="bouncy-flip">
-                <div class="sidebar__sources__error nuggets" v-if="submitError">
-                  Something went wrong, try again later
-                </div>
-              </transition>
-            </form>
+              <form class="sidebar__content__element" v-else @click.prevent="$refs.request.focus()"
+                    ref="form">
+                <button type="button" class="btn-icon btn-small" @click="cancelRequest">
+                  <svgicon name="x" class="sidebar__content__element__image"/>
+                </button>
+                <input class="sidebar__input" type="url" placeholder="Paste URL" required
+                       ref="request" @input="updateFormValidity">
+                <button type="submit" class="sidebar__sources__submit btn-icon"
+                        :class="{invert: !disableSubmit}" :disabled="disableSubmit"
+                        @click.prevent="submitRequest">
+                  <svgicon name="v" class="invert"/>
+                </button>
+                <transition name="bouncy-flip">
+                  <div class="sidebar__sources__error nuggets" v-if="submitError">
+                    Something went wrong, try again later
+                  </div>
+                </transition>
+              </form>
+            </template>
             <div class="sidebar__content__element" v-for="item in enabledPubs"
                  :key="item.id">
               <button class="sidebar__content__element__button"
@@ -126,7 +128,7 @@
 
 <script>
 import 'lazysizes';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import { contentService } from '../common/services';
 
@@ -159,14 +161,8 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      publications(state) {
-        return state.feed.publications;
-      },
-      tags(state) {
-        return state.feed.tags;
-      },
-    }),
+    ...mapState('feed', ['publications', 'tags']),
+    ...mapGetters('user', ['isLoggedIn']),
     enabledPubs() {
       return this.publications.filter(x => x.enabled);
     },
@@ -249,10 +245,16 @@ export default {
         this.submitError = false;
       }
     },
-    submitRequest() {
+    async submitRequest() {
       ga('send', 'event', 'Request Source', 'Submit');
-      this.$refs.request.value = '';
-      this.requestActive = false;
+      try {
+        this.submitError = false;
+        await contentService.requestPublication(this.$refs.request.value);
+        this.resetRequest();
+        this.$emit('requested-source');
+      } catch {
+        this.submitError = true;
+      }
     },
     setEnableTag(tag, enabled) {
       ga('send', 'event', 'Tags', 'Toggle', enabled ? 'Check' : 'Uncheck');

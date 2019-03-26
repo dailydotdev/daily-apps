@@ -35,7 +35,7 @@
       <svgicon icon="terminal"/>
       <span class="header__badge" v-if="showNotificationBadge"></span>
     </button>
-    <button class="btn-icon header__profile" v-if="logged" @click="$emit('profile')">
+    <button class="btn-icon header__profile" v-if="isLoggedIn" @click="$emit('profile')">
       <img :src="profileImage" alt="Profile image"/>
     </button>
     <button class="btn btn-water-cheese header__sign-in" v-else
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapGetters } from 'vuex';
 import { themes } from '@daily/services';
 
 export default {
@@ -65,37 +65,17 @@ export default {
   },
 
   computed: {
+    ...mapState('ui', [
+      'showTopSites', 'insaneMode', 'showNotificationBadge', 'notificationsOpened',
+    ]),
+    ...mapState('feed', ['showBookmarks']),
+    ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
-      theme(state) {
-        return themes.indexOf(state.ui.theme);
-      },
+      theme: state => themes.indexOf(state.ui.theme),
 
-      insaneMode(state) {
-        return state.ui.insaneMode;
-      },
-
-      showTopSites(state) {
-        return state.ui.showTopSites;
-      },
-
-      showBookmarks(state) {
-        return state.feed.showBookmarks;
-      },
-
-      showNotificationBadge(state) {
-        return state.ui.showNotificationBadge;
-      },
-
-      notificationsOpened(state) {
-        return state.ui.showNotifications;
-      },
-
-      logged(state) {
-        return !!state.user.profile;
-      },
-
+      notificationsOpened: state => state.ui.showNotifications,
       profileImage(state) {
-        if (this.logged) {
+        if (this.isLoggedIn) {
           return state.user.profile.image;
         }
 

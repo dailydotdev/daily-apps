@@ -53,6 +53,9 @@ beforeEach(() => {
     state: {
       profile: null,
     },
+    getters: {
+      isLoggedIn: state => !!state.profile,
+    },
   };
 
   store = new Vuex.Store({
