@@ -1,5 +1,7 @@
 <template>
-  <VueContext class="context shadow2" ref="context">
+  <VueContext class="context shadow2" ref="context"
+              @close="$emit('close')" @open="onOpen"
+              :close-on-click="false">
     <slot></slot>
   </VueContext>
 </template>
@@ -12,8 +14,22 @@ export default {
   components: { VueContext },
 
   methods: {
-    open(event) {
-      this.$nextTick(() => this.$refs.context.open(event));
+    open(event, data) {
+      this.$nextTick(() => this.$refs.context.open(event, data));
+    },
+    close() {
+      this.$refs.context.close();
+    },
+    positionMenu({
+      top, bottom, left, right,
+    }) {
+      const el = this.$refs.context.$el;
+      const x = left || (right - el.offsetWidth);
+      const y = top || (bottom - el.offsetHeight);
+      this.$refs.context.positionMenu(y, x);
+    },
+    onOpen(...args) {
+      this.$emit('open', ...args);
     },
   },
 };

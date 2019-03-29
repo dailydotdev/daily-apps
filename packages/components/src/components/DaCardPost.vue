@@ -16,9 +16,14 @@
         <svgicon icon="bookmark"/>
       </button>
       <button class="btn-icon btn-small card__footer__menu" title="Menu"
-              @click="$emit('menu', { post })">
+              @click="$emit('menu', { post, event: $event })" v-if="showMenu">
         <svgicon icon="menu"/>
       </button>
+      <transition name="post-notification">
+        <div class="card__footer__notification nuggets" v-if="notifying">
+          {{ notification }}
+        </div>
+      </transition>
     </template>
     <svgicon icon="menu" class="card__menu--duplicate" slot="other" v-if="menuOpened"/>
   </DaCard>
@@ -40,6 +45,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    showMenu: {
+      type: Boolean,
+      default: true,
+    },
+  },
+
+  data() {
+    return {
+      notifying: false,
+      notification: '',
+    };
   },
 
   computed: {
@@ -55,11 +71,30 @@ export default {
     import('../../icons/bookmark');
     import('../../icons/menu');
   },
+
+  methods: {
+    notify(notification) {
+      this.notification = notification;
+      this.notifying = true;
+      setTimeout(() => {
+        this.notifying = false;
+      }, 1500);
+    },
+  },
 };
 </script>
 <style>
 .card--post {
   position: relative;
+
+  & .card__link, & .card__footer {
+    transition: opacity 0.1s;
+  }
+
+  & .card__footer {
+    position: relative;
+    overflow: hidden;
+  }
 }
 
 .card--post .card__content {
@@ -81,6 +116,7 @@ export default {
 .menu-opened.card--post {
   & .card__link, & .card__footer {
     opacity: 0.4;
+    pointer-events: none;
   }
 }
 
@@ -108,7 +144,30 @@ export default {
   margin-left: auto;
 }
 
+.card__footer__notification {
+  position: absolute;
+  display: flex;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  background: var(--color-water-60);
+}
+
 .bookmarked .card__footer__bookmark .svg-icon {
   color: var(--color-burger-60);
+}
+
+.post-notification-enter-active, .post-notification-leave-active {
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.post-notification-enter, .post-notification-leave-to /* .fade-leave-active below version 2.1.8 */
+{
+  opacity: 0;
+  transform: translateY(100%);
 }
 </style>

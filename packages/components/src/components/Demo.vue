@@ -11,7 +11,7 @@
         <h3>Posts</h3>
         <div class="horizontal_container cards">
           <DaCardPost :post="item" v-for="(item, index) in posts" :key="index"
-                      :menu-opened="index === 1"/>
+                      :menu-opened="index === 1" :show-menu="index !== 0"/>
         </div>
       </div>
       <div>
@@ -26,7 +26,8 @@
       <div>
         <h3>Posts</h3>
         <div class="vertical_container no-margin">
-          <DaInsanePost :post="item" v-for="(item, index) in posts" :key="index"/>
+          <DaInsanePost :post="item" v-for="(item, index) in posts" :key="index"
+                        :menu-opened="index === 1" :show-menu="index !== 0"/>
         </div>
       </div>
       <div>

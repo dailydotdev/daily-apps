@@ -21,7 +21,7 @@ it('should emit menu event on click', () => {
   const post = posts[0];
   const wrapper = shallowMount(DaInsanePost, { propsData: { post } });
   wrapper.find('.insane__reveal__menu').trigger('click');
-  expect(wrapper.emitted().menu[0]).toEqual([{ post }]);
+  expect(wrapper.emitted().menu[0][0].post).toEqual(post);
 });
 
 it('should set bookmark button title', () => {
@@ -39,7 +39,7 @@ it('should set bookmark button title when bookmarked', () => {
 it('should set bookmarked class when bookmarked', () => {
   const post = posts[1];
   const wrapper = shallowMount(DaInsanePost, { propsData: { post } });
-  expect(wrapper.element.classList.contains('bookmarked')).toEqual(true);
+  expect(wrapper.find('.insane--post').element.classList.contains('bookmarked')).toEqual(true);
 });
 
 it('should set tags', () => {

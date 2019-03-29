@@ -43,17 +43,19 @@
             <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item"
                           @click="onAdClick" @impression="onAdImpression"/>
           </template>
-          <da-insane-post v-for="item in posts" :key="item.id" :post="item"
+          <da-insane-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                           @bookmark="onBookmark" @menu="onPostMenu"
-                          @click="onPostClick"/>
+                          @click="onPostClick" :show-menu="isLoggedIn"
+                          :menu-opened="selectedPostId === item.id"/>
         </div>
         <masonry class="content__cards" :cols="cols" :gutter="32" v-else>
           <template v-if="showAd">
             <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
           </template>
-          <da-card-post v-for="item in posts" :key="item.id" :post="item"
+          <da-card-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                         @bookmark="onBookmark" @menu="onPostMenu"
-                        @click="onPostClick"/>
+                        @click="onPostClick" :show-menu="isLoggedIn"
+                        :menu-opened="selectedPostId === item.id"/>
         </masonry>
       </div>
       <div id="anchor" ref="anchor"></div>
@@ -125,6 +127,11 @@
           </div>
         </template>
       </da-terminal>
+      <da-context ref="context" class="post-context" @open="onPostMenuOpened"
+                  @close="selectedPostId = null">
+        <button class="context__item" @click="reportPost('broken')">Broken link</button>
+        <button class="context__item" @click="reportPost('nsfw')">Report NSFW</button>
+      </da-context>
     </template>
   </div>
 </template>
@@ -138,14 +145,12 @@ import DaCardPost from '@daily/components/src/components/DaCardPost.vue';
 import DaCardAd from '@daily/components/src/components/DaCardAd.vue';
 import DaInsanePost from '@daily/components/src/components/DaInsanePost.vue';
 import DaInsaneAd from '@daily/components/src/components/DaInsaneAd.vue';
-import DaModal from '@daily/components/src/components/DaModal.vue';
-import DaTerminal from '@daily/components/src/components/DaTerminal.vue';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import mixpanel from 'mixpanel-browser';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
 import ctas from './ctas';
-import { monetizationService } from '../common/services';
+import { monetizationService, contentService } from '../common/services';
 import { getCache } from '../common/cache';
 import initializeAnalytics from '../common/analytics';
 import { browserName } from '../common/browser';
@@ -159,11 +164,12 @@ export default {
     DaCardAd,
     DaInsanePost,
     DaInsaneAd,
-    DaModal,
-    DaTerminal,
+    DaModal: () => import('@daily/components/src/components/DaModal.vue'),
+    DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
     DaSpinner,
     DaLogin: () => import('../components/DaLogin.vue'),
     DaProfile: () => import('../components/DaProfile.vue'),
+    DaContext: () => import('@daily/components/src/components/DaContext.vue'),
   },
 
   data() {
@@ -185,6 +191,7 @@ export default {
       showLoginModal: false,
       showProfileModal: false,
       loading: false,
+      selectedPostId: null,
     };
   },
 
@@ -212,9 +219,23 @@ export default {
       mixpanel.track('Post Click', { source: post.source });
     },
 
-    // eslint-disable-next-line
-    onPostMenu({ post }) {
+    onPostMenu({ post, event }) {
+      ga('send', 'event', 'Post', 'Menu');
+      this.$refs.context.open(event, post);
+    },
 
+    onPostMenuOpened(event, post) {
+      const rect = event.target.getBoundingClientRect();
+      this.$refs.context.positionMenu({ bottom: rect.top - 8, right: rect.right });
+      this.selectedPostId = post.id;
+    },
+
+    async reportPost(reason) {
+      ga('send', 'event', 'Post', 'Report', reason);
+      const postId = this.selectedPostId;
+      this.$refs.context.close();
+      await contentService.reportPost(postId, reason);
+      this.$nextTick(() => this.$refs.posts.find(com => com.post.id === postId).notify('Thanks for reporting!'));
     },
 
     onAdClick(ad) {
@@ -334,15 +355,9 @@ export default {
   },
 
   computed: {
+    ...mapState('ui', ['insaneMode', 'notifications', 'showNotifications']),
+    ...mapState('feed', ['showBookmarks', 'filter']),
     ...mapState({
-      insaneMode(state) {
-        return state.ui.insaneMode;
-      },
-
-      showBookmarks(state) {
-        return state.feed.showBookmarks;
-      },
-
       title(state) {
         let res = '';
         if (state.feed.showBookmarks) {
@@ -356,18 +371,6 @@ export default {
         }
 
         return res;
-      },
-
-      filter(state) {
-        return state.feed.filter;
-      },
-
-      notifications(state) {
-        return state.ui.notifications;
-      },
-
-      showNotifications(state) {
-        return state.ui.showNotifications;
       },
 
       userFirstName(state) {
@@ -389,6 +392,7 @@ export default {
       posts: 'feed/feed',
       showAd: 'feed/showAd',
       hasFilter: 'feed/hasFilter',
+      isLoggedIn: 'user/isLoggedIn',
     }),
 
     emptyBookmarks() {
@@ -792,6 +796,14 @@ a {
   top: 0;
   bottom: 0;
   margin: auto;
+}
+
+.v-context.context.post-context {
+  width: 130px;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .fade-enter-active, .fade-leave-active {

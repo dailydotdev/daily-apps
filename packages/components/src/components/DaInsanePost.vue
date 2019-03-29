@@ -1,24 +1,28 @@
 <template>
-  <div class="insane insane--post" :class="cls">
-    <a :href="post.url" target="_blank" class="insane__link" @click="$emit('click', post)">
-      <h5 class="insane__title">{{post.title | cardTitle}}</h5>
-      <div class="insane__tags micro1">{{ tags }}</div>
-    </a>
-    <span class="insane__views micro2 reveal" v-if="post.readTime">// {{post.readTime}}m read</span>
-    <img class="insane__icon lazyload reveal"
-         :data-src="post.publication.image"
-         :alt="post.publication.name" :title="post.publication.name"/>
-    <div class="insane__reveal reveal">
-      <button class="btn-icon insane__reveal__bookmark"
-              :title="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
-              @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
-        <svgicon icon="bookmark"/>
-      </button>
-      <button class="btn-icon insane__reveal__menu" title="Menu"
-              @click="$emit('menu', { post })">
-        <svgicon icon="menu"/>
-      </button>
+  <div class="insane__wrapper">
+    <div class="insane insane--post" :class="cls">
+      <a :href="post.url" target="_blank" class="insane__link" @click="$emit('click', post)">
+        <h5 class="insane__title">{{post.title | cardTitle}}</h5>
+        <div class="insane__tags micro1">{{ tags }}</div>
+      </a>
+      <span class="insane__views micro2 reveal"
+            v-if="post.readTime">// {{post.readTime}}m read</span>
+      <img class="insane__icon lazyload reveal"
+           :data-src="post.publication.image"
+           :alt="post.publication.name" :title="post.publication.name"/>
+      <div class="insane__reveal reveal">
+        <button class="btn-icon insane__reveal__bookmark"
+                :title="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
+                @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
+          <svgicon icon="bookmark"/>
+        </button>
+        <button class="btn-icon insane__reveal__menu" title="Menu"
+                @click="$emit('menu', { post, event: $event })" v-if="showMenu">
+          <svgicon icon="menu"/>
+        </button>
+      </div>
     </div>
+    <svgicon icon="menu" class="insane__reveal__menu--duplicate" slot="other" v-if="menuOpened"/>
   </div>
 </template>
 
@@ -32,6 +36,14 @@ export default {
       type: Object,
       required: true,
     },
+    menuOpened: {
+      type: Boolean,
+      default: false,
+    },
+    showMenu: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   computed: {
@@ -42,6 +54,8 @@ export default {
     cls() {
       return {
         bookmarked: this.post.bookmarked,
+        'menu-opened': this.menuOpened,
+        'hide-menu': !this.showMenu,
       };
     },
   },
@@ -50,20 +64,44 @@ export default {
     import('../../icons/bookmark');
     import('../../icons/menu');
   },
+
+  methods: {
+    notify(notification) {
+      // TODO: implement
+      console.log(notification);
+    },
+  },
 };
 </script>
 
 <style>
+.insane__wrapper {
+  position: relative;
+  width: 100%;
+}
+
 .insane--post {
   position: relative;
+  transition: opacity 0.1s;
 
   & .reveal {
     transition: transform 0.2s ease-out;
   }
 
-  &:hover .reveal {
-    transform: translateX(-88px);
+  &:hover, &.menu-opened {
+    & .reveal {
+      transform: translateX(-88px);
+    }
   }
+
+  &.hide-menu:hover .reveal {
+    transform: translateX(-56px);
+  }
+}
+
+.menu-opened.insane--post {
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .insane__tags {
@@ -97,6 +135,16 @@ export default {
   & .btn-icon {
     margin: 0 4px;
   }
+}
+
+.insane__wrapper .insane__reveal__menu--duplicate {
+  position: absolute;
+  display: block;
+  right: 16px;
+  bottom: 25px;
+  width: 24px;
+  height: 24px;
+  color: var(--theme-primary);
 }
 
 .bookmarked .insane__reveal__bookmark .svg-icon {
