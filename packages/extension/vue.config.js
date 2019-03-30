@@ -1,3 +1,6 @@
+const path = require('path');
+const { GenerateSW } = require('workbox-webpack-plugin');
+
 process.env.VUE_APP_VERSION = require('./package.json').version;
 
 module.exports = {
@@ -25,6 +28,7 @@ module.exports = {
       },
     },
   },
+  productionSourceMap: false,
   chainWebpack: (config) => {
     config.resolve.symlinks(false);
     config.module
@@ -32,4 +36,52 @@ module.exports = {
       .use('vue-svg-inline-loader')
       .loader('vue-svg-inline-loader');
   },
+  configureWebpack: config => {
+    if (process.env.NODE_ENV === 'chrome') {
+      return {
+        plugins: [
+          new GenerateSW({
+            exclude: [/.*/],
+            swDest: path.join(config.output.path, 'sw.js'),
+            importWorkboxFrom: 'local',
+            clientsClaim: true,
+            skipWaiting: true,
+            runtimeCaching: [
+              {
+                urlPattern: new RegExp('^https://res.cloudinary.com/daily-now/image/upload/.*/v1/posts/.*'),
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'post-images',
+                  expiration: {
+                    // 7 days
+                    maxAgeSeconds: 604800,
+                  },
+                },
+              },
+              {
+                urlPattern: new RegExp('^https://res.cloudinary.com/daily-now/image/upload/.*/v1/ads/.*'),
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'ads-images',
+                  expiration: {
+                    // 7 days
+                    maxAgeSeconds: 604800,
+                  },
+                },
+              },
+              {
+                urlPattern: new RegExp('^https://res.cloudinary.com/daily-now/image/upload/.*/v1/logos/.*'),
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'pubs-logos',
+                },
+              },
+            ],
+          }),
+        ],
+      };
+    } else {
+      return {};
+    }
+  }
 };
