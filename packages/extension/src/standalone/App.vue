@@ -34,7 +34,7 @@
           </template>
         </div>
         <div class="content__empty-bookmarks" v-if="emptyBookmarks">
-          <img src="/bookmark.svg" alt="No bookmarks"/>
+          <img svg-inline src="../svg/bookmark.svg" alt="No bookmarks"/>
           <h1 class="content__empty-bookmarks__title">Nothing here, yet</h1>
           <p class="content__empty-bookmarks__text">
             Bookmark articles on the main feed and it will be shown here.
@@ -61,60 +61,10 @@
         </masonry>
       </div>
       <div id="anchor" ref="anchor"></div>
-      <da-modal class="go-modal" v-if="showGoModal" @close="showGoModal = false">
-        <div class="go-modal__graphics">
-          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-               class="go-modal__arrow left first"/>
-          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-               class="go-modal__arrow left second"/>
-          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-               class="go-modal__arrow left third"/>
-          <img svg-inline src="../svg/barcode.svg" alt="QR code"
-               class="go-modal__barcode"/>
-          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-               class="go-modal__arrow third"/>
-          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-               class="go-modal__arrow second"/>
-          <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-               class="go-modal__arrow first"/>
-        </div>
-        <h1><a href="https://go.dailynow.co">go.dailynow.co</a></h1>
-        <p>You can enjoy Daily on your mobile device as well. Give it a try!</p>
-      </da-modal>
-      <da-modal class="congrats-modal full" v-if="showCongratsModal"
-                @close="showCongratsModal = false" ref="congratsModal">
-        <img svg-inline src="../svg/happy_card.svg" alt="Happy card cartoon"
-             class="congrats__graphics"/>
-        <!--TODO: update to user name-->
-        <h1>Good news, {{ userFirstName }}!</h1>
-        <p>Welcome to our community! We value each new member and we hope you will enjoy… </p>
-        <button class="btn btn-big btn-modal" @click="$refs.congratsModal.close()">
-          F*** Yeah!
-        </button>
-      </da-modal>
-      <da-modal class="request-modal full" v-if="showRequestModal"
-                @close="showRequestModal = false" ref="requestModal">
-        <img svg-inline src="../svg/source_box.svg" alt="Flying box cartoon"
-             class="request__graphics"/>
-        <h1 class="overlap">Request sent</h1>
-        <p>Your request has been received. We will be in touch shortly by email.</p>
-        <button class="btn btn-big btn-modal" @click="$refs.requestModal.close()">
-          OK, thanks
-        </button>
-      </da-modal>
-      <da-modal class="ready-modal full" v-if="showReadyModal"
-                @close="showReadyModal = false" ref="readyModal">
-        <img svg-inline src="../svg/all_set.svg" alt="All set"
-             class="ready__graphics"/>
-        <h1 class="overlap">Hello world</h1>
-        <p>
-          From now on, you can focus on code and
-          we will search for dev news around the web for you.
-        </p>
-        <button class="btn btn-big btn-modal" @click="$refs.readyModal.close()">
-          Use Daily now!
-        </button>
-      </da-modal>
+      <da-go v-if="showGoModal" @close="showGoModal = false"/>
+      <da-congrats v-if="showCongratsModal" @close="showCongratsModal = false"/>
+      <da-request v-if="showRequestModal" @close="showRequestModal = false"/>
+      <da-welcome v-if="showReadyModal" @close="showReadyModal = false"/>
       <da-login v-if="showLoginModal" @close="showLoginModal = false"/>
       <da-profile v-if="showProfileModal" @close="showProfileModal = false"/>
       <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
@@ -167,12 +117,15 @@ export default {
     DaCardAd,
     DaInsanePost,
     DaInsaneAd,
-    DaModal: () => import('@daily/components/src/components/DaModal.vue'),
-    DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
     DaSpinner,
+    DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
+    DaContext: () => import('@daily/components/src/components/DaContext.vue'),
     DaLogin: () => import('../components/DaLogin.vue'),
     DaProfile: () => import('../components/DaProfile.vue'),
-    DaContext: () => import('@daily/components/src/components/DaContext.vue'),
+    DaGo: () => import('../components/DaGo.vue'),
+    DaWelcome: () => import('../components/DaWelcome.vue'),
+    DaCongrats: () => import('../components/DaCongrats'),
+    DaRequest: () => import('../components/DaRequest'),
   },
 
   data() {
@@ -374,14 +327,6 @@ export default {
         }
 
         return res;
-      },
-
-      userFirstName(state) {
-        if (!state.user.profile) {
-          return '';
-        }
-
-        return state.user.profile.name.split(' ')[0];
       },
 
       clsObj(state) {
@@ -662,88 +607,6 @@ a {
 
 .modal.full .modal__container {
   padding-top: 0;
-}
-
-.go-modal.modal .modal__container {
-  background: linear-gradient(134.72deg, var(--color-cabbage-70) 0%, var(--color-onion-70) 100%);
-
-  & .go-modal__graphics {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 22px;
-    align-self: stretch;
-
-    &:before {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-      height: 110px;
-      margin: auto 0;
-      background: linear-gradient(270deg,
-      rgba(169, 171, 179, 0) 0%, var(--color-salt-10) 50%, rgba(169, 171, 179, 0) 100%);
-      opacity: 0.64;
-      mix-blend-mode: overlay;
-    }
-  }
-
-  & .go-modal__arrow {
-    width: 38px;
-
-    &.left {
-      transform: rotate(180deg);
-    }
-
-    &.first {
-      opacity: 0.16;
-    }
-
-    &.second {
-      opacity: 0.24;
-    }
-
-    &.third {
-      opacity: 0.32;
-    }
-  }
-
-  & .go-modal__barcode {
-    width: 123px;
-    margin: 0 16px;
-  }
-
-  & h1 {
-    text-transform: none;
-  }
-}
-
-.congrats-modal.modal .modal__container {
-  background: linear-gradient(135deg, var(--color-avocado-70) 0%, var(--color-blue-cheese-90) 100%);
-
-  & .congrats__graphics {
-    height: 240px;
-  }
-}
-
-.request-modal.modal .modal__container {
-  background: linear-gradient(315deg, var(--color-water-60) 0%, var(--color-blue-cheese-80) 100%);
-
-  & .request__graphics {
-    height: 268px;
-  }
-}
-
-.ready-modal.modal .modal__container {
-  background: linear-gradient(180deg, var(--color-ketchup-40) 0%, var(--color-bacon-80) 100%);
-
-  & .request__graphics {
-    height: 268px;
-  }
 }
 
 .notifications {
