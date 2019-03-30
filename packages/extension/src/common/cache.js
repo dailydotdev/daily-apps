@@ -1,5 +1,6 @@
 export const STATE_KEY = 'state';
 export const ANALYTICS_ID_KEY = 'analyticsId';
+export const CONSENT_KEY = 'consent';
 
 export function setCache(key, value) {
   return browser.storage.local.set({ [key]: value });

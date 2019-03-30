@@ -67,6 +67,7 @@
       <da-welcome v-if="showReadyModal" @close="showReadyModal = false"/>
       <da-login v-if="showLoginModal" @close="showLoginModal = false"/>
       <da-profile v-if="showProfileModal" @close="showProfileModal = false"/>
+      <da-consent v-if="showConsent" @close="optOut" @opt-in="optIn" @opt-out="optOut"/>
       <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
         <template slot="title">Terminal</template>
         <template slot="content">
@@ -104,10 +105,12 @@ import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
 import ctas from './ctas';
 import { monetizationService, contentService } from '../common/services';
-import { getCache } from '../common/cache';
+import { getCache, setCache, CONSENT_KEY } from '../common/cache';
 import initializeAnalytics from '../common/analytics';
 import { browserName } from '../common/browser';
 import { version } from '../common/config';
+
+const setAnalyticsConsent = value => setCache(CONSENT_KEY, value);
 
 export default {
   components: {
@@ -126,6 +129,7 @@ export default {
     DaWelcome: () => import('../components/DaWelcome.vue'),
     DaCongrats: () => import('../components/DaCongrats'),
     DaRequest: () => import('../components/DaRequest'),
+    DaConsent: () => import('../components/DaConsent'),
   },
 
   data() {
@@ -146,6 +150,7 @@ export default {
       showReadyModal: false,
       showLoginModal: false,
       showProfileModal: false,
+      showConsent: false,
       loading: false,
       selectedPostId: null,
     };
@@ -292,6 +297,40 @@ export default {
       ga('send', 'pageview');
     },
 
+    initializeAnalytics(consent) {
+      initializeAnalytics(consent, this.isLoggedIn ? this.$store.state.user.profile.id : null);
+    },
+
+    optOut() {
+      setAnalyticsConsent(false);
+      this.initializeAnalytics(false);
+      this.showConsent = false;
+    },
+
+    optIn() {
+      setAnalyticsConsent(true);
+      this.initializeAnalytics(true);
+      this.showConsent = false;
+    },
+
+    startTracking() {
+      if (browserName === 'firefox') {
+        getCache(CONSENT_KEY, null)
+          .then((consent) => {
+            if (consent === null) {
+              this.showConsent = true;
+            } else {
+              this.initializeAnalytics(consent);
+            }
+          })
+          // TODO: handle error
+          // eslint-disable-next-line no-console
+          .catch(console.error);
+      } else {
+        this.initializeAnalytics(true);
+      }
+    },
+
     ...mapActions({
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       fetchTags: 'feed/fetchTags',
@@ -388,11 +427,7 @@ export default {
       applyTheme(window.document, state.ui.theme, null);
     }
 
-    // TODO: analytics consent
-    initializeAnalytics(true, this.isLoggedIn ? this.$store.state.user.profile.id : null)
-    // TODO: handle error
-    // eslint-disable-next-line no-console
-      .catch(console.error);
+    this.startTracking();
 
     if (this.loading) {
       const profile = await this.authenticate(this.query);
