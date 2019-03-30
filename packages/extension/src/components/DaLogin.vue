@@ -7,19 +7,19 @@
     <div class="login__desc">
       <svgicon icon="link" class="login__desc__icon"/>
       <p class="login__desc__text">
-        Control on content by request sources, article and etc.
+        Influence on content by request sources, article and etc.
       </p>
     </div>
     <div class="login__desc">
       <svgicon icon="mobile" class="login__desc__icon"/>
       <p class="login__desc__text">
-        Your preferences is sync with mobile version & other browsers.
+        Sync settings and bookmarks across devices & browsers.
       </p>
     </div>
     <div class="login__desc">
       <svgicon icon="user" class="login__desc__icon"/>
       <p class="login__desc__text">
-        Help the community by report on articles.
+        Help the community by moderating irrelevant content.
       </p>
     </div>
     <div class="login__buttons">

@@ -154,6 +154,7 @@ export default {
   align-items: center;
   justify-content: center;
   margin: 0;
+  color: var(--color-salt-10);
   background: var(--color-water-60);
 }
 

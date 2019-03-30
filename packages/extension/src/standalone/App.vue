@@ -35,8 +35,10 @@
         </div>
         <div class="content__empty-bookmarks" v-if="emptyBookmarks">
           <img src="/bookmark.svg" alt="No bookmarks"/>
-          <h1 class="content__empty-bookmarks__title">Nothing is here</h1>
-          <p class="content__empty-bookmarks__text">Save article and it will be shown here.</p>
+          <h1 class="content__empty-bookmarks__title">Nothing here, yet</h1>
+          <p class="content__empty-bookmarks__text">
+            Bookmark articles on the main feed and it will be shown here.
+          </p>
         </div>
         <div class="content__insane" v-if="insaneMode">
           <template v-if="showAd">
@@ -77,7 +79,7 @@
                class="go-modal__arrow first"/>
         </div>
         <h1><a href="https://go.dailynow.co">go.dailynow.co</a></h1>
-        <p>Welcome to our community! We value each new member and we hope you will enjoy… </p>
+        <p>You can enjoy Daily on your mobile device as well. Give it a try!</p>
       </da-modal>
       <da-modal class="congrats-modal full" v-if="showCongratsModal"
                 @close="showCongratsModal = false" ref="congratsModal">
@@ -95,9 +97,9 @@
         <img svg-inline src="../svg/source_box.svg" alt="Flying box cartoon"
              class="request__graphics"/>
         <h1 class="overlap">Request sent</h1>
-        <p>Your request has been recieved and we’ll be contacting you shortly by email.</p>
+        <p>Your request has been received. We will be in touch shortly by email.</p>
         <button class="btn btn-big btn-modal" @click="$refs.requestModal.close()">
-          OK, I’ll wait
+          OK, thanks
         </button>
       </da-modal>
       <da-modal class="ready-modal full" v-if="showReadyModal"
@@ -106,7 +108,8 @@
              class="ready__graphics"/>
         <h1 class="overlap">Hello world</h1>
         <p>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+          From now on, you can focus on code and
+          we will search for dev news around the web for you.
         </p>
         <button class="btn btn-big btn-modal" @click="$refs.readyModal.close()">
           Use Daily now!
@@ -441,7 +444,7 @@ export default {
     }
 
     // TODO: analytics consent
-    initializeAnalytics(true, state.user.profile ? state.user.profile.id : null)
+    initializeAnalytics(true, this.isLoggedIn ? this.$store.state.user.profile.id : null)
     // TODO: handle error
     // eslint-disable-next-line no-console
       .catch(console.error);

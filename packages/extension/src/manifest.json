@@ -24,6 +24,11 @@
     ],
     "persistent": false
   },
+  "applications": {
+    "gecko": {
+      "strict_min_version": "54.0"
+    }
+  },
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com; object-src 'self'",
   "browser_action": {
     "default_icon": {

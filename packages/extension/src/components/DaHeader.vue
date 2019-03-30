@@ -215,6 +215,7 @@ export default {
   & .top-site__image {
     width: 20px;
     height: 20px;
+    background: var(--theme-primary);
   }
 
   & .space {
