@@ -119,7 +119,7 @@ export default {
     },
 
     getIconUrl(url) {
-      return `https://app.dailynow.co/icon?url=${url}&size=20`;
+      return `https://app.dailynow.co/icon?url=${encodeURIComponent(url)}&size=20`;
     },
 
     mouseUp(data) {

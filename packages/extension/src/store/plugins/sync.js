@@ -100,7 +100,7 @@ const plugin = (store) => {
       case 'loadFromCache':
         if (isLoggedIn(state)) {
           // TODO: handle error
-          // await fetchPersonalization(state);
+          await fetchPersonalization(state);
         }
         break;
       case 'ui/setTheme':

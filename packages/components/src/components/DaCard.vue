@@ -6,12 +6,12 @@
              :data-lowsrc="placeholder"
              :data-src="image"/>
       </div>
-      <div class="card__content">
+      <div class="card__content card__hover">
         <h5 class="card__title">{{title | cardTitle}}</h5>
         <slot name="content"></slot>
       </div>
     </a>
-    <div class="card__footer shadow1">
+    <div class="card__footer card__hover shadow1">
       <slot name="footer"></slot>
     </div>
     <slot name="other"></slot>
@@ -68,6 +68,7 @@ export default {
 .card {
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 
   &.small {
     & .card__link:before {
@@ -179,19 +180,21 @@ export default {
   }
 }
 
-.card__content, .card__footer {
-  transition: transform .2s ease-in;
+.card__hover {
+  transition: transform 0.2s ease-in;
   transform-origin: center;
 }
 
-.card:hover {
+.card:hover,
+.card.hover {
   & .card__background__image {
     transform: translate3d(0, 4px, 0) scale(1.05);
   }
 }
 
-.animate-cards .card:hover {
-  & .card__content, & .card__footer {
+.animate-cards .card:hover,
+.animate-cards .card.hover {
+  & .card__hover {
     transform: translate3d(0, -16px, 0) scale(1.03);
   }
 }

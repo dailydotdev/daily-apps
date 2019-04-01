@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar" :class="{opened, transitioning}">
+  <aside class="sidebar" :class="{opened, transitioning}">
     <div class="sidebar__content" @mouseleave="close">
       <div class="sidebar__content__wrapper">
         <div class="sidebar__filter">
@@ -123,7 +123,7 @@
       </svg>
     </div>
     <div class="sidebar__trigger__bg"></div>
-  </div>
+  </aside>
 </template>
 
 <script>

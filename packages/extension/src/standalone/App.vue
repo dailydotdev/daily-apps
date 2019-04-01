@@ -5,7 +5,7 @@
       <da-header @go="onGoClicked" @login="onLogin" @profile="onProfile"></da-header>
       <da-sidebar ref="sidebar" :disabled="showBookmarks"
                   @requested-source="showRequestModal = true"></da-sidebar>
-      <div class="content">
+      <main class="content">
         <div class="content__header">
           <template v-if="filter && !showBookmarks">
             <button class="btn content__header__back-home" @click="onBackHome">
@@ -59,7 +59,7 @@
                         @click="onPostClick" :show-menu="isLoggedIn"
                         :menu-opened="selectedPostId === item.id"/>
         </masonry>
-      </div>
+      </main>
       <div id="anchor" ref="anchor"></div>
       <da-go v-if="showGoModal" @close="showGoModal = false"/>
       <da-congrats v-if="showCongratsModal" @close="showCongratsModal = false"/>
@@ -237,7 +237,7 @@ export default {
 
     async initHome() {
       this.updateLines();
-
+      
       Promise.all([
         this.fetchPublications(),
         this.fetchTags(),

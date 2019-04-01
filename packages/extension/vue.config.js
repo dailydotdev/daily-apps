@@ -36,7 +36,7 @@ module.exports = {
       .use('vue-svg-inline-loader')
       .loader('vue-svg-inline-loader');
   },
-  configureWebpack: config => {
+  configureWebpack: (config) => {
     if (process.env.NODE_ENV === 'chrome') {
       return {
         plugins: [
@@ -80,8 +80,7 @@ module.exports = {
           }),
         ],
       };
-    } else {
-      return {};
     }
-  }
+    return {};
+  },
 };

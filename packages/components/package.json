@@ -16,6 +16,8 @@
     "vue-context": "^3.4.0"
   },
   "devDependencies": {
+    "@babel/runtime": "^7.4.2",
+    "@vue/babel-preset-app": "^3.5.5",
     "@vue/cli-plugin-babel": "^3.2.0",
     "@vue/cli-plugin-eslint": "^3.2.0",
     "@vue/cli-plugin-unit-jest": "^3.2.0",

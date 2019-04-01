@@ -25,7 +25,7 @@
         </div>
       </transition>
     </template>
-    <svgicon icon="menu" class="card__menu--duplicate" slot="other" v-if="menuOpened"/>
+    <svgicon icon="menu" class="card__menu--duplicate  card__hover" slot="other" v-if="menuOpened"/>
   </DaCard>
 </template>
 
@@ -63,6 +63,7 @@ export default {
       return {
         bookmarked: this.post.bookmarked,
         'menu-opened': this.menuOpened,
+        hover: this.menuOpened,
       };
     },
   },
@@ -87,10 +88,6 @@ export default {
 .card--post {
   position: relative;
 
-  & .card__link, & .card__footer {
-    transition: opacity 0.1s;
-  }
-
   & .card__footer {
     position: relative;
     overflow: hidden;
@@ -114,10 +111,15 @@ export default {
 }
 
 .menu-opened.card--post {
+  pointer-events: none;
+
   & .card__link, & .card__footer {
     opacity: 0.4;
-    pointer-events: none;
   }
+}
+
+.animate-cards .card.hover .card__menu--duplicate {
+  right: 12px;
 }
 
 .card__tags {

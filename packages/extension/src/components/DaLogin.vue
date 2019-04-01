@@ -135,10 +135,6 @@ export default {
 
 .login__background {
   position: absolute;
-  left: -9999px;
-  right: -9999px;
-  top: -9999px;
-  bottom: -9999px;
   min-width: 100%;
   min-height: 100%;
   margin: auto;
