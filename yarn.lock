@@ -1791,24 +1791,6 @@
     babel-plugin-transform-vue-jsx "^4.0.1"
     core-js "^2.5.7"
 
-"@vue/babel-preset-app@^3.5.3":
-  version "3.5.3"
-  resolved "https://registry.yarnpkg.com/@vue/babel-preset-app/-/babel-preset-app-3.5.3.tgz#4c89b2b3608840300c3fa52b132330522983cbeb"
-  integrity sha512-PcREZtY5JOEct5IsDdLJ+RLoTmpNETdljGukw8lhvuUmaqDiLpzMfTnxQ4FJHS9A+SNs6W+OaWj+NyN7nTlf2Q==
-  dependencies:
-    "@babel/helper-module-imports" "^7.0.0"
-    "@babel/plugin-proposal-class-properties" "^7.0.0"
-    "@babel/plugin-proposal-decorators" "^7.1.0"
-    "@babel/plugin-syntax-dynamic-import" "^7.0.0"
-    "@babel/plugin-syntax-jsx" "^7.0.0"
-    "@babel/plugin-transform-runtime" "^7.4.0"
-    "@babel/preset-env" "^7.0.0 < 7.4.0"
-    "@babel/runtime" "^7.0.0"
-    "@babel/runtime-corejs2" "^7.2.0"
-    "@vue/babel-preset-jsx" "^1.0.0-beta.2"
-    babel-plugin-dynamic-import-node "^2.2.0"
-    core-js "^2.6.5"
-
 "@vue/babel-preset-app@^3.5.5":
   version "3.5.5"
   resolved "https://registry.yarnpkg.com/@vue/babel-preset-app/-/babel-preset-app-3.5.5.tgz#d28bfc5fdec0b3dcc4edf2aba975cce09699db92"

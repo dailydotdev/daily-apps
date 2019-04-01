@@ -237,7 +237,7 @@ export default {
 
     async initHome() {
       this.updateLines();
-      
+
       Promise.all([
         this.fetchPublications(),
         this.fetchTags(),
