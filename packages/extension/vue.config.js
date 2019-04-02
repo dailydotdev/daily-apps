@@ -26,6 +26,7 @@ module.exports = {
           entry: 'src/background.js',
         },
       },
+      modesToZip: ['chrome', 'firefox'],
     },
   },
   productionSourceMap: false,
@@ -37,7 +38,7 @@ module.exports = {
       .loader('vue-svg-inline-loader');
   },
   configureWebpack: (config) => {
-    if (process.env.NODE_ENV === 'chrome') {
+    if (process.env.TARGET === 'chrome') {
       return {
         plugins: [
           new GenerateSW({

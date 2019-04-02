@@ -26,5 +26,7 @@ Daily browser extension written in Vue
 * Install `lerna` as a global package `yarn global add lerna` 
 * Bootstrap project `lerna bootstrap`
 * Build project `lerna run build`
-* Firefox build (zip file) should be located at `packages/extension/dist-zip`
+* Change working directory to extension project `cd packages/extension`
+* Build Firefox version `yarn build:firefox`
+* Firefox build should be located at `dist`
 

@@ -10,9 +10,6 @@
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "chrome_url_overrides": {
-    "newtab": "index.html"
-  },
   "permissions": [
     "storage",
     "alarms",
@@ -21,13 +18,7 @@
   "background": {
     "scripts": [
       "background.js"
-    ],
-    "persistent": false
-  },
-  "applications": {
-    "gecko": {
-      "strict_min_version": "54.0"
-    }
+    ]
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com; object-src 'self'",
   "browser_action": {

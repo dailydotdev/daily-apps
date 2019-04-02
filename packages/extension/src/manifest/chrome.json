@@ -1,0 +1,7 @@
+{
+  "background": {
+    "persistent": false
+  },
+  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
+  "offline_enabled": true
+}

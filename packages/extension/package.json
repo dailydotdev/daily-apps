@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service build --mode development --watch",
+    "serve": "TARGET=development yarn manifest && vue-cli-service build --mode development --watch",
     "build": "vue-cli-service build",
+    "build:chrome": "TARGET=chrome yarn manifest && yarn build --mode chrome",
+    "build:firefox": "TARGET=firefox yarn manifest && yarn build --mode firefox",
+    "build:all": "yarn build:chrome && yarn build:firefox && yarn zip:src",
     "test": "yarn lint && vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "zip:src": "node build/zip-src.js",
+    "manifest": "node build/manifest.js"
   },
   "dependencies": {
     "@daily/components": "^0.1.0",
@@ -35,6 +40,7 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
     "chalk": "^2.4.2",
+    "deepmerge": "^3.2.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0-0",
     "imports-loader": "^0.8.0",
