@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "TARGET=development yarn manifest && vue-cli-service build --mode development --watch",
-    "build": "vue-cli-service build",
+    "build": "TARGET=chrome yarn manifest && vue-cli-service build",
     "build:chrome": "TARGET=chrome yarn manifest && yarn build --mode chrome",
     "build:firefox": "TARGET=firefox yarn manifest && yarn build --mode firefox",
     "build:all": "yarn build:chrome && yarn build:firefox && yarn zip:src",
@@ -22,6 +22,7 @@
     "mixpanel-browser": "^2.26.0",
     "vue": "^2.5.17",
     "vue-masonry-css": "^1.0.3",
+    "vue-router": "^3.0.2",
     "vue-svgicon": "^3.2.2",
     "vuex": "^3.0.1",
     "webextension-polyfill": "^0.4.0"
