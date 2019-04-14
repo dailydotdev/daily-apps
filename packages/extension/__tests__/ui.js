@@ -110,7 +110,7 @@ it('should reset settings', () => {
     [{ timestamp: new Date() }, { timestamp: new Date(Date.now() - 1000) }];
   const state = {
     insaneMode: true,
-    showTopSites: false,
+    showTopSites: true,
     enableCardAnimations: false,
     showNotificationBadge: true,
     notifications,
@@ -118,7 +118,7 @@ it('should reset settings', () => {
   module.mutations.resetSettings(state);
   expect(state).toEqual({
     insaneMode: false,
-    showTopSites: true,
+    showTopSites: false,
     enableCardAnimations: true,
     showNotificationBadge: true,
     notifications,

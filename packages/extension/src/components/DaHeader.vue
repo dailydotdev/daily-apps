@@ -84,12 +84,18 @@ export default {
     }),
   },
 
+  watch: {
+    async showTopSites(val) {
+      if (val) {
+        // TODO: handle error
+        const sites = await this.getTopSites();
+        this.topSites = sites.slice(0, 5);
+      }
+    },
+  },
+
   mounted() {
     this.loadIcons();
-    this.getTopSites()
-      .then((sites) => {
-        this.topSites = sites.slice(0, 5);
-      });
   },
 
   methods: {

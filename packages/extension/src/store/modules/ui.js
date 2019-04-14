@@ -5,7 +5,7 @@ import { profileService } from '../../common/services';
 const initialState = () => ({
   theme: null,
   insaneMode: false,
-  showTopSites: true,
+  showTopSites: false,
   notifications: [],
   showNotificationBadge: false,
   lastNotificationTime: null,
@@ -78,6 +78,17 @@ export default {
       const state = initialState();
       commit('resetSettings');
       return dispatch('setTheme', state.theme);
+    },
+
+    async setShowTopSites({ commit }, value) {
+      if (value) {
+        const granted = await browser.permissions.request({ permissions: ['topSites'] });
+        if (!granted) {
+          return;
+        }
+      }
+
+      commit('setShowTopSites', value);
     },
   },
 };

@@ -92,9 +92,10 @@ export default {
       await this.logout();
     },
 
-    onToggleTopSites(val) {
+    async onToggleTopSites(val) {
       ga('send', 'event', 'Profile', 'Click', 'Top Sites');
-      this.$store.commit('ui/setShowTopSites', val);
+      // TODO: handle error
+      await this.$store.dispatch('ui/setShowTopSites', val);
     },
 
     onToggleCardAnimations(val) {

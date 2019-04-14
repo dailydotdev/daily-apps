@@ -12,7 +12,9 @@
   },
   "permissions": [
     "storage",
-    "alarms",
+    "alarms"
+  ],
+  "optional_permissions": [
     "topSites"
   ],
   "background": {
