@@ -175,7 +175,7 @@ it('should set disabledTags according to state', () => {
   }]);
 });
 
-it('should commit "setEnableTag" when removing tag', (done) => {
+it('should dispatch "setEnableTag" when removing tag', (done) => {
   const wrapper = mount(DaSidebar, { store, localVue });
   wrapper.vm.filterChecked = true;
   wrapper.vm.$nextTick(() => {
@@ -183,7 +183,7 @@ it('should commit "setEnableTag" when removing tag', (done) => {
       .find('.sidebar__tags .sidebar__content__enabled')
       .find('.sidebar__content__element__button-hidden').trigger('click');
     expect(feed.actions.setEnableTag)
-      .toBeCalledWith(expect.anything(), { index: 0, enabled: false }, undefined);
+      .toBeCalledWith(expect.anything(), { tag: feed.state.tags[0], enabled: false }, undefined);
     done();
   });
 });
@@ -196,7 +196,7 @@ it('should commit "setEnableTag" when adding tag', (done) => {
       .find('.sidebar__tags .sidebar__content__disabled')
       .find('.sidebar__content__element__button-hidden').trigger('click');
     expect(feed.actions.setEnableTag)
-      .toBeCalledWith(expect.anything(), { index: 2, enabled: true }, undefined);
+      .toBeCalledWith(expect.anything(), { tag: feed.state.tags[2], enabled: true }, undefined);
     done();
   });
 });

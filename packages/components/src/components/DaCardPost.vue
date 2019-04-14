@@ -128,7 +128,7 @@ export default {
   left: 0;
   right: 0;
   margin: 16px 24px;
-  color: var(--theme-disabeld);
+  color: var(--theme-disabled);
   text-align: center;
 }
 

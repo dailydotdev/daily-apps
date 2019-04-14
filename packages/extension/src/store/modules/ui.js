@@ -11,6 +11,7 @@ const initialState = () => ({
   lastNotificationTime: null,
   showNotifications: false,
   enableCardAnimations: true,
+  onboarding: false,
 });
 
 export default {
@@ -55,6 +56,10 @@ export default {
       state.insaneMode = def.insaneMode;
       state.showTopSites = def.showTopSites;
       state.enableCardAnimations = def.enableCardAnimations;
+    },
+
+    doneOnboarding(state) {
+      state.onboarding = true;
     },
   },
   actions: {

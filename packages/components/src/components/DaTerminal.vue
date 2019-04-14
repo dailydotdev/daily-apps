@@ -58,7 +58,7 @@ export default {
   padding: 0;
   border: none;
   border-radius: 100%;
-  background: var(--theme-disabeld);
+  background: var(--theme-disabled);
 
   &.close {
     background: var(--color-ketchup-40);

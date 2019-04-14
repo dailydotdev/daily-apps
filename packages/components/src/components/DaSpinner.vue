@@ -32,7 +32,7 @@ export default {
   & > div {
     width: 18px;
     height: 18px;
-    background-color: var(--theme-disabeld);
+    background-color: var(--theme-disabled);
 
     border-radius: 100%;
     display: inline-block;

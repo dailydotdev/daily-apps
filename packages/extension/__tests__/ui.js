@@ -13,6 +13,12 @@ jest.mock('@daily/services', () => ({
   applyTheme: jest.fn()
 }));
 
+it('should set onboarding to true in state', () => {
+  const state = { onboarding: false };
+  module.mutations.doneOnboarding(state);
+  expect(state.onboarding).toEqual(true);
+});
+
 it('should set theme in state', () => {
   const state = { theme: 'darcula' };
   module.mutations.setTheme(state, 'bright');

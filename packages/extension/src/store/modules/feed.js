@@ -96,9 +96,14 @@ export default {
     setTags(state, tags) {
       state.tags = tags;
     },
-    setEnableTag(state, { index, enabled }) {
-      Vue.set(state.tags, index,
-        Object.assign({}, state.tags[index], { enabled }));
+    setEnableTag(state, { tag, enabled }) {
+      const index = state.tags.findIndex(t => t.name === tag.name);
+      if (index > -1) {
+        Vue.set(state.tags, index,
+          Object.assign({}, state.tags[index], { enabled }));
+      } else {
+        state.tags.push({ ...tag, enabled });
+      }
     },
     setPosts(state, { posts, type }) {
       // TODO: add tests
@@ -213,22 +218,22 @@ export default {
       return dispatch('setFilter', null);
     },
 
-    addFilterToFeed({ commit, state }) {
+    addFilterToFeed({ commit, dispatch, state }) {
       if (!state.filter) {
-        return;
+        return Promise.resolve();
       }
 
       if (state.filter.type === 'publication') {
-        commit('setEnablePublication', {
+        return Promise.resolve(commit('setEnablePublication', {
           index: state.publications.findIndex(p => p.id === state.filter.info.id),
           enabled: true,
-        });
-      } else {
-        commit('setEnableTag', {
-          index: state.tags.findIndex(t => t.name === state.filter.info.name),
-          enabled: true,
-        });
+        }));
       }
+
+      return dispatch('setEnableTag', {
+        tag: state.filter.info,
+        enabled: true,
+      });
     },
 
     async refreshFeed({
@@ -258,18 +263,16 @@ export default {
       return dispatch('refreshFeed');
     },
 
-    async setEnableTag({
-      commit, dispatch, state, rootState,
-    }, payload) {
+    async setEnableTag({ commit, dispatch, rootState }, payload) {
       commit('setEnableTag', payload);
 
       if (isLoggedIn(rootState)) {
         if (payload.enabled) {
           // TODO: handle error
-          await contentService.addUserTags([state.tags[payload.index].name]);
+          await contentService.addUserTags([payload.tag.name]);
         } else {
           // TODO: handle error
-          await contentService.deleteUserTag(state.tags[payload.index].name);
+          await contentService.deleteUserTag(payload.tag.name);
         }
       }
 

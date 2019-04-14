@@ -70,4 +70,13 @@ button:focus, button:active {
     &.btn-highlight {
         background: var(--theme-background-highlight);
     }
+
+    &.disabled {
+        pointer-events: none;
+    }
+
+    &[disabled], &.disabled {
+        color: var(--color-pepper-10);
+        background: var(--color-pepper-80);
+    }
 }

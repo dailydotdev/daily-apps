@@ -1,4 +1,3 @@
-import mixpanel from 'mixpanel-browser';
 import module from '../src/store/modules/user';
 import { authService, contentService, profileService } from '../src/common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../src/common/cache';
@@ -27,12 +26,7 @@ jest.mock('../src/common/cache', () => ({
 }));
 
 beforeEach(() => {
-  mixpanel.track = () => {
-  };
-  mixpanel.identify = () => {
-  };
-
-  window.ga = () => {
+    window.ga = () => {
   };
 });
 
@@ -43,6 +37,13 @@ it('should set profile in state', () => {
   expect(state.profile).toEqual(expected);
 });
 
+it('should set newUser to false in state', () => {
+  const state = { profile: { newUser: true } };
+  const expected = { profile: { newUser: false } };
+  module.mutations.confirmNewUser(state);
+  expect(state).toEqual(expected);
+});
+
 it('should authenticate user and set profile', async () => {
   const profile = {
     name: 'John',
@@ -51,7 +52,7 @@ it('should authenticate user and set profile', async () => {
   };
   authService.authenticate.mockReturnValue(profile);
   const state = { profile: null };
-  const res = await testAction(
+  await testAction(
     module.actions.authenticate,
     { provider: 'google', code: '12345' },
     state,
@@ -60,19 +61,17 @@ it('should authenticate user and set profile', async () => {
   expect(authService.authenticate).toBeCalledWith('google', '12345');
   expect(profileService.setAccessToken).toBeCalledWith('hello');
   expect(contentService.setAccessToken).toBeCalledWith('hello');
-  expect(res).toEqual(profile);
 });
 
 it('should do nothing when authentication fails', async () => {
   authService.authenticate.mockRejectedValue(null);
   const state = { profile: null };
-  const res = await testAction(
+  await testAction(
     module.actions.authenticate,
     { provider: 'google', code: '12345' },
     state,
     []
   );
-  expect(res).toEqual(null);
 });
 
 it('should logout and reset all preferences', async () => {

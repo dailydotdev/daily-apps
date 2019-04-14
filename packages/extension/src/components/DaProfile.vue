@@ -37,7 +37,6 @@
 
 <script>
 import 'lazysizes';
-import mixpanel from 'mixpanel-browser';
 import { mapState, mapActions } from 'vuex';
 import DaModal from '@daily/components/src/components/DaModal.vue';
 import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
@@ -88,7 +87,6 @@ export default {
   methods: {
     async onLogout() {
       ga('send', 'event', 'Profile', 'Logout');
-      mixpanel.track('Logout');
       this.$emit('close');
       // TODO: handle error
       await this.logout();
@@ -209,7 +207,7 @@ export default {
   display: flex;
   flex-direction: column;
   margin-top: 16px;
-  color: var(--theme-disabeld);
+  color: var(--theme-disabled);
   @mixin micro1;
 
   & > * {

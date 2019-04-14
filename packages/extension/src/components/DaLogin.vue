@@ -39,7 +39,6 @@
 
 <script>
 import 'lazysizes';
-import mixpanel from 'mixpanel-browser';
 import DaModal from '@daily/components/src/components/DaModal.vue';
 import { authService } from '../common/services';
 
@@ -58,7 +57,6 @@ export default {
 
     onLogin(provider) {
       ga('send', 'event', 'Login', 'Initialized', provider);
-      mixpanel.track('Login Initialized', { provider });
     },
   },
 

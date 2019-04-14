@@ -177,7 +177,11 @@ export default {
     },
     activeTags() {
       if (this.query.length) {
-        return this.searchedTags;
+        return this.searchedTags.map((t) => {
+          const found = this.tags.find(t2 => t2.name === t.name);
+          const enabled = !!(found && found.enabled);
+          return { name: t.name, enabled };
+        });
       }
       return this.tags;
     },
@@ -258,8 +262,7 @@ export default {
     },
     setEnableTag(tag, enabled) {
       ga('send', 'event', 'Tags', 'Toggle', enabled ? 'Check' : 'Uncheck');
-      const index = this.tags.findIndex(t => t.name === tag.name);
-      this.$store.dispatch('feed/setEnableTag', { index, enabled })
+      this.$store.dispatch('feed/setEnableTag', { tag, enabled })
       // TODO: handle error
       // eslint-disable-next-line
         .catch(console.error);
@@ -283,11 +286,7 @@ export default {
       } else {
         try {
           const res = await contentService.searchTags(query);
-          this.searchedTags = res.hits.map((t) => {
-            const found = this.tags.find(t2 => t2.name === t.name);
-            const enabled = !!(found && found.enabled);
-            return { name: t.name, enabled };
-          });
+          this.searchedTags = res.hits;
         } catch (err) {
           // TODO: handle error
           // eslint-disable-next-line
@@ -416,7 +415,7 @@ export default {
   margin-right: 8px;
 
   & pre {
-    color: var(--theme-disabeld);
+    color: var(--theme-disabled);
     text-align: right;
     margin: 0;
   }
@@ -562,7 +561,7 @@ form.sidebar__content__element {
   height: auto;
   margin: 0 16px 8px;
   padding: 0;
-  color: var(--theme-disabeld);
+  color: var(--theme-disabled);
 
   @mixin lil2;
 }
@@ -597,7 +596,7 @@ form.sidebar__content__element {
   }
 
   &::placeholder {
-    color: var(--theme-disabeld);
+    color: var(--theme-disabled);
   }
 }
 
@@ -615,7 +614,7 @@ form.sidebar__content__element {
   border-top: 1px solid var(--theme-separator);
 
   &:hover {
-    background-color: var(--theme-background-secondary);
+    background-color: var(--theme-background-highlight);
   }
 
   & .sidebar__content__element__image {

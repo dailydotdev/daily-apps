@@ -112,7 +112,7 @@ it('should set enabled of specific tag in state', () => {
       enabled: false,
     }]
   };
-  module.mutations.setEnableTag(state, { index: 1, enabled: true });
+  module.mutations.setEnableTag(state, { tag: state.tags[1], enabled: true });
   expect(state.tags).toEqual([{
     name: 'angular',
     enabled: true,
@@ -131,8 +131,8 @@ it('should set enabled tag and refresh feed', async () => {
 });
 
 it('should set enabled tag, refresh feed and add user tag', async () => {
-  const tags = { index: 0, enabled: true };
   const state = { tags: [{ name: 'angular' }] };
+  const tags = { tag: state.tags[0], enabled: true };
   await testAction(module.actions.setEnableTag, tags, state,
     [{ type: 'setEnableTag', payload: tags }],
     [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
@@ -140,8 +140,8 @@ it('should set enabled tag, refresh feed and add user tag', async () => {
 });
 
 it('should set enabled tag, refresh feed and delete user tag', async () => {
-  const tags = { index: 0, enabled: false };
   const state = { tags: [{ name: 'angular' }] };
+  const tags = { tag: state.tags[0], enabled: false };
   await testAction(module.actions.setEnableTag, tags, state,
     [{ type: 'setEnableTag', payload: tags }],
     [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
@@ -354,12 +354,13 @@ it('should enable tag from filter', async () => {
       type: 'tag',
       info: {
         name: 'vue',
+        enabled: false,
       },
     },
   };
-  await testAction(module.actions.addFilterToFeed, undefined, state, [
-    { type: 'setEnableTag', payload: { index: 1, enabled: true } },
-  ]);
+  await testAction(module.actions.addFilterToFeed, undefined, state,
+    [],
+    [{ type: 'setEnableTag', payload: { tag: state.tags[1], enabled: true } }]);
 });
 
 it('should reset personalization', () => {

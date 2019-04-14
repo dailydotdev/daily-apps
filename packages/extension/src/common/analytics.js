@@ -1,4 +1,3 @@
-import mixpanel from 'mixpanel-browser';
 import { version } from './config';
 import { browserName } from './browser';
 import { setCache, getCache, ANALYTICS_ID_KEY } from './cache';
@@ -8,20 +7,6 @@ const getGAUserIdOrGenerate = () => {
     /(?:(?:^|.*;)\s*_ga\s*=\s*(?:\w+\.\d\.)([^;]*).*$)|^.*$/, '$1',
   );
   return GA_COOKIE || (Math.random() * (2 ** 52));
-};
-
-mixpanel.init(process.env.VUE_APP_MIXPANEL);
-mixpanel.register({
-  version,
-  platform: browserName,
-  source: 'extension',
-});
-
-const mixpanelTrack = mixpanel.track.bind(mixpanel);
-
-const mixpanelQueue = [];
-mixpanel.track = (...args) => {
-  mixpanelQueue.push(args);
 };
 
 const queue = [];
@@ -97,9 +82,6 @@ const initialize = async () => {
     })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
     /* eslint-enable */
   }
-
-  mixpanelQueue.forEach(args => mixpanelTrack(...args));
-  mixpanel.track = mixpanelTrack;
 };
 
 if (window.location.protocol.indexOf('moz-extension') > -1) {
@@ -124,7 +106,6 @@ export default function (consent, userId) {
   if (consent) {
     if (userId) {
       ga('set', 'userId', userId);
-      mixpanel.identify(userId);
     }
 
     return initialize();
@@ -132,7 +113,12 @@ export default function (consent, userId) {
 
   window.ga = () => {
   };
-  mixpanel.track = () => {
-  };
   return Promise.resolve();
 }
+
+export const trackPageView = (page) => {
+  const prefix = browserName ? '/extension' : '/';
+  const suffix = browserName ? `v=${version}&b=${browserName}` : `v=${version}`;
+  ga('set', 'page', `${prefix}${page}?${suffix}`);
+  ga('send', 'pageview');
+};

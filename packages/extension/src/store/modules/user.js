@@ -1,10 +1,8 @@
-import mixpanel from 'mixpanel-browser';
 import { authService, profileService, contentService } from '../../common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../../common/cache';
 
 const updateAnalyticsUser = (id) => {
   ga('set', 'userId', id);
-  mixpanel.identify(id);
   return setCache(ANALYTICS_ID_KEY, id);
 };
 
@@ -22,6 +20,9 @@ export default {
     updateToken(state, newToken) {
       state.profile = { ...state.profile, ...newToken };
     },
+    confirmNewUser(state) {
+      state.profile = { ...state.profile, newUser: false };
+    },
   },
   getters: {
     isLoggedIn(state) {
@@ -37,18 +38,13 @@ export default {
         contentService.setAccessToken(profile.accessToken);
 
         ga('send', 'event', 'Login', 'Done', provider);
-        mixpanel.track('Login Done', { provider, newUser: profile.newUser });
         await updateAnalyticsUser(profile.id);
 
         commit('setProfile', profile);
-        return profile;
       } catch {
         // TODO: handle error
         ga('send', 'event', 'Login', 'Failed', provider);
-        mixpanel.track('Login Failed', { provider });
       }
-
-      return null;
     },
 
     async logout({ commit, dispatch }) {

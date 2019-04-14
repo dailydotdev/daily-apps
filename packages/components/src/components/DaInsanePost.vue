@@ -106,7 +106,7 @@ export default {
 
 .insane__tags {
   margin-top: 4px;
-  color: var(--theme-disabeld);
+  color: var(--theme-disabled);
 }
 
 .insane__views {
