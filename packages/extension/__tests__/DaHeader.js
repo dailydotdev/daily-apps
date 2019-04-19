@@ -30,11 +30,16 @@ beforeEach(() => {
     },
     actions: {
       setTheme: jest.fn(),
+      setShowTopSites: jest.fn(),
     },
     mutations: {
       setInsaneMode: jest.fn(),
       hideNotifications: jest.fn(),
       showNotifications: jest.fn(),
+      nextInstruction: jest.fn(),
+    },
+    getters: {
+      topSitesInstructions: () => true,
     },
   };
 
@@ -134,4 +139,18 @@ it('should emit "profile" on profile button click', () => {
   store.state.user.profile = { image: 'http://image.com' };
   wrapper.find('.header__profile').trigger('click');
   expect(wrapper.emitted().profile[0]).toEqual([]);
+});
+
+it('should mutate state when clicking no on instruction popup', () => {
+  const wrapper = mount(DaHeader, { store, localVue });
+  wrapper.findAll('.instructions .btn').at(0).trigger('click');
+  expect(ui.mutations.nextInstruction).toBeCalledWith(expect.anything(), undefined);
+  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), false, undefined);
+});
+
+it('should mutate state when clicking yes on instruction popup', () => {
+  const wrapper = mount(DaHeader, { store, localVue });
+  wrapper.findAll('.instructions .btn').at(1).trigger('click');
+  expect(ui.mutations.nextInstruction).toBeCalledWith(expect.anything(), undefined);
+  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), true, undefined);
 });

@@ -155,6 +155,30 @@ a {
   padding-top: 0;
 }
 
+.instructions {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 4px;
+  background: var(--theme-background-highlight);
+  box-shadow: 0 8px 16px 4px rgba(0, 0, 0, 0.32);
+
+  & .btn {
+    height: 24px;
+    color: var(--theme-background-highlight);
+    background: var(--theme-primary);
+    @mixin nuggets;
+  }
+}
+
+.instructions__desc {
+  color: var(--theme-primary);
+
+  @mixin nuggets;
+}
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.15s;
 }

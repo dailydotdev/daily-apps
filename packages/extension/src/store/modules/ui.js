@@ -12,6 +12,7 @@ const initialState = () => ({
   showNotifications: false,
   enableCardAnimations: true,
   onboarding: false,
+  instructionsStep: 0,
 });
 
 export default {
@@ -51,6 +52,10 @@ export default {
       state.showNotificationBadge = !since || !!notifications.find(n => n.timestamp > since);
     },
 
+    nextInstruction(state) {
+      state.instructionsStep += 1;
+    },
+
     resetSettings(state) {
       const def = initialState();
       state.insaneMode = def.insaneMode;
@@ -60,6 +65,17 @@ export default {
 
     doneOnboarding(state) {
       state.onboarding = true;
+    },
+  },
+  getters: {
+    topSitesInstructions(state) {
+      return state.instructionsStep === 0;
+    },
+    sidebarInstructions(state) {
+      return state.instructionsStep === 1;
+    },
+    showReadyModal(state) {
+      return state.instructionsStep === 2;
     },
   },
   actions: {

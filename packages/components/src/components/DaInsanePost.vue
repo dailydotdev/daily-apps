@@ -6,7 +6,7 @@
         <div class="insane__tags micro1">{{ tags }}</div>
       </a>
       <span class="insane__views micro2 reveal"
-            v-if="post.readTime">// {{post.readTime}}m read</span>
+            v-if="post.readTime">// {{post.readTime}} min read</span>
       <img class="insane__icon lazyload reveal"
            :data-src="post.publication.image"
            :alt="post.publication.name" :title="post.publication.name"/>

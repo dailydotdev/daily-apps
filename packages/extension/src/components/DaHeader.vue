@@ -43,6 +43,36 @@
       <svgicon icon="user_daily"/>
       <span>Sign in</span>
     </button>
+    <div class="instructions invert" v-if="topSitesInstructions">
+      <div class="instructions__top-sites">
+        <div class="btn-icon header__top-site">
+          <img :src="getIconUrl('https://www.google.com/')" class="top-site__image"/>
+        </div>
+        <div class="btn-icon header__top-site">
+          <img :src="getIconUrl('https://web.whatsapp.com/')" class="top-site__image"/>
+        </div>
+        <div class="btn-icon header__top-site">
+          <img :src="getIconUrl('https://www.youtube.com/')" class="top-site__image"/>
+        </div>
+        <div class="btn-icon header__top-site">
+          <img :src="getIconUrl('https://www.twitter.com/')" class="top-site__image"/>
+        </div>
+        <div class="btn-icon header__top-site">
+          <img :src="getIconUrl('https://www.facebook.com/')" class="top-site__image"/>
+        </div>
+      </div>
+      <div class="instructions__desc">
+        Should we show your recently visited sites?
+      </div>
+      <div class="instructions__buttons">
+        <button class="btn" @click="onToggleTopSites(false)">
+          No
+        </button>
+        <button class="btn" @click="onToggleTopSites(true)">
+          Yes
+        </button>
+      </div>
+    </div>
   </header>
 </template>
 
@@ -69,6 +99,7 @@ export default {
       'showTopSites', 'insaneMode', 'showNotificationBadge', 'notificationsOpened',
     ]),
     ...mapState('feed', ['showBookmarks']),
+    ...mapGetters('ui', ['topSitesInstructions']),
     ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
       theme: state => themes.indexOf(state.ui.theme),
@@ -87,15 +118,17 @@ export default {
   watch: {
     async showTopSites(val) {
       if (val) {
-        // TODO: handle error
-        const sites = await this.getTopSites();
-        this.topSites = sites.slice(0, 5);
+        await this.getTopSites();
       }
     },
   },
 
-  mounted() {
+  async mounted() {
     this.loadIcons();
+
+    if (this.showTopSites) {
+      await this.getTopSites();
+    }
   },
 
   methods: {
@@ -116,7 +149,7 @@ export default {
     async getTopSites() {
       try {
         if ('topSites' in browser) {
-          return await browser.topSites.get();
+          this.topSites = (await browser.topSites.get()).slice(0, 5);
         }
         return [];
       } catch {
@@ -155,6 +188,13 @@ export default {
       } else {
         this.showNotifications();
       }
+    },
+
+    async onToggleTopSites(val) {
+      ga('send', 'event', 'Instructions', 'Click', 'Top Sites');
+      // TODO: handle error
+      this.$store.commit('ui/nextInstruction');
+      await this.$store.dispatch('ui/setShowTopSites', val);
     },
 
     ...mapMutations({
@@ -214,14 +254,14 @@ export default {
 
   & .header__top-site {
     border-radius: 50%;
-    border: 1px solid var(--theme-background-primary);
+    border: 1px solid var(--color-pepper-70);
     overflow: hidden;
   }
 
   & .top-site__image {
-    width: 20px;
-    height: 20px;
-    background: var(--theme-primary);
+    width: 23px;
+    height: 23px;
+    background: var(--color-salt-10);
   }
 
   & .space {
@@ -248,6 +288,17 @@ export default {
       height: 100%;
     }
   }
+
+  & .instructions {
+    top: 0;
+    right: 190px;
+    width: 222px;
+    height: 124px;
+  }
+
+  & .instructions__desc {
+    text-align: center;
+  }
 }
 
 .header__badge {
@@ -267,6 +318,30 @@ export default {
     height: 100%;
     background: var(--color-water-30);
     border-radius: 100%;
+  }
+}
+
+.instructions__top-sites {
+  display: flex;
+  flex-direction: row;
+  margin: 0 -4px 12px;
+
+  & .header__top-site {
+    margin: 0 4px;
+    cursor: default;
+  }
+}
+
+.instructions__buttons {
+  display: flex;
+  flex-direction: row;
+  align-self: stretch;
+  margin-top: 8px;
+
+  & .btn {
+    margin: 0 4px;
+    flex: 1;
+    justify-content: center;
   }
 }
 </style>

@@ -62,7 +62,7 @@
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
     <da-congrats v-if="showCongratsModal" @close="confirmNewUser"/>
     <da-request v-if="showRequestModal" @close="showRequestModal = false"/>
-    <da-welcome v-if="showReadyModal" @close="showReadyModal = false"/>
+    <da-welcome v-if="showReadyModal" @close="nextInstruction"/>
     <da-login v-if="showLoginModal" @close="showLoginModal = false"/>
     <da-profile v-if="showProfileModal" @close="showProfileModal = false"/>
     <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
@@ -83,6 +83,14 @@
       <button class="context__item" @click="reportPost('broken')">Broken link</button>
       <button class="context__item" @click="reportPost('nsfw')">Report NSFW</button>
     </da-context>
+    <div class="instructions sidebar-instructions invert" v-if="sidebarInstructions">
+      <div class="instructions__desc">
+        Hover on the sidebar to filter your feed based on tags and sources.
+      </div>
+      <button class="btn" @click="nextInstruction">
+        Got it
+      </button>
+    </div>
   </div>
 </template>
 
@@ -134,7 +142,6 @@ export default {
       ads: [],
       showGoModal: false,
       showRequestModal: false,
-      showReadyModal: false,
       showLoginModal: false,
       showProfileModal: false,
       selectedPostId: null,
@@ -271,12 +278,14 @@ export default {
     ...mapMutations({
       toggleBookmarks: 'feed/toggleBookmarks',
       hideNotifications: 'ui/hideNotifications',
+      nextInstruction: 'ui/nextInstruction',
       confirmNewUser: 'user/confirmNewUser',
     }),
   },
 
   computed: {
     ...mapState('ui', ['insaneMode', 'notifications', 'showNotifications']),
+    ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal']),
     ...mapState('feed', ['showBookmarks', 'filter']),
     ...mapState({
       title(state) {
@@ -522,6 +531,19 @@ export default {
     &:visited, &:active {
       color: inherit;
     }
+  }
+}
+
+.sidebar-instructions {
+  top: 72px;
+  left: 45px;
+  width: 188px;
+  height: 122px;
+
+  & .btn {
+    margin-top: 8px;
+    align-self: stretch;
+    justify-content: flex-end;
   }
 }
 
