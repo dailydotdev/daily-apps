@@ -99,8 +99,10 @@ const plugin = (store) => {
     switch (mutation.type) {
       case 'loadFromCache':
         if (isLoggedIn(state)) {
-          // TODO: handle error
-          await fetchPersonalization(state);
+          requestIdleCallback(async () => {
+            // TODO: handle error
+            await fetchPersonalization(state);
+          });
         }
         break;
       case 'ui/setTheme':

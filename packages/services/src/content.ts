@@ -85,7 +85,7 @@ export class ContentServiceImpl implements ContentService {
         this.request = axios.create({
             baseURL,
             withCredentials: true,
-            timeout: 2000,
+            timeout: 10000,
         });
     }
 

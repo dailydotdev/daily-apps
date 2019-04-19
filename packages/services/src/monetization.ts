@@ -24,7 +24,7 @@ export class MonetizationServiceImpl implements MonetizationService {
         this.request = axios.create({
             baseURL,
             withCredentials: true,
-            timeout: 2000,
+            timeout: 10000,
         });
     }
 

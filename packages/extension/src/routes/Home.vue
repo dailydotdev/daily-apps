@@ -223,8 +223,6 @@ export default {
     },
 
     async initHome() {
-      this.updateLines();
-
       Promise.all([
         this.fetchPublications(),
         this.fetchTags(),
@@ -362,8 +360,12 @@ export default {
       import(`@daily/components/icons/${this.cta.icon}`);
     }
 
+    this.updateLines();
     await this.refreshToken();
-    await this.initHome();
+
+    requestIdleCallback(async () => {
+      await this.initHome();
+    });
   },
 };
 </script>

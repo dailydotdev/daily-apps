@@ -33,7 +33,7 @@ export class ProfileServiceImpl implements ProfileService {
         this.request = axios.create({
             baseURL,
             withCredentials: true,
-            timeout: 2000,
+            timeout: 10000,
         });
     }
 
