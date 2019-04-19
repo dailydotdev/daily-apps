@@ -186,7 +186,7 @@ export default {
   transition: transform 0.2s;
 }
 
-.insane-notification-enter, .insane-notification-leave-to /* .fade-leave-active below version 2.1.8 */
+.insane-notification-enter, .insane-notification-leave-to
 {
   transform: translateX(100%);
 }
