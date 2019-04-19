@@ -21,6 +21,11 @@
           <svgicon icon="menu"/>
         </button>
       </div>
+      <transition name="insane-notification">
+        <div class="insane__notification nuggets" v-if="notifying">
+          {{ notification }}
+        </div>
+      </transition>
     </div>
     <svgicon icon="menu" class="insane__reveal__menu--duplicate" slot="other" v-if="menuOpened"/>
   </div>
@@ -46,6 +51,13 @@ export default {
     },
   },
 
+  data() {
+    return {
+      notifying: false,
+      notification: '',
+    };
+  },
+
   computed: {
     tags() {
       return (this.post.tags || []).map(t => `#${t}`).join(', ');
@@ -67,8 +79,11 @@ export default {
 
   methods: {
     notify(notification) {
-      // TODO: implement
-      console.log(notification);
+      this.notification = notification;
+      this.notifying = true;
+      setTimeout(() => {
+        this.notifying = false;
+      }, 1500);
     },
   },
 };
@@ -137,6 +152,22 @@ export default {
   }
 }
 
+.insane__notification {
+  position: absolute;
+  display: flex;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 222px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0;
+  color: var(--color-salt-10);
+  background: var(--color-water-60);
+  border-radius: 8px 0 0 8px;
+}
+
 .insane__wrapper .insane__reveal__menu--duplicate {
   position: absolute;
   display: block;
@@ -149,5 +180,14 @@ export default {
 
 .bookmarked .insane__reveal__bookmark .svg-icon {
   color: var(--color-burger-60);
+}
+
+.insane-notification-enter-active, .insane-notification-leave-active {
+  transition: transform 0.2s;
+}
+
+.insane-notification-enter, .insane-notification-leave-to /* .fade-leave-active below version 2.1.8 */
+{
+  transform: translateX(100%);
 }
 </style>

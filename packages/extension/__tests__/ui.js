@@ -133,3 +133,11 @@ it('should reset everything', async () => {
     [{ type: 'setTheme', payload: null }],
   );
 });
+
+it('should increment instructionStep', () => {
+  const state = {
+    instructionsStep: 0,
+  };
+  module.mutations.nextInstruction(state);
+  expect(state.instructionsStep).toEqual(1);
+});
