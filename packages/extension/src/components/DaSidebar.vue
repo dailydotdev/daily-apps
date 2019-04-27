@@ -332,7 +332,7 @@ export default {
   z-index: 20;
 
   --trigger-width: 36px;
-  --content-width: 256px;
+  --content-width: 264px;
 
   &.opened {
     & .sidebar__content {
@@ -372,10 +372,38 @@ export default {
   width: 100%;
   height: 100%;
   overflow-y: scroll;
-  scrollbar-width: none;
+
+  &:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    background: var(--theme-background-highlight);
+    z-index: -1;
+  }
 
   &::-webkit-scrollbar {
-    width: 0 !important;
+    width: 8px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: var(--theme-disabled);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-secondary);
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background: var(--theme-primary);
   }
 }
 

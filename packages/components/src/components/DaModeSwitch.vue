@@ -82,7 +82,7 @@ export default {
 
 .mode-switch input:checked ~ .mode-switch__icon.mode-switch__icon--second,
 .mode-switch input:not(:checked) ~ .mode-switch__icon.mode-switch__icon--first {
-  color: var(--theme-primary);
+  color: var(--color-salt-10);
   transform: scale(1.2);
 }
 
