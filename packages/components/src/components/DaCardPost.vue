@@ -7,7 +7,8 @@
     <template slot="footer">
       <img class="card__footer__icon lazyload"
            :data-src="post.publication.image"
-           :alt="post.publication.name" :title="post.publication.name"/>
+           :alt="post.publication.name" :title="post.publication.name"
+           v-if="post.publication.name"/>
       <span class="card__footer__views micro2"
             v-if="post.readTime">// {{post.readTime}} min read</span>
       <button class="btn-icon btn-small card__footer__bookmark"
