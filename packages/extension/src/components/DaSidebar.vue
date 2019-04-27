@@ -107,7 +107,8 @@
         </div>
       </div>
     </div>
-    <div class="sidebar__trigger" @mouseenter="open" @mouseleave="close" @transitionend="transitioning = false">
+    <div class="sidebar__trigger" @mouseenter="open" @mouseleave="close"
+         @transitionend="transitioning = false">
       <svgicon icon="hamburger" class="no-hover sidebar__trigger_icon"/>
       <div class="sidebar__trigger__lines" ref="lines">
         <pre v-for="n in lines" class="micro2" :key="n">{{ n }}</pre>
