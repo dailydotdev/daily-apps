@@ -135,7 +135,7 @@ export default {
         default: 7,
         2350: 6,
         2030: 5,
-        1710: 4,
+        1670: 4,
         1390: 3,
         1070: 2,
       },
@@ -244,7 +244,6 @@ export default {
         // eslint-disable-next-line no-console
         .catch(console.error);
 
-      // TODO: analytics consent
       this.fetchNotifications()
       // TODO: handle error
       // eslint-disable-next-line no-console

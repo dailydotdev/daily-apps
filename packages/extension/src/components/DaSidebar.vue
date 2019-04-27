@@ -1,7 +1,6 @@
 <template>
   <aside class="sidebar" :class="{opened, transitioning}">
-    <div class="sidebar__content" @mouseleave="readyToClose = true"
-         @mouseenter="readyToClose = false">
+    <div class="sidebar__content" @mouseleave="close" @mouseenter="cancelClose">
       <div class="sidebar__content__wrapper">
         <div class="sidebar__filter">
           <da-mode-switch class="sidebar__filter_switch"
@@ -107,7 +106,7 @@
         </div>
       </div>
     </div>
-    <div class="sidebar__trigger" @mouseenter="open" @mouseleave="close"
+    <div class="sidebar__trigger" @mouseenter="open"
          @transitionend="transitioning = false">
       <svgicon icon="hamburger" class="no-hover sidebar__trigger_icon"/>
       <div class="sidebar__trigger__lines" ref="lines">
@@ -152,7 +151,6 @@ export default {
     return {
       lines: 1,
       opened: false,
-      readyToClose: false,
       transitioning: false,
       filterChecked: false,
       requestActive: false,
@@ -206,19 +204,24 @@ export default {
       }
 
       ga('send', 'event', 'Sidebar', 'Toggle', 'Open');
-      this.readyToClose = false;
       this.setOpened(true);
     },
     close() {
-      this.$nextTick(() => {
-        if (!this.opened || !this.readyToClose || this.transitioning) {
+      this.closeTimeout = setTimeout(() => {
+        if (!this.opened || this.transitioning) {
           return;
         }
 
         ga('send', 'event', 'Sidebar', 'Toggle', 'Close');
         this.resetRequest();
         this.setOpened(false);
-      });
+      }, 500);
+    },
+    cancelClose() {
+      if (this.closeTimeout) {
+        clearTimeout(this.closeTimeout);
+        this.closeTimeout = null;
+      }
     },
     toggleFilter(checked) {
       ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');
