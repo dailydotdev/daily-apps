@@ -434,7 +434,9 @@ export default {
 .header__cta__text {
   margin: 0 8px 0 16px;
 
-  @mixin micro2;
+  & {
+    @mixin micro2;
+  }
 }
 
 .header__cta__image {
@@ -478,7 +480,9 @@ export default {
   margin: 8px 0;
   color: var(--theme-secondary);
 
-  @mixin jr;
+  & {
+    @mixin jr;
+  }
 }
 
 #anchor {

@@ -31,7 +31,9 @@ button:focus, button:active {
     border-radius: 4px;
     color: var(--theme-primary);
 
-    @mixin lil2;
+    & {
+        @mixin lil2;
+    }
 
     & .svg-icon {
         color: var(--theme-primary);

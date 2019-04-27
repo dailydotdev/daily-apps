@@ -177,7 +177,9 @@ a {
 .instructions__desc {
   color: var(--theme-primary);
 
-  @mixin nuggets;
+  & {
+    @mixin nuggets;
+  }
 }
 
 .fade-enter-active, .fade-leave-active {

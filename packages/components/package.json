@@ -32,7 +32,7 @@
     "postcss-custom-media": "^7.0.7",
     "postcss-extend": "^1.0.5",
     "postcss-mixins": "^6.2.0",
-    "postcss-nesting": "^7.0.0",
+    "postcss-nested": "^4.1.2",
     "vue": "^2.5.17",
     "vue-svgicon": "^3.2.2",
     "vue-template-compiler": "^2.5.17",

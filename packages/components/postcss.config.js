@@ -7,7 +7,7 @@ module.exports = {
       mixinsDir: path.join(__dirname, 'src/styles/mixins'),
     },
     'postcss-extend': {},
-    'postcss-nesting': {},
+    'postcss-nested': { bubble: ['-moz-document'] },
     'postcss-custom-media': {},
   },
 };

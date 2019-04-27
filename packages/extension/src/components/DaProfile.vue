@@ -209,7 +209,10 @@ export default {
   flex-direction: column;
   margin-top: 16px;
   color: var(--theme-disabled);
-  @mixin micro1;
+
+  & {
+    @mixin micro1;
+  }
 
   & > * {
     margin: 4px 0;

@@ -21,8 +21,8 @@ export default {
       this.$refs.context.close();
     },
     positionMenu({
-      top, bottom, left, right,
-    }) {
+                   top, bottom, left, right,
+                 }) {
       const el = this.$refs.context.$el;
       const x = left || (right - el.offsetWidth);
       const y = top || (bottom - el.offsetHeight);
@@ -48,7 +48,9 @@ export default {
   border: none;
   cursor: pointer;
 
-  @mixin nuggets;
+  & {
+    @mixin nuggets;
+  }
 
   &:hover {
     background: var(--theme-background-secondary);

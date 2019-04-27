@@ -355,7 +355,9 @@ h3 {
   color: var(--theme-secondary);
   text-align: center;
 
-  @mixin jr;
+  & {
+    @mixin jr;
+  }
 }
 
 .demo-modal__buttons {

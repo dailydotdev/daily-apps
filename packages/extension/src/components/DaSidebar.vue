@@ -502,7 +502,9 @@ export default {
   color: var(--theme-secondary);
   cursor: pointer;
 
-  @mixin micro1;
+  & {
+    @mixin micro1;
+  }
 }
 
 .sidebar__content__element {
@@ -600,7 +602,9 @@ form.sidebar__content__element {
   padding: 0;
   color: var(--theme-disabled);
 
-  @mixin lil2;
+  & {
+    @mixin lil2;
+  }
 }
 
 .sidebar__content__enabled {
@@ -626,7 +630,9 @@ form.sidebar__content__element {
   border: none;
   caret-color: var(--color-water-60);
 
-  @mixin micro1;
+  & {
+    @mixin micro1;
+  }
 
   &:focus {
     outline: 0;
