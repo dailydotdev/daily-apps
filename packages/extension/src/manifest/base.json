@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "version": "0.0.0",
-  "name": "Daily - Source for Busy Developers",
-  "short_name": "Daily",
+  "name": "Daily 2.0 - Source for Busy Developers",
+  "short_name": "Daily 2.0",
   "description": "Daily gathers the latest dev & tech posts in your new tab",
   "homepage_url": "https://www.dailynow.co",
   "icons": {
@@ -25,8 +25,8 @@
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com; object-src 'self'",
   "browser_action": {
     "default_icon": {
-      "19": "icons/19.png",
-      "38": "icons/38.png"
+      "16": "icons/action_16.png",
+      "32": "icons/action_32.png"
     }
   },
   "web_accessible_resources": [
