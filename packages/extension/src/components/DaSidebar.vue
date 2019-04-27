@@ -525,6 +525,7 @@ export default {
     height: 100%;
     padding: 0;
     min-width: 0;
+    flex: 1;
   }
 
   &.disabled:hover {
