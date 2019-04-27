@@ -2,7 +2,9 @@
   <div class="insane__wrapper">
     <div class="insane insane--post" :class="cls">
       <a :href="post.url" target="_blank" class="insane__link" @click="$emit('click', post)">
-        <h5 class="insane__title">{{post.title | cardTitle}}</h5>
+        <h5 class="insane__title">
+          <da-line-clamp :text="post.title" :lines="3"/>
+        </h5>
         <div class="insane__tags micro1">{{ tags }}</div>
       </a>
       <span class="insane__views micro2 reveal"
@@ -33,9 +35,15 @@
 
 <script>
 import 'lazysizes';
+import DaLineClamp from './DaLineClamp.vue';
 
 export default {
   name: 'DaInsanePost',
+
+  components: {
+    DaLineClamp,
+  },
+
   props: {
     post: {
       type: Object,
@@ -186,8 +194,7 @@ export default {
   transition: transform 0.2s;
 }
 
-.insane-notification-enter, .insane-notification-leave-to
-{
+.insane-notification-enter, .insane-notification-leave-to {
   transform: translateX(100%);
 }
 </style>

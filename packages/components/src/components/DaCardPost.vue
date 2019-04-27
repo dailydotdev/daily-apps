@@ -1,8 +1,8 @@
 <template>
   <DaCard class="card--post" :class="cls" :title="post.title" :url="post.url" :image="post.image"
           :placeholder="post.placeholder" :size="post.size" @click="$emit('click', post)">
-    <div slot="content" class="card__tags nuggets"
-         :title="(post.tags || []).map(t => `#${t}`).join(', ')">{{post.tags | cardTags}}
+    <div slot="content" class="card__tags nuggets" :title="tagsStr">
+      <da-line-clamp :text="tagsStr" :lines="1" :truncate="truncateTags"/>
     </div>
     <template slot="footer">
       <img class="card__footer__icon lazyload"
@@ -33,10 +33,11 @@
 <script>
 import 'lazysizes';
 import DaCard from './DaCard.vue';
+import DaLineClamp from './DaLineClamp.vue';
 
 export default {
   name: 'DaCardPost',
-  components: { DaCard },
+  components: { DaCard, DaLineClamp },
   props: {
     post: {
       type: Object,
@@ -67,6 +68,9 @@ export default {
         hover: this.menuOpened,
       };
     },
+    tagsStr() {
+      return (this.post.tags || []).map(t => `#${t}`).join(', ');
+    },
   },
 
   mounted() {
@@ -81,6 +85,28 @@ export default {
       setTimeout(() => {
         this.notifying = false;
       }, 1500);
+    },
+
+    truncateTags(text, maxLength) {
+      const value = this.post.tags;
+      if (!value) {
+        return '';
+      }
+
+      const tags = [];
+      let len = 0;
+      for (let i = 0; i < value.length; i += 1) {
+        if (len + value[i].length < maxLength) {
+          len += value[i].length + 2;
+          tags.push(value[i]);
+        }
+      }
+
+      const suffix = tags.length < value.length ? `,+${value.length - tags.length}` : '';
+      const str = tags
+        .map(tag => `#${tag}`)
+        .join(',');
+      return `${str}${suffix}`;
     },
   },
 };
@@ -131,6 +157,7 @@ export default {
   margin: 16px 24px;
   color: var(--theme-disabled);
   text-align: center;
+  word-break: break-word;
 }
 
 .card__footer__icon {

@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import '../src/filters';
 import DaCardAd from '../src/components/DaCardAd.vue';
 import ads from '../src/ads';
 

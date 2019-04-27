@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import '../src/filters';
 import DaInsanePost from '../src/components/DaInsanePost.vue';
 import posts from '../src/posts';
 

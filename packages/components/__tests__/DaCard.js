@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import '../src/filters';
 import DaCard from '../src/components/DaCard.vue';
 
 it('should set card class to large', () => {

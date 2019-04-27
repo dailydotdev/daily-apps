@@ -7,7 +7,9 @@
              :data-src="image"/>
       </div>
       <div class="card__content card__hover">
-        <h5 class="card__title">{{title | cardTitle}}</h5>
+        <h5 class="card__title">
+          <da-line-clamp :text="title" :lines="3"/>
+        </h5>
         <slot name="content"></slot>
       </div>
     </a>
@@ -21,9 +23,14 @@
 <script>
 import 'lazysizes/plugins/blur-up/ls.blur-up';
 import 'lazysizes';
+import DaLineClamp from './DaLineClamp.vue';
 
 export default {
   name: 'DaCard',
+
+  components: {
+    DaLineClamp,
+  },
 
   props: {
     size: {
@@ -60,6 +67,12 @@ export default {
       return {
         [this.size]: true,
       };
+    },
+  },
+
+  methods: {
+    truncateTitle(text) {
+      return text[0];
     },
   },
 };

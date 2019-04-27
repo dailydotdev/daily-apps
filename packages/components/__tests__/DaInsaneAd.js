@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import '../src/filters';
 import DaInsaneAd from '../src/components/DaInsaneAd.vue';
 import ads from '../src/ads';
 

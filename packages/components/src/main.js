@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import svgicon from 'vue-svgicon';
-import './filters';
 import App from './App.vue';
 
 Vue.config.productionTip = false;

@@ -1,5 +1,5 @@
 <template>
-  <DaCard class="card--ad" :class="ad.source" :title="ad.description" :url="ad.link"
+  <DaCard class="card--a" :class="ad.source" :title="ad.description" :url="ad.link"
           :image="ad.image" :placeholder="ad.placeholder" :size="size"
           :image-background="ad.backgroundColor" @click="$emit('click', ad)">
     <template slot="content">
@@ -46,11 +46,11 @@ export default {
 };
 </script>
 <style>
-.card--ad .card__footer {
+.card--a .card__footer {
   justify-content: center;
 }
 
-.card--ad.BSA .card__background__image {
+.card--a.BSA .card__background__image {
   left: 0;
   right: 0;
   top: 0;

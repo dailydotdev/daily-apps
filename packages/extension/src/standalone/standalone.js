@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import svgicon from 'vue-svgicon';
 import VueMasonry from 'vue-masonry-css';
-import '@daily/components/src/filters';
 import { applyTheme } from '@daily/services';
 import App from './App.vue';
 import Home from '../routes/Home.vue';

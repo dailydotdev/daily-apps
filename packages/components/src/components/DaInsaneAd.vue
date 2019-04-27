@@ -1,7 +1,9 @@
 <template>
   <div class="insane insane--ad">
     <a :href="ad.link" target="_blank" class="insane__link" @click="$emit('click', ad)">
-      <h5 class="insane__title">{{ad.description | cardTitle}}</h5>
+      <h5 class="insane__title">
+        <da-line-clamp :text="ad.description" :lines="3"/>
+      </h5>
     </a>
     <span class="insane__promoted micro2">/* {{ promoted }} */</span>
     <img v-for="(item, index) in pixel" :key="index" :src="item" class="insane__pixel"/>
@@ -9,8 +11,15 @@
 </template>
 
 <script>
+import DaLineClamp from './DaLineClamp.vue';
+
 export default {
   name: 'DaInsandeAd',
+
+  components: {
+    DaLineClamp,
+  },
+
   props: {
     ad: {
       type: Object,
