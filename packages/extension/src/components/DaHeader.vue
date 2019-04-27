@@ -234,14 +234,9 @@ export default {
   }
 
   & .header__switch {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
     width: var(--da-switch-width);
     height: var(--da-switch-height);
-    margin: auto;
+    margin-left: 8px;
 
     --da-switch-checked-color: var(--color-burger-60);
     --da-switch-checked-background: var(--color-burger-90);
@@ -293,7 +288,6 @@ export default {
     top: 0;
     right: 190px;
     width: 222px;
-    height: 124px;
   }
 
   & .instructions__desc {
@@ -342,6 +336,17 @@ export default {
     margin: 0 4px;
     flex: 1;
     justify-content: center;
+  }
+}
+
+@media (min-width: 1071px) {
+  .header .header__switch {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
   }
 }
 </style>

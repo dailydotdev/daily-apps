@@ -540,7 +540,6 @@ export default {
   top: 72px;
   left: 45px;
   width: 188px;
-  height: 122px;
 
   & .btn {
     margin-top: 8px;
