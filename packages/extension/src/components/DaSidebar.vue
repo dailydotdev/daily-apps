@@ -18,7 +18,7 @@
             <div class="sidebar__content__element" v-for="item in enabledTags" :key="item.name">
               <button class="sidebar__content__element__button"
                       title="Click to view only this tag" @click.prevent="viewTag(item)">
-                <span class="invert sidebar__tag shadow1">#{{item.name}}</span>
+                <span class="invert sidebar__tag shadow1 text-overflow">#{{item.name}}</span>
               </button>
               <button class="sidebar__content__element__button-hidden btn-icon"
                       title="Remove this tag" @click.prevent.stop="setEnableTag(item, false)">
@@ -32,7 +32,7 @@
                  :key="item.name">
               <button class="sidebar__content__element__button"
                       title="Click to view only this tag" @click.prevent="viewTag(item)">
-                <span>#{{item.name}}</span>
+                <span class="text-overflow">#{{item.name}}</span>
               </button>
               <button class="sidebar__content__element__button-hidden show btn-icon"
                       title="Add this tag"
@@ -76,7 +76,7 @@
                       title="Click to view only this source" @click.prevent="viewPublication(item)">
                 <img :data-src="item.image" :alt="item.name"
                      class="sidebar__content__element__image lazyload"/>
-                <span>{{item.name}}</span>
+                <span class="text-overflow">{{item.name}}</span>
               </button>
               <button class="sidebar__content__element__button-hidden btn-icon"
                       title="Remove this source"
@@ -94,7 +94,7 @@
                       @click.prevent="viewPublication(item)">
                 <img :data-src="item.image" :alt="item.name"
                      class="sidebar__content__element__image lazyload"/>
-                <span>{{item.name}}</span>
+                <span class="text-overflow">{{item.name}}</span>
               </button>
               <button class="sidebar__content__element__button-hidden show btn-icon"
                       title="Add this source"
@@ -354,6 +354,14 @@ export default {
       will-change: transform;
     }
   }
+
+  & .text-overflow {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
 }
 
 .sidebar__content {
@@ -505,6 +513,7 @@ export default {
     display: flex;
     height: 100%;
     padding: 0;
+    min-width: 0;
   }
 
   &.disabled:hover {
