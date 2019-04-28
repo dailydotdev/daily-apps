@@ -33,6 +33,10 @@ export default {
   flex-direction: column;
   overflow: hidden;
   border-radius: 8px;
+
+  & > * {
+    color: var(--color-salt-10);
+  }
 }
 
 .terminal__header {
@@ -41,7 +45,7 @@ export default {
   flex-direction: row;
   align-items: center;
   padding: 0 8px;
-  background-color: var(--theme-background-highlight);
+  background-color: var(--color-pepper-50);
 
   & > * {
     margin: 0 4px;
@@ -58,7 +62,7 @@ export default {
   padding: 0;
   border: none;
   border-radius: 100%;
-  background: var(--theme-disabled);
+  background: var(--color-pepper-10);
 
   &.close {
     background: var(--color-ketchup-40);
@@ -67,7 +71,7 @@ export default {
 }
 
 .terminal__header__title {
-  color: var(--theme-secondary);
+  color: var(--color-salt-90);
 }
 
 .terminal__content {
