@@ -157,7 +157,7 @@ export default {
   margin: 16px 24px;
   color: var(--theme-disabled);
   text-align: center;
-  word-break: break-word;
+  word-break: break-all;
 }
 
 .card__footer__icon {
