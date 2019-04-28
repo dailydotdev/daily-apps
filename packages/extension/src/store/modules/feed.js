@@ -194,7 +194,14 @@ export default {
 
       commit('setLoading', true);
 
-      const type = state.showBookmarks ? 'bookmarks' : (state.filter ? 'customPosts' : 'posts');
+      let type;
+      if (state.showBookmarks) {
+        type = 'bookmarks';
+      } else if (state.filter) {
+        type = 'customPosts';
+      } else {
+        type = 'posts';
+      }
       const loggedIn = !!rootState.user.profile;
       // TODO: add tests addBookmarked
       const posts = addBookmarked(state, await fetchPosts(state, loggedIn), loggedIn);
@@ -243,8 +250,8 @@ export default {
     },
 
     async refreshFeed({
-                        commit, dispatch, state, rootState,
-                      }) {
+      commit, dispatch, state, rootState,
+    }) {
       if (!state.filter && (!state.showBookmarks || rootState.user.profile)) {
         commit('resetFeed');
         return dispatch('fetchNextFeedPage');
@@ -254,8 +261,8 @@ export default {
     },
 
     async setEnablePublication({
-                                 commit, dispatch, state, rootState,
-                               }, payload) {
+      commit, dispatch, state, rootState,
+    }, payload) {
       commit('setEnablePublication', payload);
 
       if (isLoggedIn(rootState)) {
