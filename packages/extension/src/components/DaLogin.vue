@@ -5,19 +5,19 @@
     <svgicon icon="logo" class="login__logo no-hover"/>
     <h1>Sign in to Daily</h1>
     <div class="login__desc">
-      <svgicon icon="link" class="login__desc__icon"/>
+      <svgicon icon="link" class="login__desc__icon no-hover"/>
       <p class="login__desc__text">
         Influence on content by request sources, article and etc.
       </p>
     </div>
     <div class="login__desc">
-      <svgicon icon="mobile" class="login__desc__icon"/>
+      <svgicon icon="mobile" class="login__desc__icon no-hover"/>
       <p class="login__desc__text">
         Sync settings and bookmarks across devices & browsers.
       </p>
     </div>
     <div class="login__desc">
-      <svgicon icon="user" class="login__desc__icon"/>
+      <svgicon icon="user" class="login__desc__icon no-hover"/>
       <p class="login__desc__text">
         Help the community by moderating irrelevant content.
       </p>

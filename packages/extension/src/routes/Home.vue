@@ -1,8 +1,9 @@
 <template>
   <div class="page" :class="clsObj">
-    <da-header @go="onGoClicked" @login="onLogin" @profile="onProfile"></da-header>
+    <da-header @go="onGoClicked" @login="onLogin('Header')" @profile="onProfile"></da-header>
     <da-sidebar ref="sidebar" :disabled="showBookmarks"
-                @requested-source="showRequestModal = true"></da-sidebar>
+                @requested-source="showRequestModal = true"
+                @login="onLogin('Sidebar')"></da-sidebar>
     <main class="content">
       <div class="content__header">
         <template v-if="filter && !showBookmarks">
@@ -202,8 +203,8 @@ export default {
       this.showGoModal = true;
     },
 
-    onLogin() {
-      ga('send', 'event', 'Header', 'Login');
+    onLogin(section) {
+      ga('send', 'event', section, 'Login');
       this.showLoginModal = true;
     },
 

@@ -27,7 +27,7 @@
             </div>
           </div>
           <div class="sidebar__content__disabled" v-if="disabledTags.length > 0">
-            <div class="sidebar__content__header">More tags</div>
+            <div class="sidebar__content__header">{{query.length ? 'More tags' : 'Hot tags'}}</div>
             <div class="sidebar__content__element disabled" v-for="item in disabledTags"
                  :key="item.name">
               <button class="sidebar__content__element__button"
@@ -45,31 +45,29 @@
         <div class="sidebar__sources" v-else>
           <div class="sidebar__content__enabled">
             <div class="sidebar__content__header">My sources</div>
-            <template v-if="isLoggedIn">
-              <button class="sidebar__content__element sidebar__sources__activate-request"
-                      @click.prevent="activateRequest" v-if="!requestActive">
-                <svgicon name="plus" class="sidebar__content__element__image no-hover"/>
-                <span>Request source</span>
+            <button class="sidebar__content__element sidebar__sources__activate-request"
+                    @click.prevent="activateRequest" v-if="!requestActive">
+              <svgicon name="plus" class="sidebar__content__element__image no-hover"/>
+              <span>Request source</span>
+            </button>
+            <form class="sidebar__content__element" v-else @click.prevent="$refs.request.focus()"
+                  ref="form">
+              <button type="button" class="btn-icon btn-small" @click="cancelRequest">
+                <svgicon name="x" class="sidebar__content__element__image"/>
               </button>
-              <form class="sidebar__content__element" v-else @click.prevent="$refs.request.focus()"
-                    ref="form">
-                <button type="button" class="btn-icon btn-small" @click="cancelRequest">
-                  <svgicon name="x" class="sidebar__content__element__image"/>
-                </button>
-                <input class="sidebar__input" type="url" placeholder="Paste URL" required
-                       ref="request" @input="updateFormValidity">
-                <button type="submit" class="sidebar__sources__submit btn-icon"
-                        :class="{invert: !disableSubmit}" :disabled="disableSubmit"
-                        @click.prevent="submitRequest">
-                  <svgicon name="v" class="invert"/>
-                </button>
-                <transition name="bouncy-flip">
-                  <div class="sidebar__sources__error nuggets" v-if="submitError">
-                    Something went wrong, try again later
-                  </div>
-                </transition>
-              </form>
-            </template>
+              <input class="sidebar__input" type="url" placeholder="Paste URL" required
+                     ref="request" @input="updateFormValidity">
+              <button type="submit" class="sidebar__sources__submit btn-icon"
+                      :class="{invert: !disableSubmit}" :disabled="disableSubmit"
+                      @click.prevent="submitRequest">
+                <svgicon name="v" class="invert"/>
+              </button>
+              <transition name="bouncy-flip">
+                <div class="sidebar__sources__error nuggets" v-if="submitError">
+                  Something went wrong, try again later
+                </div>
+              </transition>
+            </form>
             <div class="sidebar__content__element" v-for="item in enabledPubs"
                  :key="item.id">
               <button class="sidebar__content__element__button"
@@ -241,11 +239,15 @@ export default {
       this.setFilter({ type: 'publication', info: pub });
     },
     activateRequest() {
-      ga('send', 'event', 'Request Source', 'Activate');
-      this.requestActive = true;
-      this.$nextTick(() => {
-        this.$refs.request.focus();
-      });
+      if (this.isLoggedIn) {
+        ga('send', 'event', 'Request Source', 'Activate');
+        this.requestActive = true;
+        this.$nextTick(() => {
+          this.$refs.request.focus();
+        });
+      } else {
+        this.$emit('login');
+      }
     },
     cancelRequest() {
       ga('send', 'event', 'Request Source', 'Cancel');
