@@ -316,7 +316,7 @@ it('should reset feed', () => {
     page: 1,
   };
   module.mutations.resetFeed(state);
-  expect(state.posts).toEqual([]);
+  expect(state.customPosts).toEqual([]);
   expect(state.page).toEqual(0);
 });
 
