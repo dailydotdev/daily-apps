@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "TARGET=development yarn manifest && vue-cli-service build --mode development --watch",
-    "build": "vue-cli-service build",
-    "build:chrome": "TARGET=chrome yarn manifest && yarn build --mode chrome",
-    "build:firefox": "TARGET=firefox yarn manifest && yarn build --mode firefox",
+    "build": "yarn manifest && vue-cli-service build",
+    "build:chrome": "TARGET=chrome yarn build --mode chrome",
+    "build:firefox": "TARGET=firefox yarn build --mode firefox",
     "build:all": "yarn build:chrome && yarn build:firefox && yarn zip:src",
     "test": "yarn lint && vue-cli-service test:unit",
     "lint": "vue-cli-service lint",

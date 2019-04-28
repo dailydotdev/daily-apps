@@ -13,7 +13,7 @@ const onError = () => {
   process.exit(1);
 };
 
-const output = fs.createWriteStream(`./dist-zip/extension-${pkg.version}-src.zip`);
+const output = fs.createWriteStream(`./dist-zip/extension-v${pkg.version}-src.zip`);
 const archive = archiver('zip', { zlib: { level: 9 } });
 
 archive.on('warning', (err) => {
