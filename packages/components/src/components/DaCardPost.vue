@@ -69,7 +69,7 @@ export default {
       };
     },
     tagsStr() {
-      return (this.post.tags || []).map(t => `#${t}`).join(', ');
+      return (this.post.tags || []).map(t => `#${t}`).join(',');
     },
   },
 
