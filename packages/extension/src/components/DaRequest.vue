@@ -3,7 +3,7 @@
     <img svg-inline src="../svg/source_box.svg" alt="Flying box cartoon"
          class="request__graphics"/>
     <h1 class="overlap">Request sent</h1>
-    <p>Your request has been received. We will be in touch shortly by email.</p>
+    <p>Your request has been received. We will review this source and be in touch.</p>
     <button class="btn btn-big btn-modal" @click="$refs.modal.close()">
       OK, thanks
     </button>
