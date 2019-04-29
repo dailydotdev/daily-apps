@@ -37,7 +37,7 @@ it('should set bookmarked class when bookmarked', () => {
 it('should set tags title', () => {
   const post = posts[1];
   const wrapper = shallowMount(DaCardPost, { propsData: { post } });
-  expect(wrapper.find('.card__tags').element.title).toEqual('#GraphQL, #Airbnb, #JavaScript, #FrontEndDevelopment');
+  expect(wrapper.find('.card__tags').element.title).toEqual('#GraphQL,#Airbnb,#JavaScript,#FrontEndDevelopment');
 });
 
 it('should show notification', () => {
