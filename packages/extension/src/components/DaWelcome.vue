@@ -8,7 +8,7 @@
       we will search for dev news around the web for you.
     </p>
     <button class="btn btn-big btn-modal" @click="$refs.modal.close()">
-      Use Daily now!
+      Use Daily now
     </button>
   </da-modal>
 </template>

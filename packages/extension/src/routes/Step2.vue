@@ -2,9 +2,9 @@
   <main>
     <h1>Tell us what you're into</h1>
     <p>
-      Click on the tags you like, we will pick articles for your feed based on tags you chose.
-      Select at least five
-      tags.
+      Pick tags you like. We will do the rest by choosing articles for your feed
+      based on your preferences.
+      Make sure you select at least 5 tags. Don't worry you can always change it later.
     </p>
     <div class="onboarding__tags onboarding__placeholder">
       <div class="onboarding__tags__search">
@@ -31,7 +31,7 @@
     </div>
     <router-link to="/onboarding/3" class="btn btn-big btn-water-cheese"
                  :aria-disabled="disableButton" :class="{disabled: disableButton}">
-      Continue
+      I'm all set
     </router-link>
   </main>
 </template>
