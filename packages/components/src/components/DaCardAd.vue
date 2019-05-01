@@ -1,7 +1,8 @@
 <template>
   <DaCard class="card--a" :class="ad.source" :title="ad.description" :url="ad.link"
           :image="ad.image" :placeholder="ad.placeholder" :size="size"
-          :image-background="ad.backgroundColor" @click="$emit('click', ad)">
+          :image-background="ad.backgroundColor" @click="$emit('click', ad)"
+          :lines="4">
     <template slot="content">
       <img v-for="(item, index) in pixel" :key="index" :src="item" class="card__pixel"/>
     </template>

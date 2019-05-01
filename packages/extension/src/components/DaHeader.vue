@@ -22,7 +22,7 @@
        title="Feedback us on GitHub!">
       <svgicon icon="github"/>
     </a>
-    <a class="btn-icon" href="https://www.producthunt.com/posts/daily-7" target="_blank"
+    <a class="btn-icon" href="https://www.producthunt.com/posts/daily-2-0" target="_blank"
        title="Check us on Product Hunt!">
       <svgicon icon="ph"/>
     </a>

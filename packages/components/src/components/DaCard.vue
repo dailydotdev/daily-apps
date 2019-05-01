@@ -8,7 +8,7 @@
       </div>
       <div class="card__content card__hover">
         <h5 class="card__title">
-          <da-line-clamp :text="title" :lines="3"/>
+          <da-line-clamp :text="title" :lines="lines"/>
         </h5>
         <slot name="content"></slot>
       </div>
@@ -53,6 +53,10 @@ export default {
     imageBackground: {
       type: String,
       default: 'none',
+    },
+    lines: {
+      type: Number,
+      default: 3,
     },
   },
 
