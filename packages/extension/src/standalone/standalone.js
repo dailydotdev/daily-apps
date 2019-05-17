@@ -41,6 +41,7 @@ const router = new VueRouter({
   ],
 });
 
+// Load local cache
 router.beforeEach((to, from, next) => Promise.resolve()
   .then(async () => {
     if (!store.state.initialized) {
@@ -54,6 +55,7 @@ router.beforeEach((to, from, next) => Promise.resolve()
   })
   .then(next));
 
+// Redirect to login or onboarding if necessary
 router.beforeEach((to, from, next) => {
   if (to.path === '/' && to.query.provider && to.query.code) {
     next({ path: '/login', query: to.query });
@@ -62,6 +64,13 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
+});
+
+// Workaround to clear url after routing
+router.afterEach(() => {
+  setTimeout(() => {
+    window.history.replaceState({}, document.title, '/index.html');
+  });
 });
 
 /* eslint-disable no-new */
