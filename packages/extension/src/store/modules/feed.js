@@ -1,10 +1,13 @@
 import Vue from 'vue';
 import { contentService } from '../../common/services';
 
-const setPostBookmark = (state, id, value) => {
-  const index = state.posts.findIndex(post => post.id === id);
-  Vue.set(state.posts, index, Object.assign({}, state.posts[index], { bookmarked: value }));
-  return index;
+const setPostBookmark = (state, key, id, value) => {
+  const index = state[key].findIndex(post => post.id === id);
+  if (index < 0) {
+    return null;
+  }
+  Vue.set(state[key], index, { ...state[key][index], bookmarked: value });
+  return state[key][index];
 };
 
 const initialState = () => ({
@@ -60,21 +63,23 @@ const fetchPosts = async (state, loggedIn) => {
   return contentService.fetchLatestPosts(state.latest, state.page, pubs, tags);
 };
 
+const getFeed = (state) => {
+  if (state.showBookmarks) {
+    return 'bookmarks';
+  }
+
+  if (state.filter) {
+    return 'customPosts';
+  }
+
+  return 'posts';
+};
+
 export default {
   namespaced: true,
   state: initialState(),
   getters: {
-    feed: (state) => {
-      if (state.showBookmarks) {
-        return state.bookmarks;
-      }
-
-      if (state.filter) {
-        return state.customPosts;
-      }
-
-      return state.posts;
-    },
+    feed: state => state[getFeed(state)],
     showAd: state => !state.showBookmarks && !state.filter,
     hasFilter: (state) => {
       if (!state.filter) {
@@ -82,10 +87,12 @@ export default {
       }
 
       if (state.filter.type === 'publication') {
-        return state.publications.find(p => p.id === state.filter.info.id).enabled;
+        const pub = state.publications.find(p => p.id === state.filter.info.id);
+        return pub && pub.enabled;
       }
 
-      return state.tags.find(t => t.name === state.filter.info.name).enabled;
+      const tag = state.tags.find(t => t.name === state.filter.info.name);
+      return tag && tag.enabled;
     },
   },
   mutations: {
@@ -128,13 +135,17 @@ export default {
       state.loading = loading;
     },
     toggleBookmarks(state, { id, bookmarked }) {
-      const postIndex = setPostBookmark(state, id, bookmarked);
+      const feed = getFeed(state);
+      const post = setPostBookmark(state, feed, id, bookmarked);
+      if (feed !== 'posts') {
+        setPostBookmark(state, 'posts', id, bookmarked);
+      }
 
       if (!bookmarked) {
         const index = state.bookmarks.findIndex(bookmark => bookmark.id === id);
         state.bookmarks.splice(index, 1);
       } else {
-        state.bookmarks.unshift(state.posts[postIndex]);
+        state.bookmarks.unshift(post);
       }
     },
     setFilter(state, filter) {
@@ -250,8 +261,8 @@ export default {
     },
 
     async refreshFeed({
-      commit, dispatch, state, rootState,
-    }) {
+                        commit, dispatch, state, rootState,
+                      }) {
       if (!state.filter && (!state.showBookmarks || rootState.user.profile)) {
         commit('resetFeed');
         return dispatch('fetchNextFeedPage');
@@ -261,8 +272,8 @@ export default {
     },
 
     async setEnablePublication({
-      commit, dispatch, state, rootState,
-    }, payload) {
+                                 commit, dispatch, state, rootState,
+                               }, payload) {
       commit('setEnablePublication', payload);
 
       if (isLoggedIn(rootState)) {
