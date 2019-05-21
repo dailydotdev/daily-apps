@@ -146,7 +146,7 @@ export default {
 }
 
 .animate-cards .card.hover .card__menu--duplicate {
-  right: 12px;
+  right: 13px;
 }
 
 .card__tags {
@@ -170,7 +170,7 @@ export default {
   color: var(--theme-secondary);
 }
 
-.card__footer__bookmark {
+.card__footer > .card__footer__bookmark {
   margin-left: auto;
 }
 

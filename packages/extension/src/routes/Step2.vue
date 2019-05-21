@@ -16,15 +16,14 @@
                   @focus="focus = true" @blur="focus = false">
             <svgicon name="x"/>
           </button>
-          <svgicon name="magnifying" class="search__box__icon no-hover" v-else/>
+          <svgicon name="magnifying" class="search__box__icon" v-else/>
           <input class="search__box__input micro1" type="text" placeholder="Search" ref="searchTags"
                  @input="searchTags" @focus="focus = true" @blur="focus = false">
         </div>
       </div>
       <div class="tags__buttons">
         <button v-for="tag in tags" :key="tag.name" class="btn btn-hollow"
-                :class="{invert: tag.enabled}"
-                @click="toggleTag(tag)">
+                :class="{selected: tag.enabled}" @click="toggleTag(tag)">
           #{{ tag.name }}
         </button>
       </div>
@@ -179,8 +178,8 @@ export default {
 }
 
 .search__box__icon {
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
   margin-left: 16px;
 
   &.btn-icon .svg-icon {
@@ -203,11 +202,6 @@ export default {
     margin: 8px;
     text-transform: none;
     font-weight: 300;
-
-    &.invert {
-      background: var(--theme-background-highlight);
-      border-color: var(--theme-background-highlight);
-    }
   }
 }
 </style>

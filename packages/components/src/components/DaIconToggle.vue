@@ -1,6 +1,6 @@
 <template>
   <label
-    class="icon-toggle">
+    class="icon-toggle btn-icon">
     <input type="checkbox"
            :checked="pressed"
            @change="toggle">
@@ -42,15 +42,12 @@ export default {
 <style>
 .icon-toggle {
   display: flex;
-  background: none;
-  border: none;
+  width: 30px;
+  height: 30px;
   outline: 0;
   cursor: pointer;
   user-select: none;
-
-  &:hover .svg-icon {
-    color: var(--theme-primary);
-  }
+  --button-color: var(--theme-secondary);
 
   & input {
     display: none;

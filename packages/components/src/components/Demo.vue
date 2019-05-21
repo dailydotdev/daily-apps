@@ -49,9 +49,19 @@
             <svgicon icon="user_daily"/>
             <span>Sign in</span>
           </button>
-          <button class="btn btn-highlight shadow1 invert">
+          <button class="btn btn-invert">
             <span>Sign in</span>
             <svgicon icon="user_daily"/>
+          </button>
+          <button class="btn btn-invert" disabled>
+            Disabled
+          </button>
+          <button class="btn btn-nav">
+            <svgicon icon="arrow"/>
+            <span>Back home</span>
+          </button>
+          <button class="btn btn-menu">
+            Menu Button
           </button>
         </div>
         <div class="horizontal_container">
@@ -59,7 +69,7 @@
           <button class="btn btn-big btn-hollow">
             No
           </button>
-          <button class="btn btn-big btn-highlight shadow1 invert">
+          <button class="btn btn-big btn-invert">
             Yes, I'd love to
           </button>
         </div>
@@ -139,8 +149,8 @@
       </DaTerminal>
     </section>
     <DaContext ref="context">
-      <button class="context__item">Broken link</button>
-      <button class="context__item">Report NSFW</button>
+      <button class="btn btn-menu">Broken link</button>
+      <button class="btn btn-menu">Report NSFW</button>
     </DaContext>
     <DaModal class="demo-modal" v-if="showModal" @close="showModal = false" ref="modal">
       <p class="demo-modal__text">
@@ -150,7 +160,7 @@
         Do you agree to opt-in?
       </p>
       <div class="demo-modal__buttons">
-        <button class="btn btn-big btn-highlight shadow1 invert"
+        <button class="btn btn-big btn-invert"
                 @click.prevent="$refs.modal.close()">
           Yes, I'd love to
         </button>
@@ -163,6 +173,7 @@
 </template>
 
 <script>
+import 'focus-visible';
 import posts from '../posts.json';
 import ads from '../ads.json';
 import DaSwitch from './DaSwitch.vue';
@@ -318,6 +329,10 @@ h3 {
 .buttons {
   & button, & a, & h3 {
     margin: 16px;
+  }
+
+  & .btn-nav .svg-icon {
+    transform: rotate(-90deg);
   }
 }
 

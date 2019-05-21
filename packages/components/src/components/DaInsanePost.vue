@@ -156,7 +156,7 @@ export default {
   background: var(--theme-background-primary);
 
   & .btn-icon {
-    margin: 0 4px;
+    margin: 0 2px;
   }
 }
 
@@ -179,7 +179,7 @@ export default {
 .insane__wrapper .insane__reveal__menu--duplicate {
   position: absolute;
   display: block;
-  right: 16px;
+  right: 13px;
   bottom: 25px;
   width: 24px;
   height: 24px;

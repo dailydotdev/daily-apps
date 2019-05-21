@@ -5,7 +5,7 @@
       <div class="profile__header__info">
         <div class="profile__header__info__name double">{{name}}</div>
         <div class="profile__header__info__provider jr">
-          <svgicon :name="provider" class="no-hover"></svgicon>
+          <svgicon :name="provider"></svgicon>
           <span>via {{provider | provider}}</span>
         </div>
       </div>

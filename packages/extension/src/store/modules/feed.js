@@ -261,8 +261,8 @@ export default {
     },
 
     async refreshFeed({
-                        commit, dispatch, state, rootState,
-                      }) {
+      commit, dispatch, state, rootState,
+    }) {
       if (!state.filter && (!state.showBookmarks || rootState.user.profile)) {
         commit('resetFeed');
         return dispatch('fetchNextFeedPage');
@@ -272,8 +272,8 @@ export default {
     },
 
     async setEnablePublication({
-                                 commit, dispatch, state, rootState,
-                               }, payload) {
+      commit, dispatch, state, rootState,
+    }, payload) {
       commit('setEnablePublication', payload);
 
       if (isLoggedIn(rootState)) {

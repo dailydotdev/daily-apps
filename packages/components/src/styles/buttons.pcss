@@ -11,32 +11,82 @@ button:focus, button:active {
     }
 }
 
+.btn, .btn-icon {
+    position: relative;
+    overflow: hidden;
+    color: var(--button-color);
+    border-radius: var(--button-border-radius);
+    background: none;
+    z-index: 1;
+
+    & > .svg-icon {
+        color: var(--button-color);
+    }
+
+    &:before, &:after {
+        position: absolute;
+        content: '';
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    &:before {
+        background: var(--button-background);
+        opacity: var(--button-background-opacity);
+        transition: opacity 0.1s ease-out;
+        will-change: opacity;
+        z-index: -2;
+    }
+
+    &:after {
+        border: var(--button-border);
+        border-radius: var(--button-border-radius);
+        z-index: -1;
+    }
+}
+
 .btn-icon {
+    --button-color: var(--theme-secondary);
+    --button-focus-border: var(--color-water-40);
+    --button-background-opacity: 1;
+    --button-border: none;
+    --button-border-radius: 8px;
+
     display: flex;
     background: none;
-    padding: 0;
+    padding: 3px;
 
-    &.btn-small .svg-icon {
+    &.btn-small > .svg-icon {
         width: 20px;
         height: 20px;
+    }
+
+    &[disabled], &.disabled {
+        --button-background: none;
     }
 }
 
 .btn {
+    --button-color: var(--theme-primary);
+    --button-focus-border: var(--color-water-40);
+    --button-background-opacity: 1;
+    --button-border: none;
+    --button-border-radius: 4px;
+
     display: flex;
     height: 32px;
     flex-direction: row;
     align-items: center;
     padding: 0 12px;
-    border-radius: 4px;
-    color: var(--theme-primary);
 
     & {
         @mixin lil2;
     }
 
-    & .svg-icon {
-        color: var(--theme-primary);
+    & > .svg-icon {
+        color: var(--button-color);
 
         &:first-child {
             margin-left: -4px;
@@ -51,34 +101,110 @@ button:focus, button:active {
 
     &.btn-big {
         height: 40px;
-        border-radius: 8px;
         padding: 0 16px;
+        --button-border-radius: 8px;
     }
 
     &.btn-water-cheese {
-        color: var(--color-salt-10);
-        background: linear-gradient(270deg, var(--color-water-60) 0%, var(--color-blue-cheese-80) 100%);
+        --button-color: var(--color-salt-10);
+        --button-background: linear-gradient(270deg, var(--color-water-60) 0%, var(--color-blue-cheese-80) 100%);
+        --button-focus-border: var(--color-water-20);
+    }
 
-        & .svg-icon {
-            color: var(--color-salt-10);
+    &.btn-invert {
+        --button-color: var(--theme-primary-invert);
+        --button-background: var(--theme-primary);
+
+        @mixin shadow1;
+    }
+
+    &.btn-nav {
+        --button-color: var(--theme-secondary);
+        --button-background: var(--theme-background-highlight);
+
+        &:hover, &:active, &.active {
+            --button-background-opacity: 1;
+        }
+
+        &:hover {
+            --button-background: var(--theme-light);
+        }
+
+        &:active, &.active {
+            --button-background: var(--theme-shine);
         }
     }
 
     &.btn-hollow {
-        background: none;
-        border: 1px solid var(--theme-primary);
+        --button-border: 1px solid var(--theme-primary);
+
+        &.selected {
+            --button-color: var(--theme-primary-invert);
+            --button-background: var(--theme-primary);
+            opacity: 1;
+        }
     }
 
-    &.btn-highlight {
-        background: var(--theme-background-highlight);
+    &:not(.selected) {
+        &:hover {
+            --button-background-opacity: 0.8;
+        }
+
+        &:active, &.active {
+            --button-background-opacity: 0.64;
+        }
+    }
+}
+
+.btn-icon, .btn.btn-menu, .btn.btn-hollow, .btn.btn-nav {
+    &:not(.selected) {
+        &:hover {
+            --button-color: var(--theme-primary);
+        }
+
+        &:active, &.active {
+            --button-color: var(--theme-primary);
+        }
+    }
+}
+
+.btn-icon, .btn.btn-menu, .btn.btn-hollow {
+    --button-background: none;
+
+    &:before {
+        transition: none;
     }
 
-    &.disabled {
-        pointer-events: none;
+    &:not(.selected) {
+        &:hover {
+            --button-background: var(--theme-hover);
+            --button-background-opacity: var(--theme-hover-opacity);
+        }
+
+        &:active, &.active {
+            --button-background: var(--theme-focus);
+            --button-background-opacity: var(--theme-focus-opacity);
+        }
+    }
+}
+
+.btn-icon, .btn.btn-menu {
+    &.selected {
+        --button-color: var(--theme-primary);
+        --button-background: var(--theme-background-primary);
+        opacity: 1;
+    }
+}
+
+.btn, .btn-icon {
+    &.focus-visible:focus {
+        outline: 0;
+        --button-border: solid 2px var(--button-focus-border);
     }
 
     &[disabled], &.disabled {
-        color: var(--color-pepper-10);
-        background: var(--color-pepper-80);
+        pointer-events: none;
+        --button-color: var(--theme-disabled);
+        --button-background: var(--theme-background-highlight);
     }
 }

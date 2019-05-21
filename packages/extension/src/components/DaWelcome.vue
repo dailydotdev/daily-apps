@@ -7,7 +7,7 @@
       From now on, you can focus on code and
       we will search for dev news around the web for you.
     </p>
-    <button class="btn btn-big btn-modal" @click="$refs.modal.close()">
+    <button class="btn btn-big btn-modal btn-invert" @click="$refs.modal.close()">
       Use Daily now
     </button>
   </da-modal>

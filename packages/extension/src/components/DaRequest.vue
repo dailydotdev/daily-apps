@@ -4,7 +4,7 @@
          class="request__graphics"/>
     <h1 class="overlap">Request sent</h1>
     <p>Your request has been received. We will review this source and be in touch.</p>
-    <button class="btn btn-big btn-modal" @click="$refs.modal.close()">
+    <button class="btn btn-big btn-modal btn-invert" @click="$refs.modal.close()">
       OK, thanks
     </button>
   </da-modal>

@@ -8,7 +8,7 @@
       Do you agree to opt-in?
     </p>
     <div class="consent__buttons">
-      <button class="btn btn-big btn-modal" @click="$emit('opt-in')">
+      <button class="btn btn-big btn-modal btn-invert" @click="$emit('opt-in')">
         Yes, I'd love to
       </button>
       <button class="btn btn-big btn-hollow" @click="$emit('opt-out')" autofocus>

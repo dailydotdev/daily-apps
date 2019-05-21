@@ -4,7 +4,7 @@
          class="congrats__graphics"/>
     <h1>Good news, {{ userFirstName }}!</h1>
     <p>Welcome to our community! We value each new member and we hope you will enjoy… </p>
-    <button class="btn btn-big btn-modal" @click="$refs.modal.close()">
+    <button class="btn btn-big btn-modal btn-invert" @click="$refs.modal.close()">
       F*** Yeah!
     </button>
   </da-modal>

@@ -1,7 +1,7 @@
 <template>
   <header class="header">
-    <a href="https://www.dailynow.co" target="_blank" class="btn-icon">
-      <svgicon icon="logo" class="header__logo"/>
+    <a href="https://www.dailynow.co" target="_blank" class="header__logo">
+      <svgicon icon="logo" class="header__logo__icon"/>
     </a>
     <div class="separator"></div>
     <da-icon-toggle class="header__theme" pressed-icon="moon" icon="sun" title="Change theme"
@@ -12,7 +12,7 @@
                @toggle="toggleBookmarks"></da-switch>
     <div class="space"></div>
     <template v-if="showTopSites">
-      <a v-for="(item, index) in topSites" :key="index" class="btn-icon header__top-site"
+      <a v-for="(item, index) in topSites" :key="index" class="header__top-site"
          :href="item.url" :title="item.title" @mouseup="mouseUp('Top Sites')">
         <img :src="getIconUrl(item.url)" class="top-site__image"/>
       </a>
@@ -30,12 +30,12 @@
     <button class="btn-icon" title="Daily Go" @click="$emit('go')">
       <svgicon icon="mobile"/>
     </button>
-    <button class="btn-icon relative btn-terminal" title="Notifications"
+    <button class="btn-icon btn-terminal" title="Notifications"
             :class="{ 'active': notificationsOpened }" @click="toggleNotifications">
       <svgicon icon="terminal"/>
       <span class="header__badge" v-if="showNotificationBadge"></span>
     </button>
-    <button class="btn-icon header__profile" v-if="isLoggedIn" @click="$emit('profile')">
+    <button class="header__profile" v-if="isLoggedIn" @click="$emit('profile')">
       <img :src="profileImage" alt="Profile image"/>
     </button>
     <button class="btn btn-water-cheese header__sign-in" v-else
@@ -45,19 +45,19 @@
     </button>
     <div class="instructions invert" v-if="topSitesInstructions">
       <div class="instructions__top-sites">
-        <div class="btn-icon header__top-site">
+        <div class="header__top-site">
           <img :src="getIconUrl('https://www.google.com/')" class="top-site__image"/>
         </div>
-        <div class="btn-icon header__top-site">
+        <div class="header__top-site">
           <img :src="getIconUrl('https://web.whatsapp.com/')" class="top-site__image"/>
         </div>
-        <div class="btn-icon header__top-site">
+        <div class="header__top-site">
           <img :src="getIconUrl('https://www.youtube.com/')" class="top-site__image"/>
         </div>
-        <div class="btn-icon header__top-site">
+        <div class="header__top-site">
           <img :src="getIconUrl('https://www.twitter.com/')" class="top-site__image"/>
         </div>
-        <div class="btn-icon header__top-site">
+        <div class="header__top-site">
           <img :src="getIconUrl('https://www.facebook.com/')" class="top-site__image"/>
         </div>
       </div>
@@ -65,10 +65,10 @@
         Should we show your recently visited sites?
       </div>
       <div class="instructions__buttons">
-        <button class="btn" @click="onToggleTopSites(false)">
+        <button class="btn btn-invert" @click="onToggleTopSites(false)">
           No
         </button>
-        <button class="btn" @click="onToggleTopSites(true)">
+        <button class="btn btn-invert" @click="onToggleTopSites(true)">
           Yes
         </button>
       </div>
@@ -222,7 +222,18 @@ export default {
     margin: 0 4px;
   }
 
+  & > .btn-icon {
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+
   & .header__logo {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  & .header__logo__icon {
     width: 40px;
     height: 40px;
     color: var(--theme-primary);
@@ -240,6 +251,18 @@ export default {
 
     --da-switch-checked-color: var(--color-burger-60);
     --da-switch-checked-background: var(--color-burger-90);
+
+    &:hover {
+      --da-switch-checked-color: var(--color-burger-50);
+    }
+
+    .bright & {
+      --da-switch-checked-background: var(--color-burger-30);
+
+      &:hover {
+        --da-switch-checked-color: var(--color-burger-70);
+      }
+    }
   }
 
   & .header__sign-in {
@@ -248,6 +271,8 @@ export default {
   }
 
   & .header__top-site {
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     border: 1px solid var(--color-pepper-70);
     overflow: hidden;
@@ -263,20 +288,16 @@ export default {
     flex: 1;
   }
 
-  & .btn-icon.relative {
-    position: relative;
-  }
-
-  & .btn-icon.active .svg-icon {
-    color: var(--theme-primary);
-  }
-
   & .header__profile {
     width: 30px;
     height: 30px;
+    padding: 0;
     margin: 0 8px 0 14px;
     border-radius: 4px;
     overflow: hidden;
+    background: none;
+    border: none;
+    cursor: pointer;
 
     & img {
       width: 100%;
@@ -297,8 +318,8 @@ export default {
 
 .header__badge {
   position: absolute;
-  left: 14px;
-  bottom: 13px;
+  left: 17px;
+  bottom: 16px;
   width: 10px;
   height: 10px;
   padding: 2px;

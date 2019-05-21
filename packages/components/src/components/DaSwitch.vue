@@ -81,10 +81,10 @@ export default {
     height: calc(var(--da-switch-height) - 4px);
     color: var(--da-switch-color);
     transition: color 0.2s linear;
+  }
 
-    &:hover {
-      color: var(--da-switch-color);
-    }
+  &:hover .switch__handle {
+    background: var(--theme-primary);
   }
 }
 
@@ -106,7 +106,7 @@ export default {
   border-radius: 4px;
   background: var(--da-switch-color);
   will-change: background-color, opacity;
-  transition: background-color 0.2s linear, opacity 0.2s linear;
+  transition: background-color 0.1s linear, opacity 0.2s linear;
 }
 
 .switch__handle {
@@ -122,7 +122,7 @@ export default {
   border-radius: 4px;
   background: var(--theme-secondary);
   will-change: transform, background-color;
-  transition: background-color 0.2s linear, transform 0.2s linear;
+  transition: background-color 0.1s linear, transform 0.2s linear;
 }
 
 .switch__label {

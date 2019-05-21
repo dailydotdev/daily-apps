@@ -36,24 +36,15 @@ export default {
 </script>
 
 <style>
-.context__item {
-  display: flex;
+.context .btn {
   height: 40px;
   padding: 0;
   margin: 0;
-  align-items: center;
   justify-content: center;
-  color: var(--theme-primary);
-  background: none;
-  border: none;
   cursor: pointer;
 
   & {
     @mixin nuggets;
-  }
-
-  &:hover {
-    background: var(--theme-background-secondary);
   }
 }
 </style>

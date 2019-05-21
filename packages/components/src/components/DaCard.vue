@@ -195,6 +195,11 @@ export default {
   & > * {
     margin: 0 4px;
   }
+
+  & > .btn-icon {
+    margin-left: 2px;
+    margin-right: 2px;
+  }
 }
 
 .card__hover {

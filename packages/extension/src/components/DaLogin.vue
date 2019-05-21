@@ -2,22 +2,22 @@
   <da-modal class="login-modal invert" @close="$emit('close')">
     <img svg-inline src="../svg/login_bg.svg" class="login__background"
          slot="background" alt="Login background"/>
-    <svgicon icon="logo" class="login__logo no-hover"/>
+    <svgicon icon="logo" class="login__logo"/>
     <h1>Sign in to Daily</h1>
     <div class="login__desc">
-      <svgicon icon="link" class="login__desc__icon no-hover"/>
+      <svgicon icon="link" class="login__desc__icon"/>
       <p class="login__desc__text">
         Influence content by requesting sources & articles
       </p>
     </div>
     <div class="login__desc">
-      <svgicon icon="mobile" class="login__desc__icon no-hover"/>
+      <svgicon icon="mobile" class="login__desc__icon"/>
       <p class="login__desc__text">
         Sync settings and bookmarks across devices & browsers
       </p>
     </div>
     <div class="login__desc">
-      <svgicon icon="user" class="login__desc__icon no-hover"/>
+      <svgicon icon="user" class="login__desc__icon"/>
       <p class="login__desc__text">
         Help the community by moderating irrelevant content
       </p>
@@ -114,11 +114,11 @@ export default {
 
     & .btn.btn-hollow {
       padding: 4px;
-      border-color: var(--theme-secondary);
+      --button-color: var(--theme-secondary);
+      --button-border: 1px solid var(--theme-secondary);
 
       & .svg-icon {
         margin: 0;
-        color: var(--theme-secondary);
       }
     }
   }

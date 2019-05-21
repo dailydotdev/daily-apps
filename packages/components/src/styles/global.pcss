@@ -15,20 +15,13 @@ html.theme * {
 
 * {
     box-sizing: border-box;
+    flex-shrink: 0;
 }
 
-.svg-icon, .icon-toggle {
+.svg-icon {
     width: 24px;
     height: 24px;
     color: var(--theme-secondary);
-
-    &:hover {
-        color: var(--theme-primary);
-    }
-
-    &.no-hover:hover {
-        color: var(--theme-secondary);
-    }
 }
 
 .svg-fill {
@@ -39,10 +32,22 @@ html.theme * {
 .switch {
     --da-switch-color: var(--theme-background-primary);
     --da-switch-checked-background: var(--color-water-90);
-    --da-switch-checked-color: var(--color-water-50);
+    --da-switch-checked-color: var(--color-water-60);
     --da-switch-width: 48px;
     --da-switch-height: 24px;
     --da-switch-slider-height: 16px;
+
+    &:hover {
+        --da-switch-checked-color: var(--color-water-50);
+    }
+
+    .bright & {
+        --da-switch-checked-background: var(--color-water-30);
+
+        &:hover {
+            --da-switch-checked-color: var(--color-water-70);
+        }
+    }
 }
 
 .shadow1 {

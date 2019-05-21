@@ -1,6 +1,6 @@
 {
   "name": "@daily/extension",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "private": true,
   "scripts": {
     "serve": "TARGET=development yarn manifest && vue-cli-service build --mode development --watch",
@@ -15,9 +15,10 @@
     "manifest": "node build/manifest.js"
   },
   "dependencies": {
-    "@daily/components": "^0.1.0",
+    "@daily/components": "^0.2.0",
     "@daily/services": "^0.0.0",
     "dompurify": "^1.0.10",
+    "focus-visible": "^4.1.5",
     "lazysizes": "^4.1.8",
     "vue": "^2.5.17",
     "vue-masonry-css": "^1.0.3",

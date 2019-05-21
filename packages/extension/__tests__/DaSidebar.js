@@ -207,7 +207,7 @@ it('should activate request source form', (done) => {
   wrapper.vm.$nextTick(() => {
     expect(wrapper.vm.requestActive).toEqual(false);
     wrapper
-      .find('.sidebar__sources__activate-request').trigger('click');
+      .find('.sidebar__sources__act-req').trigger('click');
     expect(wrapper.vm.requestActive).toEqual(true);
     done();
   });

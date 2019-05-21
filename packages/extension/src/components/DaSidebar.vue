@@ -7,15 +7,18 @@
                           first-icon="link" second-icon="hashtag"
                           :checked="filterChecked" @toggle="toggleFilter"/>
         </div>
-        <div class="sidebar__content__element sidebar__tags__search" v-if="filterChecked">
-          <svgicon name="magnifying" class="sidebar__content__element__image no-hover"/>
+        <div class="sidebar__content__element sidebar__tags__search btn btn-menu"
+             :class="{selected: searchFocused}" v-if="filterChecked">
+          <svgicon name="magnifying" class="sidebar__content__element__image"/>
           <input class="sidebar__input" type="text" placeholder="Search tags" ref="searchTags"
-                 @input="updateSearch">
+                 @input="updateSearch"
+                 @focus="searchFocused = true" @blur="searchFocused = false">
         </div>
         <div class="sidebar__tags" v-if="filterChecked">
           <div class="sidebar__content__enabled">
             <div class="sidebar__content__header">My tags</div>
-            <div class="sidebar__content__element" v-for="item in enabledTags" :key="item.name">
+            <div class="sidebar__content__element btn btn-menu"
+                 v-for="item in enabledTags" :key="item.name">
               <button class="sidebar__content__element__button"
                       title="Click to view only this tag" @click.prevent="viewTag(item)">
                 <span class="invert sidebar__tag shadow1 text-overflow">#{{item.name}}</span>
@@ -28,8 +31,8 @@
           </div>
           <div class="sidebar__content__disabled" v-if="disabledTags.length > 0">
             <div class="sidebar__content__header">{{query.length ? 'More tags' : 'Hot tags'}}</div>
-            <div class="sidebar__content__element disabled" v-for="item in disabledTags"
-                 :key="item.name">
+            <div class="sidebar__content__element off btn btn-menu"
+                 v-for="item in disabledTags" :key="item.name">
               <button class="sidebar__content__element__button"
                       title="Click to view only this tag" @click.prevent="viewTag(item)">
                 <span class="text-overflow">#{{item.name}}</span>
@@ -45,21 +48,20 @@
         <div class="sidebar__sources" v-else>
           <div class="sidebar__content__enabled">
             <div class="sidebar__content__header">My sources</div>
-            <button class="sidebar__content__element sidebar__sources__activate-request"
+            <button class="sidebar__content__element sidebar__sources__act-req btn btn-menu"
                     @click.prevent="activateRequest" v-if="!requestActive">
-              <svgicon name="plus" class="sidebar__content__element__image no-hover"/>
+              <svgicon name="plus" class="sidebar__content__element__image"/>
               <span>Request source</span>
             </button>
-            <form class="sidebar__content__element" v-else @click.prevent="$refs.request.focus()"
-                  ref="form">
+            <form class="sidebar__content__element btn btn-menu selected" v-else
+                  @click.prevent="$refs.request.focus()" ref="form">
               <button type="button" class="btn-icon btn-small" @click="cancelRequest">
                 <svgicon name="x" class="sidebar__content__element__image"/>
               </button>
               <input class="sidebar__input" type="url" placeholder="Paste URL" required
                      ref="request" @input="updateFormValidity">
-              <button type="submit" class="sidebar__sources__submit btn-icon"
-                      :class="{invert: !disableSubmit}" :disabled="disableSubmit"
-                      @click.prevent="submitRequest">
+              <button type="submit" class="sidebar__sources__submit btn btn-invert"
+                      :disabled="disableSubmit" @click.prevent="submitRequest">
                 <svgicon name="v" class="invert"/>
               </button>
               <transition name="bouncy-flip">
@@ -68,7 +70,7 @@
                 </div>
               </transition>
             </form>
-            <div class="sidebar__content__element" v-for="item in enabledPubs"
+            <div class="sidebar__content__element btn btn-menu" v-for="item in enabledPubs"
                  :key="item.id">
               <button class="sidebar__content__element__button"
                       title="Click to view only this source" @click.prevent="viewPublication(item)">
@@ -85,8 +87,8 @@
           </div>
           <div class="sidebar__content__disabled" v-if="disabledPubs.length > 0">
             <div class="sidebar__content__header">More sources</div>
-            <div class="sidebar__content__element disabled" v-for="item in disabledPubs"
-                 :key="item.id">
+            <div class="sidebar__content__element off btn btn-menu"
+                 v-for="item in disabledPubs" :key="item.id">
               <button class="sidebar__content__element__button"
                       title="Click to view only this source"
                       @click.prevent="viewPublication(item)">
@@ -106,7 +108,7 @@
     </div>
     <div class="sidebar__trigger" @mouseenter="open"
          @transitionend="transitioning = false">
-      <svgicon icon="hamburger" class="no-hover sidebar__trigger_icon"/>
+      <svgicon icon="hamburger" class="sidebar__trigger_icon"/>
       <div class="sidebar__trigger__lines" ref="lines">
         <pre v-for="n in lines" class="micro2" :key="n">{{ n }}</pre>
       </div>
@@ -155,6 +157,7 @@ export default {
       disableSubmit: true,
       submitError: false,
       searchedTags: [],
+      searchFocused: false,
       query: '',
     };
   },
@@ -504,13 +507,24 @@ export default {
   height: 40px;
 }
 
+.sidebar__content__element {
+  --button-color: var(--theme-secondary);
+  text-transform: none;
+}
+
 .sidebar__content__element, .sidebar__content__element .sidebar__content__element__button {
+  & {
+    @mixin micro1;
+  }
+}
+
+.sidebar__content__element .sidebar__content__element__button {
   display: flex;
   flex-direction: row;
   align-items: center;
   border: none;
   background: none;
-  color: var(--theme-secondary);
+  color: var(--button-color);
   cursor: pointer;
 
   & {
@@ -530,17 +544,13 @@ export default {
     flex: 1;
   }
 
-  &.disabled:hover {
-    color: var(--theme-primary);
-
+  &.off:hover {
     & .sidebar__content__element__button {
       color: var(--theme-primary);
     }
   }
 
   &:hover {
-    background: var(--theme-background-primary);
-
     & .sidebar__content__element__button-hidden {
       display: flex;
     }
@@ -550,6 +560,11 @@ export default {
     width: 24px;
     height: 24px;
     border-radius: 4px;
+  }
+
+  & > .sidebar__content__element__image:first-child,
+  & .sidebar__content__element__button .sidebar__content__element__image {
+    margin-left: 0;
     margin-right: 16px;
   }
 
@@ -570,7 +585,6 @@ export default {
 
 form.sidebar__content__element {
   position: relative;
-  background: var(--theme-background-primary);
   cursor: text;
 
   & .sidebar__content__element__image {
@@ -578,13 +592,17 @@ form.sidebar__content__element {
   }
 
   & .sidebar__sources__submit {
+    width: 30px;
+    height: 30px;
     padding: 3px;
-    background: var(--theme-background-highlight);
     border-radius: 8px;
-    transition: background-color 0.1s linear;
 
-    & .svg-icon {
-      color: var(--theme-primary);
+    &:before {
+      transition: background-color 0.1s linear;
+    }
+
+    & .svg-icon:first-child {
+      margin: 0;
     }
   }
 }
@@ -641,6 +659,7 @@ form.sidebar__content__element {
   background: none;
   border: none;
   caret-color: var(--color-water-60);
+  min-width: 0;
 
   & {
     @mixin micro1;
@@ -651,7 +670,7 @@ form.sidebar__content__element {
   }
 
   &::placeholder {
-    color: var(--theme-disabled);
+    color: var(--theme-secondary);
   }
 }
 
@@ -662,15 +681,13 @@ form.sidebar__content__element {
   border-radius: 4px;
 }
 
-.sidebar__tags__search {
+.sidebar__content__element.sidebar__tags__search {
   position: fixed;
   bottom: 0;
-  background-color: var(--theme-background-secondary);
+  background: var(--theme-background-secondary);
   border-top: 1px solid var(--theme-separator);
-
-  &:hover {
-    background-color: var(--theme-background-highlight);
-  }
+  z-index: 2;
+  --button-border-radius: 0;
 
   & .sidebar__content__element__image {
     margin: 0;

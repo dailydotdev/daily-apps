@@ -73,17 +73,21 @@ export default {
   width: 20px;
   height: 20px;
   transform-origin: center;
-  transition: transform 0.2s linear, color 0.2s linear;
-
-  &:hover {
-    color: var(--theme-secondary);
-  }
+  transition: transform 0.2s linear, color 0.1s linear;
 }
 
 .mode-switch input:checked ~ .mode-switch__icon.mode-switch__icon--second,
 .mode-switch input:not(:checked) ~ .mode-switch__icon.mode-switch__icon--first {
   color: var(--color-salt-10);
   transform: scale(1.2);
+  pointer-events: none;
+}
+
+.mode-switch input:checked ~ .mode-switch__icon.mode-switch__icon--first,
+.mode-switch input:not(:checked) ~ .mode-switch__icon.mode-switch__icon--second {
+  &:hover {
+    color: var(--theme-primary);
+  }
 }
 
 .mode-switch__slider {
@@ -111,5 +115,17 @@ export default {
   will-change: transform;
   transition: transform 0.2s linear;
   z-index: -1;
+
+  &:hover {
+    background: var(--color-water-50);
+  }
+}
+
+.bright {
+  & .mode-switch__handle {
+    &:hover {
+      background: var(--color-water-70);
+    }
+  }
 }
 </style>

@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import 'focus-visible';
 import { mapGetters } from 'vuex';
 import initializeAnalytics from '../common/analytics';
 import { getCache, setCache, CONSENT_KEY } from '../common/cache';
@@ -146,8 +147,6 @@ a {
   & .btn.btn-modal {
     width: 180px;
     margin-top: 32px;
-    color: var(--color-pepper-80);
-    background: var(--color-salt-10);
     justify-content: center;
   }
 }
@@ -165,11 +164,11 @@ a {
   border-radius: 4px;
   background: var(--theme-background-highlight);
   box-shadow: 0 8px 16px 4px rgba(0, 0, 0, 0.32);
+  z-index: 10;
 
   & .btn {
     height: 24px;
-    color: var(--theme-background-highlight);
-    background: var(--theme-primary);
+
     @mixin nuggets;
   }
 }

@@ -7,7 +7,7 @@
     <main class="content">
       <div class="content__header">
         <template v-if="filter && !showBookmarks">
-          <button class="btn content__header__back-home" @click="onBackHome">
+          <button class="btn btn-nav content__header__back-home" @click="onBackHome">
             <svgicon icon="arrow"/>
             <span>Back Home</span>
           </button>
@@ -81,14 +81,14 @@
     </da-terminal>
     <da-context ref="context" class="post-context" @open="onPostMenuOpened"
                 @close="selectedPostId = null">
-      <button class="context__item" @click="reportPost('broken')">Broken link</button>
-      <button class="context__item" @click="reportPost('nsfw')">Report NSFW</button>
+      <button class="btn btn-menu" @click="reportPost('broken')">Broken link</button>
+      <button class="btn btn-menu" @click="reportPost('nsfw')">Report NSFW</button>
     </da-context>
     <div class="instructions sidebar-instructions invert" v-if="sidebarInstructions">
       <div class="instructions__desc">
         Hover on the sidebar to filter your feed based on tags and sources.
       </div>
-      <button class="btn" @click="nextInstruction">
+      <button class="btn btn-invert" @click="nextInstruction">
         Got it
       </button>
     </div>
@@ -398,12 +398,9 @@ export default {
   }
 
   & .content__header__back-home {
-    background: var(--theme-background-highlight);
-    color: var(--theme-secondary);
     margin-right: 16px;
 
     & .svg-icon {
-      color: var(--theme-secondary);
       transform: rotate(-90deg);
     }
   }
