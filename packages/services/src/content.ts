@@ -117,7 +117,7 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async requestPublication(source: string): Promise<void> {
-        await this.request.post('/v1/publications/request', {source});
+        await this.request.post('/v1/publications/requests', {source});
     }
 
     async reportPost(postId: string, reason: string): Promise<void> {

@@ -1,6 +1,6 @@
 {
   "name": "@daily/services",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Shared services for the apps",
   "author": "Ido Shamun <ido@elegantmonkeys.com>",
   "private": true,
