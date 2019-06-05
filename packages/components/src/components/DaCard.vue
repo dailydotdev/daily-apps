@@ -217,7 +217,7 @@ export default {
 .animate-cards .card:hover,
 .animate-cards .card.hover {
   & .card__hover {
-    transform: translate3d(0, -16px, 0) scale(1.03);
+    transform: translate3d(0, -16px, 0) scale(1.02);
   }
 }
 </style>
