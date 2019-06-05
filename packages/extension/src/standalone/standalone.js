@@ -7,6 +7,7 @@ import App from './App.vue';
 import Home from '../routes/Home.vue';
 import store from '../store';
 import { getCache, STATE_KEY } from '../common/cache';
+import { debug } from '../common/config';
 
 Vue.use(svgicon);
 Vue.use(VueMasonry);
@@ -59,7 +60,7 @@ router.beforeEach((to, from, next) => Promise.resolve()
 router.beforeEach((to, from, next) => {
   if (to.path === '/' && to.query.provider && to.query.code) {
     next({ path: '/login', query: to.query });
-  } else if (to.path === '/' && !store.state.ui.onboarding) {
+  } else if (to.path === '/' && !store.state.ui.onboarding && !debug) {
     next({ path: '/onboarding' });
   } else {
     next();

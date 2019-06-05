@@ -586,6 +586,8 @@ export default {
 form.sidebar__content__element {
   position: relative;
   cursor: text;
+  overflow: visible;
+  z-index: 2;
 
   & .sidebar__content__element__image {
     margin-right: 0;
