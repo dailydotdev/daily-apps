@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import store from './store';
+import { getCache, STATE_KEY } from './common/cache';
 import Home from './views/Home.vue';
 import Requests from './views/Requests.vue';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -23,5 +25,21 @@ export default new Router({
         component: () => import(/* webpackChunkName: "approvals" */ './views/Approvals.vue'),
       }],
     },
+    {
+      path: '/login',
+      component: () => import(/* webpackChunkName: "login" */ './views/Login.vue'),
+    },
   ],
 });
+
+// Load local cache
+router.beforeEach((to, from, next) => Promise.resolve()
+  .then(async () => {
+    if (!store.state.initialized) {
+      const state = await getCache(STATE_KEY, {});
+      store.commit('loadFromCache', state);
+    }
+  })
+  .then(next));
+
+export default router;
