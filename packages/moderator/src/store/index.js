@@ -1,5 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { contentService } from '../common/services';
+
+import user from './modules/user';
 import cache from './plugins/cache';
 
 Vue.use(Vuex);
@@ -8,6 +11,7 @@ export default new Vuex.Store({
   state: {
     initialized: false,
   },
+  modules: { user },
   plugins: [cache],
   mutations: {
     loadFromCache(state, cached) {
@@ -15,6 +19,10 @@ export default new Vuex.Store({
         Object.keys(cached).forEach((key) => {
           state[key] = { ...state[key], ...cached[key] };
         });
+      }
+
+      if (state.user.profile) {
+        contentService.setAccessToken(state.user.profile.accessToken);
       }
 
       state.initialized = true;

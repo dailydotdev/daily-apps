@@ -7,12 +7,15 @@
 
 <script>
 import DmHeader from '../components/DmHeader.vue';
+import loggedInGuard from '../router/guards/loggedIn';
 
 export default {
   name: 'Home',
   components: {
     DmHeader,
   },
+
+  beforeRouteEnter: loggedInGuard,
 
   props: {
     showApprovals: {
