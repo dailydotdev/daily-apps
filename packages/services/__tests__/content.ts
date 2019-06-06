@@ -28,7 +28,7 @@ it('should send publication request', async () => {
     const body = {source: 'https://www.dailynow.co'};
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .post('/v1/publications/request', body)
+        .post('/v1/publications/requests', body)
         .reply(204);
 
     service.setAccessToken('token');
