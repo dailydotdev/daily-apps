@@ -128,3 +128,20 @@ it('should set non-editable text as value', (done) => {
     });
   });
 });
+
+it('should set initial value from props', (done) => {
+  const wrapper = mount(DaEditableText, {
+    localVue,
+    propsData: { ...propsData, valueAsText: true, value: 'initial value' },
+  });
+  wrapper.vm.$nextTick(() => {
+    expect(wrapper.find('.editable__non-active span').element.textContent)
+      .toEqual('initial value');
+    wrapper.vm.activate();
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.find('.editable__input').element.value)
+        .toEqual('initial value');
+      done();
+    });
+  });
+});

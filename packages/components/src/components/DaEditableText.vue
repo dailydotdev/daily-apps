@@ -30,10 +30,8 @@ export default {
       type: String,
       required: true,
     },
-    text: {
-      type: String,
-      required: true,
-    },
+    text: String,
+    value: String,
     type: {
       type: String,
       default: 'text',
@@ -57,14 +55,20 @@ export default {
     return {
       active: false,
       disableSubmit: true,
-      value: null,
+      realValue: this.value,
     };
+  },
+
+  watch: {
+    value() {
+      this.realValue = this.value;
+    },
   },
 
   computed: {
     nonActiveText() {
-      if (this.valueAsText && this.value && this.value.length) {
-        return this.value;
+      if (this.valueAsText && this.realValue && this.realValue.length) {
+        return this.realValue;
       }
       return this.text;
     },
@@ -76,8 +80,8 @@ export default {
       this.$nextTick(() => {
         this.updateFormValidity();
 
-        if (!this.resetOnSubmit && this.value) {
-          this.$refs.input.value = this.value;
+        if (!this.resetOnSubmit && this.realValue) {
+          this.$refs.input.value = this.realValue;
         }
 
         this.$refs.input.focus();
@@ -89,14 +93,19 @@ export default {
     },
 
     submit() {
-      this.value = this.$refs.input.value;
-      this.$emit('submit', this.value);
+      this.realValue = this.$refs.input.value;
+      this.$emit('submit', this.realValue);
       this.active = false;
     },
 
     updateFormValidity() {
       this.disableSubmit = !this.$refs.form.checkValidity();
     },
+  },
+
+  mounted() {
+    import('../../icons/x');
+    import('../../icons/v');
   },
 };
 </script>
@@ -149,8 +158,8 @@ export default {
     }
 
     & .editable__non-active__icon {
-      width: 30px;
-      height: 30px;
+      width: 26px;
+      height: 26px;
     }
 
     & .editable__cancel {

@@ -93,6 +93,8 @@
                           placeholder="Waiting for you" :reset-on-submit="true"/>
         <da-editable-text icon="link" text="Value changes the text"
                           placeholder="Waiting for you" :value-as-text="true"/>
+        <da-editable-text icon="link" value="An initial value"
+                          placeholder="Waiting for you" :value-as-text="true"/>
         <da-editable-text class="big" icon="link" text="I'm big and required!"
                           placeholder="Waiting for your input" :required="true"/>
       </div>
