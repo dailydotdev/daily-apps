@@ -15,7 +15,7 @@ export default {
 
   methods: {
     open(event, data) {
-      this.$nextTick(() => this.$refs.context.open(event, data));
+      setTimeout(() => this.$refs.context.open(event, data));
     },
     close() {
       this.$refs.context.close();

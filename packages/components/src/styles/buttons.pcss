@@ -85,6 +85,13 @@ button:focus, button:active {
         @mixin lil2;
     }
 
+    &.btn-square {
+        width: 30px;
+        height: 30px;
+        padding: 3px;
+        --button-border-radius: 8px;
+    }
+
     & > .svg-icon {
         color: var(--button-color);
 
@@ -96,6 +103,10 @@ button:focus, button:active {
         &:last-child {
             margin-left: 8px;
             margin-right: -4px;
+        }
+
+        &:only-child {
+            margin: 0;
         }
     }
 

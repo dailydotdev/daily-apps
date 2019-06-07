@@ -85,6 +85,19 @@
       </div>
     </section>
     <section>
+      <h2>Editable Text</h2>
+      <div class="vertical_container">
+        <da-editable-text icon="link" text="Click on me to edit"
+                          placeholder="Waiting for you"/>
+        <da-editable-text icon="link" text="Reset on submit"
+                          placeholder="Waiting for you" :reset-on-submit="true"/>
+        <da-editable-text icon="link" text="Value changes the text"
+                          placeholder="Waiting for you" :value-as-text="true"/>
+        <da-editable-text class="big" icon="link" text="I'm big and required!"
+                          placeholder="Waiting for your input" :required="true"/>
+      </div>
+    </section>
+    <section>
       <h2>Icons</h2>
       <div class="horizontal_container">
         <div v-for="(item, index) in icons" :key="index" class="icons_container">
@@ -187,6 +200,7 @@ import DaContext from './DaContext.vue';
 import DaModal from './DaModal.vue';
 import DaModeSwitch from './DaModeSwitch.vue';
 import DaTerminal from './DaTerminal.vue';
+import DaEditableText from './DaEditableText.vue';
 
 const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
@@ -208,6 +222,7 @@ export default {
     DaIconToggle,
     DaSwitch,
     DaModeSwitch,
+    DaEditableText,
   },
   created() {
     this.icons = icons.map(r => r.substr(2, r.length - 5));
@@ -383,6 +398,15 @@ h3 {
 
   & button {
     margin: 0 8px;
+  }
+}
+
+.editable {
+  width: 256px;
+  margin: 16px 0;
+
+  &.big {
+    width: 300px;
   }
 }
 </style>
