@@ -11,7 +11,7 @@ steps:
 - name: node:10.12.0
   dir: 'packages/moderator'
   entrypoint: 'yarn'
-  args: ['netlify', 'deploy', '--dir', 'dist', '--prod', '--message', '"$COMMIT_SHA"']
+  args: ['netlify', 'deploy', '--dir', 'dist', '--prod', '--message', '$COMMIT_SHA']
   env:
   - 'NETLIFY_SITE_ID=2efb1084-0098-47cb-9fba-23af950cc822'
   secretEnv: ['NETLIFY_AUTH_TOKEN']
