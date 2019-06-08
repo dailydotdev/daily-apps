@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "createdAt": "2018-10-15T05:37:54.000Z",
+    "url": "https://dailynow.co",
+    "userId": "123",
+    "published": false
+  },
+  {
+    "id": 2,
+    "createdAt": "2018-10-16T05:37:54.000Z",
+    "url": "https://dailynow.co2",
+    "userId": "124",
+    "published": false
+  }
+]

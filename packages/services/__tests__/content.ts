@@ -3,7 +3,7 @@ import axios from 'axios';
 import httpAdapter from 'axios/lib/adapters/http';
 // @ts-ignore
 import nock from 'nock';
-import {ContentServiceImpl, FeedPublication, Publication, Tag} from '../src';
+import {ContentServiceImpl, FeedPublication, Publication, Tag, PubRequest, PubRequestEdit} from '../src';
 import {expected as latestExpected, response as latestResponse} from './fixtures/latest';
 import {expected as bookExpected, response as bookResponse} from './fixtures/bookmarks';
 import {expected as feedPubsExpected, response as feedPubsResponse} from './fixtures/feedPubs';
@@ -47,6 +47,50 @@ it('should report post', async () => {
     service.setAccessToken('token');
 
     await service.reportPost(postId, reason);
+});
+
+it('should fetch open pub requests from server', async () => {
+    const response = require('./fixtures/pubRequests.json');
+    const expected: PubRequest[] = response.map((x: any) => ({...x, createdAt: new Date(x.createdAt)}));
+
+    nock(baseURL)
+        .matchHeader('authorization', 'Bearer token')
+        .get('/v1/publications/requests/open')
+        .reply(200, response);
+
+    const actual = await service.fetchOpenPubRequests();
+    expect(actual).toEqual(expected);
+});
+
+it('should edit an existing pub request', async () => {
+    const payload: PubRequestEdit = {url: 'https://dailynow.co'};
+
+    nock(baseURL)
+        .matchHeader('authorization', 'Bearer token')
+        .put('/v1/publications/requests/1', payload)
+        .reply(204);
+
+    await service.editPubRequest(1, payload);
+});
+
+it('should approve an existing pub request', async () => {
+    nock(baseURL)
+        .matchHeader('authorization', 'Bearer token')
+        .post('/v1/publications/requests/1/approve')
+        .reply(204);
+
+    await service.approvePubRequest(1);
+});
+
+it('should decline an existing pub request', async () => {
+    const reason: string = 'exists';
+
+    nock(baseURL)
+        .matchHeader('authorization', 'Bearer token')
+        .post('/v1/publications/requests/1/decline', {reason})
+        .reply(204);
+
+    await service.declinePubRequest(1, reason);
 });
 
 it('should fetch latest posts from server', async () => {

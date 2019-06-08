@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import DmHeader from '../components/DmHeader.vue';
 import loggedInGuard from '../router/guards/loggedIn';
 
@@ -32,18 +33,61 @@ export default {
         this.$router.replace('/approvals');
       }
     },
+
+    ...mapActions({
+      fetchOpenRequests: 'requests/fetchOpenRequests',
+    }),
+  },
+
+  async mounted() {
+    await this.fetchOpenRequests();
   },
 };
 </script>
 
 <style>
 .home {
-  padding-top: 64px;
+  padding: 64px 70px 32px;
+
+  & .page__title {
+    margin: 32px 0;
+    color: var(--theme-secondary);
+    text-transform: uppercase;
+  }
+
+  & .cards-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: auto;
+    grid-column-gap: 32px;
+    grid-row-gap: 32px;
+
+    @media (min-width: 1071px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 1391px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (min-width: 1671px) {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    @media (min-width: 2031px) {
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    @media (min-width: 2351px) {
+      grid-template-columns: repeat(7, 1fr);
+    }
+  }
 }
 
 .home__header {
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 3;
 }
 </style>

@@ -36,6 +36,32 @@ export interface TagsSearchResult {
     hits: Tag[];
 }
 
+export interface PubRequest {
+    id: Number;
+    createdAt: Date;
+    url: string;
+    userId: string;
+    userName?: string;
+    userEmail?: string;
+    approved?: boolean;
+    reason?: string;
+    pubId?: string;
+    pubName?: string;
+    pubImage?: string;
+    pubTwitter?: string;
+    pubRss?: string;
+    closed: boolean;
+}
+
+export interface PubRequestEdit {
+    url?: string;
+    pubId?: string;
+    pubName?: string;
+    pubImage?: string;
+    pubTwitter?: string;
+    pubRss?: string;
+}
+
 export interface ContentService {
     setAccessToken(token: string): void;
 
@@ -44,6 +70,14 @@ export interface ContentService {
     fetchPublications(): Promise<Publication[]>;
 
     requestPublication(source: string): Promise<void>;
+
+    fetchOpenPubRequests(): Promise<PubRequest[]>;
+
+    editPubRequest(id: Number, obj: PubRequestEdit): Promise<void>;
+
+    approvePubRequest(id: Number): Promise<void>;
+
+    declinePubRequest(id: Number, reason: string): Promise<void>;
 
     reportPost(postId: string, reason: string): Promise<void>;
 
@@ -118,6 +152,23 @@ export class ContentServiceImpl implements ContentService {
 
     async requestPublication(source: string): Promise<void> {
         await this.request.post('/v1/publications/requests', {source});
+    }
+
+    async fetchOpenPubRequests(): Promise<PubRequest[]> {
+        const res = await this.request.get('/v1/publications/requests/open');
+        return res.data.map((x: any) => reviveJSON(x, dateReviver));
+    }
+
+    async editPubRequest(id: Number, obj: PubRequestEdit): Promise<void> {
+        await this.request.put(`/v1/publications/requests/${id}`, obj);
+    }
+
+    async approvePubRequest(id: Number): Promise<void> {
+        await this.request.post(`/v1/publications/requests/${id}/approve`);
+    }
+
+    async declinePubRequest(id: Number, reason: string): Promise<void> {
+        await this.request.post(`/v1/publications/requests/${id}/decline`, {reason});
     }
 
     async reportPost(postId: string, reason: string): Promise<void> {

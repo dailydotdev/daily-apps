@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import { contentService } from '../common/services';
 
 import user from './modules/user';
+import requests from './modules/requests';
 import cache from './plugins/cache';
 
 Vue.use(Vuex);
@@ -11,7 +12,7 @@ export default new Vuex.Store({
   state: {
     initialized: false,
   },
-  modules: { user },
+  modules: { user, requests },
   plugins: [cache],
   mutations: {
     loadFromCache(state, cached) {

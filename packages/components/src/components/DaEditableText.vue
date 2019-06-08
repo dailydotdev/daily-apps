@@ -78,12 +78,10 @@ export default {
     activate() {
       this.active = true;
       this.$nextTick(() => {
-        this.updateFormValidity();
-
         if (!this.resetOnSubmit && this.realValue) {
           this.$refs.input.value = this.realValue;
         }
-
+        this.updateFormValidity();
         this.$refs.input.focus();
       });
     },
@@ -114,7 +112,7 @@ export default {
 .editable {
   height: 44px;
 
-  & .btn, & .editable__active {
+  & .btn, & .editable__active, & .editable__input {
     @mixin micro1;
   }
 
@@ -126,6 +124,10 @@ export default {
     width: 100%;
     height: 100%;
     padding: 0 16px;
+  }
+
+  & .editable__non-active {
+    padding-left: 19px;
   }
 
   & .editable__non-active {
@@ -142,8 +144,6 @@ export default {
   }
 
   & .editable__cancel {
-    margin-left: -3px;
-
     & .svg-icon {
       width: 20px;
       height: 20px;
@@ -155,6 +155,10 @@ export default {
       padding: 0 8px;
 
       --button-border-radius: 8px;
+    }
+
+    & .editable__non-active {
+      padding-left: 11px;
     }
 
     & .editable__non-active__icon {
@@ -170,7 +174,8 @@ export default {
     }
 
     & .editable__input {
-      margin: 0 16px;
+      margin-right: 16px;
+      margin-left: 11px;
     }
   }
 }
