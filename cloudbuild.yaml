@@ -8,3 +8,15 @@ steps:
 - name: node:10.12.0
   entrypoint: 'npx'
   args: ['lerna', 'run', 'test']
+- name: node:10.12.0
+  dir: 'packages/moderator'
+  entrypoint: 'yarn'
+  args: ['netlify', 'deploy', '--dir', 'dist', '--prod', '--message', '"$COMMIT_SHA"']
+  env:
+  - 'NETLIFY_SITE_ID=2efb1084-0098-47cb-9fba-23af950cc822'
+  secretEnv: ['NETLIFY_AUTH_TOKEN']
+
+secrets:
+  - kmsKeyName: projects/daily-ops/locations/global/keyRings/daily-ci/cryptoKeys/daily-apps-ci
+    secretEnv:
+      NETLIFY_AUTH_TOKEN: CiQATEW6yazKFxLcHOCWzUWuOws1TxaFkUe0SSlDmUWZhe1cbHoSaQDo773TJan+qC2x2U2imgiA03XBaysUAQfOAT8dnXlpJdP9F0X98GvaASumQlt/8WJItqRYKDxOfPUTAEc05wCZmj6YMIawDEBARKF8170J/Afh6LI/XisxdWK0is8rblorZkSgOvVuAw==

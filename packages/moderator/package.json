@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve --port 8090",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "test": "yarn lint && vue-cli-service test:unit"
   },
   "dependencies": {
     "@daily/components": "^0.2.1",
@@ -33,6 +34,7 @@
     "babel-jest": "^23.6.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "netlify-cli": "^2.11.22",
     "postcss-custom-media": "^7.0.8",
     "postcss-extend": "^1.0.5",
     "postcss-mixins": "^6.2.1",
