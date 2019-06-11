@@ -3,7 +3,7 @@
   "version": "0.2.1",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --port 8090",
     "build": "yarn icons && vue-cli-service build --target lib --name components src/components/index.js",
     "test": "yarn lint && vue-cli-service test:unit",
     "lint": "vue-cli-service lint",

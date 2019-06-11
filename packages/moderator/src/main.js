@@ -14,3 +14,13 @@ new Vue({
   store,
   render: h => h(App),
 }).$mount('#app');
+
+window.OneSignal = window.OneSignal || [];
+window.OneSignal.push(() => {
+  window.OneSignal.init({
+    appId: process.env.VUE_APP_ONESIGNAL,
+    allowLocalhostAsSecureOrigin: process.env.NODE_ENV !== 'production',
+  });
+
+  window.OneSignal.showNativePrompt();
+});
