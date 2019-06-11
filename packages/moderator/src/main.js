@@ -21,6 +21,4 @@ window.OneSignal.push(() => {
     appId: process.env.VUE_APP_ONESIGNAL,
     allowLocalhostAsSecureOrigin: process.env.NODE_ENV !== 'production',
   });
-
-  window.OneSignal.showNativePrompt();
 });

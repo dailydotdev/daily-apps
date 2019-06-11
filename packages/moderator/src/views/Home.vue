@@ -40,6 +40,15 @@ export default {
   },
 
   async mounted() {
+    window.OneSignal = window.OneSignal || [];
+    window.OneSignal.push(async () => {
+      window.OneSignal.showNativePrompt();
+
+      await window.OneSignal.sendTags({
+        userId: this.$store.state.user.profile.id,
+      });
+    });
+
     await this.fetchOpenRequests();
   },
 };
