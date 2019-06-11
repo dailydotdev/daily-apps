@@ -10,7 +10,7 @@
         <svgicon icon="menu" ref="orig"/>
       </button>
       <button class="btn btn-square btn-water-cheese form__header__approve"
-              @click="$emit('submit')">
+              @click="$emit('submit')" :disabled="disableSubmit">
         <svgicon icon="v"/>
       </button>
     </header>
@@ -29,6 +29,10 @@ export default {
     title: String,
     subtitle: String,
     menuOpened: {
+      type: Boolean,
+      default: false,
+    },
+    disableSubmit: {
       type: Boolean,
       default: false,
     },
@@ -82,13 +86,13 @@ export default {
 }
 
 .form__content {
-  padding: 24px;
+  padding: 16px;
 }
 
 .form__header {
   display: flex;
   height: 64px;
-  padding: 0 24px;
+  padding: 0 16px;
   flex-direction: row;
   align-items: center;
   border-bottom: 1px solid var(--theme-background-primary);

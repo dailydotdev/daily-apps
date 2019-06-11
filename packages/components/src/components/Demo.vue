@@ -91,11 +91,11 @@
                           placeholder="Waiting for you"/>
         <da-editable-text icon="link" text="Reset on submit"
                           placeholder="Waiting for you" :reset-on-submit="true"/>
-        <da-editable-text icon="link" text="Value changes the text"
+        <da-editable-text icon="link" text="Value as text"
                           placeholder="Waiting for you" :value-as-text="true"/>
         <da-editable-text icon="link" value="An initial value"
                           placeholder="Waiting for you" :value-as-text="true"/>
-        <da-editable-text class="big" icon="link" text="I'm big and required!"
+        <da-editable-text icon="link" text="I am required"
                           placeholder="Waiting for your input" :required="true"/>
       </div>
     </section>
@@ -404,11 +404,7 @@ h3 {
 }
 
 .editable {
-  width: 256px;
+  width: 300px;
   margin: 16px 0;
-
-  &.big {
-    width: 300px;
-  }
 }
 </style>

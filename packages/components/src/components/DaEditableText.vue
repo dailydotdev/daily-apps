@@ -2,7 +2,9 @@
   <div class="editable">
     <button class="btn btn-menu editable__non-active"
             @click.prevent="activate" v-if="!active">
-      <svgicon :name="icon" class="editable__non-active__icon"/>
+      <div class="editable__icon-container" v-if="icon">
+        <svgicon :name="icon" class="editable__non-active__icon"/>
+      </div>
       <span>{{nonActiveText}}</span>
     </button>
     <form class="btn btn-menu selected editable__active" v-else
@@ -26,10 +28,7 @@ export default {
   name: 'DaEditableText',
 
   props: {
-    icon: {
-      type: String,
-      required: true,
-    },
+    icon: String,
     text: String,
     value: String,
     type: {
@@ -91,7 +90,7 @@ export default {
     },
 
     submit() {
-      this.realValue = this.$refs.input.value;
+      this.realValue = this.$refs.input.value.length ? this.$refs.input.value : null;
       this.$emit('submit', this.realValue);
       this.active = false;
     },
@@ -123,11 +122,9 @@ export default {
   & .editable__non-active, & .editable__active {
     width: 100%;
     height: 100%;
-    padding: 0 16px;
-  }
+    padding: 0 8px;
 
-  & .editable__non-active {
-    padding-left: 19px;
+    --button-border-radius: 8px;
   }
 
   & .editable__non-active {
@@ -135,55 +132,30 @@ export default {
 
     & span {
       overflow: hidden;
-      margin-left: 8px;
       flex: 1;
       text-overflow: ellipsis;
       white-space: nowrap;
       text-align: start;
-    }
-  }
 
-  & .editable__cancel {
-    & .svg-icon {
-      width: 20px;
-      height: 20px;
-    }
-  }
-
-  &.big {
-    & .editable__non-active, & .editable__active {
-      padding: 0 8px;
-
-      --button-border-radius: 8px;
-    }
-
-    & .editable__non-active {
-      padding-left: 11px;
-    }
-
-    & .editable__non-active__icon {
-      width: 26px;
-      height: 26px;
-    }
-
-    & .editable__cancel {
-      & .svg-icon {
-        width: 24px;
-        height: 24px;
+      &:first-child {
+        margin-left: 0;
       }
     }
-
-    & .editable__input {
-      margin-right: 16px;
-      margin-left: 11px;
-    }
   }
+}
+
+.editable__input, .editable__non-active span {
+  margin: 0 16px;
+}
+
+.editable__icon-container {
+  display: flex;
+  padding: 3px;
 }
 
 .editable__input {
   width: 100%;
   flex: 1;
-  margin: 0 8px;
   color: var(--theme-primary);
   background: none;
   border: none;

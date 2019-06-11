@@ -79,6 +79,10 @@ export interface ContentService {
 
     declinePubRequest(id: Number, reason: string): Promise<void>;
 
+    publishPubRequest(id: Number): Promise<void>;
+
+    uploadPubRequestLogo(id: Number, file: File): Promise<string>;
+
     reportPost(postId: string, reason: string): Promise<void>;
 
     fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]>;
@@ -169,6 +173,21 @@ export class ContentServiceImpl implements ContentService {
 
     async declinePubRequest(id: Number, reason: string): Promise<void> {
         await this.request.post(`/v1/publications/requests/${id}/decline`, {reason});
+    }
+
+    async publishPubRequest(id: Number): Promise<void> {
+        await this.request.post(`/v1/publications/requests/${id}/publish`);
+    }
+
+    async uploadPubRequestLogo(id: Number, file: File): Promise<string> {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res: any = await this.request.post(
+            `/v1/publications/requests/${id}/logo`,
+            formData,
+            {headers: {'Content-Type': 'multipart/form-data'}},
+        );
+        return res.data.img;
     }
 
     async reportPost(postId: string, reason: string): Promise<void> {

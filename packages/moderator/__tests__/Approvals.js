@@ -4,7 +4,7 @@ import svgicon from 'vue-svgicon';
 import DaEditableText from '@daily/components/src/components/DaEditableText.vue';
 import DaContext from '@daily/components/src/components/DaContext.vue';
 import DmForm from '../src/components/DmForm.vue';
-import Requests from '../src/views/Requests.vue';
+import Approvals from '../src/views/Approvals';
 
 const localVue = createLocalVue();
 
@@ -27,7 +27,7 @@ beforeEach(() => {
       }],
     },
     getters: {
-      pendingRequests() {
+      approvedRequests() {
         return [
           { id: 1, url: 'https://dailynow.co' },
           { id: 2, url: 'https://go.dailynow.co' },
@@ -37,8 +37,9 @@ beforeEach(() => {
     mutations: {},
     actions: {
       editOpenRequest: jest.fn(),
-      approveOpenRequest: jest.fn(),
       declineOpenRequest: jest.fn(),
+      uploadRequestLogo: jest.fn(),
+      publishOpenRequest: jest.fn(),
     },
   };
 
@@ -48,7 +49,7 @@ beforeEach(() => {
 });
 
 it('should open context menu on menu event', (done) => {
-  const wrapper = mount(Requests, {
+  const wrapper = mount(Approvals, {
     localVue,
     store,
   });
@@ -63,7 +64,7 @@ it('should open context menu on menu event', (done) => {
 });
 
 it('should decline request on content menu click', (done) => {
-  const wrapper = mount(Requests, {
+  const wrapper = mount(Approvals, {
     localVue,
     store,
   });
@@ -77,24 +78,42 @@ it('should decline request on content menu click', (done) => {
   }, 10);
 });
 
-it('should approve request on approve button click', () => {
-  const wrapper = mount(Requests, {
+it('should publish request on approve button click', () => {
+  const wrapper = mount(Approvals, {
     localVue,
     store,
   });
   const form = wrapper.findAll('.form').at(0);
   form.vm.$emit('submit');
-  expect(requests.actions.approveOpenRequest)
+  expect(requests.actions.publishOpenRequest)
     .toBeCalledWith(expect.anything(), { id: 1 }, undefined);
 });
 
 it('should edit request url on editable submit', () => {
-  const wrapper = mount(Requests, {
+  const wrapper = mount(Approvals, {
     localVue,
     store,
   });
-  const editable = wrapper.findAll('.form .editable').at(0);
+  const editable = wrapper.findAll('.form').at(0).findAll('.editable').at(1);
   editable.vm.$emit('submit', 'https://newurl.com');
   expect(requests.actions.editOpenRequest)
     .toBeCalledWith(expect.anything(), { id: 1, edit: { url: 'https://newurl.com' } }, undefined);
+});
+
+it('should upload logo when selecting file', () => {
+  const wrapper = mount(Approvals, {
+    localVue,
+    store,
+  });
+  const input = wrapper.findAll('.form').at(0).find('.file-upload input');
+  const file = new File(['foo'], 'file.txt');
+  // Workaround to set read-only property files of input
+  Object.defineProperty(input.element, 'files', {
+    value: [file],
+    writable: false,
+  });
+
+  input.trigger('input');
+  expect(requests.actions.uploadRequestLogo)
+    .toBeCalledWith(expect.anything(), { id: 1, file }, undefined);
 });

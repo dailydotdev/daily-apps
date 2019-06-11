@@ -8,6 +8,7 @@ jest.mock('../src/common/services', () => ({
     editPubRequest: jest.fn(),
     approvePubRequest: jest.fn(),
     declinePubRequest: jest.fn(),
+    publishPubRequest: jest.fn(),
   },
 }));
 
@@ -201,4 +202,43 @@ it('should revert decline when request failed', async () => {
   );
 
   expect(contentService.declinePubRequest).toBeCalledWith(1, 'exists');
+});
+
+it('should publish the request and send request to server', async () => {
+  const state = {
+    openRequests:
+      [{ id: 1, url: 'https://dailynow.co' },
+        { id: 2, url: 'https://go.dailynow.co' }],
+  };
+  contentService.publishPubRequest.mockReturnValue(Promise.resolve());
+  await testAction(
+    module.actions.publishOpenRequest,
+    { id: 1 },
+    state,
+    [{ type: 'removeOpenRequest', payload: 0 }],
+  );
+
+  expect(contentService.publishPubRequest).toBeCalledWith(1);
+});
+
+it('should revert publish when request failed', async () => {
+  const state = {
+    openRequests:
+      [{ id: 1, url: 'https://dailynow.co' },
+        { id: 2, url: 'https://go.dailynow.co' }],
+  };
+  contentService.publishPubRequest.mockReturnValue(Promise.reject());
+  await testAction(
+    module.actions.publishOpenRequest,
+    { id: 1 },
+    state,
+    [{ type: 'removeOpenRequest', payload: 0 },
+      {
+        type: 'addOpenRequestToIndex', payload: {
+          index: 0, request: { id: 1, url: 'https://dailynow.co' },
+        },
+      }],
+  );
+
+  expect(contentService.publishPubRequest).toBeCalledWith(1);
 });

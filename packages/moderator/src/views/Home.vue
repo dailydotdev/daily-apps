@@ -47,7 +47,12 @@ export default {
 
 <style>
 .home {
-  padding: 64px 70px 32px;
+  padding: 64px 35px 32px;
+
+  @media (min-width: 536px) {
+    padding-left: 70px;
+    padding-right: 70px;
+  }
 
   & .page__title {
     margin: 32px 0;
@@ -57,10 +62,14 @@ export default {
 
   & .cards-list {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     grid-auto-rows: auto;
     grid-column-gap: 32px;
     grid-row-gap: 32px;
+
+    @media (min-width: 720px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
 
     @media (min-width: 1071px) {
       grid-template-columns: repeat(3, 1fr);
@@ -82,6 +91,19 @@ export default {
       grid-template-columns: repeat(7, 1fr);
     }
   }
+
+  & .editable {
+    width: 100%;
+    margin: 4px 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .home__header {
@@ -89,5 +111,18 @@ export default {
   top: 0;
   left: 0;
   z-index: 3;
+}
+
+.v-context.context.requests__context {
+  width: 200px;
+
+  &:focus {
+    outline: none;
+  }
+
+  & .btn {
+    padding: 12px 16px;
+    justify-content: flex-start;
+  }
 }
 </style>

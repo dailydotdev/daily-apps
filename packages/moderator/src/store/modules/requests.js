@@ -3,6 +3,25 @@ import { contentService } from '../../common/services';
 
 const initialState = () => ({
   openRequests: [],
+  reasons: [{
+    id: 'exists',
+    title: 'Already exists',
+  }, {
+    id: 'non-english',
+    title: 'Non-English',
+  }, {
+    id: 'not-active',
+    title: 'Not active',
+  }, {
+    id: 'personal',
+    title: 'Personal blog',
+  }, {
+    id: 'rss',
+    title: 'No RSS',
+  }, {
+    id: 'promotion',
+    title: 'Promotion',
+  }],
 });
 
 export default {
@@ -64,6 +83,21 @@ export default {
       } catch {
         commit('addOpenRequestToIndex', { index, request: old });
       }
+    },
+    async publishOpenRequest({ commit, state }, { id }) {
+      const index = state.openRequests.findIndex(req => req.id === id);
+      const old = state.openRequests[index];
+      commit('removeOpenRequest', index);
+      try {
+        await contentService.publishPubRequest(id);
+      } catch {
+        commit('addOpenRequestToIndex', { index, request: old });
+      }
+    },
+    async uploadRequestLogo({ commit, state }, { id, file }) {
+      const index = state.openRequests.findIndex(req => req.id === id);
+      const img = await contentService.uploadPubRequestLogo(id, file);
+      commit('editOpenRequest', { index, edit: { pubImage: img } });
     },
   },
 };

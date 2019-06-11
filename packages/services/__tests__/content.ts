@@ -93,6 +93,15 @@ it('should decline an existing pub request', async () => {
     await service.declinePubRequest(1, reason);
 });
 
+it('should publish an existing pub request', async () => {
+    nock(baseURL)
+        .matchHeader('authorization', 'Bearer token')
+        .post('/v1/publications/requests/1/publish')
+        .reply(204);
+
+    await service.publishPubRequest(1);
+});
+
 it('should fetch latest posts from server', async () => {
     nock(baseURL)
         .get('/v1/posts/latest')

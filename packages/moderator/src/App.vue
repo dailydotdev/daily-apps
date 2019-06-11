@@ -20,7 +20,6 @@ html {
 body {
   margin: 0;
   overflow-y: scroll;
-  min-width: 720px;
 }
 
 html, body {
