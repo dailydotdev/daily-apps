@@ -3,8 +3,8 @@ module.exports = {
     name: 'Daily Moderator',
     themeColor: '#303237',
     workboxOptions: {
-      exclude: [/OneSignal.*\.js$/],
-    }
+      exclude: [/OneSignal.*\.js$/, /^_/],
+    },
   },
   chainWebpack: config => config.resolve.symlinks(false),
 };
