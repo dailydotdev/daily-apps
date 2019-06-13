@@ -55,8 +55,8 @@ export default {
 
           this.$refs.dup.$el.style.top = `${childRect.top - parentRect.top}px`;
           this.$refs.dup.$el.style.left = `${childRect.left - parentRect.left}px`;
-          this.$refs.dup.$el.style.width = childRect.width;
-          this.$refs.dup.$el.style.height = childRect.height;
+          this.$refs.dup.$el.style.width = `${childRect.width}px`;
+          this.$refs.dup.$el.style.height = `${childRect.height}px`;
         });
       }
     },

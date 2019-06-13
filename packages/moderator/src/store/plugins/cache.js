@@ -1,7 +1,7 @@
 import { setCache, STATE_KEY } from '../../common/cache';
 
 const stateToCache = (state) => {
-  const toCache = { ...state };
+  const toCache = Object.assign({},{ ...state });
   delete toCache.requests.reasons;
 
   return toCache;
