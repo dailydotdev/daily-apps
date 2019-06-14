@@ -24,6 +24,9 @@ const initialState = () => ({
   }, {
     id: 'not-blog',
     title: 'Not a blog',
+  }, {
+    id: 'not-relevant',
+    title: 'Not relevant',
   }],
 });
 
