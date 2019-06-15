@@ -5,11 +5,11 @@
         <h5 class="form__header__title">{{title}}</h5>
         <div class="form__header__subtitle micro2">{{subtitle}}</div>
       </div>
-      <button class="btn-icon form__header__menu" title="Menu"
+      <button class="btn-icon form__header__menu" title="Open menu"
               @click="$emit('menu', $event)">
         <svgicon icon="menu" ref="orig"/>
       </button>
-      <button class="btn btn-square btn-water-cheese form__header__approve"
+      <button class="btn btn-square btn-water-cheese form__header__approve" title="Approve"
               @click="$emit('submit')" :disabled="disableSubmit">
         <svgicon icon="v"/>
       </button>
