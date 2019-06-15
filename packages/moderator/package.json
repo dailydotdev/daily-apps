@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && node build/onesignal.js",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
     "test": "yarn lint && vue-cli-service test:unit"
