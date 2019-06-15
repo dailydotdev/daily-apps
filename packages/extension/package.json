@@ -28,6 +28,7 @@
     "webextension-polyfill": "^0.4.0"
   },
   "devDependencies": {
+    "@babel/polyfill": "^7.4.4",
     "@babel/runtime": "^7.4.2",
     "@vue/babel-preset-app": "^3.5.5",
     "@vue/cli-plugin-babel": "^3.2.0",
@@ -41,6 +42,7 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
     "chalk": "^2.4.2",
+    "core-js": "^2",
     "deepmerge": "^3.2.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0-0",
