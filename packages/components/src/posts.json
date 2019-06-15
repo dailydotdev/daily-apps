@@ -1,64 +1,71 @@
 [
   {
-    "id": "65945b8288720ce356cb73e4c49658fc",
-    "title": "The Future of Love is Interesting",
-    "url": "https://app.dailynow.co/r/65945b8288720ce356cb73e4c49658fc",
-    "publishedAt": "2018-12-05T08:20:27.000Z",
-    "createdAt": "2018-12-05T08:20:33.000Z",
+    "id": "e3fd75b62cadd02073a31ee3444975cc",
+    "title": "The Prosecutor’s Fallacy",
+    "url": "https://app.dailynow.co/r/e3fd75b62cadd02073a31ee3444975cc",
+    "publishedAt": "2019-06-13T01:20:32.000Z",
+    "createdAt": "2019-06-13T01:20:42.000Z",
     "publication": {
-      "id": "swlh",
-      "name": "The Startup",
-      "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/swlh"
+      "id": "tds",
+      "name": "Towards Data Science",
+      "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/tds"
     },
-    "image": "https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/255f14916cc30b253cc5ed3b039013fb",
-    "placeholder": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAPAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAABQb/xAAjEAACAQMEAQUAAAAAAAAAAAABAgMABAUREiFhMQYTIjPS/8QAFQEBAQAAAAAAAAAAAAAAAAAABAX/xAAbEQEBAAIDAQAAAAAAAAAAAAABAgADBREhcf/aAAwDAQACEQMRAD8ANvsNgbNcRczwtPO8ixKqXI3oCPizDTgA6gnriiZcDilkcHHXzkEjcJVAPfipTHeuRBjvZKauiMqKSx2g9+aAbPRsxYwMSefvk/VI18hM1SyovmTdvEVcQFgh09fc/9k=",
-    "size": "large",
-    "views": 238,
+    "views": 1,
     "tags": [
-      "Love",
-      "Relationships",
-      "ArtificialIntelligence",
-      "Technology",
-      "Future"
-    ]
+      "data-science",
+      "python",
+      "pandas",
+      "probability"
+    ],
+    "readTime": 8,
+    "image": "https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/1f76bef532ec04b262c93b31de84abaa",
+    "placeholder": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAOAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABwQF/8QAJRAAAQMCBQQDAAAAAAAAAAAAAQIDBBEhAAUSIjEGFEGBExZR/8QAFQEBAQAAAAAAAAAAAAAAAAAAAwb/xAAeEQABAwQDAAAAAAAAAAAAAAACAQMRAAQFYSHw8f/aAAwDAQACEQMRAD8AvyKMIOdTJzSURmESVBsPrUXAAq6iQQNHu9L/ALhSiZpIdiMuFDJK0JUSkilx43cYCvt8eT2rMxD6GVDelltPsC4qK+OMaLHUoDDfasuiPpHxha06gmlq7eaYn8hhyuyQphe7pQvH3VUnY1x7X//Z",
+    "size": "large"
   },
   {
-    "id": "6565eb24c0617cdab5f5ca167544a852",
-    "title": "How Airbnb is Moving 10x Faster at Scale with GraphQL and Apollo",
-    "url": "https://app.dailynow.co/r/6565eb24c0617cdab5f5ca167544a852",
-    "publishedAt": "2018-12-05T07:55:28.000Z",
-    "createdAt": "2018-12-05T07:55:35.000Z",
+    "id": "9c0ae2dc8d2cb7e11a4be8bcbebca9fa",
+    "title": "Introduction to PixiJS: An HTML5 2D rendering engine",
+    "url": "https://app.dailynow.co/r/9c0ae2dc8d2cb7e11a4be8bcbebca9fa",
+    "publishedAt": "2019-06-10T17:29:04.000Z",
+    "createdAt": "2019-06-12T07:18:54.000Z",
     "publication": {
-      "id": "airbnb",
-      "name": "Airbnb Engineering",
-      "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/airbnb"
+      "id": "itnext",
+      "name": "ITNEXT",
+      "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/itnext2"
     },
-    "image": "https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/f52ac8bb66be1b082a60b821cff85780",
-    "placeholder": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAJAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAABwID/8QAJhAAAgEBBAsAAAAAAAAAAAAAAQIDAAQGERMFBxUhMjNBQnFygv/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/8QAFxEBAQEBAAAAAAAAAAAAAAAAAQARIf/aAAwDAQACEQMRAD8ARdVMV9YLw6Ulvk9t2eysLOtpdMtWzd2GBPb1pZE0AAAlXD2rA8n6ql4R4qrvWX//2Q==",
-    "size": "medium",
-    "views": 395,
+    "views": 398,
     "tags": [
-      "GraphQL",
-      "Airbnb",
-      "JavaScript",
-      "FrontEndDevelopment"
+      "javascript",
+      "webdev",
+      "html",
+      "html5"
     ],
+    "readTime": 2,
+    "image": "https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/915576951be2c23abc40a0ee3f22ac33",
+    "placeholder": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAHAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAYH/8QAHhAAAQQCAwEAAAAAAAAAAAAAAQACBAUDESEiQVH/xAAVAQEBAAAAAAAAAAAAAAAAAAAEBf/EABcRAQEBAQAAAAAAAAAAAAAAAAIBABH/2gAMAwEAAhEDEQA/AMUr6KK6nMjICSR1IOtKefGwB7uffiImNck08JK3t3//2Q==",
+    "size": "medium",
     "bookmarked": true
   },
   {
-    "id": "5fd22353c9e02f5e9d90805f95632bfe",
-    "title": "How to get your own GitHub Student Developer Pack",
-    "url": "https://app.dailynow.co/r/5fd22353c9e02f5e9d90805f95632bfe",
-    "publishedAt": "2018-12-04T16:37:29.000Z",
-    "createdAt": "2018-12-04T16:37:35.000Z",
+    "id": "0b14843f08279a41ea69c1edd35a2c16",
+    "title": "Four Firefox Dev-Tools I use daily",
+    "url": "https://app.dailynow.co/r/0b14843f08279a41ea69c1edd35a2c16",
+    "publishedAt": "2019-06-12T00:51:56.000Z",
+    "createdAt": "2019-06-12T18:54:48.000Z",
     "publication": {
-      "id": "freecodecamp",
-      "name": "freeCodeCamp",
-      "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/freecodecamp"
+      "id": "devto",
+      "name": "DEV",
+      "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/devto"
     },
-    "image": "https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/fe53c8c08d7e93c96315274b25facd78",
-    "placeholder": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAFAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAHxAAAAYBBQAAAAAAAAAAAAAAAAECAwQRBRVBUpGx/8QAFQEBAQAAAAAAAAAAAAAAAAAABAX/xAAYEQEBAQEBAAAAAAAAAAAAAAABAgAxIf/aAAwDAQACEQMRAD8A3WSyt/KRppumSmCpKast79FLUJHIugATZphWXvrlMlAJzf/Z",
-    "size": "small",
-    "views": 457
+    "views": 130,
+    "tags": [
+      "webdev",
+      "beginners",
+      "css"
+    ],
+    "readTime": 4,
+    "image": "https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/5fdc29751a3ca792d72e6456016faf0f",
+    "placeholder": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAFAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhAAAgIDAAAAAAAAAAAAAAAAAAECERMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAYH/8QAFREBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhEDEQA/ANWcpbTVcojkYATUyR//2Q==",
+    "size": "small"
   }
 ]

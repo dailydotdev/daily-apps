@@ -4,7 +4,7 @@
       <div class="card__background" :style="imgStyle">
         <img class="card__background__image lazyload"
              :data-lowsrc="placeholder"
-             :data-src="image"/>
+             :data-src="image" :key="image"/>
       </div>
       <div class="card__content card__hover">
         <h5 class="card__title">

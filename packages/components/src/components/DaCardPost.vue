@@ -8,7 +8,7 @@
       <img class="card__footer__icon lazyload"
            :data-src="post.publication.image"
            :alt="post.publication.name" :title="post.publication.name"
-           v-if="post.publication.name"/>
+           v-if="post.publication.name" :key="post.publication.name"/>
       <span class="card__footer__views micro2"
             v-if="post.readTime">// {{post.readTime}} min read</span>
       <button class="btn-icon btn-small card__footer__bookmark"
@@ -18,7 +18,7 @@
       </button>
       <button class="btn-icon btn-small card__footer__menu" title="Menu"
               @click="$emit('menu', { post, event: $event })" v-if="showMenu">
-        <svgicon icon="menu"/>
+        <svgicon icon="menu" ref="orig"/>
       </button>
       <transition name="post-notification">
         <div class="card__footer__notification nuggets" v-if="notifying">
@@ -26,7 +26,8 @@
         </div>
       </transition>
     </template>
-    <svgicon icon="menu" class="card__menu--duplicate  card__hover" slot="other" v-if="menuOpened"/>
+    <svgicon icon="menu" class="card__menu--duplicate  card__hover" ref="dup"
+             slot="other" v-if="menuOpened"/>
   </DaCard>
 </template>
 
@@ -60,6 +61,12 @@ export default {
     };
   },
 
+  watch: {
+    menuOpened() {
+      this.positionDuplicate();
+    },
+  },
+
   computed: {
     cls() {
       return {
@@ -76,6 +83,8 @@ export default {
   mounted() {
     import('../../icons/bookmark');
     import('../../icons/menu');
+
+    this.positionDuplicate();
   },
 
   methods: {
@@ -108,6 +117,20 @@ export default {
         .join(',');
       return `${str}${suffix}`;
     },
+
+    positionDuplicate() {
+      if (this.menuOpened) {
+        this.$nextTick(() => {
+          const parentRect = this.$el.getBoundingClientRect();
+          const childRect = this.$refs.orig.$el.getBoundingClientRect();
+
+          this.$refs.dup.$el.style.top = `${childRect.top - parentRect.top}px`;
+          this.$refs.dup.$el.style.left = `${childRect.left - parentRect.left}px`;
+          this.$refs.dup.$el.style.width = `${childRect.width}px`;
+          this.$refs.dup.$el.style.height = `${childRect.height}px`;
+        });
+      }
+    },
   },
 };
 </script>
@@ -129,11 +152,6 @@ export default {
 
 .card--post .card__menu--duplicate {
   position: absolute;
-  display: block;
-  right: 16px;
-  bottom: 14px;
-  width: 20px;
-  height: 20px;
   color: var(--theme-primary);
 }
 
@@ -143,10 +161,6 @@ export default {
   & .card__link, & .card__footer {
     opacity: 0.4;
   }
-}
-
-.animate-cards .card.hover .card__menu--duplicate {
-  right: 13px;
 }
 
 .card__tags {

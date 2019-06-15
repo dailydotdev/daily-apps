@@ -44,6 +44,13 @@ export default {
     },
   },
 
+  watch: {
+    text() {
+      this.updateHtml();
+      this.updateText();
+    },
+  },
+
   methods: {
     isOverflow() {
       const rect = this.$refs.content.getBoundingClientRect();
