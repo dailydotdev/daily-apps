@@ -15,7 +15,7 @@
                v-if="filter.type === 'publication'" class="content__header__pub-image"/>
           <h4>// {{ filter.info.name }}</h4>
           <transition name="fade">
-            <button class="btn content__header__add-filter" v-if="!hasFilter"
+            <button class="btn btn-water content__header__add-filter" v-if="!hasFilter"
                     @click="onAddFilter">
               <svgicon icon="plus"/>
               <span>Add To Feed</span>
@@ -414,8 +414,6 @@ export default {
 
   & .content__header__add-filter {
     margin-left: auto;
-    background: var(--color-water-50);
-    color: var(--color-salt-10);
   }
 }
 

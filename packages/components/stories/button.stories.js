@@ -3,6 +3,7 @@ import { withKnobs, select } from '@storybook/addon-knobs';
 
 const buttons = {
   gradient: 'btn-water-cheese',
+  water: 'btn-water',
   hollow: 'btn-hollow',
   invert: 'btn-invert',
   nav: 'btn-nav',
