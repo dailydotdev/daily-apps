@@ -5,7 +5,9 @@
         <da-line-clamp :text="ad.description" :lines="3"/>
       </h5>
     </a>
-    <span class="insane__promoted micro2">/* {{ promoted }} */</span>
+    <a class="insane__promoted micro2" target="_blank"
+       :href="ad.referralLink" v-if="ad && ad.referralLink">/* {{ promoted }} */</a>
+    <span class="insane__promoted micro2" v-else>/* {{ promoted }} */</span>
     <img v-for="(item, index) in pixel" :key="index" :src="item" class="insane__pixel"/>
   </div>
 </template>
@@ -51,6 +53,7 @@ export default {
 .insane__promoted {
   color: var(--theme-secondary);
   text-transform: uppercase;
+  text-decoration: none;
 }
 
 .insane__pixel {

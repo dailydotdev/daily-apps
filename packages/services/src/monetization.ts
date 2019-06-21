@@ -11,6 +11,7 @@ export interface Ad {
     pixel?: string[];
     backgroundColor?: string;
     source: string;
+    referralLink?: string;
 }
 
 export interface MonetizationService {

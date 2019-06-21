@@ -6,7 +6,9 @@
     <template slot="content">
       <img v-for="(item, index) in pixel" :key="index" :src="item" class="card__pixel"/>
     </template>
-    <span slot="footer" class="card__footer__promoted micro2">/* {{ promoted }} */</span>
+    <a slot="footer" class="card__footer__promoted micro2" target="_blank"
+       :href="ad.referralLink" v-if="ad && ad.referralLink">/* {{ promoted }} */</a>
+    <span slot="footer" class="card__footer__promoted micro2" v-else>/* {{ promoted }} */</span>
   </DaCard>
 </template>
 
@@ -64,6 +66,7 @@ export default {
 .card__footer__promoted {
   color: var(--theme-secondary);
   text-transform: uppercase;
+  text-decoration: none;
 }
 
 .card__pixel {
