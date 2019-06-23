@@ -11,6 +11,7 @@
     "test": "yarn lint && vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
+    "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/extension/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit",
     "zip:src": "node build/zip-src.js",
     "manifest": "node build/manifest.js"
   },
@@ -48,6 +49,7 @@
     "eslint-plugin-vue": "^5.0.0-0",
     "imports-loader": "^0.8.0",
     "jest": "^23.6.0",
+    "jest-junit": "^6.4.0",
     "ora": "^3.3.0",
     "postcss-custom-media": "^7.0.7",
     "postcss-mixins": "^6.2.1",
