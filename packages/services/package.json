@@ -16,6 +16,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/services/junit.xml jest --ci --reporters=jest-junit",
     "build": "rollup -c",
     "watch": "rollup -cw"
   },
@@ -24,6 +25,7 @@
     "@types/jsdom": "^12.2.0",
     "@types/nock": "^9.3.0",
     "jest": "^23.6.0",
+    "jest-junit": "^6.4.0",
     "jsdom": "^13.1.0",
     "nock": "^10.0.1",
     "rollup": "^0.67.0",

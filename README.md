@@ -1,5 +1,7 @@
 # Daily Apps
 
+[![CircleCI](https://circleci.com/gh/dailynowco/daily-apps.svg?style=svg)](https://circleci.com/gh/dailynowco/daily-apps)
+
 > A monorepo for Daily's frontend projects.
 
 The monorepo is managed by [lerna](https://github.com/lerna/lerna).

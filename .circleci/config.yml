@@ -14,12 +14,20 @@ jobs:
           key: dependency-cache-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
+            - ./packages/components/node_modules
+            - ./packages/extension/node_modules
+            - ./packages/moderator/node_modules
+            - ./packages/services/node_modules
       - run:
           name: Build
           command: npx lerna run build
       - run:
           name: Test
-          command: npx lerna run test
+          command: npx lerna run test:ci
+      - store_test_results:
+          path: ./test-results
+      - store_artifacts:
+          path: ./test-results
       - persist_to_workspace:
           root: .
           paths:
@@ -44,3 +52,7 @@ workflows:
           requires:
             - build
           context: MOD
+          filters:
+            branches:
+              only:
+                - master
