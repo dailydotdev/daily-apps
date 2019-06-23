@@ -1,0 +1,46 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.12.0
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: npx lerna bootstrap
+      - save_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Build
+          command: npx lerna run build
+      - run:
+          name: Test
+          command: npx lerna run test
+      - persist_to_workspace:
+          root: .
+          paths:
+            - packages/moderator/dist
+  deploy:
+    docker:
+      - image: circleci/node:10.12.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Deploy to netlify
+          command: yarn netlify deploy --dir dist --prod --message $CIRCLE_SHA1
+          working_directory: packages/moderator
+
+workflows:
+  build:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          context: MOD
