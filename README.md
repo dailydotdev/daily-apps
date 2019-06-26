@@ -1,8 +1,12 @@
-# Daily Apps
-
-[![CircleCI](https://circleci.com/gh/dailynowco/daily-apps.svg?style=svg)](https://circleci.com/gh/dailynowco/daily-apps)
-
-> A monorepo for Daily's frontend projects.
+<div align="center">
+  <h1>Daily Apps</h1>
+  <strong>Everything you see on Daily 👀👩🏽‍💻</strong>
+</div>
+<br>
+<p align="center">
+  <a href="https://circleci.com/gh/dailynowco/daily-apps"><img src="https://img.shields.io/circleci/build/github/dailynowco/daily-apps/master.svg" alt="Build Status"></a>
+  <a href="https://github.com/dailynowco/daily-apps/blob/master/LICENSE"><img src="https://img.shields.io/github/license/dailynowco/daily-apps.svg" alt="License"></a>
+</p>
 
 The monorepo is managed by [lerna](https://github.com/lerna/lerna).
 
