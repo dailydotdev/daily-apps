@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Daily Apps</h1>
-  <strong>Everything you see on Daily 👀👩🏽‍💻</strong>
+  <strong>Everything you see on Daily 👀</strong>
 </div>
 <br>
 <p align="center">
