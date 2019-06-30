@@ -5,6 +5,7 @@ it('should emit toggle event on click', (done) => {
   const wrapper = shallowMount(DaSwitch, { propsData: { icon: 'bookmark' } });
   wrapper.trigger('click');
   wrapper.find('.switch__handle').trigger('transitionend');
+  wrapper.find('.switch__handle').trigger('transitionend');
   setTimeout(() => {
     expect(wrapper.emitted().toggle[0]).toEqual([true]);
     done();
