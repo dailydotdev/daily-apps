@@ -12,7 +12,7 @@ An implementation of Daily's style guide in postcss and Vue.
 ## Project structure
 
 The project was bootstrapped with vue cli so it is very much like any other vue project but just to make sure.
-* `src` - This obviously the place where you can the sources files split to `components` and `styles`.
+* `src` - This obviously the place where you can find the source files, split to `components` and `styles`.
   * `src/components` - The place where you can find all the vue compponents and any new component should be placed there.
   * `src/styles` - Postcss stylesheets go there, typography, color palette, everything can be found there.
 * `__tests__` - There you can find all the tests and fixtures, we create a file per component so it should be pretty easy to find your way there.
