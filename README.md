@@ -13,6 +13,9 @@
   <a href="https://stackshare.io/daily/daily">
     <img src="http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat" alt="StackShare">
   </a>
+  <a href="https://storybook.dailynow.co">
+    <img src="https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg" alt="Storybook">
+  </a>
 </p>
 
 This is a monorepo with most of Daily's frontend projects. It was created as part of Daily 2.0 refactor to separate concerns to different standalone projects. The main concept of the refactor was to enable others use Daily style guidelines in their applications as well.
