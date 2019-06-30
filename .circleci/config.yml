@@ -74,3 +74,7 @@ workflows:
           requires:
             - build
           context: MOD
+          filters:
+            branches:
+              only:
+                - master
