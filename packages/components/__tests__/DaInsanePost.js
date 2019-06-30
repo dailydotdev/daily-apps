@@ -44,5 +44,5 @@ it('should set bookmarked class when bookmarked', () => {
 it('should set tags', () => {
   const post = posts[1];
   const wrapper = shallowMount(DaInsanePost, { propsData: { post } });
-  expect(wrapper.find('.insane__tags').element.innerHTML).toEqual('#javascript, #webdev, #html, #html5');
+  expect(wrapper.find('.insane__tags').element.innerHTML).toEqual('#javascript,#webdev,#html,#html5');
 });

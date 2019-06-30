@@ -76,7 +76,7 @@ export default {
       };
     },
     tagsStr() {
-      return (this.post.tags || []).map(t => `#${t}`).join(', ');
+      return (this.post.tags || []).map(t => `#${t}`).join(',');
     },
   },
 
@@ -114,7 +114,7 @@ export default {
       const suffix = tags.length < value.length ? `,+${value.length - tags.length}` : '';
       const str = tags
         .map(tag => `#${tag}`)
-        .join(', ');
+        .join(',');
       return `${str}${suffix}`;
     },
 
