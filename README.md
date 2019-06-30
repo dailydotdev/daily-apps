@@ -15,7 +15,13 @@
   </a>
 </p>
 
-This is a monorepo with most of Daily's frontend projects. It was created as part of Daily 2.0 refactor to separate concerns to different standalone projects. The main concept of the refactor was to enable others use Daily style guidelines in their applications as well. The monorepo is managed with [lerna](https://github.com/lerna/lerna) and based on node v10.12.0.
+This is a monorepo with most of Daily's frontend projects. It was created as part of Daily 2.0 refactor to separate concerns to different standalone projects. The main concept of the refactor was to enable others use Daily style guidelines in their applications as well.
+
+## Technology
+
+* Yarn for managing dependencies.
+* Node v10.12.0 (a `.nvmrc` is presented for [nvm](https://github.com/nvm-sh/nvm) users).
+* [lerna](https://github.com/lerna/lerna) for managing the monorepo.
 
 ## Projects
 
@@ -23,22 +29,32 @@ This is a monorepo with most of Daily's frontend projects. It was created as par
 
 Library which implements Daily's style guidelines.
 It mainly contains Vue generic components (such as modals, text boxes and toggles) but also consists of style sheets which define color platte, typography and more.
+For more information [click here](https://github.com/dailynowco/daily-apps/tree/master/packages/components).
 
 ### services
 
 Typescript library with clients for interaction with Daily's backend services.
-The library encapsulates the http requests to simple methods and defines relevant types to make it easy to use. 
+The library encapsulates the http requests to simple methods and defines relevant types to make it easy to use.
+For more information [click here](https://github.com/dailynowco/daily-apps/tree/master/packages/services).
 
 ### extension
 
 Daily browser extension in its glory, written in Vue and powered by the components and services libraries.
 Everything you always wanted to know about the extension can be found here.
+For more information [click here](https://github.com/dailynowco/daily-apps/tree/master/packages/extension).
 
 ### moderator
 
 Internal system for managing the content you see on Daily.
 Currently it supports managing only the new source requests from the community.
 
+## Bootstrap Project
+
+After cloning the project, please make sure to run the following commands to bootstrap the project:
+```
+npx lerna bootstrap
+npx lerna build
+```
 
 ## Firefox Review
 
