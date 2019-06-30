@@ -73,7 +73,7 @@ workflows:
       - deploy_storybook:
           requires:
             - build
-          context: MOD
+          context: STORYBOOK
           filters:
             branches:
               only:
