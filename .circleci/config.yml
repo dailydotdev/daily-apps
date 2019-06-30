@@ -43,6 +43,20 @@ jobs:
           name: Deploy to netlify
           command: yarn netlify deploy --dir dist --prod --message $CIRCLE_SHA1
           working_directory: packages/moderator
+  deploy_storybook:
+    docker:
+      - image: circleci/node:10.12.0
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build storybook
+          command: yarn build-storybook
+          working_directory: packages/components
+      - run:
+          name: Deploy to netlify
+          command: yarn netlify deploy --dir storybook-static --prod --message $CIRCLE_SHA1
+          working_directory: packages/components
 
 workflows:
   build:
@@ -56,3 +70,7 @@ workflows:
             branches:
               only:
                 - master
+      - deploy_storybook:
+          requires:
+            - build
+          context: MOD
