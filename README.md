@@ -15,25 +15,32 @@
   </a>
 </p>
 
-This is a monorepo with most of Daily's frontend projects. It was created as part of Daily 2.0 refactor to separate concerns to different standalone projects. The main concept of the refactor was to enable others use Daily style guidelines in their applications as well. The monorepo is managed with [lerna](https://github.com/lerna/lerna).
+This is a monorepo with most of Daily's frontend projects. It was created as part of Daily 2.0 refactor to separate concerns to different standalone projects. The main concept of the refactor was to enable others use Daily style guidelines in their applications as well. The monorepo is managed with [lerna](https://github.com/lerna/lerna) and based on node v10.12.0.
 
-### Projects
+## Projects
 
-#### components
+### components
 
-Vue library which implements Daily's design guideline and the relevant components
-to be used by the different applications.
+Library which implements Daily's style guidelines.
+It mainly contains Vue generic components (such as modals, text boxes and toggles) but also consists of style sheets which define color platte, typography and more.
 
-#### services
+### services
 
-Typescript library with clients for interaction with Daily's API.
+Typescript library with clients for interaction with Daily's backend services.
+The library encapsulates the http requests to simple methods and defines relevant types to make it easy to use. 
 
-#### extension
+### extension
 
-Daily browser extension written in Vue  
+Daily browser extension in its glory, written in Vue and powered by the components and services libraries.
+Everything you always wanted to know about the extension can be found here.
+
+### moderator
+
+Internal system for managing the content you see on Daily.
+Currently it supports managing only the new source requests from the community.
 
 
-### Firefox Review
+## Firefox Review
 
 * Install node v10.12.0 and yarn
 * Install `lerna` as a global package `yarn global add lerna` 
