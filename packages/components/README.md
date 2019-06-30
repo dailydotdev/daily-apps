@@ -38,4 +38,7 @@ The demo shows the different components and styles that can be found in the libr
 Currently not all components are covered with stories but there are some stories and we will add more.
 `yarn storybook` will serve the storybook on port 6006.
 
+Live version: https://storybook.dailynow.co
+
+
 [storybook]: https://storybook.js.org/
