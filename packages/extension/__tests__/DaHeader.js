@@ -103,6 +103,7 @@ it('should commit "setShowBookmarks" when switch is toggled', (done) => {
   const wrapper = mount(DaHeader, { store, localVue });
   wrapper.find('.header__switch').trigger('click');
   wrapper.find('.header__switch').find('.switch__handle').trigger('transitionend');
+  wrapper.find('.header__switch').find('.switch__handle').trigger('transitionend');
   setTimeout(() => {
     expect(feed.actions.setShowBookmarks).toBeCalledWith(expect.anything(), true, undefined);
     done();

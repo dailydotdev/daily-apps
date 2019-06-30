@@ -32,8 +32,9 @@ export default {
 
   methods: {
     toggle(event) {
+      // Mechanism to prevent jagged animation
       this.$refs.handle.addEventListener('transitionend', () => {
-        requestAnimationFrame(() => {
+        setTimeout(() => {
           this.$emit('toggle', event.target.checked);
         });
       }, { once: true });
