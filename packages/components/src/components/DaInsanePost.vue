@@ -68,7 +68,7 @@ export default {
 
   computed: {
     tags() {
-      return (this.post.tags || []).map(t => `#${t}`).join(', ');
+      return (this.post.tags || []).map(t => `#${t}`).join(',');
     },
 
     cls() {
