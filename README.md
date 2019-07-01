@@ -51,6 +51,14 @@ For more information [click here](https://github.com/dailynowco/daily-apps/tree/
 Internal system for managing the content you see on Daily.
 Currently it supports managing only the new source requests from the community.
 
+## Want to Help?
+
+So you want to contribute to Daily Apps and make an impact, we are glad to hear it. :heart_eyes:
+
+Before you proceed we have a few guidelines for contribution that will make everything much easier.
+We would appreciate if you dedicate the time and read them carefully:
+https://github.com/dailynowco/.github/blob/master/CONTRIBUTING.md
+
 ## Bootstrap Project
 
 After cloning the project, please make sure to run the following commands to bootstrap the project:
