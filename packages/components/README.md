@@ -32,10 +32,10 @@ You can even use `yarn test --watch` if you want to run the tests related to the
 A demo page is available on port 8090 when running `yarn serve`.
 The demo shows the different components and styles that can be found in the library.
 
-## [WIP] Storybook
+## Storybook
 
 [Storybook][storybook] provides much easier way to understand the components than the current demo page.
-Currently not all components are covered with stories but there are some stories and we will add more.
+Most components, if not all, are covered with stories.
 `yarn storybook` will serve the storybook on port 6006.
 
 Live version: https://storybook.dailynow.co
