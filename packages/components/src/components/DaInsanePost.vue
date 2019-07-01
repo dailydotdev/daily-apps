@@ -11,7 +11,8 @@
             v-if="post.readTime">// {{post.readTime}} min read</span>
       <img class="insane__icon lazyload reveal"
            :data-src="post.publication.image"
-           :alt="post.publication.name" :title="post.publication.name"/>
+           :alt="post.publication.name" :title="post.publication.name"
+           :key="post.publication.name"/>
       <div class="insane__reveal reveal">
         <button class="btn-icon insane__reveal__bookmark"
                 :title="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
