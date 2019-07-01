@@ -4,3 +4,54 @@
     width: 282px;
     margin: 16px;
 }
+
+.v-context.context {
+    width: 130px;
+}
+
+.editable {
+    width: 300px;
+}
+
+.story-modal {
+    & .modal__container {
+        width: 455px
+    }
+
+    & .story-modal__text {
+        color: var(--theme-secondary);
+        text-align: center;
+
+        & {
+            @mixin jr;
+        }
+    }
+
+    & .story-modal__buttons {
+        display: flex;
+        margin: 24px -8px 0;
+        flex-direction: row;
+        justify-content: center;
+
+        & button {
+            margin: 0 8px;
+        }
+    }
+}
+
+.terminal {
+    width: 300px;
+    height: 234px;
+}
+
+.terminal-content > * {
+    margin: 4px 0;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
