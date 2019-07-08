@@ -18,7 +18,7 @@
       </a>
       <div class="separator"></div>
     </template>
-    <a class="btn-icon" href="https://github.com/elegantmonkeys/daily" target="_blank"
+    <a class="btn-icon" href="https://github.com/dailynowco/daily" target="_blank"
        title="Feedback us on GitHub!">
       <svgicon icon="github"/>
     </a>
