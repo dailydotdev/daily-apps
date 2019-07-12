@@ -22,6 +22,7 @@
                  :checked="enableCardAnimations" @toggle="onToggleCardAnimations"/>
     </div>
     <footer class="profile__footer">
+      <a target="_blank" href="https://github.com/dailynowco/daily/issues/new">Report an issue</a>
       <a target="_blank" href="https://www.iubenda.com/privacy-policy/14695236">Privacy Policy</a>
       <a target="_blank" class="caption" href="https://www.iubenda.com/privacy-policy/14695236/cookie-policy">
         Cookie Policy
