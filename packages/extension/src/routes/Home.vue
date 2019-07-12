@@ -291,7 +291,7 @@ export default {
         if (state.feed.showBookmarks) {
           res += 'your personal bookmarks';
         } else {
-          res += 'news for developers';
+          res += 'news for you';
         }
 
         if (state.ui.insaneMode) {
