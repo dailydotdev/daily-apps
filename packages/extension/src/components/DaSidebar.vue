@@ -227,6 +227,7 @@ export default {
     toggleFilter(checked) {
       ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');
       this.filterChecked = checked;
+      this.query = '';
     },
     setEnablePublication(pub, enabled) {
       ga('send', 'event', 'Publications', 'Toggle', enabled ? 'Check' : 'Uncheck');
