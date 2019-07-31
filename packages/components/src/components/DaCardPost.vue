@@ -26,7 +26,7 @@
         </div>
       </transition>
     </template>
-    <svgicon icon="menu" class="card__menu--duplicate  card__hover" ref="dup"
+    <svgicon icon="menu" class="card__menu--duplicate" ref="dup"
              slot="other" v-if="menuOpened"/>
   </DaCard>
 </template>
