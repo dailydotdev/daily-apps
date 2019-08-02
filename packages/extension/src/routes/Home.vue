@@ -33,7 +33,12 @@
         </template>
       </div>
       <div class="content__empty-bookmarks" v-if="emptyBookmarks">
-        <img svg-inline src="../svg/bookmark.svg" alt="No bookmarks"/>
+        <template v-if="theme === 'bright'">
+          <img svg-inline src="../svg/bookmark_bright.svg" alt="No bookmarks"/>
+        </template>
+        <template v-else>
+          <img svg-inline src="../svg/bookmark.svg" alt="No bookmarks"/>
+        </template>
         <h1 class="content__empty-bookmarks__title">Nothing here, yet</h1>
         <p class="content__empty-bookmarks__text">
           Bookmark articles on the main feed and it will be shown here.
@@ -97,7 +102,7 @@
 
 <script>
 import {
-  mapState, mapActions, mapMutations, mapGetters,
+    mapState, mapActions, mapMutations, mapGetters,
 } from 'vuex';
 import DaCardPost from '@daily/components/src/components/DaCardPost.vue';
 import DaCardAd from '@daily/components/src/components/DaCardAd.vue';
@@ -110,263 +115,263 @@ import { monetizationService, contentService } from '../common/services';
 import { trackPageView } from '../common/analytics';
 
 export default {
-  name: 'Home',
+    name: 'Home',
 
-  components: {
-    DaSidebar,
-    DaHeader,
-    DaCardPost,
-    DaCardAd,
-    DaInsanePost,
-    DaInsaneAd,
-    DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
-    DaContext: () => import('@daily/components/src/components/DaContext.vue'),
-    DaLogin: () => import('../components/DaLogin.vue'),
-    DaProfile: () => import('../components/DaProfile.vue'),
-    DaGo: () => import('../components/DaGo.vue'),
-    DaWelcome: () => import('../components/DaWelcome.vue'),
-    DaCongrats: () => import('../components/DaCongrats'),
-    DaRequest: () => import('../components/DaRequest'),
-  },
-
-  data() {
-    return {
-      cta: ctas[Math.floor(Math.random() * ctas.length)],
-      cols: {
-        default: 7,
-        2350: 6,
-        2030: 5,
-        1670: 4,
-        1390: 3,
-        1070: 2,
-      },
-      ads: [],
-      showGoModal: false,
-      showRequestModal: false,
-      showLoginModal: false,
-      showProfileModal: false,
-      selectedPostId: null,
-    };
-  },
-
-  methods: {
-    ctaClick() {
-      ga('send', 'event', this.cta.name, 'Click');
+    components: {
+        DaSidebar,
+        DaHeader,
+        DaCardPost,
+        DaCardAd,
+        DaInsanePost,
+        DaInsaneAd,
+        DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
+        DaContext: () => import('@daily/components/src/components/DaContext.vue'),
+        DaLogin: () => import('../components/DaLogin.vue'),
+        DaProfile: () => import('../components/DaProfile.vue'),
+        DaGo: () => import('../components/DaGo.vue'),
+        DaWelcome: () => import('../components/DaWelcome.vue'),
+        DaCongrats: () => import('../components/DaCongrats'),
+        DaRequest: () => import('../components/DaRequest'),
     },
 
-    updateLines() {
-      this.$nextTick(() => {
-        if (this.$refs.sidebar) {
-          this.$refs.sidebar.invalidate();
-        }
-      });
-    },
-
-    onBookmark({ post, bookmarked }) {
-      ga('send', 'event', 'Post', 'Bookmark', bookmarked ? 'Add' : 'Remove');
-      this.toggleBookmarks({ id: post.id, bookmarked });
-    },
-
-    onPostClick(post) {
-      ga('send', 'event', 'Post', 'Click', post.source);
-    },
-
-    onPostMenu({ post, event }) {
-      ga('send', 'event', 'Post', 'Menu');
-      this.$refs.context.open(event, post);
-    },
-
-    onPostMenuOpened(event, post) {
-      const rect = event.target.getBoundingClientRect();
-      this.$refs.context.positionMenu({ bottom: rect.top - 8, right: rect.right });
-      this.selectedPostId = post.id;
-    },
-
-    async reportPost(reason) {
-      ga('send', 'event', 'Post', 'Report', reason);
-      const postId = this.selectedPostId;
-      this.$refs.context.close();
-      await contentService.reportPost(postId, reason);
-      this.$nextTick(() => this.$refs.posts.find(com => com.post.id === postId).notify('Thanks for reporting!'));
-    },
-
-    onAdClick(ad) {
-      ga('send', 'event', 'Ad', 'Click', ad.source);
-    },
-
-    onAdImpression(ad) {
-      ga('send', 'event', 'Ad', 'Impression', ad.source);
-    },
-
-    onGoClicked() {
-      ga('send', 'event', 'Header', 'Go');
-      this.showGoModal = true;
-    },
-
-    onLogin(section) {
-      ga('send', 'event', section, 'Login');
-      this.showLoginModal = true;
-    },
-
-    onProfile() {
-      ga('send', 'event', 'Header', 'Profile');
-      this.showProfileModal = true;
-    },
-
-    onBackHome() {
-      ga('send', 'event', 'Feed', 'Home');
-      this.clearFilter();
-    },
-
-    onAddFilter() {
-      ga('send', 'event', 'Feed', 'Add Filter');
-      this.addFilterToFeed();
-    },
-
-    async initHome() {
-      Promise.all([
-        this.fetchPublications(),
-        this.fetchTags(),
-      ]).then(() => this.fetchNextFeedPage())
-        .then(() => this.contentObserver.observe(this.$refs.anchor))
-        // TODO: handle error
-        // eslint-disable-next-line no-console
-        .catch(console.error);
-
-      // TODO: handle error
-      monetizationService.fetchAd()
-        .then((ads) => {
-          this.ads = ads;
-          if (!ads.length) {
-            ga('send', 'event', 'Ad', 'NotAvailable');
-          }
-        })
-        // TODO: handle error
-        // eslint-disable-next-line no-console
-        .catch(console.error);
-
-      this.fetchNotifications()
-      // TODO: handle error
-      // eslint-disable-next-line no-console
-        .catch(console.error);
-    },
-
-    trackPageView() {
-      const { showBookmarks, filter } = this;
-
-      if (showBookmarks) {
-        trackPageView('/bookmarks');
-      } else if (filter) {
-        trackPageView(`/${filter.type}/${filter.info.id || filter.info.name}`);
-      } else {
-        trackPageView('');
-      }
-    },
-
-    ...mapActions({
-      fetchNextFeedPage: 'feed/fetchNextFeedPage',
-      fetchTags: 'feed/fetchTags',
-      fetchPublications: 'feed/fetchPublications',
-      clearFilter: 'feed/clearFilter',
-      addFilterToFeed: 'feed/addFilterToFeed',
-      fetchNotifications: 'ui/fetchNotifications',
-      refreshToken: 'user/refreshToken',
-    }),
-
-    ...mapMutations({
-      toggleBookmarks: 'feed/toggleBookmarks',
-      hideNotifications: 'ui/hideNotifications',
-      nextInstruction: 'ui/nextInstruction',
-      confirmNewUser: 'user/confirmNewUser',
-    }),
-  },
-
-  computed: {
-    ...mapState('ui', ['insaneMode', 'notifications', 'showNotifications']),
-    ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal']),
-    ...mapState('feed', ['showBookmarks', 'filter']),
-    ...mapState({
-      title(state) {
-        let res = '';
-        if (state.feed.showBookmarks) {
-          res += 'your personal bookmarks';
-        } else {
-          res += 'news for you';
-        }
-
-        if (state.ui.insaneMode) {
-          res += ' - insane mode';
-        }
-
-        return res;
-      },
-
-      clsObj(state) {
+    data() {
         return {
-          'animate-cards': state.ui.enableCardAnimations,
+            cta: ctas[Math.floor(Math.random() * ctas.length)],
+            cols: {
+                default: 7,
+                2350: 6,
+                2030: 5,
+                1670: 4,
+                1390: 3,
+                1070: 2,
+            },
+            ads: [],
+            showGoModal: false,
+            showRequestModal: false,
+            showLoginModal: false,
+            showProfileModal: false,
+            selectedPostId: null,
         };
-      },
+    },
 
-      showCongratsModal(state) {
-        if (this.isLoggedIn) {
-          return state.user.profile.newUser;
+    methods: {
+        ctaClick() {
+            ga('send', 'event', this.cta.name, 'Click');
+        },
+
+        updateLines() {
+            this.$nextTick(() => {
+                if (this.$refs.sidebar) {
+                    this.$refs.sidebar.invalidate();
+                }
+            });
+        },
+
+        onBookmark({ post, bookmarked }) {
+            ga('send', 'event', 'Post', 'Bookmark', bookmarked ? 'Add' : 'Remove');
+            this.toggleBookmarks({ id: post.id, bookmarked });
+        },
+
+        onPostClick(post) {
+            ga('send', 'event', 'Post', 'Click', post.source);
+        },
+
+        onPostMenu({ post, event }) {
+            ga('send', 'event', 'Post', 'Menu');
+            this.$refs.context.open(event, post);
+        },
+
+        onPostMenuOpened(event, post) {
+            const rect = event.target.getBoundingClientRect();
+            this.$refs.context.positionMenu({ bottom: rect.top - 8, right: rect.right });
+            this.selectedPostId = post.id;
+        },
+
+        async reportPost(reason) {
+            ga('send', 'event', 'Post', 'Report', reason);
+            const postId = this.selectedPostId;
+            this.$refs.context.close();
+            await contentService.reportPost(postId, reason);
+            this.$nextTick(() => this.$refs.posts.find(com => com.post.id === postId).notify('Thanks for reporting!'));
+        },
+
+        onAdClick(ad) {
+            ga('send', 'event', 'Ad', 'Click', ad.source);
+        },
+
+        onAdImpression(ad) {
+            ga('send', 'event', 'Ad', 'Impression', ad.source);
+        },
+
+        onGoClicked() {
+            ga('send', 'event', 'Header', 'Go');
+            this.showGoModal = true;
+        },
+
+        onLogin(section) {
+            ga('send', 'event', section, 'Login');
+            this.showLoginModal = true;
+        },
+
+        onProfile() {
+            ga('send', 'event', 'Header', 'Profile');
+            this.showProfileModal = true;
+        },
+
+        onBackHome() {
+            ga('send', 'event', 'Feed', 'Home');
+            this.clearFilter();
+        },
+
+        onAddFilter() {
+            ga('send', 'event', 'Feed', 'Add Filter');
+            this.addFilterToFeed();
+        },
+
+        async initHome() {
+            Promise.all([
+                this.fetchPublications(),
+                this.fetchTags(),
+            ]).then(() => this.fetchNextFeedPage())
+                .then(() => this.contentObserver.observe(this.$refs.anchor))
+                // TODO: handle error
+                // eslint-disable-next-line no-console
+                .catch(console.error);
+
+            // TODO: handle error
+            monetizationService.fetchAd()
+                .then((ads) => {
+                    this.ads = ads;
+                    if (!ads.length) {
+                        ga('send', 'event', 'Ad', 'NotAvailable');
+                    }
+                })
+                // TODO: handle error
+                // eslint-disable-next-line no-console
+                .catch(console.error);
+
+            this.fetchNotifications()
+            // TODO: handle error
+            // eslint-disable-next-line no-console
+                .catch(console.error);
+        },
+
+        trackPageView() {
+            const { showBookmarks, filter } = this;
+
+            if (showBookmarks) {
+                trackPageView('/bookmarks');
+            } else if (filter) {
+                trackPageView(`/${filter.type}/${filter.info.id || filter.info.name}`);
+            } else {
+                trackPageView('');
+            }
+        },
+
+        ...mapActions({
+            fetchNextFeedPage: 'feed/fetchNextFeedPage',
+            fetchTags: 'feed/fetchTags',
+            fetchPublications: 'feed/fetchPublications',
+            clearFilter: 'feed/clearFilter',
+            addFilterToFeed: 'feed/addFilterToFeed',
+            fetchNotifications: 'ui/fetchNotifications',
+            refreshToken: 'user/refreshToken',
+        }),
+
+        ...mapMutations({
+            toggleBookmarks: 'feed/toggleBookmarks',
+            hideNotifications: 'ui/hideNotifications',
+            nextInstruction: 'ui/nextInstruction',
+            confirmNewUser: 'user/confirmNewUser',
+        }),
+    },
+
+    computed: {
+        ...mapState('ui', ['insaneMode', 'notifications', 'showNotifications', 'theme']),
+        ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal']),
+        ...mapState('feed', ['showBookmarks', 'filter']),
+        ...mapState({
+            title(state) {
+                let res = '';
+                if (state.feed.showBookmarks) {
+                    res += 'your personal bookmarks';
+                } else {
+                    res += 'news for you';
+                }
+
+                if (state.ui.insaneMode) {
+                    res += ' - insane mode';
+                }
+
+                return res;
+            },
+
+            clsObj(state) {
+                return {
+                    'animate-cards': state.ui.enableCardAnimations,
+                };
+            },
+
+            showCongratsModal(state) {
+                if (this.isLoggedIn) {
+                    return state.user.profile.newUser;
+                }
+
+                return false;
+            },
+        }),
+
+        ...mapGetters({
+            posts: 'feed/feed',
+            showAd: 'feed/showAd',
+            hasFilter: 'feed/hasFilter',
+            isLoggedIn: 'user/isLoggedIn',
+        }),
+
+        emptyBookmarks() {
+            return !this.posts.length && this.showBookmarks;
+        },
+    },
+
+    watch: {
+        posts() {
+            this.updateLines();
+        },
+        showBookmarks() {
+            this.trackPageView();
+        },
+        filter() {
+            this.trackPageView();
+        },
+    },
+
+    created() {
+        this.trackPageView();
+
+        this.contentObserver = new IntersectionObserver(async (entries) => {
+            if (entries[0].isIntersecting) {
+                if (await this.fetchNextFeedPage() && this.page > 0) {
+                    ga('send', 'event', 'Feed', 'Scroll', 'Next Page', this.page);
+                }
+            }
+        }, { root: null, rootMargin: '0px', threshold: 1 });
+    },
+
+    async mounted() {
+        import('@daily/components/icons/arrow');
+        import('@daily/components/icons/plus');
+
+        if (this.cta.icon) {
+            import(`@daily/components/icons/${this.cta.icon}`);
         }
 
-        return false;
-      },
-    }),
+        this.updateLines();
+        await this.refreshToken();
 
-    ...mapGetters({
-      posts: 'feed/feed',
-      showAd: 'feed/showAd',
-      hasFilter: 'feed/hasFilter',
-      isLoggedIn: 'user/isLoggedIn',
-    }),
-
-    emptyBookmarks() {
-      return !this.posts.length && this.showBookmarks;
+        requestIdleCallback(async () => {
+            await this.initHome();
+        });
     },
-  },
-
-  watch: {
-    posts() {
-      this.updateLines();
-    },
-    showBookmarks() {
-      this.trackPageView();
-    },
-    filter() {
-      this.trackPageView();
-    },
-  },
-
-  created() {
-    this.trackPageView();
-
-    this.contentObserver = new IntersectionObserver(async (entries) => {
-      if (entries[0].isIntersecting) {
-        if (await this.fetchNextFeedPage() && this.page > 0) {
-          ga('send', 'event', 'Feed', 'Scroll', 'Next Page', this.page);
-        }
-      }
-    }, { root: null, rootMargin: '0px', threshold: 1 });
-  },
-
-  async mounted() {
-    import('@daily/components/icons/arrow');
-    import('@daily/components/icons/plus');
-
-    if (this.cta.icon) {
-      import(`@daily/components/icons/${this.cta.icon}`);
-    }
-
-    this.updateLines();
-    await this.refreshToken();
-
-    requestIdleCallback(async () => {
-      await this.initHome();
-    });
-  },
 };
 </script>
 
