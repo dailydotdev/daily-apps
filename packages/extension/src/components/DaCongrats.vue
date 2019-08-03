@@ -1,7 +1,6 @@
 <template>
   <da-modal class="congrats-modal full" @close="$emit('close')" ref="modal">
-    <img svg-inline src="../svg/happy_card.svg" alt="Happy card cartoon"
-         class="congrats__graphics"/>
+    <da-svg src="/graphics/happy_card.svg" class="congrats__graphics"/>
     <h1>Good news, {{ userFirstName }}!</h1>
     <p>Welcome to our community! We value each new member and we hope you will enjoy… </p>
     <button class="btn btn-big btn-modal btn-invert" @click="$refs.modal.close()">
@@ -13,11 +12,13 @@
 <script>
 import { mapState } from 'vuex';
 import DaModal from '@daily/components/src/components/DaModal.vue';
+import DaSvg from './DaSvg.vue';
 
 export default {
   name: 'DaCongrats',
   components: {
     DaModal,
+    DaSvg,
   },
   computed: {
     ...mapState({

@@ -1,7 +1,6 @@
 <template>
   <da-modal class="request-modal full" @close="$emit('close')" ref="modal">
-    <img svg-inline src="../svg/source_box.svg" alt="Flying box cartoon"
-         class="request__graphics"/>
+    <da-svg src="/graphics/source_box.svg" class="request__graphics"/>
     <h1 class="overlap">Request sent</h1>
     <p>Your request has been received. We will review this source and be in touch.</p>
     <button class="btn btn-big btn-modal btn-invert" @click="$refs.modal.close()">
@@ -12,11 +11,13 @@
 
 <script>
 import DaModal from '@daily/components/src/components/DaModal.vue';
+import DaSvg from './DaSvg.vue';
 
 export default {
   name: 'DaRequest',
   components: {
     DaModal,
+    DaSvg,
   },
 };
 </script>

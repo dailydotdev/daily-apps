@@ -191,7 +191,7 @@ export default {
 
   methods: {
     invalidate() {
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         const pres = this.$refs.lines.querySelectorAll('pre');
         const lines = Math.ceil(this.$refs.lines.clientHeight / pres[0].clientHeight);
         if (lines > this.lines) {
@@ -318,10 +318,8 @@ export default {
   created() {
     this.setOpened = (opened) => {
       this.transitioning = true;
-      this.$nextTick(() => {
-        requestAnimationFrame(() => {
-          this.opened = opened;
-        });
+      setTimeout(() => {
+        this.opened = opened;
       });
     };
   },

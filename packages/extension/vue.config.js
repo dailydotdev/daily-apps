@@ -1,5 +1,6 @@
 const path = require('path');
 const { GenerateSW } = require('workbox-webpack-plugin');
+const PreloadWebpackPlugin = require('@vue/preload-webpack-plugin');
 
 process.env.VUE_APP_VERSION = require('./package.json').version;
 
@@ -32,15 +33,25 @@ module.exports = {
   productionSourceMap: false,
   chainWebpack: (config) => {
     config.resolve.symlinks(false);
-    config.module
-      .rule('vue')
-      .use('vue-svg-inline-loader')
-      .loader('vue-svg-inline-loader');
+    config.plugins.delete('prefetch-standalone/standalone');
+    config.plugins.delete('preload-standalone/standalone');
   },
   configureWebpack: (config) => {
+    const plugins = [
+      new PreloadWebpackPlugin({
+        rel: 'preload',
+        include: {
+          type: 'all',
+          entries: ['standalone/standalone'],
+          chunks: ['standalone/standalone', 'home'],
+        },
+      }),
+    ];
+
     if (process.env.TARGET === 'chrome') {
       return {
         plugins: [
+          ...plugins,
           new GenerateSW({
             exclude: [/.*/],
             swDest: path.join(config.output.path, 'sw.js'),
@@ -82,6 +93,6 @@ module.exports = {
         ],
       };
     }
-    return {};
+    return { plugins };
   },
 };

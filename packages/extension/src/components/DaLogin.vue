@@ -1,7 +1,6 @@
 <template>
   <da-modal class="login-modal invert" @close="$emit('close')">
-    <img svg-inline src="../svg/login_bg.svg" class="login__background"
-         slot="background" alt="Login background"/>
+    <da-svg src="/graphics/login_bg.svg" class="login__background" slot="background"/>
     <svgicon icon="logo" class="login__logo"/>
     <h1>Sign in to Daily</h1>
     <div class="login__desc">
@@ -40,6 +39,7 @@
 <script>
 import 'lazysizes';
 import DaModal from '@daily/components/src/components/DaModal.vue';
+import DaSvg from './DaSvg.vue';
 import { authService } from '../common/services';
 
 export default {
@@ -47,6 +47,7 @@ export default {
 
   components: {
     DaModal,
+    DaSvg,
   },
 
   methods: {

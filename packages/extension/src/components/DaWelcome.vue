@@ -1,7 +1,6 @@
 <template>
   <da-modal class="welcome-modal full" @close="$emit('close')" ref="modal">
-    <img svg-inline src="../svg/all_set.svg" alt="All set"
-         class="welcome__graphics"/>
+    <da-svg src="/graphics/all_set.svg" class="welcome__graphics"/>
     <h1 class="overlap">Hello world</h1>
     <p>
       From now on, you can focus on code and
@@ -15,11 +14,13 @@
 
 <script>
 import DaModal from '@daily/components/src/components/DaModal.vue';
+import DaSvg from './DaSvg.vue';
 
 export default {
   name: 'DaWelcome',
   components: {
     DaModal,
+    DaSvg,
   },
 };
 </script>

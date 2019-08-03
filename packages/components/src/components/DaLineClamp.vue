@@ -58,15 +58,19 @@ export default {
     },
 
     updateText() {
+      let i = 1;
       if (this.offset) {
         while (!this.isOverflow() && this.offset) {
-          this.offset -= 3;
+          this.offset -= i * 2;
+          i += 1;
           this.updateHtml();
         }
       }
 
+      i = 1;
       while (this.isOverflow()) {
-        this.offset += 3;
+        this.offset += i * 2;
+        i += 1;
         this.updateHtml();
       }
     },

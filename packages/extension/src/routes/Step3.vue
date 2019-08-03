@@ -5,8 +5,7 @@
       Everyday we will carefully pick articles, discussions and ideas from tons of dev news sources,
       especially for you.
     </p>
-    <img svg-inline src="../svg/radar.svg" alt="Sources radar illustration"
-         class="onboarding__radar onboarding__placeholder"/>
+    <da-svg src="/graphics/radar.svg" class="onboarding__radar onboarding__placeholder"/>
     <button class="btn btn-big btn-water-cheese" @click="finish">
       Cool, Take me in
     </button>
@@ -14,9 +13,14 @@
 </template>
 <script>
 import { mapMutations } from 'vuex';
+import DaSvg from '../components/DaSvg.vue';
 
 export default {
   name: 'Step3',
+
+  components: {
+    DaSvg,
+  },
 
   methods: {
     finish() {

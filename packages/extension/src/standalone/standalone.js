@@ -1,25 +1,25 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import svgicon from 'vue-svgicon';
-import VueMasonry from 'vue-masonry-css';
-import { applyTheme } from '@daily/services';
 import App from './App.vue';
-import Home from '../routes/Home.vue';
 import store from '../store';
 import { getCache, STATE_KEY } from '../common/cache';
 import { debug } from '../common/config';
 
 Vue.use(svgicon);
-Vue.use(VueMasonry);
 Vue.use(VueRouter);
 
 const router = new VueRouter({
   base: '/index.html',
   mode: 'history',
   routes: [
-    { path: '/', component: Home },
+    { path: '/', component: () => import(/* webpackChunkName: "home" */ '../routes/Home.vue') },
     // { path: '/', redirect: '/onboarding' },
-    { path: '/login', component: () => import('../routes/Login.vue'), props: route => ({ ...route.query }) },
+    {
+      path: '/login',
+      component: () => import(/* webpackChunkName: "login" */ '../routes/Login.vue'),
+      props: route => ({ ...route.query }),
+    },
     {
       path: '/onboarding',
       redirect: '/onboarding/1',
@@ -48,10 +48,6 @@ router.beforeEach((to, from, next) => Promise.resolve()
     if (!store.state.initialized) {
       const state = await getCache(STATE_KEY, {});
       store.commit('loadFromCache', state);
-      // TODO: find a better place apply theme after cache
-      if (state.ui && state.ui.theme) {
-        applyTheme(window.document, state.ui.theme, null);
-      }
     }
   })
   .then(next));

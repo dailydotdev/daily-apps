@@ -1,20 +1,13 @@
 <template>
   <da-modal class="go-modal" @close="$emit('close')">
     <div class="go-modal__graphics">
-      <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-           class="go-modal__arrow left first"/>
-      <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-           class="go-modal__arrow left second"/>
-      <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-           class="go-modal__arrow left third"/>
-      <img svg-inline src="../svg/barcode.svg" alt="QR code"
-           class="go-modal__barcode"/>
-      <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-           class="go-modal__arrow third"/>
-      <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-           class="go-modal__arrow second"/>
-      <img svg-inline src="../svg/arrow.svg" alt="Arrow"
-           class="go-modal__arrow first"/>
+      <da-svg src="/graphics/arrow.svg" class="go-modal__arrow left first"/>
+      <da-svg src="/graphics/arrow.svg" class="go-modal__arrow left second"/>
+      <da-svg src="/graphics/arrow.svg" class="go-modal__arrow left third"/>
+      <da-svg src="/graphics/barcode.svg" class="go-modal__barcode"/>
+      <da-svg src="/graphics/arrow.svg" class="go-modal__arrow third"/>
+      <da-svg src="/graphics/arrow.svg" class="go-modal__arrow second"/>
+      <da-svg src="/graphics/arrow.svg" class="go-modal__arrow first"/>
     </div>
     <h1><a href="https://go.dailynow.co">go.dailynow.co</a></h1>
     <p>You can enjoy Daily on your mobile device as well. Give it a try!</p>
@@ -23,11 +16,13 @@
 
 <script>
 import DaModal from '@daily/components/src/components/DaModal.vue';
+import DaSvg from './DaSvg.vue';
 
 export default {
   name: 'DaGo',
   components: {
     DaModal,
+    DaSvg,
   },
 };
 </script>

@@ -1,4 +1,4 @@
-import { defaultTheme } from '@daily/services';
+import { defaultTheme, applyTheme } from '@daily/services';
 import { profileService, contentService } from '../../common/services';
 
 const isLoggedIn = state => !!state.user.profile;
@@ -98,6 +98,10 @@ const plugin = (store) => {
 
     switch (mutation.type) {
       case 'loadFromCache':
+        if (state.ui && state.ui.theme) {
+          applyTheme(window.document, state.ui.theme, null);
+        }
+
         if (isLoggedIn(state)) {
           requestIdleCallback(async () => {
             // TODO: handle error
