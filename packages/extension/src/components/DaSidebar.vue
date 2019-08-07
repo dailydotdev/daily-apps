@@ -1,129 +1,110 @@
 <template>
-  <aside class="sidebar" :class="{opened, transitioning}">
-    <div class="sidebar__content" @mouseleave="close" @mouseenter="cancelClose">
-      <div class="sidebar__content__wrapper">
-        <div class="sidebar__filter">
-          <da-mode-switch class="sidebar__filter_switch"
-                          first-icon="link" second-icon="hashtag"
-                          :checked="filterChecked" @toggle="toggleFilter"/>
-        </div>
-        <div class="sidebar__content__element sidebar__tags__search btn btn-menu"
-             :class="{selected: searchFocused}" v-if="filterChecked">
-          <svgicon name="magnifying" class="sidebar__content__element__image"/>
-          <input class="sidebar__input" type="text" placeholder="Search tags" ref="searchTags"
-                 @input="updateSearch"
-                 @focus="searchFocused = true" @blur="searchFocused = false">
-        </div>
-        <div class="sidebar__tags" v-if="filterChecked">
-          <div class="sidebar__content__enabled">
-            <div class="sidebar__content__header">My tags</div>
-            <div class="sidebar__content__element btn btn-menu"
-                 v-for="item in enabledTags" :key="item.name">
-              <button class="sidebar__content__element__button"
-                      title="Click to view only this tag" @click.prevent="viewTag(item)">
-                <span class="invert sidebar__tag shadow1 text-overflow">#{{item.name}}</span>
-              </button>
-              <button class="sidebar__content__element__button-hidden btn-icon"
-                      title="Remove this tag" @click.prevent.stop="setEnableTag(item, false)">
-                <svgicon name="x"/>
-              </button>
-            </div>
-          </div>
-          <div class="sidebar__content__disabled" v-if="disabledTags.length > 0">
-            <div class="sidebar__content__header">{{query.length ? 'More tags' : 'Hot tags'}}</div>
-            <div class="sidebar__content__element off btn btn-menu"
-                 v-for="item in disabledTags" :key="item.name">
-              <button class="sidebar__content__element__button"
-                      title="Click to view only this tag" @click.prevent="viewTag(item)">
-                <span class="text-overflow">#{{item.name}}</span>
-              </button>
-              <button class="sidebar__content__element__button-hidden show btn-icon"
-                      title="Add this tag"
-                      @click.prevent.stop="setEnableTag(item, true)">
-                <svgicon name="plus"/>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="sidebar__sources" v-else>
-          <div class="sidebar__content__enabled">
-            <div class="sidebar__content__header">My sources</div>
-            <button class="sidebar__content__element sidebar__sources__act-req btn btn-menu"
-                    @click.prevent="activateRequest" v-if="!requestActive">
-              <svgicon name="plus" class="sidebar__content__element__image"/>
-              <span>Request source</span>
+  <aside class="sidebar" :class="{opened}"
+         @mouseleave="close">
+    <div class="sidebar__wrapper">
+      <div class="sidebar__filter">
+        <da-mode-switch class="sidebar__filter_switch"
+                        first-icon="link" second-icon="hashtag"
+                        :checked="filterChecked" @toggle="toggleFilter"/>
+      </div>
+      <div class="sidebar__element sidebar__tags__search btn btn-menu"
+           :class="{selected: searchFocused}" v-if="filterChecked">
+        <svgicon name="magnifying" class="sidebar__element__image"/>
+        <input class="sidebar__input" type="text" placeholder="Search tags" ref="searchTags"
+               @input="updateSearch"
+               @focus="searchFocused = true" @blur="searchFocused = false">
+      </div>
+      <div class="sidebar__tags" v-if="filterChecked">
+        <div class="sidebar__enabled">
+          <div class="sidebar__header">My tags</div>
+          <div class="sidebar__element btn btn-menu"
+               v-for="item in enabledTags" :key="item.name">
+            <button class="sidebar__element__button"
+                    title="Click to view only this tag" @click.prevent="viewTag(item)">
+              <span class="invert sidebar__tag shadow1 text-overflow">#{{item.name}}</span>
             </button>
-            <form class="sidebar__content__element btn btn-menu selected" v-else
-                  @click.prevent="$refs.request.focus()" ref="form">
-              <button type="button" class="btn-icon btn-small" @click="cancelRequest">
-                <svgicon name="x" class="sidebar__content__element__image"/>
-              </button>
-              <input class="sidebar__input" type="url" placeholder="Paste URL" required
-                     ref="request" @input="updateFormValidity">
-              <button type="submit" class="sidebar__sources__submit btn btn-invert"
-                      :disabled="disableSubmit" @click.prevent="submitRequest">
-                <svgicon name="v" class="invert"/>
-              </button>
-              <transition name="bouncy-flip">
-                <div class="sidebar__sources__error nuggets" v-if="submitError">
-                  Something went wrong, try again later
-                </div>
-              </transition>
-            </form>
-            <div class="sidebar__content__element btn btn-menu" v-for="item in enabledPubs"
-                 :key="item.id">
-              <button class="sidebar__content__element__button"
-                      title="Click to view only this source" @click.prevent="viewPublication(item)">
-                <img :data-src="item.image" :alt="item.name"
-                     class="sidebar__content__element__image lazyload"/>
-                <span class="text-overflow">{{item.name}}</span>
-              </button>
-              <button class="sidebar__content__element__button-hidden btn-icon"
-                      title="Remove this source"
-                      @click.prevent.stop="setEnablePublication(item, false)">
-                <svgicon name="x"/>
-              </button>
-            </div>
+            <button class="sidebar__element__button-hidden btn-icon"
+                    title="Remove this tag" @click.prevent.stop="setEnableTag(item, false)">
+              <svgicon name="x"/>
+            </button>
           </div>
-          <div class="sidebar__content__disabled" v-if="disabledPubs.length > 0">
-            <div class="sidebar__content__header">More sources</div>
-            <div class="sidebar__content__element off btn btn-menu"
-                 v-for="item in disabledPubs" :key="item.id">
-              <button class="sidebar__content__element__button"
-                      title="Click to view only this source"
-                      @click.prevent="viewPublication(item)">
-                <img :data-src="item.image" :alt="item.name"
-                     class="sidebar__content__element__image lazyload"/>
-                <span class="text-overflow">{{item.name}}</span>
-              </button>
-              <button class="sidebar__content__element__button-hidden show btn-icon"
-                      title="Add this source"
-                      @click.prevent.stop="setEnablePublication(item, true)">
-                <svgicon name="plus"/>
-              </button>
-            </div>
+        </div>
+        <div class="sidebar__disabled" v-if="disabledTags.length > 0">
+          <div class="sidebar__header">{{query.length ? 'More tags' : 'Hot tags'}}</div>
+          <div class="sidebar__element off btn btn-menu"
+               v-for="item in disabledTags" :key="item.name">
+            <button class="sidebar__element__button"
+                    title="Click to view only this tag" @click.prevent="viewTag(item)">
+              <span class="text-overflow">#{{item.name}}</span>
+            </button>
+            <button class="sidebar__element__button-hidden show btn-icon"
+                    title="Add this tag"
+                    @click.prevent.stop="setEnableTag(item, true)">
+              <svgicon name="plus"/>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar__sources" v-else>
+        <div class="sidebar__enabled">
+          <div class="sidebar__header">My sources</div>
+          <button class="sidebar__element sidebar__sources__act-req btn btn-menu"
+                  @click.prevent="activateRequest" v-if="!requestActive">
+            <svgicon name="plus" class="sidebar__element__image"/>
+            <span>Request source</span>
+          </button>
+          <form class="sidebar__element btn btn-menu selected" v-else
+                @click.prevent="$refs.request.focus()" ref="form">
+            <button type="button" class="btn-icon btn-small" @click="cancelRequest">
+              <svgicon name="x" class="sidebar__element__image"/>
+            </button>
+            <input class="sidebar__input" type="url" placeholder="Paste URL" required
+                   ref="request" @input="updateFormValidity">
+            <button type="submit" class="sidebar__sources__submit btn btn-invert"
+                    :disabled="disableSubmit" @click.prevent="submitRequest">
+              <svgicon name="v" class="invert"/>
+            </button>
+            <transition name="bouncy-flip">
+              <div class="sidebar__sources__error nuggets" v-if="submitError">
+                Something went wrong, try again later
+              </div>
+            </transition>
+          </form>
+          <div class="sidebar__element btn btn-menu" v-for="item in enabledPubs"
+               :key="item.id">
+            <button class="sidebar__element__button"
+                    title="Click to view only this source" @click.prevent="viewPublication(item)">
+              <img :data-src="item.image" :alt="item.name"
+                   class="sidebar__element__image lazyload"/>
+              <span class="text-overflow">{{item.name}}</span>
+            </button>
+            <button class="sidebar__element__button-hidden btn-icon"
+                    title="Remove this source"
+                    @click.prevent.stop="setEnablePublication(item, false)">
+              <svgicon name="x"/>
+            </button>
+          </div>
+        </div>
+        <div class="sidebar__disabled" v-if="disabledPubs.length > 0">
+          <div class="sidebar__header">More sources</div>
+          <div class="sidebar__element off btn btn-menu"
+               v-for="item in disabledPubs" :key="item.id">
+            <button class="sidebar__element__button"
+                    title="Click to view only this source"
+                    @click.prevent="viewPublication(item)">
+              <img :data-src="item.image" :alt="item.name"
+                   class="sidebar__element__image lazyload"/>
+              <span class="text-overflow">{{item.name}}</span>
+            </button>
+            <button class="sidebar__element__button-hidden show btn-icon"
+                    title="Add this source"
+                    @click.prevent.stop="setEnablePublication(item, true)">
+              <svgicon name="plus"/>
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="sidebar__trigger" @mouseenter="open"
-         @transitionend="transitioning = false">
-      <svgicon icon="hamburger" class="sidebar__trigger_icon"/>
-      <div class="sidebar__trigger__lines" ref="lines">
-        <pre v-for="n in lines" class="micro2" :key="n">{{ n }}</pre>
-      </div>
-      <svg class="sidebar__trigger__collapse" width="10" height="12" viewBox="0 0 10 12"
-           xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" fill-rule="evenodd">
-          <g>
-            <path class="fill" d="M0 0h10v7.826L5 12 0 7.826z"></path>
-            <path class="stroke" d="M.5.5v7.092L5 11.35 9.5 7.59V.5h-9z"></path>
-          </g>
-          <path d="M3 5h4" class="stroke" stroke-linecap="square"></path>
-        </g>
-      </svg>
-    </div>
-    <div class="sidebar__trigger__bg"></div>
   </aside>
 </template>
 
@@ -149,9 +130,7 @@ export default {
 
   data() {
     return {
-      lines: 1,
       opened: false,
-      transitioning: false,
       filterChecked: false,
       requestActive: false,
       disableSubmit: true,
@@ -190,17 +169,8 @@ export default {
   },
 
   methods: {
-    invalidate() {
-      setTimeout(() => {
-        const pres = this.$refs.lines.querySelectorAll('pre');
-        const lines = Math.ceil(this.$refs.lines.clientHeight / pres[0].clientHeight);
-        if (lines > this.lines) {
-          this.lines = lines;
-        }
-      });
-    },
     open() {
-      if (this.transitioning || this.opened || this.disabled) {
+      if (this.opened || this.disabled) {
         return;
       }
 
@@ -208,21 +178,13 @@ export default {
       this.setOpened(true);
     },
     close() {
-      this.closeTimeout = setTimeout(() => {
-        if (!this.opened || this.transitioning) {
-          return;
-        }
-
-        ga('send', 'event', 'Sidebar', 'Toggle', 'Close');
-        this.resetRequest();
-        this.setOpened(false);
-      }, 500);
-    },
-    cancelClose() {
-      if (this.closeTimeout) {
-        clearTimeout(this.closeTimeout);
-        this.closeTimeout = null;
+      if (!this.opened) {
+        return;
       }
+
+      ga('send', 'event', 'Sidebar', 'Toggle', 'Close');
+      this.resetRequest();
+      this.setOpened(false);
     },
     toggleFilter(checked) {
       ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');
@@ -235,7 +197,7 @@ export default {
       this.$store.dispatch('feed/setEnablePublication', { index, enabled })
       // TODO: handle error
       // eslint-disable-next-line
-        .catch(console.error);
+                .catch(console.error);
     },
     // eslint-disable-next-line no-unused-vars
     viewPublication(pub) {
@@ -280,7 +242,7 @@ export default {
       this.$store.dispatch('feed/setEnableTag', { tag, enabled })
       // TODO: handle error
       // eslint-disable-next-line
-        .catch(console.error);
+                .catch(console.error);
     },
     viewTag(tag) {
       ga('send', 'event', 'Tags', 'Single');
@@ -305,9 +267,14 @@ export default {
         } catch (err) {
           // TODO: handle error
           // eslint-disable-next-line
-          console.error(err);
+                    console.error(err);
         }
       }
+    },
+    setOpened(opened) {
+      setTimeout(() => {
+        this.opened = opened;
+      });
     },
 
     ...mapActions({
@@ -315,57 +282,37 @@ export default {
     }),
   },
 
-  created() {
-    this.setOpened = (opened) => {
-      this.transitioning = true;
-      setTimeout(() => {
-        this.opened = opened;
-      });
-    };
-  },
-
   mounted() {
-    import('@daily/components/icons/hamburger');
-    import('@daily/components/icons/link');
-    import('@daily/components/icons/hashtag');
-    import('@daily/components/icons/plus');
-    import('@daily/components/icons/x');
-    import('@daily/components/icons/v');
-    import('@daily/components/icons/magnifying');
+        import('@daily/components/icons/link');
+        import('@daily/components/icons/hashtag');
+        import('@daily/components/icons/plus');
+        import('@daily/components/icons/x');
+        import('@daily/components/icons/v');
+        import('@daily/components/icons/magnifying');
   },
 };
 </script>
 
 <style>
 .sidebar {
-  position: absolute;
+  display: block;
+  position: fixed;
   left: 0;
   top: 0;
+  width: 264px;
   height: 100%;
+  overflow: hidden;
+  background: var(--theme-background-primary);
+  border-right: 1px solid var(--theme-background-primary);
+  box-shadow: var(--theme-shadow-offset) 0 16px 0 rgba(0, 0, 0, .1);
+  transform: translateX(-100%);
+  transition: transform 0.15s linear;
+  will-change: transform;
   z-index: 20;
-
-  --trigger-width: 36px;
-  --content-width: 264px;
+  contain: layout paint size;
 
   &.opened {
-    & .sidebar__content {
-      display: block;
-    }
-
-    & > * {
-      transform: translateX(var(--content-width));
-    }
-  }
-
-  &.transitioning {
-    & .sidebar__content {
-      display: block;
-    }
-
-    & > * {
-      transition: transform 0.2s ease-in;
-      will-change: transform;
-    }
+    transform: none;
   }
 
   & .text-overflow {
@@ -377,19 +324,7 @@ export default {
   }
 }
 
-.sidebar__content {
-  display: none;
-  position: fixed;
-  left: calc(var(--content-width) * -1);
-  top: 0;
-  width: var(--content-width);
-  height: 100%;
-  background: var(--theme-background-primary);
-  border-right: 1px solid var(--theme-background-primary);
-  box-shadow: var(--theme-shadow-offset) 0 16px 0 rgba(0, 0, 0, .1);
-}
-
-.sidebar__content__wrapper {
+.sidebar__wrapper {
   width: 100%;
   height: 100%;
   overflow-y: scroll;
@@ -428,65 +363,6 @@ export default {
   }
 }
 
-.sidebar__trigger {
-  position: absolute;
-  display: flex;
-  left: 0;
-  top: 0;
-  width: var(--trigger-width);
-  height: 100%;
-  flex-direction: column;
-  padding: 68px 0 0 0;
-
-  & > * {
-    margin: 8px 0;
-  }
-}
-
-.sidebar__trigger_icon {
-  align-self: center;
-}
-
-.sidebar__trigger__bg {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: var(--trigger-width);
-  height: 100%;
-  background: var(--theme-background-highlight);
-  border-right: 1px solid var(--theme-separator);
-  z-index: -1;
-}
-
-.sidebar__trigger__lines {
-  flex: 1;
-  overflow: hidden;
-  margin-right: 8px;
-
-  & pre {
-    color: var(--theme-disabled);
-    text-align: right;
-    margin: 0;
-  }
-}
-
-.sidebar__trigger__collapse {
-  position: absolute;
-  width: 10px;
-  height: 12px;
-  right: -5px;
-  top: 118px;
-  margin: 0;
-
-  & .fill {
-    fill: var(--theme-background-primary);
-  }
-
-  & .stroke {
-    stroke: var(--theme-separator);
-  }
-}
-
 .sidebar__filter {
   display: flex;
   padding-top: 48px;
@@ -497,27 +373,27 @@ export default {
   margin: 26px auto;
 }
 
-.sidebar__sources .sidebar__content__element,
-.sidebar__content__element.sidebar__tags__search {
+.sidebar__sources .sidebar__element,
+.sidebar__element.sidebar__tags__search {
   height: 44px;
 }
 
-.sidebar__tags .sidebar__content__element {
+.sidebar__tags .sidebar__element {
   height: 40px;
 }
 
-.sidebar__content__element {
+.sidebar__element {
   --button-color: var(--theme-secondary);
   text-transform: none;
 }
 
-.sidebar__content__element, .sidebar__content__element .sidebar__content__element__button {
+.sidebar__element, .sidebar__element .sidebar__element__button {
   & {
     @mixin micro1;
   }
 }
 
-.sidebar__content__element .sidebar__content__element__button {
+.sidebar__element .sidebar__element__button {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -531,11 +407,11 @@ export default {
   }
 }
 
-.sidebar__content__element {
+.sidebar__element {
   width: 100%;
   padding: 0 16px;
 
-  & .sidebar__content__element__button {
+  & .sidebar__element__button {
     display: flex;
     height: 100%;
     padding: 0;
@@ -544,30 +420,30 @@ export default {
   }
 
   &.off:hover {
-    & .sidebar__content__element__button {
+    & .sidebar__element__button {
       color: var(--theme-primary);
     }
   }
 
   &:hover {
-    & .sidebar__content__element__button-hidden {
+    & .sidebar__element__button-hidden {
       display: flex;
     }
   }
 
-  & .sidebar__content__element__image {
+  & .sidebar__element__image {
     width: 24px;
     height: 24px;
     border-radius: 4px;
   }
 
-  & > .sidebar__content__element__image:first-child,
-  & .sidebar__content__element__button .sidebar__content__element__image {
+  & > .sidebar__element__image:first-child,
+  & .sidebar__element__button .sidebar__element__image {
     margin-left: 0;
     margin-right: 16px;
   }
 
-  & .sidebar__content__element__button-hidden {
+  & .sidebar__element__button-hidden {
     display: none;
     margin-left: auto;
 
@@ -582,13 +458,13 @@ export default {
   }
 }
 
-form.sidebar__content__element {
+form.sidebar__element {
   position: relative;
   cursor: text;
   overflow: visible;
   z-index: 2;
 
-  & .sidebar__content__element__image {
+  & .sidebar__element__image {
     margin-right: 0;
   }
 
@@ -627,7 +503,7 @@ form.sidebar__content__element {
   will-change: transform;
 }
 
-.sidebar__content__header {
+.sidebar__header {
   height: auto;
   margin: 0 16px 8px;
   padding: 0;
@@ -638,17 +514,17 @@ form.sidebar__content__element {
   }
 }
 
-.sidebar__content__enabled {
+.sidebar__enabled {
   border-radius: 0 0 8px 8px;
   padding-bottom: 8px;
   background: var(--theme-background-highlight);
 }
 
-.sidebar__content__disabled {
+.sidebar__disabled {
   padding: 16px 0;
 }
 
-.sidebar__tags .sidebar__content__disabled {
+.sidebar__tags .sidebar__disabled {
   padding-bottom: 44px;
 }
 
@@ -682,7 +558,7 @@ form.sidebar__content__element {
   border-radius: 4px;
 }
 
-.sidebar__content__element.sidebar__tags__search {
+.sidebar__element.sidebar__tags__search {
   position: fixed;
   bottom: 0;
   background: var(--theme-background-secondary);
@@ -690,7 +566,7 @@ form.sidebar__content__element {
   z-index: 2;
   --button-border-radius: 0;
 
-  & .sidebar__content__element__image {
+  & .sidebar__element__image {
     margin: 0;
   }
 

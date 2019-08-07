@@ -132,8 +132,8 @@ it('should commit "setEnablePublication" when removing publication', (done) => {
   wrapper.vm.filterChecked = false;
   wrapper.vm.$nextTick(() => {
     wrapper
-      .find('.sidebar__sources .sidebar__content__enabled')
-      .find('.sidebar__content__element__button-hidden').trigger('click');
+      .find('.sidebar__sources .sidebar__enabled')
+      .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnablePublication)
       .toBeCalledWith(expect.anything(), { index: 0, enabled: false }, undefined);
     done();
@@ -145,8 +145,8 @@ it('should commit "setEnablePublication" when adding publication', (done) => {
   wrapper.vm.filterChecked = false;
   wrapper.vm.$nextTick(() => {
     wrapper
-      .find('.sidebar__sources .sidebar__content__disabled')
-      .find('.sidebar__content__element__button-hidden').trigger('click');
+      .find('.sidebar__sources .sidebar__disabled')
+      .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnablePublication)
       .toBeCalledWith(expect.anything(), { index: 1, enabled: true }, undefined);
     done();
@@ -180,8 +180,8 @@ it('should dispatch "setEnableTag" when removing tag', (done) => {
   wrapper.vm.filterChecked = true;
   wrapper.vm.$nextTick(() => {
     wrapper
-      .find('.sidebar__tags .sidebar__content__enabled')
-      .find('.sidebar__content__element__button-hidden').trigger('click');
+      .find('.sidebar__tags .sidebar__enabled')
+      .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnableTag)
       .toBeCalledWith(expect.anything(), { tag: feed.state.tags[0], enabled: false }, undefined);
     done();
@@ -193,8 +193,8 @@ it('should commit "setEnableTag" when adding tag', (done) => {
   wrapper.vm.filterChecked = true;
   wrapper.vm.$nextTick(() => {
     wrapper
-      .find('.sidebar__tags .sidebar__content__disabled')
-      .find('.sidebar__content__element__button-hidden').trigger('click');
+      .find('.sidebar__tags .sidebar__disabled')
+      .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnableTag)
       .toBeCalledWith(expect.anything(), { tag: feed.state.tags[2], enabled: true }, undefined);
     done();
@@ -230,8 +230,8 @@ it('should dispatch "setFilter" with publication filter', (done) => {
   const wrapper = mount(DaSidebar, { store, localVue });
   wrapper.vm.$nextTick(() => {
     wrapper
-      .find('.sidebar__sources .sidebar__content__disabled')
-      .find('.sidebar__content__element__button').trigger('click');
+      .find('.sidebar__sources .sidebar__disabled')
+      .find('.sidebar__element__button').trigger('click');
     expect(feed.actions.setFilter)
       .toBeCalledWith(expect.anything(), {
         type: 'publication',
@@ -246,8 +246,8 @@ it('should dispatch "setFilter" with tag filter', (done) => {
   wrapper.vm.filterChecked = true;
   wrapper.vm.$nextTick(() => {
     wrapper
-      .find('.sidebar__tags .sidebar__content__disabled')
-      .find('.sidebar__content__element__button').trigger('click');
+      .find('.sidebar__tags .sidebar__disabled')
+      .find('.sidebar__element__button').trigger('click');
     expect(feed.actions.setFilter)
       .toBeCalledWith(expect.anything(), {
         type: 'tag',

@@ -4,6 +4,22 @@
     <da-sidebar ref="sidebar" :disabled="showBookmarks"
                 @requested-source="showRequestModal = true"
                 @login="onLogin('Sidebar')"></da-sidebar>
+    <div class="line-numbers" @mouseenter="$refs.sidebar.open()">
+      <svgicon icon="hamburger" class="line-numbers_icon"/>
+      <div class="line-numbers__lines" ref="lineNumbers">
+        <pre v-for="n in lineNumbers" class="micro2" :key="n">{{ n }}</pre>
+      </div>
+      <svg class="line-numbers__collapse" width="10" height="12" viewBox="0 0 10 12"
+           xmlns="http://www.w3.org/2000/svg">
+        <g fill="none" fill-rule="evenodd">
+          <g>
+            <path class="fill" d="M0 0h10v7.826L5 12 0 7.826z"></path>
+            <path class="stroke" d="M.5.5v7.092L5 11.35 9.5 7.59V.5h-9z"></path>
+          </g>
+          <path d="M3 5h4" class="stroke" stroke-linecap="square"></path>
+        </g>
+      </svg>
+    </div>
     <main class="content">
       <div class="content__header">
         <template v-if="filter && !showBookmarks">
@@ -149,6 +165,7 @@ export default {
       showLoginModal: false,
       showProfileModal: false,
       selectedPostId: null,
+      lineNumbers: 1,
     };
   },
 
@@ -159,9 +176,13 @@ export default {
 
     updateLines() {
       this.$nextTick(() => {
-        if (this.$refs.sidebar) {
-          this.$refs.sidebar.invalidate();
-        }
+        setTimeout(() => {
+          const pres = this.$refs.lineNumbers.querySelectorAll('pre');
+          const lines = Math.ceil(this.$refs.lineNumbers.clientHeight / pres[0].clientHeight);
+          if (lines > this.lineNumbers) {
+            this.lineNumbers = lines;
+          }
+        });
       });
     },
 
@@ -358,6 +379,7 @@ export default {
   async mounted() {
         import('@daily/components/icons/arrow');
         import('@daily/components/icons/plus');
+        import('@daily/components/icons/hamburger');
 
         if (this.cta.icon) {
             import(`@daily/components/icons/${this.cta.icon}`);
@@ -377,7 +399,7 @@ export default {
 .content {
   display: flex;
   flex-direction: column;
-  margin: 24px 42px 76px 76px;
+  margin: 24px 40px 76px 76px;
 }
 
 .content__header {
@@ -560,5 +582,55 @@ export default {
 
 .bookmarks-placeholder {
   height: 185px;
+}
+
+.line-numbers {
+  position: absolute;
+  display: flex;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 100%;
+  flex-direction: column;
+  padding: 68px 0 0 0;
+  background: var(--theme-background-highlight);
+  border-right: 1px solid var(--theme-separator);
+
+  & > * {
+    margin: 8px 0;
+  }
+}
+
+.line-numbers_icon {
+  align-self: center;
+}
+
+.line-numbers__lines {
+  flex: 1;
+  overflow: hidden;
+  margin-right: 8px;
+
+  & pre {
+    color: var(--theme-disabled);
+    text-align: right;
+    margin: 0;
+  }
+}
+
+.line-numbers__collapse {
+  position: absolute;
+  width: 10px;
+  height: 12px;
+  right: -5px;
+  top: 118px;
+  margin: 0;
+
+  & .fill {
+    fill: var(--theme-background-primary);
+  }
+
+  & .stroke {
+    stroke: var(--theme-separator);
+  }
 }
 </style>
