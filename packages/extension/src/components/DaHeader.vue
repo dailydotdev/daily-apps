@@ -211,14 +211,13 @@ export default {
   display: flex;
   width: 100%;
   height: 48px;
-  overflow: hidden;
   flex-direction: row;
   align-items: center;
   padding: 0 8px;
   background: var(--theme-background-highlight);
   border-bottom: 1px solid var(--theme-separator);
   z-index: 30;
-  contain: layout paint size;
+  contain: layout size;
 
   & > * {
     margin: 0 4px;
