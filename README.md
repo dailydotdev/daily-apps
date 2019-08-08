@@ -64,7 +64,7 @@ https://github.com/dailynowco/.github/blob/master/CONTRIBUTING.md
 After cloning the project, please make sure to run the following commands to bootstrap the project:
 ```
 npx lerna bootstrap
-npx lerna build
+npx lerna run build
 ```
 
 ## Firefox Review
