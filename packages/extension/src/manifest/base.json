@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "name": "Daily 2.0 - Source for Busy Developers",
   "short_name": "Daily 2.0",
-  "description": "Daily gathers the latest dev & tech posts in your new tab",
+  "description": "Replace your new tab with the latest trending dev news!",
   "homepage_url": "https://www.dailynow.co",
   "icons": {
     "16": "icons/16.png",
