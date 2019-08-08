@@ -30,10 +30,14 @@ You can even use `yarn test --watch` if you want to run the tests related to the
 
 ## Build / Serve
 
-`yarn build:chrome` builds a production ready extension for Google Chrome, while `yarn build:firefox` does the same for Mozilla's Firefox. Both output the app to `dist` folder and a zip version of the app to `dist-zip`, ready for publishing to the store. If you want to immediately build for all platforms and also zip the source files (required for firefox review) just use `yarn build:all`.
+#### Development
 
 For development it is recommended to use `yarn serve` as it uses the development version and updates on every file change. This command outputs the app to `dist` folder only but this is enough for local development.
 
 For loading the unpacked version please look [at this guide for Chrome](https://developer.chrome.com/extensions/getstarted) and [this guide for Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Temporary_Installation_in_Firefox). Both cases should point to `dist` folder.
 
 **Please make sure you have a local environment of Daily services up and running with seed data, otherwise you won't see any data in your local version. For more information, [click here](https://github.com/dailynowco/daily#setting-up-local-environment).**
+
+#### Production
+
+`yarn build:chrome` builds a production ready extension for Google Chrome, while `yarn build:firefox` does the same for Mozilla's Firefox. Both output the app to `dist` folder and a zip version of the app to `dist-zip`, ready for publishing to the store. If you want to immediately build for all platforms and also zip the source files (required for firefox review) just use `yarn build:all`.
