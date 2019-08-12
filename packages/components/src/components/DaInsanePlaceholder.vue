@@ -22,10 +22,11 @@ export default {
 
     &:first-child {
       width: 24.6%;
+      min-width: 200px;
     }
 
     &:last-child {
-      width: 8.2%;
+      width: 100px;
     }
   }
 }
