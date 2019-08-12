@@ -16,8 +16,6 @@
 </template>
 
 <script>
-import '../styles/placeholder.pcss';
-
 export default {
     name: 'DaCardPlaceholder',
 };
@@ -44,7 +42,7 @@ export default {
   &:before {
     content: '';
     display: block;
-    padding-top: 100.71%;
+    padding-top: 89.36%;
   }
 }
 
@@ -56,7 +54,7 @@ export default {
 
 .card-ph__image {
   top: 0;
-  height: 62%;
+  height: 57.14%;
   background: linear-gradient(180deg, var(--theme-background-secondary) 0%, var(--theme-background-primary) 100%);
 }
 

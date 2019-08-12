@@ -58,6 +58,7 @@
       </div>
       <div class="content__insane" v-if="insaneMode">
         <template v-if="showAd">
+          <da-insane-placeholder v-if="!ads.length"/>
           <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item"
                         @click="onAdClick" @impression="onAdImpression"/>
         </template>
@@ -68,6 +69,7 @@
       </div>
       <masonry class="content__cards" :cols="cols" :gutter="32" v-else>
         <template v-if="showAd">
+          <da-card-placeholder v-if="!ads.length"/>
           <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
         </template>
         <da-card-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
@@ -135,8 +137,10 @@ export default {
     DaHeader,
     DaCardPost: () => import(/* webpackChunkName: "cards" */ '@daily/components/src/components/DaCardPost.vue'),
     DaCardAd: () => import(/* webpackChunkName: "cards" */ '@daily/components/src/components/DaCardAd.vue'),
+    DaCardPlaceholder: () => import(/* webpackChunkName: "cards" */ '@daily/components/src/components/DaCardPlaceholder.vue'),
     DaInsanePost: () => import(/* webpackChunkName: "insane" */ '@daily/components/src/components/DaInsanePost.vue'),
     DaInsaneAd: () => import(/* webpackChunkName: "insane" */ '@daily/components/src/components/DaInsaneAd.vue'),
+    DaInsanePlaceholder: () => import(/* webpackChunkName: "insane" */ '@daily/components/src/components/DaInsanePlaceholder.vue'),
     DaSvg,
     DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
@@ -469,7 +473,7 @@ export default {
 .content__cards {
   margin: -32px 0;
 
-  & .card {
+  & .card, & .card-ph {
     margin: 32px 0;
   }
 }
