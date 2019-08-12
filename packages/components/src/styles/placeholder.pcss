@@ -1,0 +1,20 @@
+.ph-text {
+    animation-duration: 1.25s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: phShimmer;
+    animation-timing-function: linear;
+    background: var(--theme-background-secondary);
+    background: linear-gradient(to right, var(--theme-background-primary) 8%, var(--theme-primary-invert) 18%, var(--theme-background-primary) 33%);
+    background-size: 800px 104px;
+    position: relative;
+}
+
+@keyframes phShimmer {
+    0% {
+        background-position: -468px 0
+    }
+    100% {
+        background-position: 468px 0
+    }
+}
