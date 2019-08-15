@@ -17,7 +17,7 @@
 
 <script>
 export default {
-    name: 'DaCardPlaceholder',
+  name: 'DaCardPlaceholder',
 };
 </script>
 
@@ -55,7 +55,8 @@ export default {
 .card-ph__image {
   top: 0;
   height: 57.14%;
-  background: linear-gradient(180deg, var(--theme-background-secondary) 0%, var(--theme-background-primary) 100%);
+  background: linear-gradient(180deg, var(--theme-background-secondary) 0%,
+  var(--theme-background-primary) 100%);
 }
 
 .card-ph__content {

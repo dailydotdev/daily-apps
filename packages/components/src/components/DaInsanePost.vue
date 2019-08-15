@@ -5,7 +5,9 @@
         <h5 class="insane__title">
           <da-line-clamp :text="post.title" :lines="3"/>
         </h5>
-        <div class="insane__tags micro1">{{ tags }}</div>
+        <div class="insane__tags micro1" :title="tags">
+          <da-line-clamp :text="tags" :lines="1" :truncate="truncateTags"/>
+        </div>
       </a>
       <span class="insane__views micro2 reveal"
             v-if="post.readTime">// {{post.readTime}} min read</span>
@@ -36,6 +38,7 @@
 
 <script>
 import 'lazysizes';
+import { truncateTags } from '../truncate';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
@@ -82,8 +85,8 @@ export default {
   },
 
   mounted() {
-    import('../../icons/bookmark');
-    import('../../icons/menu');
+        import('../../icons/bookmark');
+        import('../../icons/menu');
   },
 
   methods: {
@@ -93,6 +96,10 @@ export default {
       setTimeout(() => {
         this.notifying = false;
       }, 1500);
+    },
+
+    truncateTags(...args) {
+      return truncateTags(this.post.tags, ...args);
     },
   },
 };
@@ -131,6 +138,7 @@ export default {
 .insane__tags {
   margin-top: 4px;
   color: var(--theme-disabled);
+  max-width: 600px;
 }
 
 .insane__views {
