@@ -64,3 +64,10 @@ it('should show notification', () => {
   jest.runAllTimers();
   expect(wrapper.vm.notifying).toEqual(false);
 });
+
+it('should emit publication event on click', () => {
+  const post = posts[0];
+  const wrapper = shallowMount(DaCardPost, { propsData: { post } });
+  wrapper.find('.card__footer__icon').trigger('click');
+  expect(wrapper.emitted().publication[0]).toEqual([{ pub: post.publication }]);
+});
