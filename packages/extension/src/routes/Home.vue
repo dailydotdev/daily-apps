@@ -73,7 +73,7 @@
           <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
         </template>
         <da-card-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
-                      @bookmark="onBookmark" @menu="onPostMenu"
+                      @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                       @click="onPostClick" :show-menu="isLoggedIn"
                       :menu-opened="selectedPostId === item.id"/>
       </masonry>
@@ -195,6 +195,12 @@ export default {
       this.toggleBookmarks({ id: post.id, bookmarked });
     },
 
+    onPublication({ pub }) {
+      if (this.filter && this.filter.type === 'publication' && this.filter.info.id === pub.id) return;
+      ga('send', 'event', 'Publications', 'Single');
+      this.setFilter({ type: 'publication', info: pub });
+    },
+
     onPostClick(post) {
       ga('send', 'event', 'Post', 'Click', post.source);
     },
@@ -299,6 +305,7 @@ export default {
       addFilterToFeed: 'feed/addFilterToFeed',
       fetchNotifications: 'ui/fetchNotifications',
       refreshToken: 'user/refreshToken',
+      setFilter: 'feed/setFilter',
     }),
 
     ...mapMutations({
