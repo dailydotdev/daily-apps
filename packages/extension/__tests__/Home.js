@@ -27,33 +27,33 @@ beforeEach(() => {
     namespaced: true,
     state: {
       publications: [{
-        "id": "devto",
-        "name": "DEV",
-        "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/devto",
+        'id': 'devto',
+        'name': 'DEV',
+        'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/devto',
         'enabled': true,
         'twitter': ''
       }],
       posts: [{
-        "id": "0b14843f08279a41ea69c1edd35a2c16",
-        "title": "Four Firefox Dev-Tools I use daily",
-        "url": "https://app.dailynow.co/r/0b14843f08279a41ea69c1edd35a2c16",
-        "publishedAt": "2019-06-12T00:51:56.000Z",
-        "createdAt": "2019-06-12T18:54:48.000Z",
-        "publication": {
-          "id": "devto",
-          "name": "DEV",
-          "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/devto"
+        'id': '0b14843f08279a41ea69c1edd35a2c16',
+        'title': 'Four Firefox Dev-Tools I use daily',
+        'url': 'https://app.dailynow.co/r/0b14843f08279a41ea69c1edd35a2c16',
+        'publishedAt': '2019-06-12T00:51:56.000Z',
+        'createdAt': '2019-06-12T18:54:48.000Z',
+        'publication': {
+          'id': 'devto',
+          'name': 'DEV',
+          'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/devto'
         },
-        "views": 130,
-        "tags": [
-          "webdev",
-          "beginners",
-          "css"
+        'views': 130,
+        'tags': [
+          'webdev',
+          'beginners',
+          'css'
         ],
-        "readTime": 4,
-        "image": "https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/5fdc29751a3ca792d72e6456016faf0f",
-        "placeholder": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAFAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhAAAgIDAAAAAAAAAAAAAAAAAAECERMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAYH/8QAFREBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhEDEQA/ANWcpbTVcojkYATUyR//2Q==",
-        "size": "small"
+        'readTime': 4,
+        'image': 'https://res.cloudinary.com/daily-now/image/upload/f_auto,q_auto/v1/posts/5fdc29751a3ca792d72e6456016faf0f',
+        'placeholder': 'data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAFAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhAAAgIDAAAAAAAAAAAAAAAAAAECERMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAYH/8QAFREBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhEDEQA/ANWcpbTVcojkYATUyR//2Q==',
+        'size': 'small'
       }]
     },
     mutations: {
