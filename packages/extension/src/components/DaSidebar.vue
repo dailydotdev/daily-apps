@@ -5,15 +5,17 @@
       <div class="sidebar__filter">
         <da-mode-switch class="sidebar__filter_switch"
                         first-icon="link" second-icon="hashtag"
-                        :checked="filterChecked" @toggle="toggleFilter"/>
+                        :checked="filterChecked" @toggle="toggleFilter($event); $refs.searchTags.value = ''"/>
       </div>
+
       <div class="sidebar__element sidebar__tags__search btn btn-menu"
-           :class="{selected: searchFocused}" v-if="filterChecked">
+           :class="{selected: searchFocused}">
         <svgicon name="magnifying" class="sidebar__element__image"/>
-        <input class="sidebar__input" type="text" placeholder="Search tags" ref="searchTags"
-               @input="updateSearch"
+        <input class="sidebar__input" type="text" :placeholder="searchPlaceholder" ref="searchTags"
+               v-on="{ input: filterChecked ? updateSearch : searchPublications }"
                @focus="searchFocused = true" @blur="searchFocused = false">
       </div>
+
       <div class="sidebar__tags" v-if="filterChecked">
         <div class="sidebar__enabled">
           <div class="sidebar__header">My tags</div>
@@ -45,6 +47,7 @@
           </div>
         </div>
       </div>
+
       <div class="sidebar__sources" v-else>
         <div class="sidebar__enabled">
           <div class="sidebar__header">My sources</div>
@@ -104,6 +107,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </aside>
 </template>
@@ -165,6 +169,9 @@ export default {
         });
       }
       return this.tags;
+    },
+    searchPlaceholder () {
+      return `Search ${this.filterChecked ? 'Tags' : 'Sources' }`;
     },
   },
 
@@ -524,7 +531,8 @@ form.sidebar__element {
   padding: 16px 0;
 }
 
-.sidebar__tags .sidebar__disabled {
+.sidebar__tags .sidebar__disabled,
+.sidebar__sources .sidebar__disabled {
   padding-bottom: 44px;
 }
 
