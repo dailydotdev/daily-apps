@@ -149,10 +149,10 @@ export default {
     ...mapState('feed', ['publications', 'tags']),
     ...mapGetters('user', ['isLoggedIn']),
     enabledPubs() {
-      return this.publications.filter(x => x.enabled);
+      return this.filteredPublications.filter(x => x.enabled);
     },
     disabledPubs() {
-      return this.publications.filter(x => !x.enabled);
+      return this.filteredPublications.filter(x => !x.enabled);
     },
     enabledTags() {
       return this.activeTags.filter(x => x.enabled);
@@ -173,6 +173,15 @@ export default {
     searchPlaceholder () {
       return `Search ${this.filterChecked ? 'Tags' : 'Sources' }`;
     },
+    filteredPublications () {
+      if (!this.query.length) {
+        return this.publications;
+      }
+
+      return this.publications.filter(
+        pub => pub.name.toLowerCase().includes(this.query.toLowerCase())
+      );
+    }
   },
 
   methods: {
@@ -287,6 +296,10 @@ export default {
     ...mapActions({
       setFilter: 'feed/setFilter',
     }),
+
+    searchPublications (ev) {
+      this.query = ev.target.value.trim();
+    }
   },
 
   mounted() {
