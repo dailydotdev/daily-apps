@@ -197,7 +197,7 @@ export default {
 
     onPublication({ pub }) {
       if (this.filter && this.filter.type === 'publication' && this.filter.info.id === pub.id) return;
-      ga('send', 'event', 'Publications', 'Single');
+      ga('send', 'event', 'Post', 'Publication');
       this.setFilter({ type: 'publication', info: pub });
     },
 
