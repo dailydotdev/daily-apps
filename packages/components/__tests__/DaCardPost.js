@@ -68,6 +68,6 @@ it('should show notification', () => {
 it('should emit publication event on click', () => {
   const post = posts[0];
   const wrapper = shallowMount(DaCardPost, { propsData: { post } });
-  wrapper.find('.card__footer__icon').trigger('click');
+  wrapper.find('.card__footer__publication').trigger('click');
   expect(wrapper.emitted().publication[0]).toEqual([{ pub: post.publication }]);
 });
