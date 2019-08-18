@@ -57,3 +57,10 @@ it('should set tags', () => {
   expect(wrapper.find('.insane__tags span').element.innerHTML)
     .toEqual('#javascript,#webdev,#html,#html5');
 });
+
+it('should emit publication event on click', () => {
+  const post = posts[0];
+  const wrapper = shallowMount(DaInsanePost, { propsData: { post } });
+  wrapper.find('.insane__publication').trigger('click');
+  expect(wrapper.emitted().publication[0]).toEqual([{ pub: post.publication }]);
+});
