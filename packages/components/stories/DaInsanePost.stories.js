@@ -23,7 +23,7 @@ storiesOf('DaInsanePost', module)
   }))
   .add('actions', () => ({
     components: { DaInsanePost },
-    template: '<da-insane-post :post="post" @click="click" @bookmark="bookmark" @menu="menu"/>',
+    template: '<da-insane-post :post="post" @click="click" @bookmark="bookmark" @menu="menu" @publication="publication"/>',
     data() {
       return {
         post: posts[0],
@@ -33,6 +33,7 @@ storiesOf('DaInsanePost', module)
       click: action('click'),
       bookmark: action('bookmark'),
       menu: action('menu'),
+      publication: action('publication'),
     },
   }))
   .add('fully customized', () => ({

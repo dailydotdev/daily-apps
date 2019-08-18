@@ -32,7 +32,7 @@ storiesOf('DaCardPost', module)
   }))
   .add('actions', () => ({
     components: { DaCardPost },
-    template: '<da-card-post :post="post" @click="click" @bookmark="bookmark" @menu="menu"/>',
+    template: '<da-card-post :post="post" @click="click" @bookmark="bookmark" @menu="menu" @publication="publication"/>',
     data() {
       return {
         post: posts[0],
@@ -42,6 +42,7 @@ storiesOf('DaCardPost', module)
       click: action('click'),
       bookmark: action('bookmark'),
       menu: action('menu'),
+      publication: action('publication'),
     },
   }))
   .add('fully customized', () => ({
