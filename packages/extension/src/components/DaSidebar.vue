@@ -5,15 +5,17 @@
       <div class="sidebar__filter">
         <da-mode-switch class="sidebar__filter_switch"
                         first-icon="link" second-icon="hashtag"
-                        :checked="filterChecked" @toggle="toggleFilter"/>
+                        :checked="filterChecked" @toggle="toggleFilter($event)"/>
       </div>
-      <div class="sidebar__element sidebar__tags__search btn btn-menu"
-           :class="{selected: searchFocused}" v-if="filterChecked">
+
+      <div class="sidebar__element sidebar__search btn btn-menu"
+           :class="{selected: searchFocused}">
         <svgicon name="magnifying" class="sidebar__element__image"/>
-        <input class="sidebar__input" type="text" placeholder="Search tags" ref="searchTags"
-               @input="updateSearch"
+        <input class="sidebar__input" type="text" :placeholder="searchPlaceholder" ref="search"
+               v-on="{ input: filterChecked ? searchTags : searchPublications }"
                @focus="searchFocused = true" @blur="searchFocused = false">
       </div>
+
       <div class="sidebar__tags" v-if="filterChecked">
         <div class="sidebar__enabled">
           <div class="sidebar__header">My tags</div>
@@ -45,6 +47,7 @@
           </div>
         </div>
       </div>
+
       <div class="sidebar__sources" v-else>
         <div class="sidebar__enabled">
           <div class="sidebar__header">My sources</div>
@@ -104,6 +107,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </aside>
 </template>
@@ -145,10 +149,10 @@ export default {
     ...mapState('feed', ['publications', 'tags']),
     ...mapGetters('user', ['isLoggedIn']),
     enabledPubs() {
-      return this.publications.filter(x => x.enabled);
+      return this.filteredPublications.filter(x => x.enabled);
     },
     disabledPubs() {
-      return this.publications.filter(x => !x.enabled);
+      return this.filteredPublications.filter(x => !x.enabled);
     },
     enabledTags() {
       return this.activeTags.filter(x => x.enabled);
@@ -166,6 +170,18 @@ export default {
       }
       return this.tags;
     },
+    searchPlaceholder () {
+      return `Search ${this.filterChecked ? 'Tags' : 'Sources' }`;
+    },
+    filteredPublications () {
+      if (!this.query.length) {
+        return this.publications;
+      }
+
+      return this.publications.filter(
+        pub => pub.name.toLowerCase().includes(this.query.toLowerCase())
+      );
+    }
   },
 
   methods: {
@@ -190,6 +206,8 @@ export default {
       ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');
       this.filterChecked = checked;
       this.query = '';
+
+       this.$refs.search.value = '';
     },
     setEnablePublication(pub, enabled) {
       ga('send', 'event', 'Publications', 'Toggle', enabled ? 'Check' : 'Uncheck');
@@ -252,7 +270,7 @@ export default {
       this.disableSubmit = !this.$refs.form.checkValidity();
       this.submitError = false;
     },
-    async updateSearch(event) {
+    async searchTags(event) {
       if (!this.query.length) {
         ga('send', 'event', 'Tags', 'Search');
       }
@@ -280,6 +298,10 @@ export default {
     ...mapActions({
       setFilter: 'feed/setFilter',
     }),
+
+    searchPublications (ev) {
+      this.query = ev.target.value.trim();
+    }
   },
 
   mounted() {
@@ -374,7 +396,7 @@ export default {
 }
 
 .sidebar__sources .sidebar__element,
-.sidebar__element.sidebar__tags__search {
+.sidebar__element.sidebar__search {
   height: 44px;
 }
 
@@ -524,7 +546,8 @@ form.sidebar__element {
   padding: 16px 0;
 }
 
-.sidebar__tags .sidebar__disabled {
+.sidebar__tags .sidebar__disabled,
+.sidebar__sources .sidebar__disabled {
   padding-bottom: 44px;
 }
 
@@ -558,7 +581,7 @@ form.sidebar__element {
   border-radius: 4px;
 }
 
-.sidebar__element.sidebar__tags__search {
+.sidebar__element.sidebar__search {
   position: fixed;
   bottom: 0;
   background: var(--theme-background-secondary);

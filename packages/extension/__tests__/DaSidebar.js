@@ -265,8 +265,8 @@ it('should search for tags and update the tag list', (done) => {
       query: 'java',
       hits: [{ name: 'javascript' }, { name: 'java' }],
     });
-    wrapper.vm.$refs.searchTags.value = 'java';
-    wrapper.find('.sidebar__tags__search .sidebar__input').trigger('input');
+    wrapper.vm.$refs.search.value = 'java';
+    wrapper.find('.sidebar__search .sidebar__input').trigger('input');
     wrapper.vm.$nextTick(() => {
       expect(contentService.searchTags).toBeCalledTimes(1);
       expect(contentService.searchTags).toBeCalledWith('java');
@@ -276,5 +276,64 @@ it('should search for tags and update the tag list', (done) => {
       ]);
       done();
     });
+  });
+});
+
+it('should get the right placeholder name for the search input', async () => {
+  let expected;
+
+  const wrapper = mount(DaSidebar, { store, localVue });
+  expected = 'Search Sources';
+
+  expect(wrapper.vm.searchPlaceholder).toBe(expected);
+
+  expected = 'Search Tags';
+  wrapper.vm.filterChecked = true;
+  await wrapper.vm.$nextTick();
+
+  expect(wrapper.vm.searchPlaceholder).toBe(expected);
+});
+
+describe('SEARCH: Publications', () => {
+  it('should filter publications depending on input value', async () => {
+    const wrapper = mount(DaSidebar, { store, localVue });
+    const disabledPublicationsSelector = '.sidebar__sources .sidebar__disabled .sidebar__element.btn';
+    const enabledPublicationsSelector = '.sidebar__sources .sidebar__enabled .sidebar__element.btn';
+    const expected = feed.state.publications[1];
+    wrapper.vm.query = 'all';
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.filteredPublications[0].name).toBe(expected.name);
+    expect(wrapper.findAll('.sidebar__sources .sidebar__disabled .sidebar__element.btn').length).toBe(1);
+
+    wrapper.vm.query = 'a';
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.disabledPubs.length).toBe(2);
+    expect(wrapper.findAll(disabledPublicationsSelector).length).toBe(2);
+
+    expect(wrapper.vm.enabledPubs.length).toBe(2);
+    expect(wrapper.findAll(enabledPublicationsSelector).filter(el => !el.classes('sidebar__sources__act-req')).length).toBe(2);
+  });
+
+  it('should display all the publications if the input value is empty', async () => {
+    const wrapper = mount(DaSidebar, { store, localVue });
+    const expected = feed.state.publications;
+    wrapper.vm.query = '';
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.filteredPublications).toBe(expected);
+  });
+
+  it('should display no publications if the input value does not match at all', async () => {
+    const wrapper = mount(DaSidebar, { store, localVue });
+    wrapper.vm.query = 'abcdefgh';
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.filteredPublications.length).toBe(0);
   });
 });
