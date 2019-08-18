@@ -63,7 +63,7 @@
                         @click="onAdClick" @impression="onAdImpression"/>
         </template>
         <da-insane-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
-                        @bookmark="onBookmark" @menu="onPostMenu"
+                        @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                         @click="onPostClick" :show-menu="isLoggedIn"
                         :menu-opened="selectedPostId === item.id"/>
       </div>

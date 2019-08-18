@@ -3,16 +3,22 @@ import Vuex from 'vuex';
 import svgicon from 'vue-svgicon';
 import DaHome from '../src/routes/Home.vue';
 import DaCardPost from '../../components/src/components/DaCardPost.vue';
+import DaInsanePost from '../../components/src/components/DaInsanePost.vue';
 import DaContext from '../../components/src/components/DaContext.vue';
 import DaCardPlaceholder from '../../components/src/components/DaCardPlaceholder.vue';
+import DaHeader from '../src/components/DaHeader.vue';
+import DaSidebar from '../src/components/DaSidebar.vue';
 
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(svgicon);
 localVue.component('da-card-post', DaCardPost);
+localVue.component('da-insane-post', DaInsanePost);
 localVue.component('da-context', DaContext);
 localVue.component('da-card-placeholder', DaCardPlaceholder);
+localVue.component('da-header', DaHeader);
+localVue.component('da-sidebar', DaSidebar);
 
 let feed;
 let ui;
@@ -72,10 +78,16 @@ beforeEach(() => {
     namespaced: true,
     enableCardAnimations: true,
     instructionsStep: 0,
+    state: {
+      insaneMode: false
+    },
+    mutations: {
+      setInsaneMode: jest.fn()
+    },
     getters: {
-    topSitesInstructions: jest.fn(),
-    sidebarInstructions: jest.fn(),
-    showReadyModal: jest.fn()
+      topSitesInstructions: jest.fn(),
+      sidebarInstructions: jest.fn(),
+      showReadyModal: jest.fn()
     }
   };
 
@@ -106,6 +118,22 @@ it('should dispatch "setFilter" with publication filter', (done) => {
   wrapper.vm.$nextTick(() => {
     wrapper
     .find('.card__footer__publication').trigger('click');
+    expect(feed.actions.setFilter)
+    .toBeCalledWith(expect.anything(), {
+      type: 'publication',
+      info: expectedPublication,
+    }, undefined);
+    done();
+  });
+});
+
+it('should dispatch "setFilter" with publication filter when in insane mode', (done) => {
+  const wrapper = mount(DaHome, { store, localVue });
+  const expectedPublication = feed.state.posts[0].publication;
+  store.state.ui.insaneMode = true;
+  wrapper.vm.$nextTick(() => {
+    wrapper
+    .find('.insane__publication').trigger('click');
     expect(feed.actions.setFilter)
     .toBeCalledWith(expect.anything(), {
       type: 'publication',
