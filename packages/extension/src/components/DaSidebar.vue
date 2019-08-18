@@ -5,14 +5,14 @@
       <div class="sidebar__filter">
         <da-mode-switch class="sidebar__filter_switch"
                         first-icon="link" second-icon="hashtag"
-                        :checked="filterChecked" @toggle="toggleFilter($event); $refs.searchTags.value = ''"/>
+                        :checked="filterChecked" @toggle="toggleFilter($event)"/>
       </div>
 
-      <div class="sidebar__element sidebar__tags__search btn btn-menu"
+      <div class="sidebar__element sidebar__search btn btn-menu"
            :class="{selected: searchFocused}">
         <svgicon name="magnifying" class="sidebar__element__image"/>
-        <input class="sidebar__input" type="text" :placeholder="searchPlaceholder" ref="searchTags"
-               v-on="{ input: filterChecked ? updateSearch : searchPublications }"
+        <input class="sidebar__input" type="text" :placeholder="searchPlaceholder" ref="search"
+               v-on="{ input: filterChecked ? searchTags : searchPublications }"
                @focus="searchFocused = true" @blur="searchFocused = false">
       </div>
 
@@ -206,6 +206,8 @@ export default {
       ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');
       this.filterChecked = checked;
       this.query = '';
+
+       this.$refs.search.value = '';
     },
     setEnablePublication(pub, enabled) {
       ga('send', 'event', 'Publications', 'Toggle', enabled ? 'Check' : 'Uncheck');
@@ -268,7 +270,7 @@ export default {
       this.disableSubmit = !this.$refs.form.checkValidity();
       this.submitError = false;
     },
-    async updateSearch(event) {
+    async searchTags(event) {
       if (!this.query.length) {
         ga('send', 'event', 'Tags', 'Search');
       }
@@ -394,7 +396,7 @@ export default {
 }
 
 .sidebar__sources .sidebar__element,
-.sidebar__element.sidebar__tags__search {
+.sidebar__element.sidebar__search {
   height: 44px;
 }
 
@@ -579,7 +581,7 @@ form.sidebar__element {
   border-radius: 4px;
 }
 
-.sidebar__element.sidebar__tags__search {
+.sidebar__element.sidebar__search {
   position: fixed;
   bottom: 0;
   background: var(--theme-background-secondary);

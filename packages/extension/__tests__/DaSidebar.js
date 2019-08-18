@@ -265,8 +265,8 @@ it('should search for tags and update the tag list', (done) => {
       query: 'java',
       hits: [{ name: 'javascript' }, { name: 'java' }],
     });
-    wrapper.vm.$refs.searchTags.value = 'java';
-    wrapper.find('.sidebar__tags__search .sidebar__input').trigger('input');
+    wrapper.vm.$refs.search.value = 'java';
+    wrapper.find('.sidebar__search .sidebar__input').trigger('input');
     wrapper.vm.$nextTick(() => {
       expect(contentService.searchTags).toBeCalledTimes(1);
       expect(contentService.searchTags).toBeCalledWith('java');
