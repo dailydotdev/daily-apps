@@ -11,10 +11,13 @@
       </a>
       <span class="insane__views micro2 reveal"
             v-if="post.readTime">// {{post.readTime}} min read</span>
-      <img class="insane__icon lazyload reveal"
-           :data-src="post.publication.image"
-           :alt="post.publication.name" :title="post.publication.name"
-           :key="post.publication.name"/>
+      <button class="btn-icon insane__publication reveal" v-if="post.publication.name"
+              @click="$emit('publication', { pub: post.publication })">
+        <img class="insane__icon lazyload"
+            :data-src="post.publication.image"
+            :alt="post.publication.name" :title="post.publication.name"
+            :key="post.publication.name"/>
+      </button>
       <div class="insane__reveal reveal">
         <button class="btn-icon insane__reveal__bookmark"
                 :title="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
@@ -145,10 +148,13 @@ export default {
   color: var(--theme-secondary);
 }
 
+.insane__publication {
+  margin-left: 8px;
+}
+
 .insane__icon {
   width: 20px;
   height: 20px;
-  margin-left: 8px;
   border-radius: 4px;
 }
 
