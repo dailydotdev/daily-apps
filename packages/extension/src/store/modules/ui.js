@@ -5,6 +5,7 @@ import { profileService } from '../../common/services';
 const initialState = () => ({
   theme: null,
   insaneMode: false,
+  dndModeTime: null,
   showTopSites: false,
   notifications: [],
   showNotificationBadge: false,
@@ -27,6 +28,10 @@ export default {
       state.insaneMode = value;
     },
 
+    setDndModeTime(state, value) {
+      state.dndModeTime = value;
+    },
+
     setShowTopSites(state, value) {
       state.showTopSites = value;
     },
@@ -39,6 +44,10 @@ export default {
       state.lastNotificationTime = new Date(state.notifications[0].timestamp.getTime() + 1);
       state.showNotificationBadge = false;
       state.showNotifications = true;
+    },
+
+    disableDndMode(state) {
+      state.dndModeTime = null;
     },
 
     hideNotifications(state) {
@@ -71,11 +80,21 @@ export default {
     topSitesInstructions(state) {
       return state.instructionsStep === 0;
     },
+
     sidebarInstructions(state) {
       return state.instructionsStep === 1;
     },
+
     showReadyModal(state) {
       return state.instructionsStep === 2;
+    },
+
+    dndMode(state) {
+      return state.dndModeTime !== null;
+    },
+
+    dndModeTime(state) {
+      return state.dndModeTime;
     },
   },
   actions: {

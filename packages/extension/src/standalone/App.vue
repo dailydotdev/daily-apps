@@ -74,7 +74,7 @@ export default {
 <style>
 @import '../../../../node_modules/@daily/components/src/styles/global.pcss';
 
-html {
+html.loaded {
   background: var(--theme-background-primary);
 }
 

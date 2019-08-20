@@ -141,3 +141,22 @@ it('should increment instructionStep', () => {
   module.mutations.nextInstruction(state);
   expect(state.instructionsStep).toEqual(1);
 });
+
+it('should set DND mode time in state and DND mode should be true', () => {
+  const time = new Date().getTime();
+  const state = {};
+  module.mutations.setDndModeTime(state, time);
+  expect(state.dndModeTime).toEqual(time);
+  expect(module.getters.dndMode(state)).toBe(true);
+});
+
+it('DND mode should be false when "setDndModeTime" is not yet committed', () => {
+  const state = { dndModeTime: null };
+  expect(module.getters.dndMode(state)).toBe(false);
+});
+
+it('DND mode should be false when "disableDndMode" is committed', () => {
+  const state = { dndModeTime: 1566300647 };
+  module.mutations.disableDndMode(state);
+  expect(module.getters.dndMode(state)).toBe(false);
+});

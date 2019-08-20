@@ -1,6 +1,8 @@
 <template>
   <div class="page" :class="clsObj">
-    <da-header @go="onGoClicked" @login="onLogin('Header')" @profile="onProfile"></da-header>
+    <da-header @go="onGoClicked" @login="onLogin('Header')"
+               @profile="onProfile" @menu="onPostDndMenu"></da-header>
+    <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
     <da-sidebar ref="sidebar" :disabled="showBookmarks"
                 @requested-source="showRequestModal = true"
                 @login="onLogin('Sidebar')"></da-sidebar>
@@ -103,6 +105,13 @@
       <button class="btn btn-menu" @click="reportPost('broken')">Broken link</button>
       <button class="btn btn-menu" @click="reportPost('nsfw')">Report NSFW</button>
     </da-context>
+    <da-context ref="dndContext" class="post-context" @open="onDndMenuOpened">
+      <button v-if="!dndMode" class="btn btn-menu btn-dnd-menu"
+              @click="enableDndMode('hour')">For 1 hour</button>
+      <button v-if="!dndMode" class="btn btn-menu btn-dnd-menu"
+              @click="enableDndMode('tomorrow')">Until tomorrow</button>
+      <button v-if="dndMode" class="btn btn-menu" @click="onDisableDndMode">Turn Off</button>
+    </da-context>
     <div class="instructions sidebar-instructions invert" v-if="sidebarInstructions">
       <div class="instructions__desc">
         Hover on the sidebar to filter your feed based on tags and sources.
@@ -122,6 +131,7 @@ import {
 import VueMasonry from 'vue-masonry-css';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
+import DaDndMessage from '../components/DaDndMessage.vue';
 import DaSvg from '../components/DaSvg.vue';
 import ctas from '../ctas';
 import { monetizationService, contentService } from '../common/services';
@@ -134,6 +144,7 @@ export default {
 
   components: {
     DaSidebar,
+    DaDndMessage,
     DaHeader,
     DaCardPost: () => import(/* webpackChunkName: "cards" */ '@daily/components/src/components/DaCardPost.vue'),
     DaCardAd: () => import(/* webpackChunkName: "cards" */ '@daily/components/src/components/DaCardAd.vue'),
@@ -210,10 +221,37 @@ export default {
       this.$refs.context.open(event, post);
     },
 
+    onPostDndMenu(event) {
+      ga('send', 'event', 'Dnd', 'Menu');
+      this.$refs.dndContext.open(event);
+    },
+
     onPostMenuOpened(event, post) {
       const rect = event.target.getBoundingClientRect();
       this.$refs.context.positionMenu({ bottom: rect.top - 8, right: rect.right });
       this.selectedPostId = post.id;
+    },
+
+    onDndMenuOpened(event) {
+      const rect = event.event.target.getBoundingClientRect();
+      this.$refs.dndContext.positionMenu({ top: rect.bottom + 8, right: rect.right });
+    },
+
+    onDisableDndMode() {
+      this.$refs.dndContext.close();
+      this.disableDndMode();
+    },
+
+    enableDndMode(type = 'hour') {
+      let dndDate = new Date();
+      if (type === 'hour') {
+        dndDate.setHours(dndDate.getHours() + 1);
+      } else if (type === 'tomorrow') {
+        dndDate = new Date(dndDate.getFullYear(), dndDate.getMonth(), dndDate.getDate() + 1);
+      }
+
+      this.$refs.dndContext.close();
+      this.setDndModeTime(dndDate.getTime());
     },
 
     async reportPost(reason) {
@@ -310,6 +348,8 @@ export default {
 
     ...mapMutations({
       toggleBookmarks: 'feed/toggleBookmarks',
+      setDndModeTime: 'ui/setDndModeTime',
+      disableDndMode: 'ui/disableDndMode',
       hideNotifications: 'ui/hideNotifications',
       nextInstruction: 'ui/nextInstruction',
       confirmNewUser: 'user/confirmNewUser',
@@ -318,7 +358,7 @@ export default {
 
   computed: {
     ...mapState('ui', ['insaneMode', 'notifications', 'showNotifications', 'theme']),
-    ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal']),
+    ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter']),
     ...mapState({
       title(state) {
