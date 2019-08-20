@@ -170,18 +170,18 @@ export default {
       }
       return this.tags;
     },
-    searchPlaceholder () {
-      return `Search ${this.filterChecked ? 'Tags' : 'Sources' }`;
+    searchPlaceholder() {
+      return `Search ${this.filterChecked ? 'Tags' : 'Sources'}`;
     },
-    filteredPublications () {
+    filteredPublications() {
       if (!this.query.length) {
         return this.publications;
       }
 
       return this.publications.filter(
-        pub => pub.name.toLowerCase().includes(this.query.toLowerCase())
+        pub => pub.name.toLowerCase().includes(this.query.toLowerCase()),
       );
-    }
+    },
   },
 
   methods: {
@@ -207,7 +207,7 @@ export default {
       this.filterChecked = checked;
       this.query = '';
 
-       this.$refs.search.value = '';
+      this.$refs.search.value = '';
     },
     setEnablePublication(pub, enabled) {
       ga('send', 'event', 'Publications', 'Toggle', enabled ? 'Check' : 'Uncheck');
@@ -299,9 +299,9 @@ export default {
       setFilter: 'feed/setFilter',
     }),
 
-    searchPublications (ev) {
+    searchPublications(ev) {
       this.query = ev.target.value.trim();
-    }
+    },
   },
 
   mounted() {
