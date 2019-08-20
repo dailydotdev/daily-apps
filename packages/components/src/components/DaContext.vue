@@ -38,9 +38,8 @@ export default {
 <style>
 .context .btn {
   height: 40px;
-  padding: 0;
+  padding: 0 16px;
   margin: 0;
-  justify-content: center;
   cursor: pointer;
 
   & {
@@ -51,6 +50,7 @@ export default {
 <style scoped>
 .v-context.context {
   display: flex;
+  width: auto;
   flex-direction: column;
   background: var(--theme-background-highlight);
   border-radius: 4px;

@@ -105,12 +105,19 @@
       <button class="btn btn-menu" @click="reportPost('broken')">Broken link</button>
       <button class="btn btn-menu" @click="reportPost('nsfw')">Report NSFW</button>
     </da-context>
-    <da-context ref="dndContext" class="post-context" @open="onDndMenuOpened">
-      <button v-if="!dndMode" class="btn btn-menu btn-dnd-menu"
-              @click="enableDndMode('hour')">For 1 hour</button>
-      <button v-if="!dndMode" class="btn btn-menu btn-dnd-menu"
-              @click="enableDndMode('tomorrow')">Until tomorrow</button>
-      <button v-if="dndMode" class="btn btn-menu" @click="onDisableDndMode">Turn Off</button>
+    <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened">
+      <template v-if="!dndMode">
+        <button class="btn btn-menu"
+                @click="enableDndMode('hour')">For 1 hour
+        </button>
+        <button class="btn btn-menu"
+                @click="enableDndMode('tomorrow')">Until tomorrow
+        </button>
+        <button class="btn btn-menu"
+                @click="enableDndMode('forever')">Forever
+        </button>
+      </template>
+      <button v-else class="btn btn-menu" @click="onDisableDndMode">Turn Off</button>
     </da-context>
     <div class="instructions sidebar-instructions invert" v-if="sidebarInstructions">
       <div class="instructions__desc">
@@ -248,6 +255,8 @@ export default {
         dndDate.setHours(dndDate.getHours() + 1);
       } else if (type === 'tomorrow') {
         dndDate = new Date(dndDate.getFullYear(), dndDate.getMonth(), dndDate.getDate() + 1);
+      } else if (type === 'forever') {
+          dndDate = new Date(dndDate.getFullYear() + 100, dndDate.getMonth(), dndDate.getDate());
       }
 
       this.$refs.dndContext.close();
@@ -623,9 +632,7 @@ export default {
   }
 }
 
-.v-context.context.post-context {
-  width: 130px;
-
+.v-context.context {
   &:focus {
     outline: none;
   }

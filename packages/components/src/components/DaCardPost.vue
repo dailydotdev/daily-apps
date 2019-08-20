@@ -186,6 +186,7 @@ export default {
   margin: 0;
   color: var(--color-salt-10);
   background: var(--color-water-60);
+  z-index: 10;
 }
 
 .bookmarked .card__footer__bookmark .svg-icon {

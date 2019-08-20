@@ -189,6 +189,7 @@ export default {
   color: var(--color-salt-10);
   background: var(--color-water-60);
   border-radius: 8px 0 0 8px;
+  z-index: 10;
 }
 
 .insane__wrapper .insane__reveal__menu--duplicate {
