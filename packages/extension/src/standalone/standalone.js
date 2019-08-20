@@ -5,6 +5,34 @@ import App from './App.vue';
 import store from '../store';
 import { getCache, STATE_KEY } from '../common/cache';
 import { debug } from '../common/config';
+import { browserName } from '../common/browser';
+
+const loadFromCache = async () => {
+  const state = await getCache(STATE_KEY, {});
+
+  if (!store.state.initialized) {
+    store.commit('loadFromCache', state);
+  }
+
+  const source = window.location.href.split('source=')[1];
+  if (!source && state.ui && new Date().getTime() <= state.ui.dndModeTime) {
+    const tab = await browser.tabs.getCurrent();
+    const url = browserName === 'chrome'
+      ? 'chrome-search://local-ntp/local-ntp.html'
+      : 'https://www.google.com';
+
+    browser.tabs.update(tab.id, { url });
+    window.stop();
+  } else {
+    document.documentElement.classList.add('loaded');
+
+    if (state.ui.dndModeTime) {
+      store.commit('ui/disableDndMode');
+    }
+  }
+};
+// TODO: handle error
+loadFromCache().catch(console.error);
 
 Vue.use(svgicon);
 Vue.use(VueRouter);
@@ -41,16 +69,6 @@ const router = new VueRouter({
     },
   ],
 });
-
-// Load local cache
-router.beforeEach((to, from, next) => Promise.resolve()
-  .then(async () => {
-    if (!store.state.initialized) {
-      const state = await getCache(STATE_KEY, {});
-      store.commit('loadFromCache', state);
-    }
-  })
-  .then(next));
 
 // Redirect to login or onboarding if necessary
 router.beforeEach((to, from, next) => {

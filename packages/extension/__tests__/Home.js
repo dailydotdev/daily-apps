@@ -28,7 +28,7 @@ let store;
 beforeEach(() => {
   window.ga = () => {
   };
-  
+
   feed = {
     namespaced: true,
     state: {
@@ -73,22 +73,25 @@ beforeEach(() => {
       showAd: jest.fn()
     }
   };
-  
+
   ui = {
     namespaced: true,
     enableCardAnimations: true,
     instructionsStep: 0,
     state: {
-      insaneMode: false
+      insaneMode: false,
     },
     mutations: {
-      setInsaneMode: jest.fn()
+      setInsaneMode: jest.fn(),
+      setDndModeTime: jest.fn(),
     },
     getters: {
       topSitesInstructions: jest.fn(),
       sidebarInstructions: jest.fn(),
-      showReadyModal: jest.fn()
-    }
+      showReadyModal: jest.fn(),
+      dndMode: jest.fn(),
+      dndModeTime: jest.fn(),
+    },
   };
 
   user = {
@@ -103,7 +106,7 @@ beforeEach(() => {
       refreshToken: jest.fn()
     }
   };
-  
+
   store = new Vuex.Store({
     modules: { feed, ui, user },
   });
@@ -141,4 +144,10 @@ it('should dispatch "setFilter" with publication filter when in insane mode', (d
     }, undefined);
     done();
   });
+});
+
+it('should commit "setDndModeTime" when "For 1 Hour" or "Until Tomorrow" is clicked', () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  wrapper.find('.btn-dnd-menu').trigger('click');
+  expect(ui.mutations.setDndModeTime).toBeCalledWith(expect.anything(), expect.any(Number));
 });

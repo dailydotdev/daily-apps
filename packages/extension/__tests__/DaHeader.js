@@ -155,3 +155,9 @@ it('should mutate state when clicking yes on instruction popup', () => {
   expect(ui.mutations.nextInstruction).toBeCalledWith(expect.anything(), undefined);
   expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), true, undefined);
 });
+
+it('should emit "menu" on dnd-mode button click', () => {
+  const wrapper = mount(DaHeader, { store, localVue });
+  wrapper.find('button.btn-dnd').trigger('click');
+  expect(wrapper.emitted().menu).toBeTruthy();
+});

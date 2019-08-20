@@ -30,6 +30,10 @@
     <button class="btn-icon" title="Daily Go" @click="$emit('go')">
       <svgicon icon="mobile"/>
     </button>
+    <button class="btn-icon btn-dnd"
+            title="Do Not Disturb (DND)" @click="$emit('menu', {event: $event})">
+      <svgicon icon="timer"/>
+    </button>
     <button class="btn-icon btn-terminal" title="Notifications"
             :class="{ 'active': notificationsOpened }" @click="toggleNotifications">
       <svgicon icon="terminal"/>
@@ -86,6 +90,7 @@ export default {
   components: {
     DaIconToggle: () => import('@daily/components/src/components/DaIconToggle.vue'),
     DaSwitch: () => import('@daily/components/src/components/DaSwitch.vue'),
+    DaContext: () => import('@daily/components/src/components/DaContext.vue'),
   },
 
   data() {
@@ -144,6 +149,7 @@ export default {
       import('@daily/components/icons/mobile');
       import('@daily/components/icons/ph');
       import('@daily/components/icons/github');
+      import('@daily/components/icons/timer');
     },
 
     async getTopSites() {
