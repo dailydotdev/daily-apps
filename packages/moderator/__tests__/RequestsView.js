@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import svgicon from 'vue-svgicon';
 import DaEditableText from '@daily/components/src/components/DaEditableText.vue';
 import DaContext from '@daily/components/src/components/DaContext.vue';
+import { createDummyEvent } from './fixtures/helpers';
 import DmForm from '../src/components/DmForm.vue';
 import Requests from '../src/views/Requests.vue';
 
@@ -54,7 +55,7 @@ it('should open context menu on menu event', (done) => {
   });
   expect(wrapper.find('.requests__context').element.style.display).toEqual('none');
   const form = wrapper.findAll('.form').at(1);
-  form.vm.$emit('menu', { clientX: 0, clientY: 0, target: form.element });
+  form.vm.$emit('menu', createDummyEvent(form.element));
   setTimeout(() => {
     expect(wrapper.find('.requests__context').element.style.display)
       .not.toEqual('none');
@@ -68,7 +69,7 @@ it('should decline request on content menu click', (done) => {
     store,
   });
   const form = wrapper.findAll('.form').at(1);
-  form.vm.$emit('menu', { clientX: 0, clientY: 0, target: form.element });
+  form.vm.$emit('menu', createDummyEvent(form.element));
   setTimeout(() => {
     wrapper.find('.requests__context button').trigger('click');
     expect(requests.actions.declineOpenRequest)
