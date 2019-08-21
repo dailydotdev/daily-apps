@@ -84,6 +84,7 @@ beforeEach(() => {
     mutations: {
       setInsaneMode: jest.fn(),
       setDndModeTime: jest.fn(),
+      setShowDndMenu: jest.fn(),
     },
     getters: {
       topSitesInstructions: jest.fn(),

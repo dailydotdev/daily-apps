@@ -160,3 +160,9 @@ it('DND mode should be false when "disableDndMode" is committed', () => {
   module.mutations.disableDndMode(state);
   expect(module.getters.dndMode(state)).toBe(false);
 });
+
+it('should set show dnd menu', () => {
+  const state = {};
+  module.mutations.setShowDndMenu(state, true);
+  expect(state.showDndMenu).toEqual(true);
+});

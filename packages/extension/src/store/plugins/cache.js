@@ -22,8 +22,11 @@ const stateToCache = (state) => {
     bookmarks: state.feed.bookmarks.map(post2Cache),
     latest: time2Cache(state.feed.latest),
   };
+  const ui = Object.assign({}, state.ui);
+  delete ui.showNotifications;
+  delete ui.showDndMenu;
   toCache.ui = {
-    ...toCache.ui,
+    ...ui,
     lastNotificationTime: time2Cache(state.ui.lastNotificationTime),
   };
 

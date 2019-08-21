@@ -15,6 +15,7 @@ export default {
 
   methods: {
     open(event, data) {
+      event.stopPropagation();
       setTimeout(() => this.$refs.context.open(event, data));
     },
     close() {
