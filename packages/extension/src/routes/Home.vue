@@ -1,7 +1,7 @@
 <template>
   <div class="page" :class="clsObj">
     <da-header @go="onGoClicked" @login="onLogin('Header')"
-               @profile="onProfile" @menu="onPostDndMenu"></da-header>
+               @profile="onProfile" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
     <da-sidebar ref="sidebar" :disabled="showBookmarks"
                 @requested-source="showRequestModal = true"
@@ -105,12 +105,20 @@
       <button class="btn btn-menu" @click="reportPost('broken')">Broken link</button>
       <button class="btn btn-menu" @click="reportPost('nsfw')">Report NSFW</button>
     </da-context>
-    <da-context ref="dndContext" class="post-context" @open="onDndMenuOpened">
-      <button v-if="!dndMode" class="btn btn-menu btn-dnd-menu"
-              @click="enableDndMode('hour')">For 1 hour</button>
-      <button v-if="!dndMode" class="btn btn-menu btn-dnd-menu"
-              @click="enableDndMode('tomorrow')">Until tomorrow</button>
-      <button v-if="dndMode" class="btn btn-menu" @click="onDisableDndMode">Turn Off</button>
+    <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened"
+                @close="setShowDndMenu(false)">
+      <template v-if="!dndMode">
+        <button class="btn btn-menu"
+                @click="enableDndMode('hour')">For 1 hour
+        </button>
+        <button class="btn btn-menu"
+                @click="enableDndMode('tomorrow')">Until tomorrow
+        </button>
+        <button class="btn btn-menu"
+                @click="enableDndMode('forever')">Forever
+        </button>
+      </template>
+      <button v-else class="btn btn-menu" @click="onDisableDndMode">Turn Off</button>
     </da-context>
     <div class="instructions sidebar-instructions invert" v-if="sidebarInstructions">
       <div class="instructions__desc">
@@ -221,19 +229,20 @@ export default {
       this.$refs.context.open(event, post);
     },
 
-    onPostDndMenu(event) {
-      ga('send', 'event', 'Dnd', 'Menu');
-      this.$refs.dndContext.open(event);
-    },
-
     onPostMenuOpened(event, post) {
       const rect = event.target.getBoundingClientRect();
       this.$refs.context.positionMenu({ bottom: rect.top - 8, right: rect.right });
       this.selectedPostId = post.id;
     },
 
+    onDndMenu(event) {
+      ga('send', 'event', 'Dnd', 'Menu');
+      this.setShowDndMenu(true);
+      this.$refs.dndContext.open(event);
+    },
+
     onDndMenuOpened(event) {
-      const rect = event.event.target.getBoundingClientRect();
+      const rect = event.target.getBoundingClientRect();
       this.$refs.dndContext.positionMenu({ top: rect.bottom + 8, right: rect.right });
     },
 
@@ -248,10 +257,13 @@ export default {
         dndDate.setHours(dndDate.getHours() + 1);
       } else if (type === 'tomorrow') {
         dndDate = new Date(dndDate.getFullYear(), dndDate.getMonth(), dndDate.getDate() + 1);
+      } else if (type === 'forever') {
+        dndDate = new Date(dndDate.getFullYear() + 100, dndDate.getMonth(), dndDate.getDate());
       }
 
       this.$refs.dndContext.close();
       this.setDndModeTime(dndDate.getTime());
+      ga('send', 'event', 'Dnd', type);
     },
 
     async reportPost(reason) {
@@ -352,6 +364,7 @@ export default {
       disableDndMode: 'ui/disableDndMode',
       hideNotifications: 'ui/hideNotifications',
       nextInstruction: 'ui/nextInstruction',
+      setShowDndMenu: 'ui/setShowDndMenu',
       confirmNewUser: 'user/confirmNewUser',
     }),
   },
@@ -428,20 +441,20 @@ export default {
   },
 
   async mounted() {
-        import('@daily/components/icons/arrow');
-        import('@daily/components/icons/plus');
-        import('@daily/components/icons/hamburger');
+    import('@daily/components/icons/arrow');
+    import('@daily/components/icons/plus');
+    import('@daily/components/icons/hamburger');
 
-        if (this.cta.icon) {
-            import(`@daily/components/icons/${this.cta.icon}`);
-        }
+    if (this.cta.icon) {
+        import(`@daily/components/icons/${this.cta.icon}`);
+    }
 
-        this.updateLines();
-        await this.refreshToken();
+    this.updateLines();
+    await this.refreshToken();
 
-        requestIdleCallback(async () => {
-          await this.initHome();
-        });
+    requestIdleCallback(async () => {
+      await this.initHome();
+    });
   },
 };
 </script>
@@ -623,9 +636,7 @@ export default {
   }
 }
 
-.v-context.context.post-context {
-  width: 130px;
-
+.v-context.context {
   &:focus {
     outline: none;
   }

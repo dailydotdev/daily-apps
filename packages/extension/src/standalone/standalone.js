@@ -15,7 +15,8 @@ const loadFromCache = async () => {
   }
 
   const source = window.location.href.split('source=')[1];
-  if (!source && state.ui && new Date().getTime() <= state.ui.dndModeTime) {
+  const isDnd = state.ui && new Date().getTime() <= state.ui.dndModeTime;
+  if (!source && isDnd) {
     const tab = await browser.tabs.getCurrent();
     const url = browserName === 'chrome'
       ? 'chrome-search://local-ntp/local-ntp.html'
@@ -23,15 +24,18 @@ const loadFromCache = async () => {
 
     browser.tabs.update(tab.id, { url });
     window.stop();
-  } else {
-    document.documentElement.classList.add('loaded');
+    return;
+  }
 
-    if (state.ui.dndModeTime) {
-      store.commit('ui/disableDndMode');
-    }
+  document.documentElement.classList.add('loaded');
+
+  if (state.ui.dndModeTime && !isDnd) {
+    store.commit('ui/disableDndMode');
   }
 };
+
 // TODO: handle error
+// eslint-disable-next-line no-console
 loadFromCache().catch(console.error);
 
 Vue.use(svgicon);

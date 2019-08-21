@@ -15,6 +15,7 @@ export default {
 
   methods: {
     open(event, data) {
+      event.stopPropagation();
       setTimeout(() => this.$refs.context.open(event, data));
     },
     close() {
@@ -38,9 +39,8 @@ export default {
 <style>
 .context .btn {
   height: 40px;
-  padding: 0;
+  padding: 0 16px;
   margin: 0;
-  justify-content: center;
   cursor: pointer;
 
   & {
@@ -51,9 +51,11 @@ export default {
 <style scoped>
 .v-context.context {
   display: flex;
+  width: auto;
   flex-direction: column;
   background: var(--theme-background-highlight);
   border-radius: 4px;
   border: none;
+  box-shadow: 0 var(--theme-shadow-offset) 32px 16px rgba(0,0,0,0.32);
 }
 </style>

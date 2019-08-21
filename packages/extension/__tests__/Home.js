@@ -84,6 +84,7 @@ beforeEach(() => {
     mutations: {
       setInsaneMode: jest.fn(),
       setDndModeTime: jest.fn(),
+      setShowDndMenu: jest.fn(),
     },
     getters: {
       topSitesInstructions: jest.fn(),
@@ -148,6 +149,6 @@ it('should dispatch "setFilter" with publication filter when in insane mode', (d
 
 it('should commit "setDndModeTime" when "For 1 Hour" or "Until Tomorrow" is clicked', () => {
   const wrapper = mount(DaHome, { store, localVue });
-  wrapper.find('.btn-dnd-menu').trigger('click');
+  wrapper.find('.dnd-context .btn-menu').trigger('click');
   expect(ui.mutations.setDndModeTime).toBeCalledWith(expect.anything(), expect.any(Number));
 });

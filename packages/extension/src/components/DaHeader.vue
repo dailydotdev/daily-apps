@@ -30,8 +30,8 @@
     <button class="btn-icon" title="Daily Go" @click="$emit('go')">
       <svgicon icon="mobile"/>
     </button>
-    <button class="btn-icon btn-dnd"
-            title="Do Not Disturb (DND)" @click="$emit('menu', {event: $event})">
+    <button class="btn-icon btn-dnd" title="Do Not Disturb (DND)"
+            :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)">
       <svgicon icon="timer"/>
     </button>
     <button class="btn-icon btn-terminal" title="Notifications"
@@ -101,7 +101,7 @@ export default {
 
   computed: {
     ...mapState('ui', [
-      'showTopSites', 'insaneMode', 'showNotificationBadge', 'notificationsOpened',
+      'showTopSites', 'insaneMode', 'showNotificationBadge', 'notificationsOpened', 'showDndMenu',
     ]),
     ...mapState('feed', ['showBookmarks']),
     ...mapGetters('ui', ['topSitesInstructions']),

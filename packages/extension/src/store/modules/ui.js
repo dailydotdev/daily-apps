@@ -6,6 +6,7 @@ const initialState = () => ({
   theme: null,
   insaneMode: false,
   dndModeTime: null,
+  showDndMenu: false,
   showTopSites: false,
   notifications: [],
   showNotificationBadge: false,
@@ -28,10 +29,6 @@ export default {
       state.insaneMode = value;
     },
 
-    setDndModeTime(state, value) {
-      state.dndModeTime = value;
-    },
-
     setShowTopSites(state, value) {
       state.showTopSites = value;
     },
@@ -46,12 +43,20 @@ export default {
       state.showNotifications = true;
     },
 
-    disableDndMode(state) {
-      state.dndModeTime = null;
-    },
-
     hideNotifications(state) {
       state.showNotifications = false;
+    },
+
+    setShowDndMenu(state, value) {
+      state.showDndMenu = value;
+    },
+
+    setDndModeTime(state, value) {
+      state.dndModeTime = value;
+    },
+
+    disableDndMode(state) {
+      state.dndModeTime = null;
     },
 
     setNotifications(state, { notifications, since }) {
