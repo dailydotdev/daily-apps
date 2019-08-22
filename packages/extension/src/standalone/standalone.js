@@ -36,7 +36,7 @@ const loadFromCache = async () => {
 
 // TODO: handle error
 // eslint-disable-next-line no-console
-loadFromCache().catch(console.error);
+const bootPromise = loadFromCache().catch(console.error);
 
 Vue.use(svgicon);
 Vue.use(VueRouter);
@@ -75,7 +75,9 @@ const router = new VueRouter({
 });
 
 // Redirect to login or onboarding if necessary
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  await bootPromise;
+
   if (to.path === '/' && to.query.provider && to.query.code) {
     next({ path: '/login', query: to.query });
   } else if (to.path === '/' && !store.state.ui.onboarding && !debug) {
