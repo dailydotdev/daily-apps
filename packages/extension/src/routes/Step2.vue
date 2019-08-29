@@ -32,10 +32,16 @@
                  :aria-disabled="disableButton" :class="{disabled: disableButton}">
       I'm all set
     </router-link>
+    <button
+      class="btn-skip btn btn-big btn-water-cheese"
+      @click.prevent="skipOnboarding"
+    >
+      Skip
+    </button>
   </main>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 import '@daily/components/icons/x';
 import '@daily/components/icons/magnifying';
 import { contentService } from '../common/services';
@@ -100,6 +106,13 @@ export default {
       this.$refs.searchTags.value = '';
       return this.searchTags({ target: this.$refs.searchTags });
     },
+
+    skipOnboarding() {
+      this.doneOnboarding();
+      this.$router.replace('/');
+    },
+
+    ...mapMutations('ui', ['doneOnboarding']),
   },
 
   async mounted() {
@@ -203,5 +216,9 @@ export default {
     text-transform: none;
     font-weight: 300;
   }
+}
+
+.btn-skip {
+  margin-top: 10px;
 }
 </style>
