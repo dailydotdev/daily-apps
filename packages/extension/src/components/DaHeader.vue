@@ -90,7 +90,6 @@ export default {
   components: {
     DaIconToggle: () => import('@daily/components/src/components/DaIconToggle.vue'),
     DaSwitch: () => import('@daily/components/src/components/DaSwitch.vue'),
-    DaContext: () => import('@daily/components/src/components/DaContext.vue'),
   },
 
   data() {
