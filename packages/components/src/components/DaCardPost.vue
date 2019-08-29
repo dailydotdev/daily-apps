@@ -97,7 +97,7 @@ export default {
       this.notifying = true;
       setTimeout(() => {
         this.notifying = false;
-      }, 1500);
+      }, 1000);
     },
 
     truncateTags(...args) {
