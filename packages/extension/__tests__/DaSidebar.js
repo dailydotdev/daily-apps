@@ -226,6 +226,16 @@ it('should enable submit when input is a valid url', (done) => {
   });
 });
 
+it.only('should disable request input when disableRequest is true', () => {
+  user.state.profile = { name: 'John' };
+  const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.vm.requestActive = true;
+  wrapper.vm.disableRequest = true;
+  wrapper.vm.$nextTick(() => {
+    expect(wrapper.find('.sidebar__sources .sidebar__input').attributes('disabled')).toBeTruthy();
+  });
+});
+
 it('should dispatch "setFilter" with publication filter', (done) => {
   const wrapper = mount(DaSidebar, { store, localVue });
   wrapper.vm.$nextTick(() => {
