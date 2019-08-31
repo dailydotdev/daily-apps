@@ -8,8 +8,11 @@ import { contentService } from '../src/common/services';
 jest.mock('../src/common/services', () => ({
   contentService: {
     searchTags: jest.fn(),
+    requestPublication: jest.fn(),
   },
 }));
+
+const REQUEST_URL = 'https://dailynow.co';
 
 const localVue = createLocalVue();
 
@@ -213,16 +216,38 @@ it('should activate request source form', (done) => {
   });
 });
 
-it('should enable submit when input is a valid url', (done) => {
-  user.state.profile = { name: 'John' };
-  const wrapper = mount(DaSidebar, { store, localVue });
-  wrapper.vm.requestActive = true;
-  wrapper.vm.$nextTick(() => {
-    expect(wrapper.vm.disableSubmit).toEqual(true);
-    wrapper.vm.$refs.request.value = 'https://dailynow.co';
-    wrapper.find('.sidebar__sources .sidebar__input').trigger('input');
-    expect(wrapper.vm.disableSubmit).toEqual(false);
-    done();
+describe('SUBMIT REQUEST', () => {
+  let wrapper;
+  beforeEach(() => {
+    user.state.profile = { name: 'John' };
+    wrapper = mount(DaSidebar, { store, localVue });
+    wrapper.vm.requestActive = true;
+  });
+
+  it('should enable submit when input is a valid url', (done) => {
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.vm.disableSubmit).toEqual(true);
+      wrapper.vm.$refs.request.value = REQUEST_URL;
+      wrapper.find('.sidebar__sources .sidebar__input').trigger('input');
+      expect(wrapper.vm.disableSubmit).toEqual(false);
+      done();
+    });
+  });
+  
+  it('should disable request input while the request is processed', (done) => {
+    // Simulate delay
+    contentService.requestPublication.mockReturnValue(new Promise(
+      (resolve) => setTimeout(() => resolve(), 3000))
+    );
+    wrapper.vm.$nextTick(() => {
+      wrapper.vm.$refs.request.value = REQUEST_URL;
+      const sideBarSources = wrapper.find('.sidebar__sources');
+      const sideBarSourcesInput = sideBarSources.find('.sidebar__input');
+      sideBarSourcesInput.trigger('input');
+      sideBarSources.find('.sidebar__sources__submit').trigger('click');
+      expect(sideBarSourcesInput.attributes('disabled')).toBeTruthy();
+      done();
+    });
   });
 });
 

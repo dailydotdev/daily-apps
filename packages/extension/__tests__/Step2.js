@@ -12,6 +12,7 @@ jest.mock('../src/common/services', () => ({
   },
 }));
 
+const router = new VueRouter();
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
@@ -19,6 +20,7 @@ localVue.use(VueRouter);
 localVue.use(svgicon);
 
 let feed;
+let ui;
 let store;
 
 beforeEach(() => {
@@ -38,8 +40,18 @@ beforeEach(() => {
     },
   };
 
+  ui = {
+    namespaced: true,
+    state: {
+      onboarding: false,
+    },
+    mutations: {
+      doneOnboarding: jest.fn(),
+    },
+  };
+
   store = new Vuex.Store({
-    modules: { feed },
+    modules: { feed, ui },
   });
 
   contentService.fetchPopularTags.mockReturnValue([
@@ -104,5 +116,16 @@ it('should search for tags on new search input', () => {
   wrapper.vm.$refs.searchTags.value = 'cl';
   wrapper.find('input').trigger('input');
   expect(contentService.searchTags).toBeCalledWith('cl');
+});
+
+it('should skip onboarding on skip button click', () => {
+  const wrapper = shallowMount(Step2, {
+    store,
+    router,
+    localVue,
+  });
+
+  wrapper.find('.btn-skip').trigger('click');
+  expect(ui.mutations.doneOnboarding).toBeCalledWith(expect.anything(), undefined);
 });
 
