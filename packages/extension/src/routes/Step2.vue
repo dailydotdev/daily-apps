@@ -32,13 +32,13 @@
                  :aria-disabled="disableButton" :class="{disabled: disableButton}">
       I'm all set
     </router-link>
-    <a
-      class="btn-skip"
-      role="button"
+    <button
+      class="btn-skip nuggets"
+      type="button"
       @click.prevent="skipOnboarding"
     >
       SKIP
-    </a>
+    </button>
   </main>
 </template>
 <script>
@@ -221,11 +221,9 @@ export default {
 
 .btn-skip {
   margin-top: 24px;
-  font-size: 11px;
-  font-weight: bold;
-  line-height: 16px;
-  letter-spacing: 1.6px;
-  color: var(--color-salt-90);
+  color: var(---theme-secondary);
   cursor: pointer;
+  border: none;
+  background: none;
 }
 </style>
