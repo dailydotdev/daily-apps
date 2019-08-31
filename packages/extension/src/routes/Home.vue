@@ -104,6 +104,7 @@
                 @close="selectedPostId = null">
       <button class="btn btn-menu" @click="reportPost('broken')">Broken link</button>
       <button class="btn btn-menu" @click="reportPost('nsfw')">Report NSFW</button>
+      <button class="btn btn-menu" @click="hidePost">Hide post</button>
     </da-context>
     <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened"
                 @close="setShowDndMenu(false)">
@@ -266,12 +267,33 @@ export default {
       ga('send', 'event', 'Dnd', type);
     },
 
-    async reportPost(reason) {
+    reportPost(reason) {
       ga('send', 'event', 'Post', 'Report', reason);
       const postId = this.selectedPostId;
       this.$refs.context.close();
-      await contentService.reportPost(postId, reason);
-      this.$nextTick(() => this.$refs.posts.find(com => com.post.id === postId).notify('Thanks for reporting!'));
+
+      // TODO: handle error
+      contentService.reportPost(postId, reason)
+        // eslint-disable-next-line no-console
+        .catch(console.error);
+
+      setTimeout(() => {
+        this.$refs.posts.find(com => com.post.id === postId).notify('Thanks for reporting!');
+        setTimeout(() => this.removePost(postId), 1000);
+      }, 100);
+    },
+
+    hidePost() {
+      ga('send', 'event', 'Post', 'Hide');
+      const postId = this.selectedPostId;
+      this.$refs.context.close();
+
+      // TODO: handle error
+      contentService.hidePost(postId)
+        // eslint-disable-next-line no-console
+        .catch(console.error);
+
+      this.removePost(postId);
     },
 
     onAdClick(ad) {
@@ -359,6 +381,7 @@ export default {
     }),
 
     ...mapMutations({
+      removePost: 'feed/removePost',
       toggleBookmarks: 'feed/toggleBookmarks',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',

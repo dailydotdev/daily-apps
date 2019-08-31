@@ -85,6 +85,8 @@ export interface ContentService {
 
     reportPost(postId: string, reason: string): Promise<void>;
 
+    hidePost(postId: string): Promise<void>;
+
     fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]>;
 
     fetchPostsByPublication(latest: Date, page: number, pub: string): Promise<Post[]>;
@@ -192,6 +194,10 @@ export class ContentServiceImpl implements ContentService {
 
     async reportPost(postId: string, reason: string): Promise<void> {
         await this.request.post(`/v1/posts/${postId}/report`, {reason});
+    }
+
+    async hidePost(postId: string): Promise<void> {
+        await this.request.post(`/v1/posts/${postId}/hide`);
     }
 
     async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]> {

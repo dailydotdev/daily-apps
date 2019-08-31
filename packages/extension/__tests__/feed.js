@@ -49,7 +49,7 @@ it('should set enabled of specific publication in state', () => {
     }, {
       name: 'vue',
       enabled: false,
-    }]
+    }],
   };
   module.mutations.setEnablePublication(state, { index: 1, enabled: true });
   expect(state.publications).toEqual([{
@@ -110,7 +110,7 @@ it('should set enabled of specific tag in state', () => {
     }, {
       name: 'vue',
       enabled: false,
-    }]
+    }],
   };
   module.mutations.setEnableTag(state, { tag: state.tags[1], enabled: true });
   expect(state.tags).toEqual([{
@@ -201,7 +201,7 @@ it('should set a post as not bookmarked and remove it from bookmarks', () => {
     id: '2',
   }, {
     id: '3',
-    bookmarked: false
+    bookmarked: false,
   }]);
   expect(state.bookmarks).toEqual([{
     id: '1',
@@ -418,4 +418,22 @@ it('should reset everything', async () => {
     [{ type: 'resetPersonalization', payload: null }],
     [{ type: 'refreshFeed', payload: null }],
   );
+});
+
+it('should remove post from feed', () => {
+  const state = {
+    posts: [{
+      id: '1',
+    }, {
+      id: '2',
+    }, {
+      id: '3',
+    }],
+  };
+  module.mutations.removePost(state, '2');
+  expect(state.posts).toEqual([{
+    id: '1',
+  }, {
+    id: '3',
+  }]);
 });
