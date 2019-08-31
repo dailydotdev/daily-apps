@@ -125,11 +125,6 @@ export default {
       // TODO: add tests
       state[type] = state[type].concat(posts);
     },
-    removePost(state, postId) {
-      const feed = getFeed(state);
-      const index = state[feed].findIndex(p => p.id === postId);
-      state[feed].splice(index, 1);
-    },
     setLatest(state, latest) {
       state.latest = latest;
     },
@@ -210,7 +205,14 @@ export default {
 
       commit('setLoading', true);
 
-      const type = getFeed(state);
+      let type;
+      if (state.showBookmarks) {
+        type = 'bookmarks';
+      } else if (state.filter) {
+        type = 'customPosts';
+      } else {
+        type = 'posts';
+      }
       const loggedIn = !!rootState.user.profile;
       // TODO: add tests addBookmarked
       const posts = addBookmarked(state, await fetchPosts(state, loggedIn), loggedIn);

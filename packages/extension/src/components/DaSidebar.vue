@@ -62,7 +62,6 @@
               <svgicon name="x" class="sidebar__element__image"/>
             </button>
             <input class="sidebar__input" type="url" placeholder="Paste URL" required
-                   :disabled="disableRequest"
                    ref="request" @input="updateFormValidity">
             <button type="submit" class="sidebar__sources__submit btn btn-invert"
                     :disabled="disableSubmit" @click.prevent="submitRequest">
@@ -139,7 +138,6 @@ export default {
       filterChecked: false,
       requestActive: false,
       disableSubmit: true,
-      disableRequest: false,
       submitError: false,
       searchedTags: [],
       searchFocused: false,
@@ -250,14 +248,11 @@ export default {
       ga('send', 'event', 'Request Source', 'Submit');
       try {
         this.submitError = false;
-        this.disableRequest = true;
         await contentService.requestPublication(this.$refs.request.value);
         this.resetRequest();
         this.$emit('requested-source');
       } catch {
         this.submitError = true;
-      } finally {
-        this.disableRequest = false;
       }
     },
     setEnableTag(tag, enabled) {

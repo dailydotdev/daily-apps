@@ -49,18 +49,6 @@ it('should report post', async () => {
     await service.reportPost(postId, reason);
 });
 
-it('should hide post', async () => {
-    const postId = '12345';
-    nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
-        .post(`/v1/posts/${postId}/hide`)
-        .reply(204);
-
-    service.setAccessToken('token');
-
-    await service.hidePost(postId);
-});
-
 it('should fetch open pub requests from server', async () => {
     const response = require('./fixtures/pubRequests.json');
     const expected: PubRequest[] = response.map((x: any) => ({...x, createdAt: new Date(x.createdAt)}));
