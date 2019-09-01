@@ -135,6 +135,12 @@
     <section>
       <h2>Icon Toggle</h2>
       <DaIconToggle pressed-icon="sun" icon="moon"/>
+      <h2>Icon Toggle With Tooltip</h2>
+      <DaIconToggle
+        v-tooltip="{content: 'Change theme', placement: 'top'}"
+        pressed-icon="sun"
+        icon="moon"
+      />
     </section>
     <section>
       <h2>Context Menu</h2>

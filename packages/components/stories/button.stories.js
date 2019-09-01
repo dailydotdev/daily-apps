@@ -1,5 +1,9 @@
 import { storiesOf } from '@storybook/vue';
 import { withKnobs, select } from '@storybook/addon-knobs';
+import Vue from 'vue';
+import VTooltip from 'v-tooltip';
+
+Vue.use(VTooltip);
 
 const buttons = {
   gradient: 'btn-water-cheese',
@@ -47,4 +51,11 @@ storiesOf('Buttons', module)
   }))
   .add('only icon', () => ({
     template: '<button class="btn-icon"><svgicon icon="mobile"/></button>',
+  }))
+  .add('only icon with tooltip', () => ({
+    data: () => ({
+      content: 'Mobile view',
+      placement: 'right',
+    }),
+    template: '<button v-tooltip="{content, placement}" class="btn-icon"><svgicon icon="mobile"/></button>',
   }));
