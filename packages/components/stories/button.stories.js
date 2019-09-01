@@ -52,7 +52,7 @@ storiesOf('Buttons', module)
   .add('only icon', () => ({
     template: '<button class="btn-icon"><svgicon icon="mobile"/></button>',
   }))
-  .add('only icon with tooltip', () => ({
+  .add('with tooltip', () => ({
     data: () => ({
       content: 'Mobile view',
       placement: 'right',
