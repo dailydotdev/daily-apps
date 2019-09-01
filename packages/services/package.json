@@ -36,7 +36,7 @@
   "dependencies": {
     "@types/es6-promise": "^3.3.0",
     "axios": "^0.18.0",
-    "retry-axios": "^0.3.2"
+    "retry-axios": "^0.3.2",
   },
   "jest": {
     "moduleFileExtensions": [

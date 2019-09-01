@@ -1,5 +1,10 @@
 import { storiesOf } from '@storybook/vue';
 import { withKnobs, select } from '@storybook/addon-knobs';
+import Vue from 'vue';
+import VTooltip from 'v-tooltip';
+import DaTooltip from '../src/components/DaTooltip.vue';
+
+Vue.use(VTooltip);
 
 const buttons = {
   gradient: 'btn-water-cheese',

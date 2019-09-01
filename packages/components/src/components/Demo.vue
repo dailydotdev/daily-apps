@@ -135,6 +135,10 @@
     <section>
       <h2>Icon Toggle</h2>
       <DaIconToggle pressed-icon="sun" icon="moon"/>
+      <h2>Icon Toggle With Tooltip</h2>
+      <DaTooltip content="Change Theme" placement="right">
+        <DaIconToggle pressed-icon="sun" icon="moon"/>
+      </DaTooltip>
     </section>
     <section>
       <h2>Context Menu</h2>
@@ -203,6 +207,7 @@ import DaModal from './DaModal.vue';
 import DaModeSwitch from './DaModeSwitch.vue';
 import DaTerminal from './DaTerminal.vue';
 import DaEditableText from './DaEditableText.vue';
+import DaTooltip from './DaTooltip.vue';
 
 const requireIcons = require.context('../../icons', false, /.js$/);
 const icons = requireIcons.keys().filter(r => r !== './index.js');
@@ -225,6 +230,7 @@ export default {
     DaSwitch,
     DaModeSwitch,
     DaEditableText,
+    DaTooltip,
   },
   created() {
     this.icons = icons.map(r => r.substr(2, r.length - 5));

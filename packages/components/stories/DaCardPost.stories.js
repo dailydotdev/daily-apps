@@ -1,6 +1,12 @@
 import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, text, array, select, boolean } from '@storybook/addon-knobs';
+import {
+  withKnobs,
+  text,
+  array,
+  select,
+  boolean,
+} from '@storybook/addon-knobs';
 
 import DaCardPost from '../src/components/DaCardPost.vue';
 import posts from '../src/posts.json';
@@ -83,4 +89,3 @@ storiesOf('DaCardPost', module)
       },
     },
   }));
-
