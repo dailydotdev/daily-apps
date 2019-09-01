@@ -1,8 +1,11 @@
 <template>
   <div class="page onboarding">
     <header class="onboarding__header">
-      <div v-for="index in steps" :key="index" class="onboarding__nav"
-           :class="{selected: currentStep === index }"></div>
+      <svgicon icon="logo" class="onboarding__header__logo"/>
+      <div class="onboarding__nav">
+        <div v-for="index in steps" :key="index" class="onboarding__nav__item"
+             :class="{selected: currentStep === index }"></div>
+      </div>
     </header>
     <router-view></router-view>
   </div>
@@ -36,11 +39,15 @@ export default {
       trackPageView(`/onboarding/${this.currentStep}`);
     },
   },
+
+  mounted() {
+        import('@daily/components/icons/logo');
+  },
 };
 </script>
 <style>
 .page.onboarding {
-  padding: 80px;
+  padding: 16px 24px;
   align-items: center;
 
   & main {
@@ -69,14 +76,23 @@ export default {
 }
 
 .onboarding__header {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  height: 16px;
+  position: relative;
+  width: 100%;
   margin-bottom: 40px;
 }
 
 .onboarding__nav {
+  position: absolute;
+  display: flex;
+  left: 50%;
+  bottom: 0;
+  margin: 0 auto;
+  flex-direction: row;
+  align-items: flex-end;
+  transform: translateX(-50%);
+}
+
+.onboarding__nav__item {
   width: 8px;
   height: 8px;
   margin: 0 4px;
@@ -84,12 +100,18 @@ export default {
   border-radius: 4px;
 
   &.selected {
-    height: 100%;
+    height: 16px;
     background: var(--theme-primary);
   }
 }
 
 .onboarding__placeholder {
   margin: auto 0;
+}
+
+.onboarding__header__logo {
+  width: 80px;
+  height: 80px;
+  color: var(--theme-primary);
 }
 </style>
