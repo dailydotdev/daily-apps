@@ -1,6 +1,5 @@
 import { storiesOf } from '@storybook/vue';
 import { withKnobs, select } from '@storybook/addon-knobs';
-import Vue from 'vue';
 
 const buttons = {
   gradient: 'btn-water-cheese',
