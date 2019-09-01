@@ -1,5 +1,5 @@
 <template>
-    <div class="tooltip-wrapper" v-tooltip="{content, placement}">
+    <div class="tooltip-wrapper" v-tooltip="{content, placement, delay: { show: delay, hide: 0, }}">
         <slot></slot>
     </div>
 </template>
@@ -15,6 +15,10 @@ export default {
     placement: {
       type: String,
       default: '',
+    },
+    delay: {
+      type: Number,
+      default: 0,
     },
   },
 };

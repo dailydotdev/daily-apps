@@ -136,7 +136,7 @@
       <h2>Icon Toggle</h2>
       <DaIconToggle pressed-icon="sun" icon="moon"/>
       <h2>Icon Toggle With Tooltip</h2>
-      <DaTooltip content="Change Theme" placement="right">
+      <DaTooltip content="Change Theme" placement="right" :delay="100">
         <DaIconToggle pressed-icon="sun" icon="moon"/>
       </DaTooltip>
     </section>
