@@ -41,36 +41,14 @@
 
 <script>
 import 'lazysizes';
-import { truncateTags } from '../truncate';
+import postMixin from '../common/postMixin';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
   name: 'DaInsanePost',
-
+  mixins: [postMixin],
   components: {
     DaLineClamp,
-  },
-
-  props: {
-    post: {
-      type: Object,
-      required: true,
-    },
-    menuOpened: {
-      type: Boolean,
-      default: false,
-    },
-    showMenu: {
-      type: Boolean,
-      default: true,
-    },
-  },
-
-  data() {
-    return {
-      notifying: false,
-      notification: '',
-    };
   },
 
   computed: {
@@ -88,22 +66,8 @@ export default {
   },
 
   mounted() {
-        import('../../icons/bookmark');
-        import('../../icons/menu');
-  },
-
-  methods: {
-    notify(notification) {
-      this.notification = notification;
-      this.notifying = true;
-      setTimeout(() => {
-        this.notifying = false;
-      }, 1000);
-    },
-
-    truncateTags(...args) {
-      return truncateTags(this.post.tags, ...args);
-    },
+    import('../../icons/bookmark');
+    import('../../icons/menu');
   },
 };
 </script>

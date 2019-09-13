@@ -14,37 +14,17 @@
 
 <script>
 import DaCard from './DaCard.vue';
+import adMixin from '../common/adMixin';
 
 export default {
   name: 'DaCardAd',
+  mixins: [adMixin],
   components: { DaCard },
-  props: {
-    ad: {
-      type: Object,
-      required: true,
-    },
-  },
 
   computed: {
     size() {
       return this.ad.size || 'small';
     },
-
-    pixel() {
-      return this.ad.pixel || [];
-    },
-
-    promoted() {
-      if (this.ad.company) {
-        return `Promoted by ${this.ad.company}`;
-      }
-
-      return 'Promoted';
-    },
-  },
-
-  mounted() {
-    this.$emit('impression', this.ad);
   },
 };
 </script>
