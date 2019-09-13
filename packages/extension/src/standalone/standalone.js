@@ -110,6 +110,9 @@ Vue.filter('terminalTime', value => value.toLocaleString('en-US', {
   minute: 'numeric',
   second: 'numeric',
   hour12: true,
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
 }));
 
 Vue.filter('provider', (value) => {
