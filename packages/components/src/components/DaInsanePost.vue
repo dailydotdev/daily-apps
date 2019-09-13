@@ -5,7 +5,7 @@
         <h5 class="insane__title">
           <da-line-clamp :text="post.title" :lines="3"/>
         </h5>
-        <div class="insane__tags micro1" :title="tags">
+        <div class="insane__tags micro1" v-tooltip="tags">
           <da-line-clamp :text="tags" :lines="1" :truncate="truncateTags"/>
         </div>
       </a>
@@ -15,16 +15,16 @@
               @click="$emit('publication', { pub: post.publication })">
         <img class="insane__icon lazyload"
             :data-src="post.publication.image"
-            :alt="post.publication.name" :title="post.publication.name"
+            :alt="post.publication.name" v-tooltip="post.publication.name"
             :key="post.publication.name"/>
       </button>
       <div class="insane__reveal reveal">
         <button class="btn-icon insane__reveal__bookmark"
-                :title="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
+                v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
                 @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
           <svgicon icon="bookmark"/>
         </button>
-        <button class="btn-icon insane__reveal__menu" title="Menu"
+        <button class="btn-icon insane__reveal__menu" v-tooltip="'More'"
                 @click="$emit('menu', { post, event: $event })" v-if="showMenu">
           <svgicon icon="menu"/>
         </button>
