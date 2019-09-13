@@ -36,34 +36,14 @@
 
 <script>
 import 'lazysizes';
-import { truncateTags } from '../truncate';
+import postMixin from '../common/postMixin';
 import DaCard from './DaCard.vue';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
   name: 'DaCardPost',
+  mixins: [postMixin],
   components: { DaCard, DaLineClamp },
-  props: {
-    post: {
-      type: Object,
-      required: true,
-    },
-    menuOpened: {
-      type: Boolean,
-      default: false,
-    },
-    showMenu: {
-      type: Boolean,
-      default: true,
-    },
-  },
-
-  data() {
-    return {
-      notifying: false,
-      notification: '',
-    };
-  },
 
   watch: {
     menuOpened() {
@@ -92,18 +72,6 @@ export default {
   },
 
   methods: {
-    notify(notification) {
-      this.notification = notification;
-      this.notifying = true;
-      setTimeout(() => {
-        this.notifying = false;
-      }, 1000);
-    },
-
-    truncateTags(...args) {
-      return truncateTags(this.post.tags, ...args);
-    },
-
     positionDuplicate() {
       if (this.menuOpened) {
         this.$nextTick(() => {

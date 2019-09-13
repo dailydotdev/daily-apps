@@ -14,37 +14,13 @@
 
 <script>
 import DaLineClamp from './DaLineClamp.vue';
+import adMixin from '../common/adMixin';
 
 export default {
   name: 'DaInsandeAd',
-
+  mixins: [adMixin],
   components: {
     DaLineClamp,
-  },
-
-  props: {
-    ad: {
-      type: Object,
-      required: true,
-    },
-  },
-
-  computed: {
-    pixel() {
-      return this.ad.pixel || [];
-    },
-
-    promoted() {
-      if (this.ad.company) {
-        return `Promoted by ${this.ad.company}`;
-      }
-
-      return 'Promoted';
-    },
-  },
-
-  mounted() {
-    this.$emit('impression', this.ad);
   },
 };
 </script>
