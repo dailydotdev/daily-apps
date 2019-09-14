@@ -1,6 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import svgicon from 'vue-svgicon';
+import VTooltip from 'v-tooltip';
 import DaHome from '../src/routes/Home.vue';
 import DaCardPost from '../../components/src/components/DaCardPost.vue';
 import DaInsanePost from '../../components/src/components/DaInsanePost.vue';
@@ -13,6 +14,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(svgicon);
+localVue.use(VTooltip);
 localVue.component('da-card-post', DaCardPost);
 localVue.component('da-insane-post', DaInsanePost);
 localVue.component('da-context', DaContext);

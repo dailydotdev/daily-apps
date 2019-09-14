@@ -4,37 +4,40 @@
       <svgicon icon="logo" class="header__logo__icon"/>
     </a>
     <div class="separator"></div>
-    <da-icon-toggle class="header__theme" pressed-icon="moon" icon="sun" title="Change theme"
+    <da-icon-toggle class="header__theme" pressed-icon="moon" icon="sun"
+                    v-tooltip.bottom="theme > 0 ? 'Dark mode' : 'Light mode'"
                     :pressed="theme > 0" @toggle="switchTheme"/>
-    <da-icon-toggle class="header__insane" pressed-icon="card" icon="line" title="Change layout"
+    <da-icon-toggle class="header__insane" pressed-icon="card" icon="line"
+                    v-tooltip.bottom="insaneMode ? 'Card view' : 'Insane view'"
                     :pressed="insaneMode" @toggle="toggleInsane"/>
     <da-switch class="header__switch" icon="bookmark" :checked="showBookmarks"
+               v-tooltip.bottom="showBookmarks ? 'Back to feed' : 'Show your bookmarks'"
                @toggle="toggleBookmarks"></da-switch>
     <div class="space"></div>
     <template v-if="showTopSites">
       <a v-for="(item, index) in topSites" :key="index" class="header__top-site"
-         :href="item.url" :title="item.title" @mouseup="mouseUp('Top Sites')">
+         :href="item.url" v-tooltip.bottom="item.title" @mouseup="mouseUp('Top Sites')">
         <img :src="getIconUrl(item.url)" class="top-site__image"/>
       </a>
       <div class="separator"></div>
     </template>
     <a class="btn-icon" href="https://github.com/dailynowco/daily" target="_blank"
-       title="Feedback us on GitHub!">
+       v-tooltip.bottom="'Check out our repository'">
       <svgicon icon="github"/>
     </a>
     <a class="btn-icon" href="https://www.producthunt.com/posts/daily-2-0" target="_blank"
-       title="Check us on Product Hunt!">
+       v-tooltip.bottom="'Our Product Hunt page'">
       <svgicon icon="ph"/>
     </a>
     <div class="separator"></div>
-    <button class="btn-icon" title="Daily Go" @click="$emit('go')">
+    <button class="btn-icon" v-tooltip.bottom="'Daily Go'" @click="$emit('go')">
       <svgicon icon="mobile"/>
     </button>
-    <button class="btn-icon btn-dnd" title="Do Not Disturb (DND)"
+    <button class="btn-icon btn-dnd" v-tooltip.bottom="'Do Not Disturb'"
             :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)">
       <svgicon icon="timer"/>
     </button>
-    <button class="btn-icon btn-terminal" title="Notifications"
+    <button class="btn-icon btn-terminal" v-tooltip.bottom="'Latest updates'"
             :class="{ 'active': notificationsOpened }" @click="toggleNotifications">
       <svgicon icon="terminal"/>
       <span class="header__badge" v-if="showNotificationBadge"></span>

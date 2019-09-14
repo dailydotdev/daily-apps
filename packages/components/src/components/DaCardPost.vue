@@ -1,7 +1,7 @@
 <template>
   <da-card class="card--post" :class="cls" :title="post.title" :url="post.url" :image="post.image"
           :placeholder="post.placeholder" :size="post.size" @click="$emit('click', post)">
-    <div slot="content" class="card__tags nuggets" :title="tagsStr">
+    <div slot="content" class="card__tags nuggets" v-tooltip="tagsStr">
       <da-line-clamp :text="tagsStr" :lines="1" :truncate="truncateTags"/>
     </div>
     <template slot="footer">
@@ -9,17 +9,17 @@
               @click="$emit('publication', { pub: post.publication })">
         <img class="card__footer__icon lazyload"
             :data-src="post.publication.image"
-            :alt="post.publication.name" :title="post.publication.name"
+            :alt="post.publication.name" v-tooltip="post.publication.name"
             :key="post.publication.name"/>
       </button>
       <span class="card__footer__views micro2"
             v-if="post.readTime">// {{post.readTime}} min read</span>
       <button class="btn-icon btn-small card__footer__bookmark"
-              :title="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
+              v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
               @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
         <svgicon icon="bookmark"/>
       </button>
-      <button class="btn-icon btn-small card__footer__menu" title="Menu"
+      <button class="btn-icon btn-small card__footer__menu" v-tooltip="'More'"
               @click="$emit('menu', { post, event: $event })" v-if="showMenu">
         <svgicon icon="menu" ref="orig"/>
       </button>

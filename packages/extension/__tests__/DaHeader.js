@@ -1,6 +1,7 @@
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import svgicon from 'vue-svgicon';
+import VTooltip from 'v-tooltip';
 import DaIconToggle from '@daily/components/src/components/DaIconToggle.vue';
 import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
 import DaHeader from '../src/components/DaHeader.vue';
@@ -9,6 +10,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(svgicon);
+localVue.use(VTooltip);
 localVue.component('da-icon-toggle', DaIconToggle);
 localVue.component('da-switch', DaSwitch);
 

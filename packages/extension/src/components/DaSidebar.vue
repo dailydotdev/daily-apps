@@ -5,6 +5,7 @@
       <div class="sidebar__filter">
         <da-mode-switch class="sidebar__filter_switch"
                         first-icon="link" second-icon="hashtag"
+                        v-tooltip="filterChecked ? 'View sources list' : 'View tags list'"
                         :checked="filterChecked" @toggle="toggleFilter($event)"/>
       </div>
 
@@ -22,11 +23,12 @@
           <div class="sidebar__element btn btn-menu"
                v-for="item in enabledTags" :key="item.name">
             <button class="sidebar__element__button"
-                    title="Click to view only this tag" @click.prevent="viewTag(item)">
+                    v-tooltip="'View tag'" @click.prevent="viewTag(item)">
               <span class="invert sidebar__tag shadow1 text-overflow">#{{item.name}}</span>
             </button>
             <button class="sidebar__element__button-hidden btn-icon"
-                    title="Remove this tag" @click.prevent.stop="setEnableTag(item, false)">
+                    v-tooltip="'Remove tag from feed'"
+                    @click.prevent.stop="setEnableTag(item, false)">
               <svgicon name="x"/>
             </button>
           </div>
@@ -36,11 +38,11 @@
           <div class="sidebar__element off btn btn-menu"
                v-for="item in disabledTags" :key="item.name">
             <button class="sidebar__element__button"
-                    title="Click to view only this tag" @click.prevent="viewTag(item)">
+                    v-tooltip="'View tag'" @click.prevent="viewTag(item)">
               <span class="text-overflow">#{{item.name}}</span>
             </button>
             <button class="sidebar__element__button-hidden show btn-icon"
-                    title="Add this tag"
+                    v-tooltip="'Add tag to feed'"
                     @click.prevent.stop="setEnableTag(item, true)">
               <svgicon name="plus"/>
             </button>
@@ -77,13 +79,13 @@
           <div class="sidebar__element btn btn-menu" v-for="item in enabledPubs"
                :key="item.id">
             <button class="sidebar__element__button"
-                    title="Click to view only this source" @click.prevent="viewPublication(item)">
+                    v-tooltip="'View source'" @click.prevent="viewPublication(item)">
               <img :data-src="item.image" :alt="item.name"
                    class="sidebar__element__image lazyload"/>
               <span class="text-overflow">{{item.name}}</span>
             </button>
             <button class="sidebar__element__button-hidden btn-icon"
-                    title="Remove this source"
+                    v-tooltip="'Remove source from feed'"
                     @click.prevent.stop="setEnablePublication(item, false)">
               <svgicon name="x"/>
             </button>
@@ -94,14 +96,14 @@
           <div class="sidebar__element off btn btn-menu"
                v-for="item in disabledPubs" :key="item.id">
             <button class="sidebar__element__button"
-                    title="Click to view only this source"
+                    v-tooltip="'View source'"
                     @click.prevent="viewPublication(item)">
               <img :data-src="item.image" :alt="item.name"
                    class="sidebar__element__image lazyload"/>
               <span class="text-overflow">{{item.name}}</span>
             </button>
             <button class="sidebar__element__button-hidden show btn-icon"
-                    title="Add this source"
+                    v-tooltip="'Add source to feed'"
                     @click.prevent.stop="setEnablePublication(item, true)">
               <svgicon name="plus"/>
             </button>
