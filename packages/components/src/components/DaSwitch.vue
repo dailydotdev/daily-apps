@@ -73,7 +73,7 @@ export default {
         background: var(--da-switch-checked-color);
 
         & .svg-icon {
-          color: white;
+          color: var(--color-salt-10);
         }
       }
     }
@@ -88,6 +88,22 @@ export default {
 
   &:hover .switch__handle {
     background: var(--theme-primary);
+  }
+
+  &.small {
+    --da-switch-width: 32px;
+    --da-switch-height: 16px;
+    --da-switch-slider-height: 10px;
+
+    & .switch__slider,
+    & .switch__handle {
+      border-radius: 3px;
+    }
+
+    & .switch__label {
+      margin-left: 12px;
+      @mixin nuggets;
+    }
   }
 }
 
@@ -131,5 +147,9 @@ export default {
 .switch__label {
   margin-left: 16px;
   color: var(--theme-secondary);
+
+  .checked & {
+    color: var(--theme-primary);
+  }
 }
 </style>
