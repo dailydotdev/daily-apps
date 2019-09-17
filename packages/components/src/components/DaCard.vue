@@ -26,59 +26,59 @@ import 'lazysizes';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
-  name: 'DaCard',
+    name: 'DaCard',
 
-  components: {
-    DaLineClamp,
-  },
-
-  props: {
-    size: {
-      type: String,
-      required: true,
-    },
-    url: {
-      type: String,
-      required: true,
-    },
-    placeholder: String,
-    image: {
-      type: String,
-      required: true,
-    },
-    title: {
-      type: String,
-      required: true,
-    },
-    imageBackground: {
-      type: String,
-      default: 'none',
-    },
-    lines: {
-      type: Number,
-      default: 3,
-    },
-  },
-
-  computed: {
-    imgStyle() {
-      return {
-        background: this.imageBackground,
-      };
+    components: {
+        DaLineClamp,
     },
 
-    cls() {
-      return {
-        [this.size]: true,
-      };
+    props: {
+        size: {
+            type: String,
+            required: true,
+        },
+        url: {
+            type: String,
+            required: true,
+        },
+        placeholder: String,
+        image: {
+            type: String,
+            required: true,
+        },
+        title: {
+            type: String,
+            required: true,
+        },
+        imageBackground: {
+            type: String,
+            default: 'none',
+        },
+        lines: {
+            type: Number,
+            default: 3,
+        },
     },
-  },
 
-  methods: {
-    truncateTitle(text) {
-      return text[0];
+    computed: {
+        imgStyle() {
+            return {
+                background: this.imageBackground,
+            };
+        },
+
+        cls() {
+            return {
+                [this.size]: true,
+            };
+        },
     },
-  },
+
+    methods: {
+        truncateTitle(text) {
+            return text[0];
+        },
+    },
 };
 </script>
 <style>
@@ -154,6 +154,7 @@ export default {
   object-fit: cover;
   transition: transform .2s linear;
   transform-origin: center;
+  will-change: transform;
 }
 
 .card__content {
@@ -210,14 +211,23 @@ export default {
 .card:hover,
 .card.hover {
   & .card__background__image {
-    transform: translate3d(0, 4px, 0) scale(1.05);
+    transform: translate(0, 4px) scale(1.05);
   }
 }
 
-.animate-cards .card:hover,
-.animate-cards .card.hover {
-  & .card__hover {
-    transform: translate3d(0, -16px, 0) scale(1.02);
+.animate-cards {
+  & .card {
+
+    & .card__hover {
+      will-change: transform;
+    }
+
+    &:hover,
+    &.hover {
+      & .card__hover {
+        transform: translate(0, -16px) scale(1.02);
+      }
+    }
   }
 }
 </style>

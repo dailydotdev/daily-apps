@@ -81,6 +81,7 @@ export default {
 .insane--post {
   position: relative;
   transition: opacity 0.1s;
+  will-change: transform;
 
   & .reveal {
     transition: transform 0.2s ease-out;

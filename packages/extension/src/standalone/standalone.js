@@ -40,7 +40,7 @@ const loadFromCache = async () => {
 const bootPromise = loadFromCache().catch(console.error);
 
 Vue.use(svgicon);
-Vue.use(VTooltip);
+Vue.use(VTooltip, { defaultDelay: { show: 400, hide: 0 } });
 Vue.use(VueRouter);
 
 const router = new VueRouter({
