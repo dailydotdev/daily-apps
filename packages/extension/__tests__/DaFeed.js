@@ -71,6 +71,7 @@ beforeEach(() => {
     },
     mutations: {
       removePost: jest.fn(),
+      toggleBookmarks: jest.fn(),
     },
     actions: {
       setFilter: jest.fn(),
@@ -180,4 +181,14 @@ it('should hide post', (done) => {
       .toBeCalledWith(expect.anything(), feed.state.posts[0].id);
     done();
   }, 10);
+});
+
+it('should bookmark post', () => {
+  const wrapper = mount(DaFeed, { store, localVue });
+  wrapper.vm.$refs.posts[0].$emit('bookmark', {
+    post: feed.state.posts[0],
+    bookmarked: true,
+  });
+  expect(feed.mutations.toggleBookmarks)
+    .toBeCalledWith(expect.anything(), { id: feed.state.posts[0].id, bookmarked: true });
 });

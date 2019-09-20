@@ -144,7 +144,6 @@ export default {
       showRequestModal: false,
       showLoginModal: false,
       showProfileModal: false,
-      selectedPostId: null,
       lineNumbers: 1,
     };
   },
