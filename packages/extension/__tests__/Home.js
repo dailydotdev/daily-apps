@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import svgicon from 'vue-svgicon';
-import VTooltip from 'v-tooltip';
+import tooltip from '@daily/components/src/directives/tooltip';
 import DaHome from '../src/routes/Home.vue';
 import DaContext from '../../components/src/components/DaContext.vue';
 import DaHeader from '../src/components/DaHeader.vue';
@@ -12,7 +12,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(svgicon);
-localVue.use(VTooltip);
+localVue.directive('tooltip', tooltip);
 localVue.component('da-context', DaContext);
 localVue.component('da-header', DaHeader);
 localVue.component('da-sidebar', DaSidebar);

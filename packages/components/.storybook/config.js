@@ -2,14 +2,14 @@ import Vue from 'vue';
 import { configure, addParameters } from '@storybook/vue';
 
 import svgicon from 'vue-svgicon';
-import VTooltip from 'v-tooltip';
 import 'focus-visible';
 
 import darkTheme from './dark';
 import '../stories/style.pcss';
+import tooltip from '../src/directives/tooltip';
 
 Vue.use(svgicon);
-Vue.use(VTooltip);
+Vue.directive('tooltip', tooltip);
 
 addParameters({
   options: {

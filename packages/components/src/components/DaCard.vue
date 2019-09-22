@@ -26,59 +26,59 @@ import 'lazysizes';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
-    name: 'DaCard',
+  name: 'DaCard',
 
-    components: {
-        DaLineClamp,
+  components: {
+    DaLineClamp,
+  },
+
+  props: {
+    size: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+    placeholder: String,
+    image: {
+      type: String,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    imageBackground: {
+      type: String,
+      default: 'none',
+    },
+    lines: {
+      type: Number,
+      default: 3,
+    },
+  },
+
+  computed: {
+    imgStyle() {
+      return {
+        background: this.imageBackground,
+      };
     },
 
-    props: {
-        size: {
-            type: String,
-            required: true,
-        },
-        url: {
-            type: String,
-            required: true,
-        },
-        placeholder: String,
-        image: {
-            type: String,
-            required: true,
-        },
-        title: {
-            type: String,
-            required: true,
-        },
-        imageBackground: {
-            type: String,
-            default: 'none',
-        },
-        lines: {
-            type: Number,
-            default: 3,
-        },
+    cls() {
+      return {
+        [this.size]: true,
+      };
     },
+  },
 
-    computed: {
-        imgStyle() {
-            return {
-                background: this.imageBackground,
-            };
-        },
-
-        cls() {
-            return {
-                [this.size]: true,
-            };
-        },
+  methods: {
+    truncateTitle(text) {
+      return text[0];
     },
-
-    methods: {
-        truncateTitle(text) {
-            return text[0];
-        },
-    },
+  },
 };
 </script>
 <style>

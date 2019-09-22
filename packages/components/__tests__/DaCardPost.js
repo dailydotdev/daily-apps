@@ -1,6 +1,6 @@
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import svgicon from 'vue-svgicon';
-import VTooltip from 'v-tooltip';
+import tooltip from '../src/directives/tooltip';
 import DaLineClamp from '../src/components/DaLineClamp.vue';
 import DaCard from '../src/components/DaCard.vue';
 import DaCardPost from '../src/components/DaCardPost.vue';
@@ -9,7 +9,7 @@ import posts from '../src/posts';
 const localVue = createLocalVue();
 
 localVue.use(svgicon);
-localVue.use(VTooltip);
+localVue.directive('tooltip', tooltip);
 localVue.component('da-line-clamp', DaLineClamp);
 localVue.component('da-card', DaCard);
 
