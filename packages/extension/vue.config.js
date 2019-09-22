@@ -93,6 +93,14 @@ module.exports = {
         ],
       };
     }
-    return { plugins };
+    return {
+      plugins,
+      performance: {
+        hints: process.env.NODE_ENV === 'production' ? 'error' : false,
+        assetFilter(assetFilename) {
+          return !assetFilename.endsWith('.svg');
+        },
+      },
+    };
   },
 };
