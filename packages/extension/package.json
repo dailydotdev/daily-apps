@@ -8,7 +8,7 @@
     "build:chrome": "TARGET=chrome yarn build --mode chrome",
     "build:firefox": "TARGET=firefox yarn build --mode firefox",
     "build:all": "yarn build:chrome && yarn build:firefox && yarn zip:src",
-    "test": "yarn lint && vue-cli-service test:unit",
+    "test": "yarn lint && vue-cli-service test:unit && bundlesize",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
     "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/extension/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit",
@@ -18,9 +18,11 @@
   "dependencies": {
     "@daily/components": "^0.2.0",
     "@daily/services": "^0.1.0",
+    "core-js": "^2",
     "dompurify": "^1.0.10",
     "focus-visible": "^4.1.5",
     "lazysizes": "^4.1.8",
+    "lerna": "^3.4.3",
     "vue": "^2.5.17",
     "vue-masonry-css": "^1.0.3",
     "vue-router": "^3.0.2",
@@ -31,8 +33,8 @@
   "devDependencies": {
     "@babel/polyfill": "^7.4.4",
     "@babel/runtime": "^7.4.2",
-    "@vue/babel-preset-app": "^3.5.5",
-    "@vue/cli-plugin-babel": "^3.2.0",
+    "@vue/babel-preset-app": "^3.11",
+    "@vue/cli-plugin-babel": "^3.11",
     "@vue/cli-plugin-eslint": "^3.2.1",
     "@vue/cli-plugin-unit-jest": "^3.2.0",
     "@vue/cli-service": "^3.2.0",
@@ -43,8 +45,10 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
+    "browserslist": "^4.7.0",
+    "bundlesize": "^0.18.0",
+    "caniuse-lite": "^1.0.30000989",
     "chalk": "^2.4.2",
-    "core-js": "^2",
     "deepmerge": "^3.2.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0-0",
@@ -89,9 +93,8 @@
     }
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
+    "last 5 Chrome versions",
+    "last 5 Firefox versions"
   ],
   "jest": {
     "moduleFileExtensions": [

@@ -1,0 +1,8 @@
+{
+  "files": [
+    {
+      "path": "./dist/standalone/standalone.js",
+      "maxSize": "170 kB"
+    }
+  ]
+}
