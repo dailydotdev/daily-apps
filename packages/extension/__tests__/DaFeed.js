@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import svgicon from 'vue-svgicon';
-import VTooltip from 'v-tooltip';
+import tooltip from '@daily/components/src/directives/tooltip';
 import { createDummyEvent } from './fixtures/helpers';
 import { contentService } from '../src/common/services';
 import DaFeed from '../src/components/DaFeed.vue';
@@ -14,7 +14,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(svgicon);
-localVue.use(VTooltip);
+localVue.directive('tooltip', tooltip);
 localVue.component('da-card-post', DaCardPost);
 localVue.component('da-insane-post', DaInsanePost);
 localVue.component('da-context', DaContext);

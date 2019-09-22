@@ -1,6 +1,6 @@
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import svgicon from 'vue-svgicon';
-import VTooltip from 'v-tooltip';
+import tooltip from '../src/directives/tooltip';
 import DaLineClamp from '../src/components/DaLineClamp.vue';
 import DaInsanePost from '../src/components/DaInsanePost.vue';
 import posts from '../src/posts';
@@ -8,7 +8,7 @@ import posts from '../src/posts';
 const localVue = createLocalVue();
 
 localVue.use(svgicon);
-localVue.use(VTooltip);
+localVue.directive('tooltip', tooltip);
 localVue.component('da-line-clamp', DaLineClamp);
 
 it('should emit click event', () => {

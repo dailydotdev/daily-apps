@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import svgicon from 'vue-svgicon';
-import VTooltip from 'v-tooltip';
+import tooltip from '@daily/components/src/directives/tooltip';
 import App from './App.vue';
 import store from '../store';
 import { getCache, STATE_KEY } from '../common/cache';
@@ -39,9 +39,9 @@ const loadFromCache = async () => {
 // eslint-disable-next-line no-console
 const bootPromise = loadFromCache().catch(console.error);
 
-Vue.use(svgicon);
-Vue.use(VTooltip, { defaultDelay: { show: 400, hide: 0 } });
 Vue.use(VueRouter);
+Vue.use(svgicon);
+Vue.directive('tooltip', tooltip);
 
 const router = new VueRouter({
   base: '/index.html',
