@@ -8,10 +8,10 @@
     "build:chrome": "TARGET=chrome yarn build --mode chrome",
     "build:firefox": "TARGET=firefox yarn build --mode firefox",
     "build:all": "yarn build:chrome && yarn build:firefox && yarn zip:src",
-    "test": "yarn lint && vue-cli-service test:unit && bundlesize",
+    "test": "yarn lint && vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
-    "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/extension/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit",
+    "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/extension/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit && bundlesize",
     "zip:src": "node build/zip-src.js",
     "manifest": "node build/manifest.js"
   },
