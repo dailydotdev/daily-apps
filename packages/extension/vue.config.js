@@ -98,7 +98,7 @@ module.exports = {
       performance: {
         hints: process.env.NODE_ENV === 'production' ? 'error' : false,
         assetFilter(assetFilename) {
-          return !assetFilename.endsWith('.svg');
+          return !assetFilename.endsWith('.svg') && !assetFilename.endsWith('.zip');
         },
       },
     };
