@@ -176,15 +176,18 @@ it('should fetch personal latest posts from server', async () => {
 });
 
 it('should fetch posts by publication from server', async () => {
+    const inputParams = {
+        latest: '2018-11-28T08:27:45.612Z',
+        page: 0,
+        pageSize: 5,
+        pub: 'airbnb',
+    };
+
+    const URIComponent = `${encode(post.fetchPostsByPublicationQuery)}&variables=${encode(JSON.stringify({ params: inputParams }))}`;
+
     nock(baseURL)
-        .get('/v1/posts/publication')
-        .query({
-            latest: '2018-11-28T08:27:45.612Z',
-            page: 0,
-            pageSize: 5,
-            pub: 'airbnb',
-        })
-        .reply(200, latestResponse);
+        .get(`/graphql?query=${URIComponent}`)
+        .reply(200, { data: { postsByPublication: latestResponse } })
 
     const actual = await service.fetchPostsByPublication(
         new Date('2018-11-28T08:27:45.612Z'),

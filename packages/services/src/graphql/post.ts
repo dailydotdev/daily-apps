@@ -33,7 +33,16 @@ const fetchPostsByTagQuery = `
     }
 `;
 
+const fetchPostsByPublicationQuery = `
+    query fetchPostsByPublication($params: PostByPublicationInput) {
+        postsByPublication: tag(params: $params) {
+            ${POST_FIELDS}
+        }
+    }
+`;
+
 export default {
     fetchLatestQuery,
     fetchPostsByTagQuery,
+    fetchPostsByPublicationQuery,
 };

@@ -217,8 +217,21 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async fetchPostsByPublication(latest: Date, page: number, pub: string): Promise<Post[]> {
-        const res = await this.request.get(`/v1/posts/publication?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}&pub=${pub}`);
-        return res.data.map((p: any) => this.mapPost(p));
+        const inputParams = {
+            latest: latest.toISOString(),
+            page,
+            pageSize: this.pageSize,
+            pub,
+        };
+
+        const { data: res } = await this.request.get('/graphql', {
+            params: {
+                query: post.fetchPostsByPublicationQuery,
+                variables: { params: inputParams },
+            },
+        });
+
+        return res.data.postsByPublication.map((p: any) => this.mapPost(p));
     }
 
     async fetchPostsByTag(latest: Date, page: number, tag: string): Promise<Post[]> {
