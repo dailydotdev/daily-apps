@@ -256,15 +256,18 @@ it('should clear access token', async () => {
 });
 
 it('should fetch bookmarks from server', async () => {
+    const inputParams = {
+        latest: '2018-11-28T08:27:45.612Z',
+        page: 0,
+        pageSize: 5,
+    };
+
+    const URIComponent = `${encode(post.fetchBookmarksQuery)}&variables=${encode(JSON.stringify({ params: inputParams }))}`;
+
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .get('/v1/posts/bookmarks')
-        .query({
-            latest: '2018-11-28T08:27:45.612Z',
-            page: 0,
-            pageSize: 5,
-        })
-        .reply(200, bookResponse);
+        .get(`/graphql?query=${URIComponent}`)
+        .reply(200, { data: { bookmarks: bookResponse } })
 
     service.setAccessToken('token');
 

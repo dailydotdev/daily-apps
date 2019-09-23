@@ -41,8 +41,17 @@ const fetchPostsByPublicationQuery = `
     }
 `;
 
+const fetchBookmarksQuery = `
+    query FetchBookmarks($params: QueryPostInput) {
+        bookmarks(params: $params) {
+            ${POST_FIELDS}
+        }
+    }
+`;
+
 export default {
     fetchLatestQuery,
     fetchPostsByTagQuery,
     fetchPostsByPublicationQuery,
+    fetchBookmarksQuery,
 };

@@ -253,8 +253,20 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async fetchBookmarks(latest: Date, page: number): Promise<Post[]> {
-        const res = await this.request.get(`/v1/posts/bookmarks?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}`);
-        return res.data.map((p: any) => this.mapPost(p));
+        const inputParams = {
+            latest: latest.toISOString(),
+            page,
+            pageSize: this.pageSize,
+        };
+
+        const { data: res } = await this.request.get('/graphql', {
+            params: {
+                query: post.fetchBookmarksQuery,
+                variables: { params: inputParams },
+            },
+        });
+        
+        return res.data.bookmarks.map((p: any) => this.mapPost(p));
     }
 
     async fetchFeedPublications(): Promise<any> {
