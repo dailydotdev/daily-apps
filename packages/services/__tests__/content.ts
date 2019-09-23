@@ -196,15 +196,18 @@ it('should fetch posts by publication from server', async () => {
 });
 
 it('should fetch posts by tag from server', async () => {
+    const inputParams = {
+        latest: '2018-11-28T09:27:45.612Z',
+        page: 0,
+        pageSize: 5,
+        tag: 'webdev',
+    };
+
+    const URIComponent = `${encode(post.fetchPostsByTagQuery)}&variables=${encode(JSON.stringify({ params: inputParams }))}`;
+    
     nock(baseURL)
-        .get('/v1/posts/tag')
-        .query({
-            latest: '2018-11-28T09:27:45.612Z',
-            page: 0,
-            pageSize: 5,
-            tag: 'webdev',
-        })
-        .reply(200, latestResponse);
+        .get(`/graphql?query=${URIComponent}`)
+        .reply(200, { data: { postsByTag: latestResponse } })
 
     const actual = await service.fetchPostsByTag(
         new Date('2018-11-28T09:27:45.612Z'),

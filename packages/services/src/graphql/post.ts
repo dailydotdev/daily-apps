@@ -25,6 +25,15 @@ const fetchLatestQuery = `
     }
 `;
 
+const fetchPostsByTagQuery = `
+    query fetchPostsByTag($params: PostByTagInput) {
+        postsByTag: tag(params: $params) {
+            ${POST_FIELDS}
+        }
+    }
+`;
+
 export default {
     fetchLatestQuery,
+    fetchPostsByTagQuery,
 };
