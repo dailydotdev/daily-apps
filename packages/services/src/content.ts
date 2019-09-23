@@ -292,7 +292,10 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async addBookmarks(ids: string[]): Promise<void> {
-        await this.request.post<void>('/v1/posts/bookmarks', ids);
+        await this.request.post<void>('/graphql', {
+            query: post.addBookmarksMutation,
+            variables: { ids },
+        });
     }
 
     async removeBookmark(id: string): Promise<void> {

@@ -49,9 +49,16 @@ const fetchBookmarksQuery = `
     }
 `;
 
+const addBookmarksMutation = `
+    mutation AddBookmarks($ids: [ID!]!) {
+        ids: SetBookmarks(ids: $ids)
+    }
+`;
+
 export default {
     fetchLatestQuery,
     fetchPostsByTagQuery,
     fetchPostsByPublicationQuery,
     fetchBookmarksQuery,
+    addBookmarksMutation,
 };

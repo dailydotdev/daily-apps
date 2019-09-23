@@ -348,8 +348,11 @@ it('should add bookmarks', async () => {
 
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .post('/v1/posts/bookmarks', body)
-        .reply(204);
+        .post('/graphql', {
+            query: post.addBookmarksMutation,
+            variables: { ids: body }
+        })
+        .reply(200, { data: { ids: body } });
 
     service.setAccessToken('token');
 
