@@ -8,10 +8,23 @@ import {expected as latestExpected, response as latestResponse} from './fixtures
 import {expected as bookExpected, response as bookResponse} from './fixtures/bookmarks';
 import {expected as feedPubsExpected, response as feedPubsResponse} from './fixtures/feedPubs';
 
+import { post } from '../src/graphql/index';
+
 axios.defaults.adapter = httpAdapter;
 
 const baseURL = 'http://localhost:3000';
 const service = new ContentServiceImpl(baseURL, 5);
+
+function encode(val: string) {
+    return encodeURIComponent(val).
+        replace(/%40/gi, '@').
+        replace(/%3A/gi, ':').
+        replace(/%24/g, '$').
+        replace(/%2C/gi, ',').
+        replace(/%20/g, '+').
+        replace(/%5B/gi, '[').
+        replace(/%5D/gi, ']');
+}
 
 it('should fetch publications from server', async () => {
     const expected: Publication[] = require('./fixtures/pubs.json');
@@ -115,16 +128,19 @@ it('should publish an existing pub request', async () => {
 });
 
 it('should fetch latest posts from server', async () => {
+    const inputParams = {
+        latest: '2018-11-28T08:27:45.612Z',
+        page: 0,
+        pageSize: 5,
+        pubs: 'airbnb,alligator,angular',
+        tags: 'angular,vue,webdev',
+    };
+
+    const URIComponent = `${encode(post.fetchLatestQuery)}&variables=${encode(JSON.stringify({ params: inputParams }))}`;
+
     nock(baseURL)
-        .get('/v1/posts/latest')
-        .query({
-            latest: '2018-11-28T08:27:45.612Z',
-            page: 0,
-            pageSize: 5,
-            pubs: 'airbnb,alligator,angular',
-            tags: 'angular,vue,webdev',
-        })
-        .reply(200, latestResponse);
+        .get(`/graphql?query=${URIComponent}`)
+        .reply(200, { data: { latest: latestResponse } })
 
     const actual = await service.fetchLatestPosts(
         new Date('2018-11-28T08:27:45.612Z'),
@@ -137,15 +153,17 @@ it('should fetch latest posts from server', async () => {
 });
 
 it('should fetch personal latest posts from server', async () => {
+    const inputParams = {
+        latest: '2018-11-28T08:27:45.612Z',
+        page: 0,
+        pageSize: 5,
+    };
+    
+    const URIComponent = `${encode(post.fetchLatestQuery)}&variables=${encode(JSON.stringify({ params: inputParams }))}`;
+
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
-        .get('/v1/posts/latest')
-        .query({
-            latest: '2018-11-28T08:27:45.612Z',
-            page: 0,
-            pageSize: 5,
-        })
-        .reply(200, latestResponse);
+        .get(`/graphql?query=${URIComponent}`)
+        .reply(200, { data: { latest: latestResponse } })
 
     service.setAccessToken('token');
 
@@ -198,11 +216,18 @@ it('should fetch posts by tag from server', async () => {
 });
 
 it('should clear access token', async () => {
+    const dummyInputParams = {
+        latest: '2018-11-28T08:27:45.612Z',
+        page: 0,
+        pageSize: 5,
+    };
+
+    const dummyURIComponent = `${encode(post.fetchLatestQuery)}&variables=${encode(JSON.stringify({ params: dummyInputParams }))}`;
+
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .get('/v1/posts/latest')
-        .query(true)
-        .reply(200, latestResponse);
+        .get(`/graphql?query=${dummyURIComponent}`)
+        .reply(200, { data: { latest: latestResponse } })
 
     service.setAccessToken('token');
 
@@ -213,9 +238,8 @@ it('should clear access token', async () => {
 
     nock(baseURL)
         .matchHeader('authorization', (val: string) => !val)
-        .get('/v1/posts/latest')
-        .query(true)
-        .reply(200, latestResponse);
+        .get(`/graphql?query=${dummyURIComponent}`)
+        .reply(200, { data: { latest: latestResponse } })
 
     service.clearAccessToken();
 
