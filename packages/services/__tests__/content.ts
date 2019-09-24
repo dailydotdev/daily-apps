@@ -364,8 +364,11 @@ it('should remove bookmark', async () => {
 
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .delete(`/v1/posts/${id}/bookmark`)
-        .reply(204);
+        .post('/graphql', {
+            query: post.removeBookmarkMutation,
+            variables: { id }
+        })
+        .reply(200, { data: { id } });
 
     service.setAccessToken('token');
 

@@ -55,10 +55,17 @@ const addBookmarksMutation = `
     }
 `;
 
+const removeBookmarkMutation = `
+    mutation ($id: ID!) {
+        id: RemoveBookmark(id: $id)
+    }
+`;
+
 export default {
     fetchLatestQuery,
     fetchPostsByTagQuery,
     fetchPostsByPublicationQuery,
     fetchBookmarksQuery,
     addBookmarksMutation,
+    removeBookmarkMutation,
 };

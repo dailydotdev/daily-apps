@@ -299,7 +299,10 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async removeBookmark(id: string): Promise<void> {
-        await this.request.delete(`/v1/posts/${id}/bookmark`);
+        await this.request.post<void>('/graphql', {
+            query: post.removeBookmarkMutation,
+            variables: { id },
+        });
     }
 
     async fetchPopularTags(): Promise<Tag[]> {
