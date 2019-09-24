@@ -64,10 +64,15 @@ it('should report post', async () => {
 
 it('should hide post', async () => {
     const postId = '12345';
+
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .post(`/v1/posts/${postId}/hide`)
-        .reply(204);
+        .post('/graphql', {
+            query: post.hidePostMutation,
+            variables: { id: postId }
+        })
+        .reply(200, { data: { id: postId } });
+
 
     service.setAccessToken('token');
 

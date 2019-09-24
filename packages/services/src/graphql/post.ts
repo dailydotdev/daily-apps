@@ -61,6 +61,12 @@ const removeBookmarkMutation = `
     }
 `;
 
+const hidePostMutation = `
+    mutation ($id: ID!) {
+        id: HidePost(id: $id)
+    }
+`;
+
 export default {
     fetchLatestQuery,
     fetchPostsByTagQuery,
@@ -68,4 +74,5 @@ export default {
     fetchBookmarksQuery,
     addBookmarksMutation,
     removeBookmarkMutation,
+    hidePostMutation,
 };

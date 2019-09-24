@@ -194,7 +194,10 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async hidePost(postId: string): Promise<void> {
-        await this.request.post(`/v1/posts/${postId}/hide`);
+        await this.request.post<void>('/graphql', {
+            query: post.hidePostMutation,
+            variables: { id: postId },
+        });
     }
 
     async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]> {
