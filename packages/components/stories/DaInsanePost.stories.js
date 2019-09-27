@@ -1,9 +1,21 @@
+import Vue from 'vue';
 import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, text, array, select, boolean } from '@storybook/addon-knobs';
+import {
+  withKnobs, text, array, select, boolean,
+} from '@storybook/addon-knobs';
 
 import DaInsanePost from '../src/components/DaInsanePost.vue';
 import posts from '../src/posts.json';
+
+// eslint-disable-next-line import/prefer-default-export
+export const mdyDate = value => new Date(value).toLocaleString('en-US', {
+  month: 'short',
+  day: '2-digit',
+  year: 'numeric',
+});
+
+Vue.filter('mdyDate', mdyDate);
 
 storiesOf('DaInsanePost', module)
   .addDecorator(withKnobs)
@@ -64,4 +76,3 @@ storiesOf('DaInsanePost', module)
       },
     },
   }));
-

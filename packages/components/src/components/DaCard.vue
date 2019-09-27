@@ -212,6 +212,14 @@ export default {
   & .card__background__image {
     transform: translate3d(0, 4px, 0) scale(1.05);
   }
+
+  & .card__read-time {
+    opacity: 0;
+  }
+
+  & .card__tags {
+    opacity: 1;
+  }
 }
 
 .animate-cards .card:hover,
