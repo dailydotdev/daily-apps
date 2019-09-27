@@ -11,7 +11,7 @@ import {
 
 import DaCardPost from '../src/components/DaCardPost.vue';
 import posts from '../src/posts.json';
-import {mdyDate} from "./DaInsanePost.stories";
+import { mdyDate } from './DaInsanePost.stories';
 
 Vue.filter('mdyDate', mdyDate);
 
