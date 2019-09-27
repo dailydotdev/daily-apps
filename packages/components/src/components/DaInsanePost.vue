@@ -16,16 +16,16 @@
               @click="$emit('publication', { pub: post.publication })">
         <img class="insane__icon lazyload"
             :data-src="post.publication.image"
-            :alt="post.publication.name" :title="post.publication.name"
+            :alt="post.publication.name" v-tooltip="post.publication.name"
             :key="post.publication.name"/>
       </button>
       <div class="insane__reveal reveal">
         <button class="btn-icon insane__reveal__bookmark"
-                :title="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
+                v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
                 @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
           <svgicon icon="bookmark"/>
         </button>
-        <button class="btn-icon insane__reveal__menu" title="Menu"
+        <button class="btn-icon insane__reveal__menu" v-tooltip="'More'"
                 @click="$emit('menu', { post, event: $event })" v-if="showMenu">
           <svgicon icon="menu"/>
         </button>
@@ -42,36 +42,14 @@
 
 <script>
 import 'lazysizes';
-import { truncateTags } from '../truncate';
+import postMixin from '../common/postMixin';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
   name: 'DaInsanePost',
-
+  mixins: [postMixin],
   components: {
     DaLineClamp,
-  },
-
-  props: {
-    post: {
-      type: Object,
-      required: true,
-    },
-    menuOpened: {
-      type: Boolean,
-      default: false,
-    },
-    showMenu: {
-      type: Boolean,
-      default: true,
-    },
-  },
-
-  data() {
-    return {
-      notifying: false,
-      notification: '',
-    };
   },
 
   computed: {
@@ -89,22 +67,8 @@ export default {
   },
 
   mounted() {
-        import('../../icons/bookmark');
-        import('../../icons/menu');
-  },
-
-  methods: {
-    notify(notification) {
-      this.notification = notification;
-      this.notifying = true;
-      setTimeout(() => {
-        this.notifying = false;
-      }, 1000);
-    },
-
-    truncateTags(...args) {
-      return truncateTags(this.post.tags, ...args);
-    },
+    import('../../icons/bookmark');
+    import('../../icons/menu');
   },
 };
 </script>
@@ -118,6 +82,7 @@ export default {
 .insane--post {
   position: relative;
   transition: opacity 0.1s;
+  will-change: transform;
 
   & .reveal {
     transition: transform 0.2s ease-out;

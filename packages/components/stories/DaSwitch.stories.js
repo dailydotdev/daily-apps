@@ -18,9 +18,16 @@ storiesOf('DaSwitch', module)
       toggle: action('toggle'),
     },
   }))
+  .add('small with label', () => ({
+    components: { DaSwitch },
+    template: '<da-switch class="small" icon="link" label="This is label :)" @toggle="toggle"/>',
+    methods: {
+      toggle: action('toggle'),
+    },
+  }))
   .add('checked', () => ({
     components: { DaSwitch },
-    template: '<da-switch icon="moon" checked @toggle="toggle"/>',
+    template: '<da-switch icon="moon" checked label="This is label :)" @toggle="toggle"/>',
     methods: {
       toggle: action('toggle'),
     },

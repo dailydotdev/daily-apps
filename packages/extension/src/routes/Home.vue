@@ -58,27 +58,7 @@
           Bookmark articles on the main feed and it will be shown here.
         </p>
       </div>
-      <div class="content__insane" v-if="insaneMode">
-        <template v-if="showAd">
-          <da-insane-placeholder v-if="!ads.length"/>
-          <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item"
-                        @click="onAdClick" @impression="onAdImpression"/>
-        </template>
-        <da-insane-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
-                        @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
-                        @click="onPostClick" :show-menu="isLoggedIn"
-                        :menu-opened="selectedPostId === item.id"/>
-      </div>
-      <masonry class="content__cards" :cols="cols" :gutter="32" v-else>
-        <template v-if="showAd">
-          <da-card-placeholder v-if="!ads.length"/>
-          <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
-        </template>
-        <da-card-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
-                      @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
-                      @click="onPostClick" :show-menu="isLoggedIn"
-                      :menu-opened="selectedPostId === item.id"/>
-      </masonry>
+      <da-feed/>
     </main>
     <div id="anchor" ref="anchor"></div>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
@@ -100,12 +80,6 @@
         </div>
       </template>
     </da-terminal>
-    <da-context ref="context" class="post-context" @open="onPostMenuOpened"
-                @close="selectedPostId = null">
-      <button class="btn btn-menu" @click="reportPost('broken')">Broken link</button>
-      <button class="btn btn-menu" @click="reportPost('nsfw')">Report NSFW</button>
-      <button class="btn btn-menu" @click="hidePost">Hide post</button>
-    </da-context>
     <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened"
                 @close="setShowDndMenu(false)">
       <template v-if="!dndMode">
@@ -133,20 +107,16 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import {
   mapState, mapActions, mapMutations, mapGetters,
 } from 'vuex';
-import VueMasonry from 'vue-masonry-css';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
 import DaDndMessage from '../components/DaDndMessage.vue';
 import DaSvg from '../components/DaSvg.vue';
+import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
-import { monetizationService, contentService } from '../common/services';
 import { trackPageView } from '../common/analytics';
-
-Vue.use(VueMasonry);
 
 export default {
   name: 'Home',
@@ -155,13 +125,8 @@ export default {
     DaSidebar,
     DaDndMessage,
     DaHeader,
-    DaCardPost: () => import(/* webpackChunkName: "cards" */ '@daily/components/src/components/DaCardPost.vue'),
-    DaCardAd: () => import(/* webpackChunkName: "cards" */ '@daily/components/src/components/DaCardAd.vue'),
-    DaCardPlaceholder: () => import(/* webpackChunkName: "cards" */ '@daily/components/src/components/DaCardPlaceholder.vue'),
-    DaInsanePost: () => import(/* webpackChunkName: "insane" */ '@daily/components/src/components/DaInsanePost.vue'),
-    DaInsaneAd: () => import(/* webpackChunkName: "insane" */ '@daily/components/src/components/DaInsaneAd.vue'),
-    DaInsanePlaceholder: () => import(/* webpackChunkName: "insane" */ '@daily/components/src/components/DaInsanePlaceholder.vue'),
     DaSvg,
+    DaFeed,
     DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
     DaLogin: () => import('../components/DaLogin.vue'),
@@ -175,20 +140,10 @@ export default {
   data() {
     return {
       cta: ctas[Math.floor(Math.random() * ctas.length)],
-      cols: {
-        default: 7,
-        2350: 6,
-        2030: 5,
-        1670: 4,
-        1390: 3,
-        1070: 2,
-      },
-      ads: [],
       showGoModal: false,
       showRequestModal: false,
       showLoginModal: false,
       showProfileModal: false,
-      selectedPostId: null,
       lineNumbers: 1,
     };
   },
@@ -208,32 +163,6 @@ export default {
           }
         });
       });
-    },
-
-    onBookmark({ post, bookmarked }) {
-      ga('send', 'event', 'Post', 'Bookmark', bookmarked ? 'Add' : 'Remove');
-      this.toggleBookmarks({ id: post.id, bookmarked });
-    },
-
-    onPublication({ pub }) {
-      if (this.filter && this.filter.type === 'publication' && this.filter.info.id === pub.id) return;
-      ga('send', 'event', 'Post', 'Publication');
-      this.setFilter({ type: 'publication', info: pub });
-    },
-
-    onPostClick(post) {
-      ga('send', 'event', 'Post', 'Click', post.source);
-    },
-
-    onPostMenu({ post, event }) {
-      ga('send', 'event', 'Post', 'Menu');
-      this.$refs.context.open(event, post);
-    },
-
-    onPostMenuOpened(event, post) {
-      const rect = event.target.getBoundingClientRect();
-      this.$refs.context.positionMenu({ bottom: rect.top - 8, right: rect.right });
-      this.selectedPostId = post.id;
     },
 
     onDndMenu(event) {
@@ -265,43 +194,6 @@ export default {
       this.$refs.dndContext.close();
       this.setDndModeTime(dndDate.getTime());
       ga('send', 'event', 'Dnd', type);
-    },
-
-    reportPost(reason) {
-      ga('send', 'event', 'Post', 'Report', reason);
-      const postId = this.selectedPostId;
-      this.$refs.context.close();
-
-      // TODO: handle error
-      contentService.reportPost(postId, reason)
-        // eslint-disable-next-line no-console
-        .catch(console.error);
-
-      setTimeout(() => {
-        this.$refs.posts.find(com => com.post.id === postId).notify('Thanks for reporting!');
-        setTimeout(() => this.removePost(postId), 1000);
-      }, 100);
-    },
-
-    hidePost() {
-      ga('send', 'event', 'Post', 'Hide');
-      const postId = this.selectedPostId;
-      this.$refs.context.close();
-
-      // TODO: handle error
-      contentService.hidePost(postId)
-        // eslint-disable-next-line no-console
-        .catch(console.error);
-
-      this.removePost(postId);
-    },
-
-    onAdClick(ad) {
-      ga('send', 'event', 'Ad', 'Click', ad.source);
-    },
-
-    onAdImpression(ad) {
-      ga('send', 'event', 'Ad', 'Impression', ad.source);
     },
 
     onGoClicked() {
@@ -339,18 +231,6 @@ export default {
       // eslint-disable-next-line no-console
         .catch(console.error);
 
-      // TODO: handle error
-      monetizationService.fetchAd()
-        .then((ads) => {
-          this.ads = ads;
-          if (!ads.length) {
-            ga('send', 'event', 'Ad', 'NotAvailable');
-          }
-        })
-      // TODO: handle error
-      // eslint-disable-next-line no-console
-        .catch(console.error);
-
       this.fetchNotifications()
       // TODO: handle error
       // eslint-disable-next-line no-console
@@ -377,12 +257,9 @@ export default {
       addFilterToFeed: 'feed/addFilterToFeed',
       fetchNotifications: 'ui/fetchNotifications',
       refreshToken: 'user/refreshToken',
-      setFilter: 'feed/setFilter',
     }),
 
     ...mapMutations({
-      removePost: 'feed/removePost',
-      toggleBookmarks: 'feed/toggleBookmarks',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
       hideNotifications: 'ui/hideNotifications',
@@ -393,7 +270,7 @@ export default {
   },
 
   computed: {
-    ...mapState('ui', ['insaneMode', 'notifications', 'showNotifications', 'theme']),
+    ...mapState('ui', ['notifications', 'showNotifications', 'theme']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter']),
     ...mapState({
@@ -429,7 +306,6 @@ export default {
 
     ...mapGetters({
       posts: 'feed/feed',
-      showAd: 'feed/showAd',
       hasFilter: 'feed/hasFilter',
       isLoggedIn: 'user/isLoggedIn',
     }),
@@ -551,19 +427,6 @@ export default {
   height: 20px;
   margin: 0 8px;
   color: var(--color-salt-10);
-}
-
-.content__cards {
-  margin: -32px 0;
-
-  & .card, & .card-ph {
-    margin: 32px 0;
-  }
-}
-
-.content__insane {
-  border-radius: 8px;
-  overflow: hidden;
 }
 
 .content__empty-bookmarks {

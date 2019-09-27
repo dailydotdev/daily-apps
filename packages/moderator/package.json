@@ -11,8 +11,8 @@
     "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/moderator/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit"
   },
   "dependencies": {
-    "@daily/components": "^0.2.1",
-    "@daily/services": "^0.1.0",
+    "@daily/components": "*",
+    "@daily/services": "*",
     "core-js": "^2.6.5",
     "focus-visible": "^4.1.5",
     "localforage": "^1.7.3",

@@ -154,6 +154,7 @@ export default {
   object-fit: cover;
   transition: transform .2s linear;
   transform-origin: center;
+  will-change: transform;
 }
 
 .card__content {
@@ -210,7 +211,7 @@ export default {
 .card:hover,
 .card.hover {
   & .card__background__image {
-    transform: translate3d(0, 4px, 0) scale(1.05);
+    transform: translate(0, 4px) scale(1.05);
   }
 
   & .card__read-time {
@@ -222,10 +223,19 @@ export default {
   }
 }
 
-.animate-cards .card:hover,
-.animate-cards .card.hover {
-  & .card__hover {
-    transform: translate3d(0, -16px, 0) scale(1.02);
+.animate-cards {
+  & .card {
+
+    & .card__hover {
+      will-change: transform;
+    }
+
+    &:hover,
+    &.hover {
+      & .card__hover {
+        transform: translate(0, -16px) scale(1.02);
+      }
+    }
   }
 }
 </style>

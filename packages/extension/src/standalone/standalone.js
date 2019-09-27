@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import svgicon from 'vue-svgicon';
+import tooltip from '@daily/components/src/directives/tooltip';
 import App from './App.vue';
 import store from '../store';
 import { getCache, STATE_KEY } from '../common/cache';
@@ -38,8 +39,9 @@ const loadFromCache = async () => {
 // eslint-disable-next-line no-console
 const bootPromise = loadFromCache().catch(console.error);
 
-Vue.use(svgicon);
 Vue.use(VueRouter);
+Vue.use(svgicon);
+Vue.directive('tooltip', tooltip);
 
 const router = new VueRouter({
   base: '/index.html',
@@ -108,6 +110,9 @@ Vue.filter('terminalTime', value => value.toLocaleString('en-US', {
   minute: 'numeric',
   second: 'numeric',
   hour12: true,
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
 }));
 
 Vue.filter('provider', (value) => {

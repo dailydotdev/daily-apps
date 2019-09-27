@@ -43,3 +43,10 @@ export const testAction = (action, payload, state, expectedMutations = [], expec
       })
       .catch(reject);
   });
+
+export const createDummyEvent = target => ({
+  clientX: 0,
+  clientY: 0,
+  target,
+  stopPropagation: jest.fn(),
+});

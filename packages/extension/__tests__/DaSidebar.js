@@ -1,6 +1,7 @@
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import svgicon from 'vue-svgicon';
+import tooltip from '@daily/components/src/directives/tooltip';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
 import { contentService } from '../src/common/services';
@@ -18,6 +19,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(svgicon);
+localVue.directive('tooltip', tooltip);
 localVue.component('da-mode-switch', DaModeSwitch);
 
 let feed;
@@ -233,7 +235,7 @@ describe('SUBMIT REQUEST', () => {
       done();
     });
   });
-  
+
   it('should disable request input while the request is processed', (done) => {
     // Simulate delay
     contentService.requestPublication.mockReturnValue(new Promise(

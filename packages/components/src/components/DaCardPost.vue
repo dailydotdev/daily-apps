@@ -14,17 +14,17 @@
               @click="$emit('publication', { pub: post.publication })">
         <img class="card__footer__icon lazyload"
             :data-src="post.publication.image"
-            :alt="post.publication.name" :title="post.publication.name"
+            :alt="post.publication.name" v-tooltip="post.publication.name"
             :key="post.publication.name"/>
       </button>
       <span class="card__footer__views micro2"
             v-if="post.publishedAt">{{post.publishedAt | mdyDate}}</span>
       <button class="btn-icon btn-small card__footer__bookmark"
-              :title="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
+              v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
               @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
         <svgicon icon="bookmark"/>
       </button>
-      <button class="btn-icon btn-small card__footer__menu" title="Menu"
+      <button class="btn-icon btn-small card__footer__menu" v-tooltip="'More'"
               @click="$emit('menu', { post, event: $event })" v-if="showMenu">
         <svgicon icon="menu" ref="orig"/>
       </button>
@@ -41,34 +41,14 @@
 
 <script>
 import 'lazysizes';
-import { truncateTags } from '../truncate';
+import postMixin from '../common/postMixin';
 import DaCard from './DaCard.vue';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
   name: 'DaCardPost',
+  mixins: [postMixin],
   components: { DaCard, DaLineClamp },
-  props: {
-    post: {
-      type: Object,
-      required: true,
-    },
-    menuOpened: {
-      type: Boolean,
-      default: false,
-    },
-    showMenu: {
-      type: Boolean,
-      default: true,
-    },
-  },
-
-  data() {
-    return {
-      notifying: false,
-      notification: '',
-    };
-  },
 
   watch: {
     menuOpened() {
@@ -100,18 +80,6 @@ export default {
   },
 
   methods: {
-    notify(notification) {
-      this.notification = notification;
-      this.notifying = true;
-      setTimeout(() => {
-        this.notifying = false;
-      }, 1000);
-    },
-
-    truncateTags(...args) {
-      return truncateTags(this.post.tags, ...args);
-    },
-
     positionDuplicate() {
       if (this.menuOpened) {
         this.$nextTick(() => {
