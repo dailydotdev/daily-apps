@@ -6,7 +6,7 @@
           <da-line-clamp :text="post.title" :lines="3"/>
         </h5>
         <div class="insane__tags micro1" :title="tags">
-          <span class="insane__tags__readtime">{{ post.readTime }} min read / </span>
+          <span class="insane__tags__read-time">{{ post.readTime }} min read / </span>
           <da-line-clamp :text="tags" :lines="1" :truncate="truncateTags"/>
         </div>
       </a>

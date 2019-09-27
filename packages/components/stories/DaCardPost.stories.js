@@ -11,9 +11,9 @@ import {
 
 import DaCardPost from '../src/components/DaCardPost.vue';
 import posts from '../src/posts.json';
-import { mdyDate } from './DaInsanePost.stories';
+import mdyDateFilter from '../src/common/mdyDateFilter';
 
-Vue.filter('mdyDate', mdyDate);
+Vue.filter('mdyDate', mdyDateFilter);
 
 storiesOf('DaCardPost', module)
   .addDecorator(withKnobs)

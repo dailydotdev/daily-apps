@@ -7,15 +7,10 @@ import {
 
 import DaInsanePost from '../src/components/DaInsanePost.vue';
 import posts from '../src/posts.json';
+import mdyDateFilter from '../src/common/mdyDateFilter';
 
 // eslint-disable-next-line import/prefer-default-export
-export const mdyDate = value => new Date(value).toLocaleString('en-US', {
-  month: 'short',
-  day: '2-digit',
-  year: 'numeric',
-});
-
-Vue.filter('mdyDate', mdyDate);
+Vue.filter('mdyDate', mdyDateFilter);
 
 storiesOf('DaInsanePost', module)
   .addDecorator(withKnobs)
