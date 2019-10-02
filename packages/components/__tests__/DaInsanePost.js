@@ -4,10 +4,12 @@ import tooltip from '../src/directives/tooltip';
 import DaLineClamp from '../src/components/DaLineClamp.vue';
 import DaInsanePost from '../src/components/DaInsanePost.vue';
 import posts from '../src/posts';
+import mdyDateFilter from '../src/common/mdyDateFilter';
 
 const localVue = createLocalVue();
 
 localVue.use(svgicon);
+localVue.filter('mdyDate', mdyDateFilter);
 localVue.directive('tooltip', tooltip);
 localVue.component('da-line-clamp', DaLineClamp);
 
@@ -39,11 +41,18 @@ it('should set bookmarked class when bookmarked', () => {
     .toEqual(true);
 });
 
-it('should set tags', () => {
+it('should set read time and tags', () => {
   const post = posts[1];
   const wrapper = mount(DaInsanePost, { localVue, propsData: { post } });
-  expect(wrapper.find('.insane__tags span').element.innerHTML)
-    .toEqual('#javascript,#webdev,#html,#html5');
+  expect(wrapper.find('.insane__tags__read-time').element.innerHTML)
+    .toEqual('2 min read / ');
+  expect(wrapper.find('.insane__tags__read-time').element.nextElementSibling.innerHTML).toEqual('#javascript,#webdev,#html,#html5');
+});
+
+it('should show publication date', () => {
+  const post = posts[1];
+  const wrapper = mount(DaInsanePost, { localVue, propsData: { post } });
+  expect(wrapper.find('.insane__views').element.innerHTML.trim()).toEqual('Jun 10, 2019');
 });
 
 it('should emit publication event on click', () => {

@@ -5,10 +5,12 @@ import DaLineClamp from '../src/components/DaLineClamp.vue';
 import DaCard from '../src/components/DaCard.vue';
 import DaCardPost from '../src/components/DaCardPost.vue';
 import posts from '../src/posts';
+import mdyDateFilter from '../src/common/mdyDateFilter';
 
 const localVue = createLocalVue();
 
 localVue.use(svgicon);
+localVue.filter('mdyDate', mdyDateFilter);
 localVue.directive('tooltip', tooltip);
 localVue.component('da-line-clamp', DaLineClamp);
 localVue.component('da-card', DaCard);
@@ -38,6 +40,20 @@ it('should set tags', () => {
   const wrapper = mount(DaCardPost, { localVue, propsData: { post } });
   expect(wrapper.find('.card__tags span').element.innerHTML)
     .toEqual('#javascript,#webdev,#html,#html5');
+});
+
+it('should set read time', () => {
+  const post = posts[1];
+  const wrapper = mount(DaCardPost, { localVue, propsData: { post } });
+  expect(wrapper.find('.card__read-time span').element.innerHTML)
+    .toEqual('2 min read');
+});
+
+it('should show publication date in footer with proper formatting', () => {
+  const post = posts[1];
+  const wrapper = mount(DaCardPost, { localVue, propsData: { post } });
+  expect(wrapper.find('.card__footer__views').element.innerHTML)
+    .toEqual('Jun 10, 2019');
 });
 
 it('should show notification', () => {

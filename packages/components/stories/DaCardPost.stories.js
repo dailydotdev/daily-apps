@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 import {
@@ -10,6 +11,9 @@ import {
 
 import DaCardPost from '../src/components/DaCardPost.vue';
 import posts from '../src/posts.json';
+import mdyDateFilter from '../src/common/mdyDateFilter';
+
+Vue.filter('mdyDate', mdyDateFilter);
 
 storiesOf('DaCardPost', module)
   .addDecorator(withKnobs)
