@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import svgicon from 'vue-svgicon';
 import tooltip from '@daily/components/src/directives/tooltip';
+import mdyDateFilter from '@daily/components/src/common/mdyDateFilter';
 import App from './App.vue';
 import store from '../store';
 import { getCache, STATE_KEY } from '../common/cache';
@@ -42,6 +43,7 @@ const bootPromise = loadFromCache().catch(console.error);
 Vue.use(VueRouter);
 Vue.use(svgicon);
 Vue.directive('tooltip', tooltip);
+Vue.filter('mdyDate', mdyDateFilter);
 
 const router = new VueRouter({
   base: '/index.html',

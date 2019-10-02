@@ -5,9 +5,7 @@
       <div class="card__tags nuggets" :title="tagsStr">
         <da-line-clamp :text="tagsStr" :lines="1" :truncate="truncateTags"/>
       </div>
-      <div class="card__read-time nuggets" :title="readTimeStr">
-        <da-line-clamp :text="readTimeStr"/>
-      </div>
+      <span class="card__read-time nuggets">{{readTimeStr}}</span>
     </div>
     <template slot="footer">
       <button class="btn-icon btn-small card__footer__publication" v-if="post.publication.name"
@@ -68,7 +66,10 @@ export default {
       return (this.post.tags || []).map(t => `#${t}`).join(',');
     },
     readTimeStr() {
-      return `${this.post.readTime} min read`;
+      if (this.post.readTime) {
+        return `${this.post.readTime} min read`;
+      }
+      return '';
     },
   },
 
@@ -104,6 +105,17 @@ export default {
     position: relative;
     overflow: hidden;
   }
+
+  &:hover,
+  &.hover {
+    & .card__read-time {
+      opacity: 0;
+    }
+
+    & .card__tags {
+      opacity: 1;
+    }
+  }
 }
 
 .card--post .card__content {
@@ -125,7 +137,8 @@ export default {
   }
 }
 
-.card__tags {
+.card__tags,
+.card__read-time {
   opacity: 0;
   position: absolute;
   bottom: 0;
@@ -135,11 +148,10 @@ export default {
   color: var(--theme-disabled);
   text-align: center;
   word-break: break-all;
-  transition: opacity 200ms ease;
+  transition: opacity 0.1s linear;
 }
 
 .card__read-time {
-  @extend .card__tags;
   opacity: 1;
 }
 

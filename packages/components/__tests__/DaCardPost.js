@@ -45,7 +45,7 @@ it('should set tags', () => {
 it('should set read time', () => {
   const post = posts[1];
   const wrapper = mount(DaCardPost, { localVue, propsData: { post } });
-  expect(wrapper.find('.card__read-time span').element.innerHTML)
+  expect(wrapper.find('.card__read-time').element.innerHTML)
     .toEqual('2 min read');
 });
 

@@ -93,7 +93,7 @@ const registerEvents = (el, value, modifiers, options) => {
 
 const directive = {
   options: {
-    delay: { show: 500, hide: 100 },
+    delay: { show: 400, hide: 100 },
   },
   bind(el, { value, modifiers }) {
     if (!vnode) {

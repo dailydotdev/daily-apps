@@ -213,14 +213,6 @@ export default {
   & .card__background__image {
     transform: translate(0, 4px) scale(1.05);
   }
-
-  & .card__read-time {
-    opacity: 0;
-  }
-
-  & .card__tags {
-    opacity: 1;
-  }
 }
 
 .animate-cards {
