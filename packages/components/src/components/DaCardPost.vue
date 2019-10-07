@@ -16,7 +16,7 @@
             :key="post.publication.name"/>
       </button>
       <span class="card__footer__views micro2"
-            v-if="post.publishedAt">{{post.publishedAt | mdyDate}}</span>
+            v-if="post.createdAt">{{post.createdAt | mdyDate}}</span>
       <button class="btn-icon btn-small card__footer__bookmark"
               v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
               @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
