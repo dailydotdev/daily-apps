@@ -7,6 +7,7 @@ import DaContext from '../../components/src/components/DaContext.vue';
 import DaHeader from '../src/components/DaHeader.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
 import DaFeed from '../src/components/DaFeed.vue';
+import { createDummyEvent } from './fixtures/helpers';
 
 const localVue = createLocalVue();
 
@@ -46,6 +47,7 @@ beforeEach(() => {
     namespaced: true,
     state: {
       insaneMode: false,
+      showDndMenu: false,
     },
     mutations: {
       setDndModeTime: jest.fn(),
@@ -85,4 +87,19 @@ it('should commit "setDndModeTime" when "For 1 Hour" or "Until Tomorrow" is clic
   const wrapper = mount(DaHome, { store, localVue });
   wrapper.find('.dnd-context .btn-menu').trigger('click');
   expect(ui.mutations.setDndModeTime).toBeCalledWith(expect.anything(), expect.any(Number));
+});
+
+it('should close context menu when clicking two times on the DnD button', (done) => {
+  const wrapper = mount(DaHome, { store, localVue });
+  const header = wrapper.find('header');
+  header.vm.$emit('menu', createDummyEvent(header.element));
+  setTimeout(() => {
+    expect(wrapper.vm.$refs.dndContext.$refs.context.show).toEqual(true);
+    ui.state.showDndMenu = true;
+    header.vm.$emit('menu', createDummyEvent(header.element));
+    setTimeout(() => {
+      expect(wrapper.vm.$refs.dndContext.$refs.context.show).toEqual(false);
+      done();
+    });
+  }, 10);
 });
