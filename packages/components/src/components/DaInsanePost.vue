@@ -12,7 +12,7 @@
         </div>
       </a>
       <span class="insane__views micro2 reveal"
-            v-if="post.publishedAt"> {{post.publishedAt | mdyDate}} </span>
+            v-if="post.createdAt"> {{post.createdAt | mdyDate}} </span>
       <button class="btn-icon insane__publication reveal" v-if="post.publication.name"
               @click="$emit('publication', { pub: post.publication })">
         <img class="insane__icon lazyload"
