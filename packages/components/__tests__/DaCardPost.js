@@ -53,7 +53,7 @@ it('should show publication date in footer with proper formatting', () => {
   const post = posts[1];
   const wrapper = mount(DaCardPost, { localVue, propsData: { post } });
   expect(wrapper.find('.card__footer__views').element.innerHTML)
-    .toEqual('Jun 10, 2019');
+    .toEqual('Jun 12, 2019');
 });
 
 it('should show notification', () => {
