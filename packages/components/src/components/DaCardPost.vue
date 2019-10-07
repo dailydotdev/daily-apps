@@ -1,8 +1,11 @@
 <template>
   <da-card class="card--post" :class="cls" :title="post.title" :url="post.url" :image="post.image"
           :placeholder="post.placeholder" :size="post.size" @click="$emit('click', post)">
-    <div slot="content" class="card__tags nuggets" v-tooltip="tagsStr">
-      <da-line-clamp :text="tagsStr" :lines="1" :truncate="truncateTags"/>
+    <div slot="content">
+      <div class="card__tags nuggets" :title="tagsStr">
+        <da-line-clamp :text="tagsStr" :lines="1" :truncate="truncateTags"/>
+      </div>
+      <span class="card__read-time nuggets">{{readTimeStr}}</span>
     </div>
     <template slot="footer">
       <button class="btn-icon btn-small card__footer__publication" v-if="post.publication.name"
@@ -13,7 +16,7 @@
             :key="post.publication.name"/>
       </button>
       <span class="card__footer__views micro2"
-            v-if="post.readTime">// {{post.readTime}} min read</span>
+            v-if="post.publishedAt">{{post.publishedAt | mdyDate}}</span>
       <button class="btn-icon btn-small card__footer__bookmark"
               v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
               @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
@@ -62,6 +65,12 @@ export default {
     tagsStr() {
       return (this.post.tags || []).map(t => `#${t}`).join(',');
     },
+    readTimeStr() {
+      if (this.post.readTime) {
+        return `${this.post.readTime} min read`;
+      }
+      return '';
+    },
   },
 
   mounted() {
@@ -96,6 +105,17 @@ export default {
     position: relative;
     overflow: hidden;
   }
+
+  &:hover,
+  &.hover {
+    & .card__read-time {
+      opacity: 0;
+    }
+
+    & .card__tags {
+      opacity: 1;
+    }
+  }
 }
 
 .card--post .card__content {
@@ -117,7 +137,9 @@ export default {
   }
 }
 
-.card__tags {
+.card__tags,
+.card__read-time {
+  opacity: 0;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -126,6 +148,11 @@ export default {
   color: var(--theme-disabled);
   text-align: center;
   word-break: break-all;
+  transition: opacity 0.1s linear;
+}
+
+.card__read-time {
+  opacity: 1;
 }
 
 .card__footer__icon {

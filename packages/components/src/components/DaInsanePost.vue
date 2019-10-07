@@ -5,12 +5,14 @@
         <h5 class="insane__title">
           <da-line-clamp :text="post.title" :lines="3"/>
         </h5>
-        <div class="insane__tags micro1" v-tooltip="tags">
+        <div class="insane__tags micro1" :title="tags">
+          <span class="insane__tags__read-time"
+                v-if="post.readTime">{{ post.readTime }} min read / </span>
           <da-line-clamp :text="tags" :lines="1" :truncate="truncateTags"/>
         </div>
       </a>
       <span class="insane__views micro2 reveal"
-            v-if="post.readTime">// {{post.readTime}} min read</span>
+            v-if="post.publishedAt"> {{post.publishedAt | mdyDate}} </span>
       <button class="btn-icon insane__publication reveal" v-if="post.publication.name"
               @click="$emit('publication', { pub: post.publication })">
         <img class="insane__icon lazyload"
