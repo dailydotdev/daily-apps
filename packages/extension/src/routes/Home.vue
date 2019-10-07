@@ -167,11 +167,15 @@ export default {
 
     onDndMenu(event) {
       ga('send', 'event', 'Dnd', 'Menu');
-      this.setShowDndMenu(true);
-      this.$refs.dndContext.open(event);
+      if (!this.showDndMenu) {
+        this.$refs.dndContext.open(event);
+      } else {
+        this.$refs.dndContext.close();
+      }
     },
 
     onDndMenuOpened(event) {
+      this.setShowDndMenu(true);
       const rect = event.target.getBoundingClientRect();
       this.$refs.dndContext.positionMenu({ top: rect.bottom + 8, right: rect.right });
     },
@@ -270,7 +274,7 @@ export default {
   },
 
   computed: {
-    ...mapState('ui', ['notifications', 'showNotifications', 'theme']),
+    ...mapState('ui', ['notifications', 'showNotifications', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter']),
     ...mapState({
