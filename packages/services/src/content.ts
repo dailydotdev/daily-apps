@@ -1,5 +1,6 @@
 import axios, {AxiosInstance} from 'axios';
 import {dateReviver, ratioToSize, reviveJSON} from './utils';
+import { post } from './graphql/';
 
 export interface Publication {
     id: string;
@@ -139,10 +140,6 @@ export class ContentServiceImpl implements ContentService {
             {url: this.redirectLink(data)});
     }
 
-    private static mapQueryArray(key: string, value?: any[]): string {
-        return (value && value.length) ? `&${key}=${value.join(',')}` : '';
-    }
-
     setAccessToken(token: string): void {
         this.request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
@@ -197,27 +194,82 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async hidePost(postId: string): Promise<void> {
-        await this.request.post(`/v1/posts/${postId}/hide`);
+        await this.request.post<void>('/graphql', {
+            query: post.hidePostMutation,
+            variables: { id: postId },
+        });
     }
 
     async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]> {
-        const res = await this.request.get(`/v1/posts/latest?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}${ContentServiceImpl.mapQueryArray('pubs', pubs)}${ContentServiceImpl.mapQueryArray('tags', tags)}`);
-        return res.data.map((p: any) => this.mapPost(p));
+        const inputParams = {
+            latest: latest.toISOString(),
+            page,
+            pageSize: this.pageSize,
+            ...pubs && { pubs: pubs.join() },
+            ...tags && { tags: tags.join() },
+        };
+        
+        const { data: res } = await this.request.get('/graphql', {
+            params: {
+                query: post.fetchLatestQuery,
+                variables: { params: inputParams },
+            },
+        });
+
+        return res.data.latest.map((p: any) => this.mapPost(p));
     }
 
     async fetchPostsByPublication(latest: Date, page: number, pub: string): Promise<Post[]> {
-        const res = await this.request.get(`/v1/posts/publication?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}&pub=${pub}`);
-        return res.data.map((p: any) => this.mapPost(p));
+        const inputParams = {
+            latest: latest.toISOString(),
+            page,
+            pageSize: this.pageSize,
+            pub,
+        };
+
+        const { data: res } = await this.request.get('/graphql', {
+            params: {
+                query: post.fetchPostsByPublicationQuery,
+                variables: { params: inputParams },
+            },
+        });
+
+        return res.data.postsByPublication.map((p: any) => this.mapPost(p));
     }
 
     async fetchPostsByTag(latest: Date, page: number, tag: string): Promise<Post[]> {
-        const res = await this.request.get(`/v1/posts/tag?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}&tag=${tag}`);
-        return res.data.map((p: any) => this.mapPost(p));
+        const inputParams = {
+            latest: latest.toISOString(),
+            page,
+            pageSize: this.pageSize,
+            tag,
+        };
+        
+        const { data: res } = await this.request.get('/graphql', {
+            params: {
+                query: post.fetchPostsByTagQuery,
+                variables: { params: inputParams },
+            },
+        });
+
+        return res.data.postsByTag.map((p: any) => this.mapPost(p));
     }
 
     async fetchBookmarks(latest: Date, page: number): Promise<Post[]> {
-        const res = await this.request.get(`/v1/posts/bookmarks?latest=${latest.toISOString()}&page=${page}&pageSize=${this.pageSize}`);
-        return res.data.map((p: any) => this.mapPost(p));
+        const inputParams = {
+            latest: latest.toISOString(),
+            page,
+            pageSize: this.pageSize,
+        };
+
+        const { data: res } = await this.request.get('/graphql', {
+            params: {
+                query: post.fetchBookmarksQuery,
+                variables: { params: inputParams },
+            },
+        });
+        
+        return res.data.bookmarks.map((p: any) => this.mapPost(p));
     }
 
     async fetchFeedPublications(): Promise<any> {
@@ -243,11 +295,17 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async addBookmarks(ids: string[]): Promise<void> {
-        await this.request.post<void>('/v1/posts/bookmarks', ids);
+        await this.request.post<void>('/graphql', {
+            query: post.addBookmarksMutation,
+            variables: { ids },
+        });
     }
 
     async removeBookmark(id: string): Promise<void> {
-        await this.request.delete(`/v1/posts/${id}/bookmark`);
+        await this.request.post<void>('/graphql', {
+            query: post.removeBookmarkMutation,
+            variables: { id },
+        });
     }
 
     async fetchPopularTags(): Promise<Tag[]> {
