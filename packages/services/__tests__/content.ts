@@ -15,6 +15,7 @@ axios.defaults.adapter = httpAdapter;
 const baseURL = 'http://localhost:3000';
 const service = new ContentServiceImpl(baseURL, 5);
 
+// See https://github.com/axios/axios/blob/master/lib/helpers/buildURL.js
 function encode(val: string) {
     return encodeURIComponent(val).
         replace(/%40/gi, '@').
