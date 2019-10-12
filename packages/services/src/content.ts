@@ -1,6 +1,5 @@
 import axios, {AxiosInstance} from 'axios';
 import {dateReviver, ratioToSize, reviveJSON} from './utils';
-import { post } from './graphql/';
 
 export interface Publication {
     id: string;
@@ -140,6 +139,15 @@ export class ContentServiceImpl implements ContentService {
             {url: this.redirectLink(data)});
     }
 
+    private getPostFields(): string {
+        const base = 'id,title,url,publishedAt,createdAt,image,ratio,placeholder,views,readTime,publication { id, name, image },tags';
+        if (this.request.defaults.headers.common['Authorization']) {
+            return `${base},bookmarked`;
+        }
+
+        return base;
+    }
+
     setAccessToken(token: string): void {
         this.request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
@@ -194,10 +202,7 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async hidePost(postId: string): Promise<void> {
-        await this.request.post<void>('/graphql', {
-            query: post.hidePostMutation,
-            variables: { id: postId },
-        });
+        await this.request.post(`/v1/posts/${postId}/hide`);
     }
 
     async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]> {
@@ -205,14 +210,14 @@ export class ContentServiceImpl implements ContentService {
             latest: latest.toISOString(),
             page,
             pageSize: this.pageSize,
-            ...pubs && { pubs: pubs.join() },
-            ...tags && { tags: tags.join() },
+            ...pubs && {pubs: pubs.join()},
+            ...tags && {tags: tags.join()},
         };
-        
-        const { data: res } = await this.request.get('/graphql', {
+
+        const {data: res} = await this.request.get('/graphql', {
             params: {
-                query: post.fetchLatestQuery,
-                variables: { params: inputParams },
+                query: `query fetchLatest($params: QueryPostInput) { latest(params: $params) { ${this.getPostFields()} } }`,
+                variables: {params: inputParams},
             },
         });
 
@@ -227,10 +232,10 @@ export class ContentServiceImpl implements ContentService {
             pub,
         };
 
-        const { data: res } = await this.request.get('/graphql', {
+        const {data: res} = await this.request.get('/graphql', {
             params: {
-                query: post.fetchPostsByPublicationQuery,
-                variables: { params: inputParams },
+                query: `query fetchPostsByPublication($params: PostByPublicationInput) { postsByPublication(params: $params) { ${this.getPostFields()} } }`,
+                variables: {params: inputParams},
             },
         });
 
@@ -244,11 +249,11 @@ export class ContentServiceImpl implements ContentService {
             pageSize: this.pageSize,
             tag,
         };
-        
-        const { data: res } = await this.request.get('/graphql', {
+
+        const {data: res} = await this.request.get('/graphql', {
             params: {
-                query: post.fetchPostsByTagQuery,
-                variables: { params: inputParams },
+                query: `query fetchPostsByTag($params: PostByTagInput) { postsByTag(params: $params) { ${this.getPostFields()} } }`,
+                variables: {params: inputParams},
             },
         });
 
@@ -262,13 +267,13 @@ export class ContentServiceImpl implements ContentService {
             pageSize: this.pageSize,
         };
 
-        const { data: res } = await this.request.get('/graphql', {
+        const {data: res} = await this.request.get('/graphql', {
             params: {
-                query: post.fetchBookmarksQuery,
-                variables: { params: inputParams },
+                query: `query fetchBookmarks($params: QueryPostInput) { bookmarks(params: $params) { ${this.getPostFields()} } }`,
+                variables: {params: inputParams},
             },
         });
-        
+
         return res.data.bookmarks.map((p: any) => this.mapPost(p));
     }
 
@@ -295,17 +300,11 @@ export class ContentServiceImpl implements ContentService {
     }
 
     async addBookmarks(ids: string[]): Promise<void> {
-        await this.request.post<void>('/graphql', {
-            query: post.addBookmarksMutation,
-            variables: { ids },
-        });
+        await this.request.post<void>('/v1/posts/bookmarks', ids);
     }
 
     async removeBookmark(id: string): Promise<void> {
-        await this.request.post<void>('/graphql', {
-            query: post.removeBookmarkMutation,
-            variables: { id },
-        });
+        await this.request.delete(`/v1/posts/${id}/bookmark`);
     }
 
     async fetchPopularTags(): Promise<Tag[]> {
