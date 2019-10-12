@@ -8,24 +8,26 @@ import {expected as latestExpected, response as latestResponse} from './fixtures
 import {expected as bookExpected, response as bookResponse} from './fixtures/bookmarks';
 import {expected as feedPubsExpected, response as feedPubsResponse} from './fixtures/feedPubs';
 
-import { post } from '../src/graphql/index';
-
 axios.defaults.adapter = httpAdapter;
 
 const baseURL = 'http://localhost:3000';
 const service = new ContentServiceImpl(baseURL, 5);
 
+const postFields = 'id,title,url,publishedAt,createdAt,image,ratio,placeholder,views,readTime,publication { id, name, image },tags';
+const fetchLatestQuery = `query fetchLatest($params: QueryPostInput) { latest(params: $params) { ${postFields} } }`;
+const fetchPersonalLatestQuery = `query fetchLatest($params: QueryPostInput) { latest(params: $params) { ${postFields},bookmarked } }`;
+const fetchPostsByPublicationQuery = `query fetchPostsByPublication($params: PostByPublicationInput) { postsByPublication(params: $params) { ${postFields} } }`;
+const fetchPostsByTagQuery = `query fetchPostsByTag($params: PostByTagInput) { postsByTag(params: $params) { ${postFields} } }`;
+const fetchBookmarksQuery = `query fetchBookmarks($params: QueryPostInput) { bookmarks(params: $params) { ${postFields},bookmarked } }`;
+
 // See https://github.com/axios/axios/blob/master/lib/helpers/buildURL.js
 function encode(val: string) {
-    return encodeURIComponent(val).
-        replace(/%40/gi, '@').
-        replace(/%3A/gi, ':').
-        replace(/%24/g, '$').
-        replace(/%2C/gi, ',').
-        replace(/%20/g, '+').
-        replace(/%5B/gi, '[').
-        replace(/%5D/gi, ']');
+    return encodeURIComponent(val).replace(/%40/gi, '@').replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',').replace(/%20/g, '+').replace(/%5B/gi, '[').replace(/%5D/gi, ']');
 }
+
+beforeEach(() => {
+    service.clearAccessToken();
+});
 
 it('should fetch publications from server', async () => {
     const expected: Publication[] = require('./fixtures/pubs.json');
@@ -65,15 +67,10 @@ it('should report post', async () => {
 
 it('should hide post', async () => {
     const postId = '12345';
-
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .post('/graphql', {
-            query: post.hidePostMutation,
-            variables: { id: postId }
-        })
-        .reply(200, { data: { id: postId } });
-
+        .post(`/v1/posts/${postId}/hide`)
+        .reply(204);
 
     service.setAccessToken('token');
 
@@ -89,6 +86,8 @@ it('should fetch open pub requests from server', async () => {
         .get('/v1/publications/requests/open')
         .reply(200, response);
 
+    service.setAccessToken('token');
+
     const actual = await service.fetchOpenPubRequests();
     expect(actual).toEqual(expected);
 });
@@ -101,6 +100,8 @@ it('should edit an existing pub request', async () => {
         .put('/v1/publications/requests/1', payload)
         .reply(204);
 
+    service.setAccessToken('token');
+
     await service.editPubRequest(1, payload);
 });
 
@@ -109,6 +110,8 @@ it('should approve an existing pub request', async () => {
         .matchHeader('authorization', 'Bearer token')
         .post('/v1/publications/requests/1/approve')
         .reply(204);
+
+    service.setAccessToken('token');
 
     await service.approvePubRequest(1);
 });
@@ -121,6 +124,8 @@ it('should decline an existing pub request', async () => {
         .post('/v1/publications/requests/1/decline', {reason})
         .reply(204);
 
+    service.setAccessToken('token');
+
     await service.declinePubRequest(1, reason);
 });
 
@@ -129,6 +134,8 @@ it('should publish an existing pub request', async () => {
         .matchHeader('authorization', 'Bearer token')
         .post('/v1/publications/requests/1/publish')
         .reply(204);
+
+    service.setAccessToken('token');
 
     await service.publishPubRequest(1);
 });
@@ -142,11 +149,11 @@ it('should fetch latest posts from server', async () => {
         tags: 'angular,vue,webdev',
     };
 
-    const URIComponent = `${encode(post.fetchLatestQuery)}&variables=${encode(JSON.stringify({ params: inputParams }))}`;
+    const query = `${encode(fetchLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
 
     nock(baseURL)
-        .get(`/graphql?query=${URIComponent}`)
-        .reply(200, { data: { latest: latestResponse } })
+        .get(`/graphql?query=${query}`)
+        .reply(200, {data: {latest: latestResponse}});
 
     const actual = await service.fetchLatestPosts(
         new Date('2018-11-28T08:27:45.612Z'),
@@ -164,12 +171,13 @@ it('should fetch personal latest posts from server', async () => {
         page: 0,
         pageSize: 5,
     };
-    
-    const URIComponent = `${encode(post.fetchLatestQuery)}&variables=${encode(JSON.stringify({ params: inputParams }))}`;
+
+    const query = `${encode(fetchPersonalLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
 
     nock(baseURL)
-        .get(`/graphql?query=${URIComponent}`)
-        .reply(200, { data: { latest: latestResponse } })
+        .matchHeader('authorization', 'Bearer token')
+        .get(`/graphql?query=${query}`)
+        .reply(200, {data: {latest: latestResponse}});
 
     service.setAccessToken('token');
 
@@ -189,11 +197,11 @@ it('should fetch posts by publication from server', async () => {
         pub: 'airbnb',
     };
 
-    const URIComponent = `${encode(post.fetchPostsByPublicationQuery)}&variables=${encode(JSON.stringify({ params: inputParams }))}`;
+    const query = `${encode(fetchPostsByPublicationQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
 
     nock(baseURL)
-        .get(`/graphql?query=${URIComponent}`)
-        .reply(200, { data: { postsByPublication: latestResponse } })
+        .get(`/graphql?query=${query}`)
+        .reply(200, {data: {postsByPublication: latestResponse}});
 
     const actual = await service.fetchPostsByPublication(
         new Date('2018-11-28T08:27:45.612Z'),
@@ -212,11 +220,11 @@ it('should fetch posts by tag from server', async () => {
         tag: 'webdev',
     };
 
-    const URIComponent = `${encode(post.fetchPostsByTagQuery)}&variables=${encode(JSON.stringify({ params: inputParams }))}`;
-    
+    const query = `${encode(fetchPostsByTagQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
+
     nock(baseURL)
-        .get(`/graphql?query=${URIComponent}`)
-        .reply(200, { data: { postsByTag: latestResponse } })
+        .get(`/graphql?query=${query}`)
+        .reply(200, {data: {postsByTag: latestResponse}});
 
     const actual = await service.fetchPostsByTag(
         new Date('2018-11-28T09:27:45.612Z'),
@@ -228,18 +236,19 @@ it('should fetch posts by tag from server', async () => {
 });
 
 it('should clear access token', async () => {
-    const dummyInputParams = {
+    const inputParams = {
         latest: '2018-11-28T08:27:45.612Z',
         page: 0,
         pageSize: 5,
     };
 
-    const dummyURIComponent = `${encode(post.fetchLatestQuery)}&variables=${encode(JSON.stringify({ params: dummyInputParams }))}`;
+    const query1 = `${encode(fetchPersonalLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
+    const query2 = `${encode(fetchLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
 
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .get(`/graphql?query=${dummyURIComponent}`)
-        .reply(200, { data: { latest: latestResponse } })
+        .get(`/graphql?query=${query1}`)
+        .reply(200, {data: {latest: latestResponse}});
 
     service.setAccessToken('token');
 
@@ -250,8 +259,8 @@ it('should clear access token', async () => {
 
     nock(baseURL)
         .matchHeader('authorization', (val: string) => !val)
-        .get(`/graphql?query=${dummyURIComponent}`)
-        .reply(200, { data: { latest: latestResponse } })
+        .get(`/graphql?query=${query2}`)
+        .reply(200, {data: {latest: latestResponse}});
 
     service.clearAccessToken();
 
@@ -268,12 +277,12 @@ it('should fetch bookmarks from server', async () => {
         pageSize: 5,
     };
 
-    const URIComponent = `${encode(post.fetchBookmarksQuery)}&variables=${encode(JSON.stringify({ params: inputParams }))}`;
+    const query = `${encode(fetchBookmarksQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
 
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .get(`/graphql?query=${URIComponent}`)
-        .reply(200, { data: { bookmarks: bookResponse } })
+        .get(`/graphql?query=${query}`)
+        .reply(200, {data: {bookmarks: bookResponse}});
 
     service.setAccessToken('token');
 
@@ -354,11 +363,8 @@ it('should add bookmarks', async () => {
 
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .post('/graphql', {
-            query: post.addBookmarksMutation,
-            variables: { ids: body }
-        })
-        .reply(200, { data: { ids: body } });
+        .post('/v1/posts/bookmarks', body)
+        .reply(204);
 
     service.setAccessToken('token');
 
@@ -370,11 +376,8 @@ it('should remove bookmark', async () => {
 
     nock(baseURL)
         .matchHeader('authorization', 'Bearer token')
-        .post('/graphql', {
-            query: post.removeBookmarkMutation,
-            variables: { id }
-        })
-        .reply(200, { data: { id } });
+        .delete(`/v1/posts/${id}/bookmark`)
+        .reply(204);
 
     service.setAccessToken('token');
 
