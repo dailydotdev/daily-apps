@@ -142,7 +142,7 @@ export class ContentServiceImpl implements ContentService {
     private getPostFields(): string {
         const base = 'id,title,url,publishedAt,createdAt,image,ratio,placeholder,views,readTime,publication { id, name, image },tags';
         if (this.request.defaults.headers.common['Authorization']) {
-            return `${base},bookmarked`;
+            return `${base},bookmarked,read`;
         }
 
         return base;

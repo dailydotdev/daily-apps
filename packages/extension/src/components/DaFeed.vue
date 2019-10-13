@@ -101,6 +101,8 @@ export default {
     },
 
     onPostClick(post) {
+      // eslint-disable-next-line no-param-reassign
+      post.read = true;
       ga('send', 'event', 'Post', 'Click', post.source);
     },
 

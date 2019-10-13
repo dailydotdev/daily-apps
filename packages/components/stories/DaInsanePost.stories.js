@@ -62,11 +62,15 @@ storiesOf('DaInsanePost', module)
       menuOpened: {
         default: boolean('menu opened', false),
       },
+      read: {
+        default: boolean('read', posts[0].read),
+      },
     },
     computed: {
       post() {
         return {
           ...posts[0], title: this.title, tags: this.tags, bookmarked: this.bookmarked,
+          read: this.read,
         };
       },
     },

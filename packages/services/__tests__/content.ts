@@ -15,10 +15,10 @@ const service = new ContentServiceImpl(baseURL, 5);
 
 const postFields = 'id,title,url,publishedAt,createdAt,image,ratio,placeholder,views,readTime,publication { id, name, image },tags';
 const fetchLatestQuery = `query fetchLatest($params: QueryPostInput) { latest(params: $params) { ${postFields} } }`;
-const fetchPersonalLatestQuery = `query fetchLatest($params: QueryPostInput) { latest(params: $params) { ${postFields},bookmarked } }`;
+const fetchPersonalLatestQuery = `query fetchLatest($params: QueryPostInput) { latest(params: $params) { ${postFields},bookmarked,read } }`;
 const fetchPostsByPublicationQuery = `query fetchPostsByPublication($params: PostByPublicationInput) { postsByPublication(params: $params) { ${postFields} } }`;
 const fetchPostsByTagQuery = `query fetchPostsByTag($params: PostByTagInput) { postsByTag(params: $params) { ${postFields} } }`;
-const fetchBookmarksQuery = `query fetchBookmarks($params: QueryPostInput) { bookmarks(params: $params) { ${postFields},bookmarked } }`;
+const fetchBookmarksQuery = `query fetchBookmarks($params: QueryPostInput) { bookmarks(params: $params) { ${postFields},bookmarked,read } }`;
 
 // See https://github.com/axios/axios/blob/master/lib/helpers/buildURL.js
 function encode(val: string) {

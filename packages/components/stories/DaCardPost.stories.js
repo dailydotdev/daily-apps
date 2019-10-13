@@ -83,12 +83,15 @@ storiesOf('DaCardPost', module)
       animateCards: {
         default: boolean('animate card on hover', false),
       },
+      read: {
+        default: boolean('read', posts[0].read),
+      },
     },
     computed: {
       post() {
         return {
           ...posts[0], title: this.title, image: this.image, tags: this.tags, size: this.size,
-          bookmarked: this.bookmarked,
+          bookmarked: this.bookmarked, read: this.read,
         };
       },
     },
