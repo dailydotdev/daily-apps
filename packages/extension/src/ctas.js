@@ -1,7 +1,9 @@
+import { browserName } from './common/browser';
+
 const ctas = [{
-  text: 'Leave your feedback',
+  text: 'Daily is 100% open source',
   icon: 'github',
-  link: 'https://github.com/elegantmonkeys/daily',
+  link: 'https://github.com/dailynowco/daily',
   name: 'Github',
   style: {
     color: 'white',
@@ -17,7 +19,7 @@ const ctas = [{
     background: '#008bff',
   },
 }, {
-  text: 'Contribute on our Slack',
+  text: 'Join our Slack',
   logo: 'slack',
   link: 'https://slack.dailynow.co',
   name: 'Slack',
@@ -34,24 +36,30 @@ const ctas = [{
     color: 'white',
     background: '#00a2f9',
   },
-}, {
-  text: 'We need your review :)',
-  logo: 'chrome_store',
-  link: 'https://chrome.google.com/webstore/detail/daily-discover-web-techno/jlmpjdjjbgclbocgajdjefcidcncaied/reviews',
-  name: 'Chrome',
-  style: {
-    color: '#838886',
-    background: 'white',
-  },
-}, {
-  text: 'We need your review :)',
-  logo: 'firefox',
-  link: 'https://addons.mozilla.org/en-US/firefox/addon/daily/reviews/',
-  name: 'Firefox',
-  style: {
-    color: 'white',
-    background: '#0e1028',
-  },
 }];
+
+if (browserName === 'chrome') {
+  ctas.push({
+    text: 'We need your review :)',
+    logo: 'chrome_store',
+    link: 'https://chrome.google.com/webstore/detail/daily-discover-web-techno/jlmpjdjjbgclbocgajdjefcidcncaied/reviews',
+    name: 'Chrome',
+    style: {
+      color: '#838886',
+      background: 'white',
+    },
+  });
+} else if (browserName === 'firefox') {
+  ctas.push({
+    text: 'We need your review :)',
+    logo: 'firefox',
+    link: 'https://addons.mozilla.org/en-US/firefox/addon/daily/reviews/',
+    name: 'Firefox',
+    style: {
+      color: 'white',
+      background: '#0e1028',
+    },
+  });
+}
 
 export default ctas;
