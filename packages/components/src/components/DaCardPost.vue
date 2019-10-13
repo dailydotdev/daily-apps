@@ -1,6 +1,6 @@
 <template>
   <da-card class="card--post" :class="cls" :title="post.title" :url="post.url" :image="post.image"
-          :placeholder="post.placeholder" :size="post.size" @click="$emit('click', post)">
+           :placeholder="post.placeholder" :size="post.size" @click="$emit('click', post)">
     <div slot="content">
       <div class="card__tags nuggets" :title="tagsStr">
         <da-line-clamp :text="tagsStr" :lines="1" :truncate="truncateTags"/>
@@ -11,9 +11,9 @@
       <button class="btn-icon btn-small card__footer__publication" v-if="post.publication.name"
               @click="$emit('publication', { pub: post.publication })">
         <img class="card__footer__icon lazyload"
-            :data-src="post.publication.image"
-            :alt="post.publication.name" v-tooltip="post.publication.name"
-            :key="post.publication.name"/>
+             :data-src="post.publication.image"
+             :alt="post.publication.name" v-tooltip="post.publication.name"
+             :key="post.publication.name"/>
       </button>
       <span class="card__footer__views micro2"
             v-if="post.createdAt">{{post.createdAt | mdyDate}}</span>
@@ -44,57 +44,58 @@ import DaCard from './DaCard.vue';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
-  name: 'DaCardPost',
-  mixins: [postMixin],
-  components: { DaCard, DaLineClamp },
+    name: 'DaCardPost',
+    mixins: [postMixin],
+    components: { DaCard, DaLineClamp },
 
-  watch: {
-    menuOpened() {
-      this.positionDuplicate();
+    watch: {
+        menuOpened() {
+            this.positionDuplicate();
+        },
     },
-  },
 
-  computed: {
-    cls() {
-      return {
-        bookmarked: this.post.bookmarked,
-        'menu-opened': this.menuOpened,
-        hover: this.menuOpened,
-      };
+    computed: {
+        cls() {
+            return {
+                bookmarked: this.post.bookmarked,
+                read: this.post.read,
+                'menu-opened': this.menuOpened,
+                hover: this.menuOpened,
+            };
+        },
+        tagsStr() {
+            return (this.post.tags || []).map(t => `#${t}`).join(',');
+        },
+        readTimeStr() {
+            if (this.post.readTime) {
+                return `${this.post.readTime} min read`;
+            }
+            return '';
+        },
     },
-    tagsStr() {
-      return (this.post.tags || []).map(t => `#${t}`).join(',');
+
+    mounted() {
+        import('../../icons/bookmark');
+        import('../../icons/menu');
+
+        this.positionDuplicate();
     },
-    readTimeStr() {
-      if (this.post.readTime) {
-        return `${this.post.readTime} min read`;
-      }
-      return '';
+
+    methods: {
+        positionDuplicate() {
+            if (this.menuOpened) {
+                this.$nextTick(() => {
+                    const parentRect = this.$el.getBoundingClientRect();
+                    const childRect = this.$refs.orig.$el.getBoundingClientRect();
+
+                    this.$refs.dup.$el.style.top = `${childRect.top - parentRect.top}px`;
+                    this.$refs.dup.$el.style.left = `${childRect.left - parentRect.left}px`;
+                    this.$refs.dup.$el.style.width = `${childRect.width}px`;
+                    this.$refs.dup.$el.style.height = `${childRect.height}px`;
+                });
+            }
+        },
     },
-  },
-
-  mounted() {
-    import('../../icons/bookmark');
-    import('../../icons/menu');
-
-    this.positionDuplicate();
-  },
-
-  methods: {
-    positionDuplicate() {
-      if (this.menuOpened) {
-        this.$nextTick(() => {
-          const parentRect = this.$el.getBoundingClientRect();
-          const childRect = this.$refs.orig.$el.getBoundingClientRect();
-
-          this.$refs.dup.$el.style.top = `${childRect.top - parentRect.top}px`;
-          this.$refs.dup.$el.style.left = `${childRect.left - parentRect.left}px`;
-          this.$refs.dup.$el.style.width = `${childRect.width}px`;
-          this.$refs.dup.$el.style.height = `${childRect.height}px`;
-        });
-      }
-    },
-  },
 };
 </script>
 <style>
@@ -114,6 +115,21 @@ export default {
 
     & .card__tags {
       opacity: 1;
+    }
+  }
+
+  &.read {
+    & .card__background {
+      opacity: 0.4;
+    }
+
+    & .card__content,
+    & .card__footer {
+      background: var(--theme-background-secondary);
+    }
+
+    & .card__title {
+      color: var(--theme-secondary);
     }
   }
 }

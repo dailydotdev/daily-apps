@@ -16,9 +16,9 @@
       <button class="btn-icon insane__publication reveal" v-if="post.publication.name"
               @click="$emit('publication', { pub: post.publication })">
         <img class="insane__icon lazyload"
-            :data-src="post.publication.image"
-            :alt="post.publication.name" v-tooltip="post.publication.name"
-            :key="post.publication.name"/>
+             :data-src="post.publication.image"
+             :alt="post.publication.name" v-tooltip="post.publication.name"
+             :key="post.publication.name"/>
       </button>
       <div class="insane__reveal reveal">
         <button class="btn-icon insane__reveal__bookmark"
@@ -47,30 +47,31 @@ import postMixin from '../common/postMixin';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
-  name: 'DaInsanePost',
-  mixins: [postMixin],
-  components: {
-    DaLineClamp,
-  },
-
-  computed: {
-    tags() {
-      return (this.post.tags || []).map(t => `#${t}`).join(',');
+    name: 'DaInsanePost',
+    mixins: [postMixin],
+    components: {
+        DaLineClamp,
     },
 
-    cls() {
-      return {
-        bookmarked: this.post.bookmarked,
-        'menu-opened': this.menuOpened,
-        'hide-menu': !this.showMenu,
-      };
-    },
-  },
+    computed: {
+        tags() {
+            return (this.post.tags || []).map(t => `#${t}`).join(',');
+        },
 
-  mounted() {
-    import('../../icons/bookmark');
-    import('../../icons/menu');
-  },
+        cls() {
+            return {
+                bookmarked: this.post.bookmarked,
+                read: this.post.read,
+                'menu-opened': this.menuOpened,
+                'hide-menu': !this.showMenu,
+            };
+        },
+    },
+
+    mounted() {
+        import('../../icons/bookmark');
+        import('../../icons/menu');
+    },
 };
 </script>
 
@@ -97,6 +98,14 @@ export default {
 
   &.hide-menu:hover .reveal {
     transform: translateX(-56px);
+  }
+
+  &.read {
+    background: var(--theme-background-secondary);
+
+    & .insane__title {
+      color: var(--theme-secondary);
+    }
   }
 }
 
