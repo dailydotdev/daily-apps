@@ -44,58 +44,58 @@ import DaCard from './DaCard.vue';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
-    name: 'DaCardPost',
-    mixins: [postMixin],
-    components: { DaCard, DaLineClamp },
+  name: 'DaCardPost',
+  mixins: [postMixin],
+  components: { DaCard, DaLineClamp },
 
-    watch: {
-        menuOpened() {
-            this.positionDuplicate();
-        },
+  watch: {
+    menuOpened() {
+      this.positionDuplicate();
     },
+  },
 
-    computed: {
-        cls() {
-            return {
-                bookmarked: this.post.bookmarked,
-                read: this.post.read,
-                'menu-opened': this.menuOpened,
-                hover: this.menuOpened,
-            };
-        },
-        tagsStr() {
-            return (this.post.tags || []).map(t => `#${t}`).join(',');
-        },
-        readTimeStr() {
-            if (this.post.readTime) {
-                return `${this.post.readTime} min read`;
-            }
-            return '';
-        },
+  computed: {
+    cls() {
+      return {
+        bookmarked: this.post.bookmarked,
+        read: this.post.read,
+        'menu-opened': this.menuOpened,
+        hover: this.menuOpened,
+      };
     },
+    tagsStr() {
+      return (this.post.tags || []).map(t => `#${t}`).join(',');
+    },
+    readTimeStr() {
+      if (this.post.readTime) {
+        return `${this.post.readTime} min read`;
+      }
+      return '';
+    },
+  },
 
-    mounted() {
+  mounted() {
         import('../../icons/bookmark');
         import('../../icons/menu');
 
         this.positionDuplicate();
-    },
+  },
 
-    methods: {
-        positionDuplicate() {
-            if (this.menuOpened) {
-                this.$nextTick(() => {
-                    const parentRect = this.$el.getBoundingClientRect();
-                    const childRect = this.$refs.orig.$el.getBoundingClientRect();
+  methods: {
+    positionDuplicate() {
+      if (this.menuOpened) {
+        this.$nextTick(() => {
+          const parentRect = this.$el.getBoundingClientRect();
+          const childRect = this.$refs.orig.$el.getBoundingClientRect();
 
-                    this.$refs.dup.$el.style.top = `${childRect.top - parentRect.top}px`;
-                    this.$refs.dup.$el.style.left = `${childRect.left - parentRect.left}px`;
-                    this.$refs.dup.$el.style.width = `${childRect.width}px`;
-                    this.$refs.dup.$el.style.height = `${childRect.height}px`;
-                });
-            }
-        },
+          this.$refs.dup.$el.style.top = `${childRect.top - parentRect.top}px`;
+          this.$refs.dup.$el.style.left = `${childRect.left - parentRect.left}px`;
+          this.$refs.dup.$el.style.width = `${childRect.width}px`;
+          this.$refs.dup.$el.style.height = `${childRect.height}px`;
+        });
+      }
     },
+  },
 };
 </script>
 <style>
