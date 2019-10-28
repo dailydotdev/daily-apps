@@ -23,9 +23,9 @@ const positionTooltip = (target, tooltip, placement) => {
   tooltip.style.position = 'absolute';
   tooltip.style.left = `${targetRect.left + (targetRect.width - tooltipRect.width) / 2}px`;
   if (placement === 'top') {
-    tooltip.style.top = `${targetRect.top - tooltipRect.height - 5}px`;
+    tooltip.style.top = `${targetRect.top + window.scrollY - tooltipRect.height - 5}px`;
   } else {
-    tooltip.style.top = `${targetRect.bottom + 5}px`;
+    tooltip.style.top = `${targetRect.bottom + window.scrollY + 5}px`;
   }
 };
 
@@ -107,6 +107,9 @@ const directive = {
     registerEvents(el, value, modifiers, directive.options);
   },
   unbind(el) {
+    if (targetElement === el) {
+      hideTooltip(el);
+    }
     removeEvents(el);
   },
 };
