@@ -45,8 +45,10 @@ it('should set read time and tags', () => {
   const post = posts[1];
   const wrapper = mount(DaInsanePost, { localVue, propsData: { post } });
   expect(wrapper.find('.insane__tags__read-time').element.innerHTML)
-    .toEqual('2 min read / ');
-  expect(wrapper.find('.insane__tags__read-time').element.nextElementSibling.innerHTML).toEqual('#javascript,#webdev,#html,#html5');
+    .toEqual('2 min read');
+  expect(wrapper.find('.insane__tags__read-time').element.nextElementSibling.innerHTML).toEqual(' / ');
+  expect(wrapper.find('.insane__tags__read-time').element.nextElementSibling.nextElementSibling.innerHTML)
+    .toEqual('#javascript,#webdev,#html,#html5');
 });
 
 it('should show publication date', () => {
