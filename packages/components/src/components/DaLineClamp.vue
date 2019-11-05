@@ -77,9 +77,9 @@ export default {
 
     updateHtml() {
       if (!this.offset) {
-        this.$refs.content.innerHTML = this.text;
+        this.$refs.content.textContent = this.text;
       } else {
-        this.$refs.content.innerHTML = this.truncate(this.text, this.text.length - this.offset);
+        this.$refs.content.textContent = this.truncate(this.text, this.text.length - this.offset);
       }
     },
   },
