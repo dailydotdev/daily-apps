@@ -14,13 +14,6 @@
         Log out
       </button>
     </header>
-    <div class="profile__settings">
-      <div class="jr profile__settings__title">/* Settings */</div>
-      <da-switch label="Recently visited sites" class="profile__settings__switch"
-                 :checked="showTopSites" @toggle="onToggleTopSites"/>
-      <da-switch label="Card animations" class="profile__settings__switch"
-                 :checked="enableCardAnimations" @toggle="onToggleCardAnimations"/>
-    </div>
     <footer class="profile__footer">
       <a target="_blank" href="https://github.com/dailynowco/daily/issues/new">Report an issue</a>
       <a target="_blank" href="https://www.iubenda.com/privacy-policy/14695236">Privacy Policy</a>
@@ -40,7 +33,6 @@
 import 'lazysizes';
 import { mapState, mapActions } from 'vuex';
 import DaModal from '@daily/components/src/components/DaModal.vue';
-import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
 import { version } from '../common/config';
 
 export default {
@@ -48,7 +40,6 @@ export default {
 
   components: {
     DaModal,
-    DaSwitch,
   },
 
   data() {
@@ -74,14 +65,6 @@ export default {
       provider(state) {
         return this.isLoggedIn ? state.user.profile.providers[0] : '';
       },
-
-      showTopSites(state) {
-        return state.ui.showTopSites;
-      },
-
-      enableCardAnimations(state) {
-        return state.ui.enableCardAnimations;
-      },
     }),
   },
 
@@ -91,17 +74,6 @@ export default {
       this.$emit('close');
       // TODO: handle error
       await this.logout();
-    },
-
-    async onToggleTopSites(val) {
-      ga('send', 'event', 'Profile', 'Click', 'Top Sites');
-      // TODO: handle error
-      await this.$store.dispatch('ui/setShowTopSites', val);
-    },
-
-    onToggleCardAnimations(val) {
-      ga('send', 'event', 'Profile', 'Click', 'Card Animations');
-      this.$store.commit('ui/setEnableCardAnimations', val);
     },
 
     ...mapActions({
@@ -177,32 +149,8 @@ export default {
   padding: 0;
 }
 
-.profile__settings,
 .profile__footer {
   margin: 40px;
-}
-
-.profile__settings {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 0;
-  color: var(--theme-secondary);
-}
-
-.profile__settings__title {
-  margin-bottom: 20px;
-}
-
-.profile__settings__switch {
-  margin: 12px 0;
-
-  & .switch__label {
-    @mixin lil2;
-  }
-
-  &.checked .switch__label {
-    color: var(--theme-primary);
-  }
 }
 
 .profile__footer {

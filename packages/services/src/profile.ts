@@ -7,6 +7,7 @@ export interface Settings {
     insaneMode: boolean;
     showTopSites: boolean;
     theme: string;
+    spaciness: string;
 }
 
 export interface Notification {

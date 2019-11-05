@@ -81,7 +81,7 @@ html.loaded {
 body {
   margin: 0;
   overflow-y: scroll;
-  min-width: 720px;
+  min-width: 705px;
 }
 
 html, body {

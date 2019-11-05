@@ -83,38 +83,46 @@ export default {
 
 .radio-item__checkmark {
   position: relative;
-  width: 32px;
-  height: 32px;
-  margin-right: 4px;
+  width: 16px;
+  height: 16px;
+  margin-right: 12px;
 
   &:before,
   &:after,
   & .radio-item__checkmark__focus {
+    margin: auto;
     content: '';
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
     border-radius: 100%;
     box-sizing: border-box;
   }
 
+  &:before,
+  & .radio-item__checkmark__focus {
+    left: -9999px;
+    top: -9999px;
+    right: -9999px;
+    bottom: -9999px;
+  }
+
   &:before {
-    width: 100%;
-    height: 100%;
+    width: 200%;
+    height: 200%;
     opacity: 0;
     transition: background-color 0.1s linear, opacity 0.1s linear;
   }
 
   &:after,
   & .radio-item__checkmark__focus {
-    width: 50%;
-    height: 50%;
+    width: 100%;
+    height: 100%;
   }
 
   &:after {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     border: 2px solid var(--theme-secondary);
   }
 

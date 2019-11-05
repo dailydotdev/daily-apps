@@ -68,6 +68,14 @@ export default {
       }
     }
   }
+
+  &.small {
+    width: 64px;
+
+    & .mode-switch__handle {
+      width: 32px;
+    }
+  }
 }
 
 .mode-switch__icon.svg-icon {
@@ -97,7 +105,7 @@ export default {
   right: 0;
   top: 0;
   bottom: 0;
-  width: 112px;
+  width: 100%;
   height: 28px;
   margin: auto;
   background: var(--theme-background-primary);

@@ -17,6 +17,7 @@ it('should fetch settings from server', async () => {
         insaneMode: true,
         showTopSites: false,
         theme: 'darcula',
+        spaciness: 'eco',
     };
 
     nock(baseURL)
@@ -37,6 +38,7 @@ it('should update settings', async () => {
         insaneMode: true,
         showTopSites: false,
         theme: 'darcula',
+        spaciness: 'eco',
     };
 
     nock(baseURL)
