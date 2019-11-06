@@ -5,9 +5,10 @@
         <h5 class="insane__title">
           <da-line-clamp :text="post.title" :lines="3"/>
         </h5>
-        <div class="insane__tags micro1" :title="tags">
+        <div class="insane__tags micro1" v-tooltip="tags">
           <span class="insane__tags__read-time"
-                v-if="post.readTime">{{ post.readTime }} min read / </span>
+                v-if="post.readTime">{{ post.readTime }} min read</span>
+          <span v-if="post.readTime && tags.length > 0"> / </span>
           <da-line-clamp :text="tags" :lines="1" :truncate="truncateTags"/>
         </div>
       </a>
@@ -47,31 +48,31 @@ import postMixin from '../common/postMixin';
 import DaLineClamp from './DaLineClamp.vue';
 
 export default {
-    name: 'DaInsanePost',
-    mixins: [postMixin],
-    components: {
-        DaLineClamp,
+  name: 'DaInsanePost',
+  mixins: [postMixin],
+  components: {
+    DaLineClamp,
+  },
+
+  computed: {
+    tags() {
+      return (this.post.tags || []).map(t => `#${t}`).join(',');
     },
 
-    computed: {
-        tags() {
-            return (this.post.tags || []).map(t => `#${t}`).join(',');
-        },
-
-        cls() {
-            return {
-                bookmarked: this.post.bookmarked,
-                read: this.post.read,
-                'menu-opened': this.menuOpened,
-                'hide-menu': !this.showMenu,
-            };
-        },
+    cls() {
+      return {
+        bookmarked: this.post.bookmarked,
+        read: this.post.read,
+        'menu-opened': this.menuOpened,
+        'hide-menu': !this.showMenu,
+      };
     },
+  },
 
-    mounted() {
+  mounted() {
         import('../../icons/bookmark');
         import('../../icons/menu');
-    },
+  },
 };
 </script>
 
@@ -118,6 +119,10 @@ export default {
   margin-top: 4px;
   color: var(--theme-disabled);
   max-width: 600px;
+
+  & > * {
+    word-break: break-all;
+  }
 }
 
 .insane__views {

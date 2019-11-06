@@ -51,6 +51,18 @@ it('should set enable card animation in state', () => {
   expect(state.enableCardAnimations).toEqual(true);
 });
 
+it('should set enable card animation in state', () => {
+  const state = {};
+  module.mutations.setSpaciness(state, 'roomy');
+  expect(state.spaciness).toEqual('roomy');
+});
+
+it('should set show settings in state', () => {
+  const state = {};
+  module.mutations.setShowSettings(state, true);
+  expect(state.showSettings).toEqual(true);
+});
+
 it('should show notifications and set state', () => {
   const state = {
     showNotificationBadge: true,

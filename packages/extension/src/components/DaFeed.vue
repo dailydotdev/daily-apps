@@ -1,5 +1,5 @@
 <template>
-  <div class="feed">
+  <div class="feed" :class="spaciness">
     <div class="feed__insane" v-if="insaneMode">
       <template v-if="showAd">
         <da-insane-placeholder v-if="!ads.length"/>
@@ -11,7 +11,7 @@
                       @click="onPostClick" :show-menu="isLoggedIn"
                       :menu-opened="selectedPostId === item.id"/>
     </div>
-    <masonry class="feed__cards" :cols="cols" :gutter="32" v-else>
+    <masonry class="feed__cards" :cols="cols" :gutter="gutter" :key="gutter" v-else>
       <template v-if="showAd">
         <da-card-placeholder v-if="!ads.length"/>
         <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
@@ -55,23 +55,54 @@ export default {
     return {
       selectedPostId: null,
       ads: [],
-      cols: {
-        default: 7,
-        2350: 6,
-        2030: 5,
-        1670: 4,
-        1390: 3,
-        1070: 2,
-      },
     };
   },
   computed: {
-    ...mapState('ui', ['insaneMode']),
+    ...mapState('ui', ['insaneMode', 'spaciness']),
     ...mapGetters({
       posts: 'feed/feed',
       showAd: 'feed/showAd',
       isLoggedIn: 'user/isLoggedIn',
     }),
+    gutter() {
+      if (this.spaciness === 'roomy') {
+        return 48;
+      }
+      if (this.spaciness === 'cozy') {
+        return 56;
+      }
+      return 32;
+    },
+    cols() {
+      if (this.spaciness === 'cozy') {
+        return {
+          default: 5,
+          2221: 4,
+          1919: 3,
+          1617: 3,
+          1315: 2,
+          1061: 2,
+        };
+      }
+      if (this.spaciness === 'roomy') {
+        return {
+          default: 6,
+          2221: 5,
+          1919: 4,
+          1617: 3,
+          1315: 3,
+          1061: 2,
+        };
+      }
+      return {
+        default: 7,
+        2221: 6,
+        1919: 5,
+        1617: 4,
+        1315: 3,
+        1061: 2,
+      };
+    },
   },
   watch: {
     showAd(value) {
@@ -185,10 +216,19 @@ export default {
 }
 
 .feed__cards {
-  margin: -32px 0;
+  --cards-margin: 32px;
+  margin: calc(var(--cards-margin) * -1) 0;
 
   & .card, & .card-ph {
-    margin: 32px 0;
+    margin: var(--cards-margin) 0;
+  }
+
+  .roomy & {
+    --cards-margin: 48px;
+  }
+
+  .cozy & {
+    --cards-margin: 56px;
   }
 }
 </style>

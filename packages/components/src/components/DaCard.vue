@@ -162,6 +162,7 @@ export default {
   left: 0;
   bottom: 0;
   width: 100%;
+  min-height: 124px;
   background: var(--theme-background-highlight);
   border-radius: 8px 8px 0 0;
   z-index: 1;

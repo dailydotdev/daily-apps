@@ -1,5 +1,5 @@
 <template>
-  <div class="page" :class="clsObj">
+  <div class="home page" :class="clsObj">
     <da-header @go="onGoClicked" @login="onLogin('Header')"
                @profile="onProfile" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
@@ -22,6 +22,7 @@
         </g>
       </svg>
     </div>
+    <da-settings v-if="showSettings"/>
     <main class="content">
       <div class="content__header">
         <template v-if="filter && !showBookmarks">
@@ -133,8 +134,9 @@ export default {
     DaProfile: () => import('../components/DaProfile.vue'),
     DaGo: () => import('../components/DaGo.vue'),
     DaWelcome: () => import('../components/DaWelcome.vue'),
-    DaCongrats: () => import('../components/DaCongrats'),
-    DaRequest: () => import('../components/DaRequest'),
+    DaCongrats: () => import('../components/DaCongrats.vue'),
+    DaRequest: () => import('../components/DaRequest.vue'),
+    DaSettings: () => import('../components/DaSettings.vue'),
   },
 
   data() {
@@ -274,7 +276,7 @@ export default {
   },
 
   computed: {
-    ...mapState('ui', ['notifications', 'showNotifications', 'theme', 'showDndMenu']),
+    ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter']),
     ...mapState({
@@ -296,6 +298,8 @@ export default {
       clsObj(state) {
         return {
           'animate-cards': state.ui.enableCardAnimations,
+          [state.ui.spaciness]: true,
+          [state.ui.insaneMode ? 'insane-mode' : 'card-mode']: true,
         };
       },
 
@@ -344,36 +348,120 @@ export default {
   },
 
   async mounted() {
-    import('@daily/components/icons/arrow');
-    import('@daily/components/icons/plus');
-    import('@daily/components/icons/hamburger');
+        import('@daily/components/icons/arrow');
+        import('@daily/components/icons/plus');
+        import('@daily/components/icons/hamburger');
 
-    if (this.cta.icon) {
-        import(`@daily/components/icons/${this.cta.icon}`);
-    }
+        if (this.cta.icon) {
+            import(`@daily/components/icons/${this.cta.icon}`);
+        }
 
-    this.updateLines();
-    await this.refreshToken();
+        this.updateLines();
+        await this.refreshToken();
 
-    requestIdleCallback(async () => {
-      await this.initHome();
-    });
+        requestIdleCallback(async () => {
+          await this.initHome();
+        });
   },
 };
 </script>
-
 <style>
+.home.page {
+  padding-top: 48px;
+  padding-left: 36px;
+
+  --cards-margin: 32px;
+  --num-cards: 2;
+  --content-margin: 40px;
+  --feed-max-width: calc(var(--cards-margin) * (var(--num-cards) - 1) + 340px * var(--num-cards));
+
+  &.roomy {
+    --cards-margin: 48px;
+    --content-margin: 48px;
+  }
+
+  &.cozy {
+    --cards-margin: 56px;
+    --content-margin: 56px;
+  }
+
+  @media (min-width: 1062px) {
+    --num-cards: 3;
+
+    &.cozy {
+      --num-cards: 2;
+    }
+  }
+
+  @media (min-width: 1316px) {
+    --num-cards: 4;
+
+    &.roomy {
+      --num-cards: 3;
+    }
+
+    &.cozy {
+      --num-cards: 3;
+    }
+  }
+
+  @media (min-width: 1618px) {
+    --num-cards: 5;
+
+    &.roomy {
+      --num-cards: 4;
+    }
+  }
+
+  @media (min-width: 1920px) {
+    --num-cards: 6;
+
+    &.roomy {
+      --num-cards: 5;
+    }
+
+    &.cozy {
+      --num-cards: 4;
+    }
+  }
+
+  @media (min-width: 2222px) {
+    --num-cards: 7;
+
+    &.roomy {
+      --num-cards: 6;
+    }
+
+    &.cozy {
+      --num-cards: 5;
+    }
+  }
+}
+
 .content {
   display: flex;
+  width: 100%;
+  align-self: center;
   flex-direction: column;
-  margin: 24px 40px 76px 76px;
+  padding: 0 var(--content-margin) 78px;
+  max-width: calc(var(--feed-max-width) + var(--content-margin) * 2);
 }
 
 .content__header {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 24px;
+  margin: 32px 0;
+
+  .roomy & {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .cozy & {
+    margin-top: 48px;
+    margin-bottom: 48px;
+  }
 
   & h4 {
     color: var(--theme-secondary);

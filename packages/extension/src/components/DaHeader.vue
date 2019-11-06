@@ -4,12 +4,10 @@
       <svgicon icon="logo" class="header__logo__icon"/>
     </a>
     <div class="separator"></div>
-    <da-icon-toggle class="header__theme" pressed-icon="moon" icon="sun"
-                    v-tooltip.bottom="theme > 0 ? 'Dark mode' : 'Light mode'"
-                    :pressed="theme > 0" @toggle="switchTheme"/>
-    <da-icon-toggle class="header__insane" pressed-icon="card" icon="line"
-                    v-tooltip.bottom="insaneMode ? 'Card view' : 'Insane view'"
-                    :pressed="insaneMode" @toggle="toggleInsane"/>
+    <button class="btn-icon btn-layout" v-tooltip.bottom="'Layout Settings'"
+            :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)">
+      <svgicon icon="layout"/>
+    </button>
     <da-switch class="header__switch" icon="bookmark" :checked="showBookmarks"
                v-tooltip.bottom="showBookmarks ? 'Back to feed' : 'Show your bookmarks'"
                @toggle="toggleBookmarks"></da-switch>
@@ -85,13 +83,11 @@
 
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex';
-import { themes } from '@daily/services';
 
 export default {
   name: 'DaHeader',
 
   components: {
-    DaIconToggle: () => import('@daily/components/src/components/DaIconToggle.vue'),
     DaSwitch: () => import('@daily/components/src/components/DaSwitch.vue'),
   },
 
@@ -103,14 +99,12 @@ export default {
 
   computed: {
     ...mapState('ui', [
-      'showTopSites', 'insaneMode', 'showNotificationBadge', 'notificationsOpened', 'showDndMenu',
+      'showTopSites', 'showNotificationBadge', 'notificationsOpened', 'showDndMenu', 'showSettings',
     ]),
     ...mapState('feed', ['showBookmarks']),
     ...mapGetters('ui', ['topSitesInstructions']),
     ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
-      theme: state => themes.indexOf(state.ui.theme),
-
       notificationsOpened: state => state.ui.showNotifications,
       profileImage(state) {
         if (this.isLoggedIn) {
@@ -141,10 +135,7 @@ export default {
   methods: {
     loadIcons() {
       import('@daily/components/icons/logo');
-      import('@daily/components/icons/sun');
-      import('@daily/components/icons/moon');
-      import('@daily/components/icons/card');
-      import('@daily/components/icons/line');
+      import('@daily/components/icons/layout');
       import('@daily/components/icons/bookmark');
       import('@daily/components/icons/user_daily');
       import('@daily/components/icons/terminal');
@@ -173,17 +164,6 @@ export default {
       ga('send', 'event', 'Header', 'Click', data);
     },
 
-    switchTheme(pressed) {
-      const newTheme = pressed ? themes[1] : themes[0];
-      this.$store.dispatch('ui/setTheme', newTheme);
-      ga('send', 'event', 'Header', 'Theme', this.theme);
-    },
-
-    toggleInsane(pressed) {
-      this.$store.commit('ui/setInsaneMode', pressed);
-      ga('send', 'event', 'Header', 'Insane', pressed);
-    },
-
     toggleBookmarks(pressed) {
       this.$store.dispatch('feed/setShowBookmarks', pressed);
       ga('send', 'event', 'Header', 'Bookmarks', pressed);
@@ -208,6 +188,7 @@ export default {
     ...mapMutations({
       hideNotifications: 'ui/hideNotifications',
       showNotifications: 'ui/showNotifications',
+      setShowSettings: 'ui/setShowSettings',
     }),
   },
 };
@@ -215,7 +196,9 @@ export default {
 
 <style>
 .header {
-  position: relative;
+  position: absolute;
+  left: 0;
+  top: 0;
   display: flex;
   width: 100%;
   height: 48px;
@@ -369,7 +352,7 @@ export default {
   }
 }
 
-@media (min-width: 1071px) {
+@media (min-width: 1062px) {
   .header .header__switch {
     position: absolute;
     left: 0;

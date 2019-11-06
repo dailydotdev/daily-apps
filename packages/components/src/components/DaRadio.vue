@@ -50,10 +50,10 @@ export default {
 .radio {
   display: flex;
   flex-direction: column;
-  margin: -2px 0;
+  margin: -6px 0;
 
   & .radio-item {
-    margin: 2px 0;
+    margin: 6px 0;
   }
 }
 </style>

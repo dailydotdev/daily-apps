@@ -9,5 +9,12 @@ storiesOf('DaModeSwitch', module)
     data() {
       return { modeSwitchChecked: false };
     },
+  }))
+  .add('small', () => ({
+    components: { DaModeSwitch },
+    template: '<da-mode-switch class="small" first-icon="link" second-icon="hashtag" title="Change mode" :checked="modeSwitchChecked" @toggle="modeSwitchChecked = $event"/>',
+    data() {
+      return { modeSwitchChecked: false };
+    },
   }));
 

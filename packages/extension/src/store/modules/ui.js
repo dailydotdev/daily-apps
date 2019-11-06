@@ -5,6 +5,7 @@ import { profileService } from '../../common/services';
 const initialState = () => ({
   theme: null,
   insaneMode: false,
+  spaciness: 'eco',
   dndModeTime: null,
   showDndMenu: false,
   showTopSites: false,
@@ -12,6 +13,7 @@ const initialState = () => ({
   showNotificationBadge: false,
   lastNotificationTime: null,
   showNotifications: false,
+  showSettings: false,
   enableCardAnimations: true,
   onboarding: false,
   instructionsStep: 0,
@@ -37,6 +39,10 @@ export default {
       state.enableCardAnimations = value;
     },
 
+    setSpaciness(state, value) {
+      state.spaciness = value;
+    },
+
     showNotifications(state) {
       state.lastNotificationTime = new Date(state.notifications[0].timestamp.getTime() + 1);
       state.showNotificationBadge = false;
@@ -45,6 +51,10 @@ export default {
 
     hideNotifications(state) {
       state.showNotifications = false;
+    },
+
+    setShowSettings(state, value) {
+      state.showSettings = value;
     },
 
     setShowDndMenu(state, value) {
