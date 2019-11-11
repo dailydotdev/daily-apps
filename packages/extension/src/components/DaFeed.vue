@@ -55,6 +55,7 @@ export default {
     return {
       selectedPostId: null,
       ads: [],
+      adTimeout: null,
     };
   },
   computed: {
@@ -107,7 +108,10 @@ export default {
   watch: {
     showAd(value) {
       if (value) {
+        this.ads = [];
         this.fetchAd();
+      } else if (this.adTimeout) {
+        clearTimeout(this.adTimeout);
       }
     },
   },
@@ -178,7 +182,6 @@ export default {
     },
 
     async fetchAd() {
-      this.ads = [];
       try {
         this.ads = await monetizationService.fetchAd();
         if (!this.ads.length) {
@@ -189,6 +192,7 @@ export default {
         // eslint-disable-next-line no-console
         console.error(err);
       }
+      this.adTimeout = setTimeout(() => this.fetchAd(), 60000);
     },
 
     ...mapActions({
