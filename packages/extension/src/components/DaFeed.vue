@@ -14,7 +14,8 @@
     <masonry class="feed__cards" :cols="cols" :gutter="gutter" :key="gutter" v-else>
       <template v-if="showAd">
         <da-card-placeholder v-if="!ads.length"/>
-        <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"/>
+        <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"
+                    @click="onAdClick" @impression="onAdImpression"/>
       </template>
       <da-card-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                     @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
@@ -110,14 +111,15 @@ export default {
       if (value) {
         this.ads = [];
         this.fetchAd();
-      } else if (this.adTimeout) {
-        clearTimeout(this.adTimeout);
+      } else {
+        this.clearAdTimeout();
       }
     },
   },
   methods: {
     onAdClick(ad) {
       ga('send', 'event', 'Ad', 'Click', ad.source);
+      this.fetchAd();
     },
 
     onAdImpression(ad) {
@@ -181,7 +183,15 @@ export default {
       this.removePost(postId);
     },
 
+    clearAdTimeout() {
+      if (this.adTimeout) {
+        clearTimeout(this.adTimeout);
+        this.adTimeout = null;
+      }
+    },
+
     async fetchAd() {
+      this.clearAdTimeout();
       try {
         this.ads = await monetizationService.fetchAd();
         if (!this.ads.length) {
@@ -192,7 +202,7 @@ export default {
         // eslint-disable-next-line no-console
         console.error(err);
       }
-      this.adTimeout = setTimeout(() => this.fetchAd(), 60000);
+      this.adTimeout = setTimeout(() => this.fetchAd(), 300000);
     },
 
     ...mapActions({
