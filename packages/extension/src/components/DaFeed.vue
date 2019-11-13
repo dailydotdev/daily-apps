@@ -56,7 +56,6 @@ export default {
     return {
       selectedPostId: null,
       ads: [],
-      adTimeout: null,
     };
   },
   computed: {
@@ -111,8 +110,6 @@ export default {
       if (value) {
         this.ads = [];
         this.fetchAd();
-      } else {
-        this.clearAdTimeout();
       }
     },
   },
@@ -183,15 +180,7 @@ export default {
       this.removePost(postId);
     },
 
-    clearAdTimeout() {
-      if (this.adTimeout) {
-        clearTimeout(this.adTimeout);
-        this.adTimeout = null;
-      }
-    },
-
     async fetchAd() {
-      this.clearAdTimeout();
       try {
         this.ads = await monetizationService.fetchAd();
         if (!this.ads.length) {
@@ -202,7 +191,6 @@ export default {
         // eslint-disable-next-line no-console
         console.error(err);
       }
-      this.adTimeout = setTimeout(() => this.fetchAd(), 300000);
     },
 
     ...mapActions({
