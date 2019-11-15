@@ -437,3 +437,20 @@ it('should remove post from feed', () => {
     id: '3',
   }]);
 });
+
+it('should set sort by in state', () => {
+  const state = {};
+  module.mutations.setSortBy(state, 'popularity');
+  expect(state.sortBy).toEqual('popularity');
+});
+
+it('should set sort by and refresh feed', async () => {
+  const state = {};
+  await testAction(
+    module.actions.setSortBy,
+    'creation',
+    state,
+    [{ type: 'setSortBy', payload: 'creation' }],
+    [{ type: 'refreshFeed', payload: null }],
+  );
+});

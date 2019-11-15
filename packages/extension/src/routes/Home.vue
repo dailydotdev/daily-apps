@@ -25,7 +25,7 @@
     <da-settings v-if="showSettings"/>
     <main class="content">
       <div class="content__header">
-        <template v-if="filter && !showBookmarks">
+        <template v-if="showFilterHeader">
           <button class="btn btn-nav content__header__back-home" @click="onBackHome">
             <svgicon icon="arrow"/>
             <span>Back Home</span>
@@ -42,7 +42,15 @@
           </transition>
         </template>
         <template v-else>
-          <h4 v-if="!emptyBookmarks" class="uppercase">/* {{ title }} */</h4>
+          <h4 v-if="!emptyBookmarks && showBookmarks" class="uppercase">/* {{ title }} */</h4>
+          <template v-if="showMainFeed">
+            <button class="btn btn-menu sort-by" :class="{'not-selected': sortBy !== 'popularity'}"
+                    @click="setSortBy('popularity')">Popular
+            </button>
+            <button class="btn btn-menu sort-by" :class="{'not-selected': sortBy !== 'creation'}"
+                    @click="setSortBy('creation')">Recent
+            </button>
+          </template>
           <a class="header__cta shadow1 " :href="cta.link" target="_blank"
              @mouseup="ctaClick" :style="cta.style">
             <span class="header__cta__text">// {{cta.text}}</span>
@@ -227,6 +235,11 @@ export default {
       this.addFilterToFeed();
     },
 
+    setSortBy(value) {
+      ga('send', 'event', 'Feed', 'Sort By', value);
+      this.$store.dispatch('feed/setSortBy', value);
+    },
+
     async initHome() {
       Promise.all([
         this.fetchPublications(),
@@ -278,7 +291,7 @@ export default {
   computed: {
     ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy']),
     ...mapState({
       title(state) {
         let res = '';
@@ -317,9 +330,14 @@ export default {
       hasFilter: 'feed/hasFilter',
       isLoggedIn: 'user/isLoggedIn',
     }),
-
     emptyBookmarks() {
       return !this.posts.length && this.showBookmarks;
+    },
+    showFilterHeader() {
+      return this.filter && !this.showBookmarks;
+    },
+    showMainFeed() {
+      return !this.showBookmarks && !this.filter;
     },
   },
 
@@ -671,6 +689,17 @@ export default {
 
   & .stroke {
     stroke: var(--theme-separator);
+  }
+}
+
+.btn.sort-by {
+  margin: 0 -4px;
+  pointer-events: none;
+
+  &.not-selected {
+    pointer-events: all;
+    color: var(--theme-secondary);
+    @mixin lil1;
   }
 }
 </style>
