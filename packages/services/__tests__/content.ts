@@ -147,6 +147,7 @@ it('should fetch latest posts from server', async () => {
         pageSize: 5,
         pubs: 'airbnb,alligator,angular',
         tags: 'angular,vue,webdev',
+        sortBy: 'popularity',
     };
 
     const query = `${encode(fetchLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
@@ -170,6 +171,7 @@ it('should fetch personal latest posts from server', async () => {
         latest: '2018-11-28T08:27:45.612Z',
         page: 0,
         pageSize: 5,
+        sortBy: 'popularity',
     };
 
     const query = `${encode(fetchPersonalLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
@@ -240,6 +242,7 @@ it('should clear access token', async () => {
         latest: '2018-11-28T08:27:45.612Z',
         page: 0,
         pageSize: 5,
+        sortBy: 'popularity',
     };
 
     const query1 = `${encode(fetchPersonalLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;

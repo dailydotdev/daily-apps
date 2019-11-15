@@ -21,6 +21,7 @@ const initialState = () => ({
   bookmarks: [],
   latest: null,
   filter: null,
+  sortBy: 'popularity',
 });
 
 const isLoggedIn = state => !!state.user.profile;
@@ -54,13 +55,13 @@ const fetchPosts = async (state, loggedIn) => {
   }
 
   if (loggedIn) {
-    return contentService.fetchLatestPosts(state.latest, state.page);
+    return contentService.fetchLatestPosts(state.latest, state.page, state.sortBy);
   }
 
   const enabledPubs = state.publications.filter(p => p.enabled).map(p => p.id);
   const pubs = enabledPubs.length === state.publications.length ? [] : enabledPubs;
   const tags = state.tags.filter(t => t.enabled).map(t => t.name);
-  return contentService.fetchLatestPosts(state.latest, state.page, pubs, tags);
+  return contentService.fetchLatestPosts(state.latest, state.page, pubs, tags, state.sortBy);
 };
 
 const getFeed = (state) => {
@@ -168,6 +169,9 @@ export default {
       state.publications = state.publications.map(p => ({ ...p, enabled: true }));
       state.tags = state.tags.map(t => ({ ...t, enabled: false }));
       state.showBookmarks = false;
+    },
+    setSortBy(state, sortBy) {
+      state.sortBy = sortBy;
     },
   },
   actions: {
@@ -314,6 +318,11 @@ export default {
       }
 
       return Promise.resolve();
+    },
+
+    setSortBy({ commit, dispatch }, value) {
+      commit('setSortBy', value);
+      return dispatch('refreshFeed');
     },
   },
 };

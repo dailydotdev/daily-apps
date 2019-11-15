@@ -205,13 +205,14 @@ export class ContentServiceImpl implements ContentService {
         await this.request.post(`/v1/posts/${postId}/hide`);
     }
 
-    async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]> {
+    async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[], sortBy: string = 'popularity'): Promise<Post[]> {
         const inputParams = {
             latest: latest.toISOString(),
             page,
             pageSize: this.pageSize,
             ...pubs && {pubs: pubs.join()},
             ...tags && {tags: tags.join()},
+            sortBy,
         };
 
         const {data: res} = await this.request.get('/graphql', {
