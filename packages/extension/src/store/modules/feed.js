@@ -62,7 +62,7 @@ const fetchPosts = async (state, loggedIn) => {
   }
 
   if (loggedIn) {
-    return contentService.fetchLatestPosts(state.latest, state.page, state.sortBy);
+    return contentService.fetchLatestPosts(state.latest, state.page, null, null, state.sortBy);
   }
 
   const enabledPubs = state.publications.filter(p => p.enabled).map(p => p.id);
