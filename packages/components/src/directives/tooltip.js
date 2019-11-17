@@ -107,6 +107,10 @@ const directive = {
     registerEvents(el, value, modifiers, directive.options);
   },
   unbind(el) {
+    if (overTimeout) {
+      clearTimeout(overTimeout);
+      overTimeout = null;
+    }
     if (targetElement === el) {
       hideTooltip(el);
     }

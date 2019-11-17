@@ -22,6 +22,8 @@ const initialState = () => ({
   latest: null,
   filter: null,
   sortBy: 'popularity',
+  search: null,
+  emptySearch: false,
 });
 
 const isLoggedIn = state => !!state.user.profile;
@@ -54,6 +56,11 @@ const fetchPosts = async (state, loggedIn) => {
     return contentService.fetchPostsByTag(state.latest, state.page, state.filter.info.name);
   }
 
+  if (state.search) {
+    const res = await contentService.searchPosts(state.latest, state.page, state.search);
+    return res.hits;
+  }
+
   if (loggedIn) {
     return contentService.fetchLatestPosts(state.latest, state.page, state.sortBy);
   }
@@ -70,6 +77,10 @@ const getFeed = (state) => {
   }
 
   if (state.filter) {
+    return 'customPosts';
+  }
+
+  if (state.search) {
     return 'customPosts';
   }
 
@@ -173,6 +184,12 @@ export default {
     setSortBy(state, sortBy) {
       state.sortBy = sortBy;
     },
+    setSearch(state, search) {
+      state.search = search;
+    },
+    setEmptySearch(state, empty) {
+      state.emptySearch = empty;
+    },
   },
   actions: {
     async fetchPublications({ commit, state }) {
@@ -240,7 +257,8 @@ export default {
       return dispatch('fetchNextFeedPage');
     },
 
-    async clearFilter({ dispatch }) {
+    async backToMainFeed({ commit, dispatch }) {
+      commit('setSearch', null);
       return dispatch('setFilter', null);
     },
 
@@ -323,6 +341,15 @@ export default {
     setSortBy({ commit, dispatch }, value) {
       commit('setSortBy', value);
       return dispatch('refreshFeed');
+    },
+
+    async search({ commit, dispatch, state }, value) {
+      commit('setEmptySearch', false);
+      commit('setSearch', value);
+      await dispatch('refreshFeed');
+      if (!state[getFeed(state)].length) {
+        commit('setEmptySearch', true);
+      }
     },
   },
 };

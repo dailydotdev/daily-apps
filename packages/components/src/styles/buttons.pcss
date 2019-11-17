@@ -63,6 +63,11 @@ button:focus, button:active {
         height: 20px;
     }
 
+    &.btn-tiny > .svg-icon {
+        width: 16px;
+        height: 16px;
+    }
+
     &[disabled], &.disabled {
         --button-background: none;
     }
@@ -225,4 +230,8 @@ button:focus, button:active {
         --button-color: var(--theme-disabled);
         --button-background: var(--theme-background-highlight);
     }
+}
+
+.btn-menu:hover {
+    --button-color: var(--theme-primary);
 }
