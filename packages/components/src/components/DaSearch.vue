@@ -3,7 +3,7 @@
        @click="$refs.input.focus()">
     <div class="search__container">
       <svgicon name="magnifying" class="search-icon"/>
-      <form @submit.prevent="$emit('submit', $refs.input.value)">
+      <form @submit.prevent="onSubmit">
         <input class="search__input micro1" type="text" ref="input"
                :placeholder="inputPlaceholder" :aria-label="label" :disabled="disabled"
                @focus="focused=true" @blur="onBlur" @input="onInput"
@@ -116,6 +116,10 @@ export default {
       this.$refs.input.focus();
       this.selectedSuggestion = index + 1;
       this.updateInputWithSuggestion();
+      this.onSubmit();
+    },
+    onSubmit() {
+      this.currentInput = this.$refs.input.value;
       this.$emit('submit', this.$refs.input.value);
     },
     clearInput() {

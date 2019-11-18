@@ -92,7 +92,7 @@
           Please try again with a new search query.
         </p>
       </div>
-      <da-feed v-else/>
+      <da-feed v-else v-show="showFeed"/>
     </main>
     <div id="anchor" ref="anchor"></div>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
@@ -367,7 +367,7 @@ export default {
   computed: {
     ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'emptySearch']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'emptySearch', 'showFeed']),
     ...mapState({
       title(state) {
         let res = '';

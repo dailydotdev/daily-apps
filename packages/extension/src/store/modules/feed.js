@@ -24,6 +24,7 @@ const initialState = () => ({
   sortBy: 'popularity',
   search: null,
   emptySearch: false,
+  showFeed: true,
 });
 
 const isLoggedIn = state => !!state.user.profile;
@@ -190,6 +191,9 @@ export default {
     setEmptySearch(state, empty) {
       state.emptySearch = empty;
     },
+    setShowFeed(state, show) {
+      state.showFeed = show;
+    },
   },
   actions: {
     async fetchPublications({ commit, state }) {
@@ -253,8 +257,7 @@ export default {
 
     async setFilter({ commit, dispatch }, filter) {
       commit('setFilter', filter);
-      commit('resetFeed');
-      return dispatch('fetchNextFeedPage');
+      return dispatch('refreshFeed');
     },
 
     async backToMainFeed({ commit, dispatch }) {
@@ -283,9 +286,12 @@ export default {
     async refreshFeed({
       commit, dispatch, state, rootState,
     }) {
-      if (!state.filter && (!state.showBookmarks || rootState.user.profile)) {
+      if (!state.showBookmarks || rootState.user.profile) {
+        commit('setShowFeed', false);
         commit('resetFeed');
-        return dispatch('fetchNextFeedPage');
+        const res = await dispatch('fetchNextFeedPage');
+        commit('setShowFeed', true);
+        return res;
       }
 
       return false;
@@ -346,10 +352,11 @@ export default {
     async search({ commit, dispatch, state }, value) {
       commit('setEmptySearch', false);
       commit('setSearch', value);
-      await dispatch('refreshFeed');
+      const res = await dispatch('refreshFeed');
       if (!state[getFeed(state)].length) {
         commit('setEmptySearch', true);
       }
+      return res;
     },
   },
 };
