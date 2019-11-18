@@ -1,7 +1,8 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount, createLocalVue, config } from '@vue/test-utils';
 import Vuex from 'vuex';
 import svgicon from 'vue-svgicon';
 import tooltip from '@daily/components/src/directives/tooltip';
+import DaSearch from '@daily/components/src/components/DaSearch.vue';
 import DaHome from '../src/routes/Home.vue';
 import DaContext from '../../components/src/components/DaContext.vue';
 import DaHeader from '../src/components/DaHeader.vue';
@@ -9,11 +10,14 @@ import DaSidebar from '../src/components/DaSidebar.vue';
 import DaFeed from '../src/components/DaFeed.vue';
 import { createDummyEvent } from './fixtures/helpers';
 
+config.stubs['transition'] = true;
+
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(svgicon);
 localVue.directive('tooltip', tooltip);
+localVue.component('da-search', DaSearch);
 localVue.component('da-context', DaContext);
 localVue.component('da-header', DaHeader);
 localVue.component('da-sidebar', DaSidebar);
@@ -35,12 +39,15 @@ beforeEach(() => {
       posts: [],
     },
     mutations: {
-      setPublications: jest.fn()
+      setPublications: jest.fn(),
+    },
+    actions: {
+      search: jest.fn(),
     },
     getters: {
       feed: state => state['posts'],
       showAd: jest.fn(),
-    }
+    },
   };
 
   ui = {
@@ -71,8 +78,8 @@ beforeEach(() => {
       isLoggedIn: state => !!state.profile,
     },
     actions: {
-      refreshToken: jest.fn()
-    }
+      refreshToken: jest.fn(),
+    },
   };
 
   store = new Vuex.Store({
@@ -102,4 +109,18 @@ it('should close context menu when clicking two times on the DnD button', (done)
       done();
     });
   }, 10);
+});
+
+it('should open search bar when clicking on the button', () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.content__header .search').element).toBeUndefined();
+  wrapper.find('.search-btn').trigger('click');
+  expect(wrapper.find('.content__header .search').element).toBeTruthy();
+});
+
+it('should search query', () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  wrapper.find('.search-btn').trigger('click');
+  wrapper.find('.content__header .search').vm.$emit('submit', 'hello');
+  expect(feed.actions.search).toBeCalledWith(expect.anything(), 'hello', undefined);
 });

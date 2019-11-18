@@ -36,6 +36,15 @@ const ctas = [{
     color: 'white',
     background: '#00a2f9',
   },
+}, {
+  text: 'Like us on Facebook',
+  icon: 'facebook',
+  link: 'https://www.facebook.com/dailynowco',
+  name: 'Facebook',
+  style: {
+    color: 'white',
+    background: '#3B5998',
+  },
 }];
 
 if (browserName === 'chrome') {

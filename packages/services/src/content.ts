@@ -62,6 +62,20 @@ export interface PubRequestEdit {
     pubRss?: string;
 }
 
+export interface PostsSearchResult {
+    query: string;
+    hits: Post[];
+}
+
+export interface SearchSuggestion {
+    title: string;
+}
+
+export interface SearchSuggestionResults {
+    query: string;
+    hits: SearchSuggestion[];
+}
+
 export interface ContentService {
     setAccessToken(token: string): void;
 
@@ -112,6 +126,10 @@ export interface ContentService {
     fetchPopularTags(): Promise<Tag[]>;
 
     searchTags(query: string): Promise<TagsSearchResult>;
+
+    searchPosts(latest: Date, page: number, query: string): Promise<PostsSearchResult>;
+
+    searchSuggestion(query: string): Promise<SearchSuggestionResults>;
 }
 
 export class ContentServiceImpl implements ContentService {
@@ -316,5 +334,38 @@ export class ContentServiceImpl implements ContentService {
     async searchTags(query: string): Promise<TagsSearchResult> {
         const res = await this.request.get(`/v1/tags/search?query=${query}`);
         return reviveJSON(res.data, dateReviver);
+    }
+
+    async searchPosts(latest: Date, page: number, query: string): Promise<PostsSearchResult> {
+        const inputParams = {
+            latest: latest.toISOString(),
+            page,
+            pageSize: this.pageSize,
+            query,
+        };
+
+        const {data: res} = await this.request.get('/graphql', {
+            params: {
+                query: `query postsSearch($params: PostSearchInput) { search(params: $params) { query, hits { ${this.getPostFields()} } } }`,
+                variables: {params: inputParams},
+            },
+        });
+
+        return {
+            query: res.data.search.query,
+            hits: res.data.search.hits.map((p: any) => this.mapPost(p)),
+        };
+    }
+
+    async searchSuggestion(query: string): Promise<SearchSuggestionResults> {
+        const inputParams = {query};
+        const {data: res} = await this.request.get('/graphql', {
+            params: {
+                query: `query postsSearchSuggestions($params: PostSearchSuggestionInput) { searchSuggestion(params: $params) { query, hits { title } } }`,
+                variables: {params: inputParams},
+            },
+        });
+
+        return res.data.searchSuggestion;
     }
 }

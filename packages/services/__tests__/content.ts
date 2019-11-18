@@ -19,6 +19,8 @@ const fetchPersonalLatestQuery = `query fetchLatest($params: QueryPostInput) { l
 const fetchPostsByPublicationQuery = `query fetchPostsByPublication($params: PostByPublicationInput) { postsByPublication(params: $params) { ${postFields} } }`;
 const fetchPostsByTagQuery = `query fetchPostsByTag($params: PostByTagInput) { postsByTag(params: $params) { ${postFields} } }`;
 const fetchBookmarksQuery = `query fetchBookmarks($params: QueryPostInput) { bookmarks(params: $params) { ${postFields},bookmarked,read } }`;
+const searchPostsQuery = `query postsSearch($params: PostSearchInput) { search(params: $params) { query, hits { ${postFields} } } }`;
+const searchSuggestionsQuery = 'query postsSearchSuggestions($params: PostSearchSuggestionInput) { searchSuggestion(params: $params) { query, hits { title } } }';
 
 // See https://github.com/axios/axios/blob/master/lib/helpers/buildURL.js
 function encode(val: string) {
@@ -414,4 +416,40 @@ it('should send search tags request to server', async () => {
     const actual = await service.searchTags('dev');
 
     expect(actual).toEqual(expected);
+});
+
+it('should send search posts request to server', async () => {
+    const inputParams = {
+        latest: '2018-11-28T08:27:45.612Z',
+        page: 0,
+        pageSize: 5,
+        query: 'hello',
+    };
+
+    const query = `${encode(searchPostsQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
+
+    nock(baseURL)
+        .get(`/graphql?query=${query}`)
+        .reply(200, {data: {search: {query: 'hello', hits: latestResponse}}});
+
+    const actual = await service.searchPosts(
+        new Date('2018-11-28T08:27:45.612Z'),
+        0,
+        'hello',
+    );
+
+    expect(actual).toEqual({query: 'hello', hits: latestExpected});
+});
+
+it('should send search suggestions request to server', async () => {
+    const inputParams = {query: 'hello'};
+
+    const query = `${encode(searchSuggestionsQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
+
+    nock(baseURL)
+        .get(`/graphql?query=${query}`)
+        .reply(200, {data: {searchSuggestion: {query: 'hello', hits: [{title: 'hello world'}]}}});
+
+    const actual = await service.searchSuggestion('hello');
+    expect(actual).toEqual({query: 'hello', hits: [{title: 'hello world'}]});
 });

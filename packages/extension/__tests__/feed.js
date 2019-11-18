@@ -454,3 +454,34 @@ it('should set sort by and refresh feed', async () => {
     [{ type: 'refreshFeed', payload: null }],
   );
 });
+
+it('should set search query in state', () => {
+  const state = {};
+  module.mutations.setSearch(state, 'java');
+  expect(state.search).toEqual('java');
+});
+
+it('should set search and refresh feed', async () => {
+  const state = { customPosts: ['a'], search: 'query' };
+  await testAction(
+    module.actions.search,
+    'java',
+    state,
+    [{ type: 'setEmptySearch', payload: false }, { type: 'setSearch', payload: 'java' }],
+    [{ type: 'refreshFeed', payload: null }],
+  );
+});
+
+it('should set empty search when no results', async () => {
+  const state = { customPosts: [], search: 'query' };
+  await testAction(
+    module.actions.search,
+    'java',
+    state,
+    [{ type: 'setEmptySearch', payload: false }, {
+      type: 'setSearch',
+      payload: 'java',
+    }, { type: 'setEmptySearch', payload: true }],
+    [{ type: 'refreshFeed', payload: null }],
+  );
+});

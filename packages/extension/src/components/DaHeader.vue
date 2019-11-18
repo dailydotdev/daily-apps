@@ -1,8 +1,8 @@
 <template>
   <header class="header">
-    <a href="https://www.dailynow.co" target="_blank" class="header__logo">
+    <button class="header__logo" @click="onBackHome">
       <svgicon icon="logo" class="header__logo__icon"/>
-    </a>
+    </button>
     <div class="separator"></div>
     <button class="btn-icon btn-layout" v-tooltip.bottom="'Layout Settings'"
             :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)">
@@ -82,7 +82,9 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters } from 'vuex';
+import {
+  mapState, mapMutations, mapGetters, mapActions,
+} from 'vuex';
 
 export default {
   name: 'DaHeader',
@@ -134,15 +136,15 @@ export default {
 
   methods: {
     loadIcons() {
-      import('@daily/components/icons/logo');
-      import('@daily/components/icons/layout');
-      import('@daily/components/icons/bookmark');
-      import('@daily/components/icons/user_daily');
-      import('@daily/components/icons/terminal');
-      import('@daily/components/icons/mobile');
-      import('@daily/components/icons/ph');
-      import('@daily/components/icons/github');
-      import('@daily/components/icons/timer');
+            import('@daily/components/icons/logo');
+            import('@daily/components/icons/layout');
+            import('@daily/components/icons/bookmark');
+            import('@daily/components/icons/user_daily');
+            import('@daily/components/icons/terminal');
+            import('@daily/components/icons/mobile');
+            import('@daily/components/icons/ph');
+            import('@daily/components/icons/github');
+            import('@daily/components/icons/timer');
     },
 
     async getTopSites() {
@@ -178,6 +180,11 @@ export default {
       }
     },
 
+    onBackHome() {
+      ga('send', 'event', 'Header', 'Home');
+      this.backToMainFeed();
+    },
+
     async onToggleTopSites(val) {
       ga('send', 'event', 'Instructions', 'Click', 'Top Sites');
       // TODO: handle error
@@ -189,6 +196,10 @@ export default {
       hideNotifications: 'ui/hideNotifications',
       showNotifications: 'ui/showNotifications',
       setShowSettings: 'ui/setShowSettings',
+    }),
+
+    ...mapActions({
+      backToMainFeed: 'feed/backToMainFeed',
     }),
   },
 };
@@ -223,6 +234,7 @@ export default {
     background: none;
     border: none;
     padding: 0;
+    cursor: pointer;
   }
 
   & .header__logo__icon {

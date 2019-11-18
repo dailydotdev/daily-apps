@@ -26,10 +26,6 @@
     <main class="content">
       <div class="content__header">
         <template v-if="showFilterHeader">
-          <button class="btn btn-nav content__header__back-home" @click="onBackHome">
-            <svgicon icon="arrow"/>
-            <span>Back Home</span>
-          </button>
           <img :src="filter.info.image" :alt="filter.info.name"
                v-if="filter.type === 'publication'" class="content__header__pub-image"/>
           <h4>// {{ filter.info.name }}</h4>
@@ -42,32 +38,61 @@
           </transition>
         </template>
         <template v-else>
-          <h4 v-if="!emptyBookmarks && showBookmarks" class="uppercase">/* {{ title }} */</h4>
-          <template v-if="showMainFeed">
-            <button class="btn btn-menu sort-by" :class="{'not-selected': sortBy !== 'popularity'}"
-                    @click="setSortBy('popularity')">Popular
-            </button>
-            <button class="btn btn-menu sort-by" :class="{'not-selected': sortBy !== 'creation'}"
-                    @click="setSortBy('creation')">Recent
-            </button>
-          </template>
-          <a class="header__cta shadow1 " :href="cta.link" target="_blank"
-             @mouseup="ctaClick" :style="cta.style">
-            <span class="header__cta__text">// {{cta.text}}</span>
-            <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>
-            <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
-          </a>
+          <transition name="search-bar">
+            <da-search v-if="showSearch" label="Search" :autofocus="true" ref="search"
+                       :suggestions="searchSuggestions"
+                       @submit="onSearchSubmit" @input="fetchSearchSuggestions"
+                       @blur="onSearchBlur">
+              <a href="https://www.algolia.com/" target="_blank" class="search__algolia-credit"
+                 slot="autocomplete" @click="onAlgoliaClick">
+                <img src="/graphics/algolia.svg"/>
+              </a>
+            </da-search>
+            <div v-else class="content__header__wrapper">
+              <h4 v-if="!emptyBookmarks && showBookmarks" class="uppercase">/* {{ title }} */</h4>
+              <template v-if="showMainFeed || showSearchFeed">
+                <button class="btn-icon search-btn" @click="enableSearch"
+                        v-tooltip="'Search posts'">
+                  <svgicon name="magnifying"/>
+                </button>
+                <template v-if="showMainFeed">
+                  <button class="btn btn-menu sort-by"
+                          :class="{'not-selected': sortBy !== 'popularity'}"
+                          @click="setSortBy('popularity')">Popular
+                  </button>
+                  <button class="btn btn-menu sort-by"
+                          :class="{'not-selected': sortBy !== 'creation'}"
+                          @click="setSortBy('creation')">Recent
+                  </button>
+                </template>
+              </template>
+              <a class="header__cta shadow1 " :href="cta.link" target="_blank"
+                 @mouseup="ctaClick" :style="cta.style">
+                <span class="header__cta__text">// {{cta.text}}</span>
+                <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>
+                <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
+              </a>
+            </div>
+          </transition>
         </template>
       </div>
-      <div class="content__empty-bookmarks" v-if="emptyBookmarks">
+      <div class="content__empty" v-if="emptyBookmarks">
         <da-svg :src="`/graphics/bookmark${theme === 'bright' ? '_bright' : ''}.svg`"
                 class="bookmarks-placeholder"/>
-        <h1 class="content__empty-bookmarks__title">Nothing here, yet</h1>
-        <p class="content__empty-bookmarks__text">
+        <h1 class="content__empty__title">Nothing here, yet</h1>
+        <p class="content__empty__text">
           Bookmark articles on the main feed and it will be shown here.
         </p>
       </div>
-      <da-feed/>
+      <div class="content__empty" v-else-if="emptySearch && showSearchFeed">
+        <da-svg :src="`/graphics/hello_world${theme === 'bright' ? '_bright' : ''}.svg`"
+                class="hello-world-placeholder"/>
+        <h1 class="content__empty__title">No results found</h1>
+        <p class="content__empty__text">
+          Please try again with a new search query.
+        </p>
+      </div>
+      <da-feed v-else v-show="showFeed"/>
     </main>
     <div id="anchor" ref="anchor"></div>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
@@ -126,6 +151,7 @@ import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
+import { contentService } from '../common/services';
 
 export default {
   name: 'Home',
@@ -138,6 +164,7 @@ export default {
     DaFeed,
     DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
+    DaSearch: () => import('@daily/components/src/components/DaSearch.vue'),
     DaLogin: () => import('../components/DaLogin.vue'),
     DaProfile: () => import('../components/DaProfile.vue'),
     DaGo: () => import('../components/DaGo.vue'),
@@ -155,6 +182,8 @@ export default {
       showLoginModal: false,
       showProfileModal: false,
       lineNumbers: 1,
+      showSearch: false,
+      searchSuggestions: [],
     };
   },
 
@@ -225,11 +254,6 @@ export default {
       this.showProfileModal = true;
     },
 
-    onBackHome() {
-      ga('send', 'event', 'Feed', 'Home');
-      this.clearFilter();
-    },
-
     onAddFilter() {
       ga('send', 'event', 'Feed', 'Add Filter');
       this.addFilterToFeed();
@@ -238,6 +262,24 @@ export default {
     setSortBy(value) {
       ga('send', 'event', 'Feed', 'Sort By', value);
       this.$store.dispatch('feed/setSortBy', value);
+    },
+
+    async onSearchSubmit(query) {
+      ga('send', 'event', 'Feed', 'Search', query);
+      if (this.suggestionTimeout) {
+        clearTimeout(this.suggestionTimeout);
+        this.suggestionTimeout = null;
+      }
+      this.searchSuggestions = [];
+      await this.search(query);
+      this.trackPageView();
+    },
+
+    clearSearch() {
+      this.showSearch = false;
+      if (this.$refs.search) {
+        this.$refs.search.clearInput();
+      }
     },
 
     async initHome() {
@@ -257,23 +299,57 @@ export default {
     },
 
     trackPageView() {
-      const { showBookmarks, filter } = this;
+      const { showBookmarks, filter, showSearchFeed } = this;
 
       if (showBookmarks) {
         trackPageView('/bookmarks');
       } else if (filter) {
         trackPageView(`/${filter.type}/${filter.info.id || filter.info.name}`);
+      } else if (showSearchFeed) {
+        trackPageView('/search');
       } else {
         trackPageView('');
       }
+    },
+
+    enableSearch() {
+      this.showSearch = true;
+      setTimeout(() => this.$refs.search && this.$refs.search.focus(), 100);
+    },
+
+    fetchSearchSuggestions(query) {
+      if (this.suggestionTimeout) {
+        clearTimeout(this.suggestionTimeout);
+      }
+      this.suggestionTimeout = setTimeout(async () => {
+        if (query.length) {
+          const res = await contentService.searchSuggestion(query);
+          if (res.query === this.$refs.search.query()
+              && res.query !== this.$store.state.feed.search) {
+            this.searchSuggestions = res.hits;
+          }
+        } else {
+          this.searchSuggestions = [];
+        }
+      }, 200);
+    },
+
+    onSearchBlur() {
+      if (!this.$refs.search.query().length) {
+        this.showSearch = false;
+      }
+    },
+
+    onAlgoliaClick() {
+      ga('send', 'event', 'Search', 'Algolia');
     },
 
     ...mapActions({
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       fetchTags: 'feed/fetchTags',
       fetchPublications: 'feed/fetchPublications',
-      clearFilter: 'feed/clearFilter',
       addFilterToFeed: 'feed/addFilterToFeed',
+      search: 'feed/search',
       fetchNotifications: 'ui/fetchNotifications',
       refreshToken: 'user/refreshToken',
     }),
@@ -291,7 +367,7 @@ export default {
   computed: {
     ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'emptySearch', 'showFeed']),
     ...mapState({
       title(state) {
         let res = '';
@@ -323,6 +399,10 @@ export default {
 
         return false;
       },
+
+      showSearchFeed(state) {
+        return state.feed.search && state.feed.search.length;
+      },
     }),
 
     ...mapGetters({
@@ -337,7 +417,7 @@ export default {
       return this.filter && !this.showBookmarks;
     },
     showMainFeed() {
-      return !this.showBookmarks && !this.filter;
+      return !this.showBookmarks && !this.filter && !this.showSearchFeed;
     },
   },
 
@@ -350,6 +430,12 @@ export default {
     },
     filter() {
       this.trackPageView();
+    },
+    showSearchFeed(val) {
+      if (!val) {
+        this.trackPageView();
+        this.clearSearch();
+      }
     },
   },
 
@@ -369,6 +455,7 @@ export default {
         import('@daily/components/icons/arrow');
         import('@daily/components/icons/plus');
         import('@daily/components/icons/hamburger');
+        import('@daily/components/icons/magnifying');
 
         if (this.cta.icon) {
             import(`@daily/components/icons/${this.cta.icon}`);
@@ -466,7 +553,9 @@ export default {
 }
 
 .content__header {
+  position: relative;
   display: flex;
+  height: 44px;
   flex-direction: row;
   align-items: center;
   margin: 32px 0;
@@ -489,18 +578,10 @@ export default {
     }
   }
 
-  & .btn .svg-icon {
+  & > .btn .svg-icon {
     width: 20px;
     height: 20px;
     margin-right: 4px;
-  }
-
-  & .content__header__back-home {
-    margin-right: 16px;
-
-    & .svg-icon {
-      transform: rotate(-90deg);
-    }
   }
 
   & .content__header__pub-image {
@@ -512,6 +593,25 @@ export default {
 
   & .content__header__add-filter {
     margin-left: auto;
+  }
+
+  & .search {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+
+    &.search-bar-enter-active, &.search-bar-leave-active {
+      transition: 0.1s ease width;
+    }
+
+    &.search-bar-enter-active {
+      transition-delay: 0.1s;
+    }
+
+    &.search-bar-enter, &.search-bar-leave-to {
+      width: 44px;
+    }
   }
 }
 
@@ -539,7 +639,7 @@ export default {
   color: var(--color-salt-10);
 }
 
-.content__empty-bookmarks {
+.content__empty {
   display: flex;
   margin-top: 120px;
   flex-direction: column;
@@ -550,13 +650,13 @@ export default {
   }
 }
 
-.content__empty-bookmarks__title {
+.content__empty__title {
   margin: 32px 0 8px;
   color: var(--theme-primary);
   text-transform: uppercase;
 }
 
-.content__empty-bookmarks__text {
+.content__empty__text {
   margin: 8px 0;
   color: var(--theme-secondary);
 
@@ -642,6 +742,11 @@ export default {
   height: 185px;
 }
 
+.hello-world-placeholder {
+  height: 134px;
+  transform: translateX(68px);
+}
+
 .line-numbers {
   position: absolute;
   display: flex;
@@ -693,13 +798,51 @@ export default {
 }
 
 .btn.sort-by {
-  margin: 0 -4px;
   pointer-events: none;
 
   &.not-selected {
     pointer-events: all;
-    color: var(--theme-secondary);
+    --button-color: var(--theme-secondary);
     @mixin lil1;
+  }
+}
+
+.search-btn {
+  margin-left: 8px;
+}
+
+.content__header__wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  align-items: center;
+
+  &.search-bar-enter-active, &.search-bar-leave-active {
+    transition: 0.1s ease opacity;
+    will-change: opacity;
+  }
+
+  &.search-bar-enter-active {
+    transition-delay: 0.1s;
+  }
+
+  &.search-bar-enter, &.search-bar-leave-to {
+    opacity: 0;
+  }
+}
+
+.search__algolia-credit {
+  display: inline-block;
+  height: 16px;
+  padding: 0 12px;
+  align-self: flex-end;
+
+  & img {
+    height: 100%;
   }
 }
 </style>
