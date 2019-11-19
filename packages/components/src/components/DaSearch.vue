@@ -18,7 +18,7 @@
       <li role="option" v-for="(item, index) in suggestions" :key="item.title"
           class="search__option btn btn-menu" :class="{selected: index + 1 === selectedSuggestion}"
           :aria-selected="index + 1 === selectedSuggestion"
-          @click="onSuggestionClick(index)" @mousedown.prevent="onMouseDown">
+          @click="onSuggestionClick(index)" @mousedown.prevent="">
         <svgicon name="magnifying" class="search-icon"/>
         <span v-html="purify(item.title)"></span>
       </li>
@@ -108,9 +108,6 @@ export default {
           this.selectedSuggestion = event.keyCode === 40 ? 0 : (n - 1);
         }
       }
-    },
-    onMouseDown() {
-      // Prevent from blurring the input
     },
     onSuggestionClick(index) {
       this.$refs.input.focus();

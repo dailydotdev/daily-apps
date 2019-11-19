@@ -44,12 +44,12 @@
                        @submit="onSearchSubmit" @input="fetchSearchSuggestions"
                        @blur="onSearchBlur">
               <a href="https://www.algolia.com/" target="_blank" class="search__algolia-credit"
-                 slot="autocomplete" @click="onAlgoliaClick">
+                 slot="autocomplete" @click="onAlgoliaClick" @mousedown.prevent="">
                 <img src="/graphics/algolia.svg"/>
               </a>
             </da-search>
             <div v-else class="content__header__wrapper">
-              <h4 v-if="!emptyBookmarks && showBookmarks" class="uppercase">/* {{ title }} */</h4>
+              <h4 v-if="!emptyFeed && showBookmarks" class="uppercase">/* {{ title }} */</h4>
               <template v-if="showMainFeed || showSearchFeed">
                 <button class="btn-icon search-btn" @click="enableSearch"
                         v-tooltip="'Search posts'">
@@ -76,23 +76,25 @@
           </transition>
         </template>
       </div>
-      <div class="content__empty" v-if="emptyBookmarks">
-        <da-svg :src="`/graphics/bookmark${theme === 'bright' ? '_bright' : ''}.svg`"
-                class="bookmarks-placeholder"/>
-        <h1 class="content__empty__title">Nothing here, yet</h1>
-        <p class="content__empty__text">
-          Bookmark articles on the main feed and it will be shown here.
-        </p>
-      </div>
-      <div class="content__empty" v-else-if="emptySearch && showSearchFeed">
-        <da-svg :src="`/graphics/hello_world${theme === 'bright' ? '_bright' : ''}.svg`"
-                class="hello-world-placeholder"/>
-        <h1 class="content__empty__title">No results found</h1>
-        <p class="content__empty__text">
-          Please try again with a new search query.
-        </p>
-      </div>
-      <da-feed v-else v-show="showFeed"/>
+      <template v-if="emptyFeed && showFeed">
+        <div class="content__empty" v-if="showBookmarks">
+          <da-svg :src="`/graphics/bookmark${theme === 'bright' ? '_bright' : ''}.svg`"
+                  class="bookmarks-placeholder"/>
+          <h1 class="content__empty__title">Nothing here, yet</h1>
+          <p class="content__empty__text">
+            Bookmark articles on the main feed and it will be shown here.
+          </p>
+        </div>
+        <div class="content__empty" v-else-if="showSearchFeed">
+          <da-svg :src="`/graphics/hello_world${theme === 'bright' ? '_bright' : ''}.svg`"
+                  class="hello-world-placeholder"/>
+          <h1 class="content__empty__title">No results found</h1>
+          <p class="content__empty__text">
+            Please try again with a new search query.
+          </p>
+        </div>
+      </template>
+      <da-feed v-else-if="showFeed"/>
     </main>
     <div id="anchor" ref="anchor"></div>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
@@ -325,7 +327,7 @@ export default {
         if (query.length) {
           const res = await contentService.searchSuggestion(query);
           if (res.query === this.$refs.search.query()
-              && res.query !== this.$store.state.feed.search) {
+                        && res.query !== this.$store.state.feed.search) {
             this.searchSuggestions = res.hits;
           }
         } else {
@@ -367,7 +369,7 @@ export default {
   computed: {
     ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'emptySearch', 'showFeed']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed']),
     ...mapState({
       title(state) {
         let res = '';
@@ -406,13 +408,10 @@ export default {
     }),
 
     ...mapGetters({
-      posts: 'feed/feed',
+      emptyFeed: 'feed/emptyFeed',
       hasFilter: 'feed/hasFilter',
       isLoggedIn: 'user/isLoggedIn',
     }),
-    emptyBookmarks() {
-      return !this.posts.length && this.showBookmarks;
-    },
     showFilterHeader() {
       return this.filter && !this.showBookmarks;
     },

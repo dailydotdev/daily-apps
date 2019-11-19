@@ -1,6 +1,6 @@
 import module from '../src/store/modules/feed';
 import { testAction } from './fixtures/helpers';
-import { contentService } from '../src/common/services';
+import { contentService, monetizationService } from '../src/common/services';
 
 jest.mock('../src/common/services', () => ({
   contentService: {
@@ -9,6 +9,9 @@ jest.mock('../src/common/services', () => ({
     updateFeedPublications: jest.fn(),
     addUserTags: jest.fn(),
     deleteUserTag: jest.fn(),
+  },
+  monetizationService: {
+    fetchAd: jest.fn(),
   },
 }));
 
@@ -467,7 +470,7 @@ it('should set search and refresh feed', async () => {
     module.actions.search,
     'java',
     state,
-    [{ type: 'setEmptySearch', payload: false }, { type: 'setSearch', payload: 'java' }],
+    [{ type: 'setSearch', payload: 'java' }],
     [{ type: 'refreshFeed', payload: null }],
   );
 });
@@ -478,10 +481,30 @@ it('should set empty search when no results', async () => {
     module.actions.search,
     'java',
     state,
-    [{ type: 'setEmptySearch', payload: false }, {
+    [{
       type: 'setSearch',
       payload: 'java',
-    }, { type: 'setEmptySearch', payload: true }],
+    }],
     [{ type: 'refreshFeed', payload: null }],
+  );
+});
+
+it('should set ads in state', () => {
+  const state = {};
+  module.mutations.setAds(state, [{ title: 'Ad' }]);
+  expect(state.ads).toEqual([{ title: 'Ad' }]);
+});
+
+it('should fetch ads', async () => {
+  monetizationService.fetchAd.mockReturnValue([{title: 'ad'}]);
+  const state = { };
+  await testAction(
+    module.actions.fetchAds,
+    undefined,
+    state,
+    [{
+      type: 'setAds',
+      payload: [{title: 'ad'}],
+    }],
   );
 });
