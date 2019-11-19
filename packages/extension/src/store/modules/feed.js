@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { contentService } from '../../common/services';
+import { contentService, monetizationService } from '../../common/services';
 
 const setPostBookmark = (state, key, id, value) => {
   const index = state[key].findIndex(post => post.id === id);
@@ -23,8 +23,8 @@ const initialState = () => ({
   filter: null,
   sortBy: 'popularity',
   search: null,
-  emptySearch: false,
   showFeed: true,
+  ads: [],
 });
 
 const isLoggedIn = state => !!state.user.profile;
@@ -93,7 +93,8 @@ export default {
   state: initialState(),
   getters: {
     feed: state => state[getFeed(state)],
-    showAd: state => !state.showBookmarks && !state.filter,
+    emptyFeed: state => !state[getFeed(state)].length,
+    showAd: state => !state.showBookmarks,
     hasFilter: (state) => {
       if (!state.filter) {
         return false;
@@ -188,11 +189,11 @@ export default {
     setSearch(state, search) {
       state.search = search;
     },
-    setEmptySearch(state, empty) {
-      state.emptySearch = empty;
-    },
     setShowFeed(state, show) {
       state.showFeed = show;
+    },
+    setAds(state, ads) {
+      state.ads = ads;
     },
   },
   actions: {
@@ -349,14 +350,23 @@ export default {
       return dispatch('refreshFeed');
     },
 
-    async search({ commit, dispatch, state }, value) {
-      commit('setEmptySearch', false);
+    search({ commit, dispatch }, value) {
       commit('setSearch', value);
-      const res = await dispatch('refreshFeed');
-      if (!state[getFeed(state)].length) {
-        commit('setEmptySearch', true);
+      return dispatch('refreshFeed');
+    },
+
+    async fetchAds({ commit }) {
+      try {
+        const ads = await monetizationService.fetchAd();
+        if (!ads.length) {
+          ga('send', 'event', 'Ad', 'NotAvailable');
+        }
+        commit('setAds', ads);
+      } catch (err) {
+        // TODO: handle error
+        // eslint-disable-next-line no-console
+        console.error(err);
       }
-      return res;
     },
   },
 };

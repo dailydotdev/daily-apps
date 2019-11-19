@@ -37,7 +37,7 @@ import {
   mapState, mapActions, mapMutations, mapGetters,
 } from 'vuex';
 import VueMasonry from 'vue-masonry-css';
-import { monetizationService, contentService } from '../common/services';
+import { contentService } from '../common/services';
 
 Vue.use(VueMasonry);
 
@@ -55,11 +55,11 @@ export default {
   data() {
     return {
       selectedPostId: null,
-      ads: [],
     };
   },
   computed: {
     ...mapState('ui', ['insaneMode', 'spaciness']),
+    ...mapState('feed', ['ads']),
     ...mapGetters({
       posts: 'feed/feed',
       showAd: 'feed/showAd',
@@ -105,18 +105,10 @@ export default {
       };
     },
   },
-  watch: {
-    showAd(value) {
-      if (value) {
-        this.ads = [];
-        this.fetchAd();
-      }
-    },
-  },
   methods: {
     onAdClick(ad) {
       ga('send', 'event', 'Ad', 'Click', ad.source);
-      this.fetchAd();
+      this.fetchAds();
     },
 
     onAdImpression(ad) {
@@ -180,21 +172,9 @@ export default {
       this.removePost(postId);
     },
 
-    async fetchAd() {
-      try {
-        this.ads = await monetizationService.fetchAd();
-        if (!this.ads.length) {
-          ga('send', 'event', 'Ad', 'NotAvailable');
-        }
-      } catch (err) {
-        // TODO: handle error
-        // eslint-disable-next-line no-console
-        console.error(err);
-      }
-    },
-
     ...mapActions({
       setFilter: 'feed/setFilter',
+      fetchAds: 'feed/fetchAds',
     }),
 
     ...mapMutations({
@@ -204,8 +184,8 @@ export default {
   },
 
   mounted() {
-    if (this.showAd) {
-      this.fetchAd();
+    if (!this.ads.length) {
+      this.fetchAds();
     }
   },
 };
