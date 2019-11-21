@@ -17,13 +17,13 @@ it('should set pixel to an empty array when not defined', () => {
 it('should set promoted to default when company is not defined', () => {
   const ad = ads[0];
   const wrapper = shallowMount(DaCardAd, { propsData: { ad } });
-  expect(wrapper.vm.promoted).toEqual('Promoted');
+  expect(wrapper.vm.promoted).toEqual('/* Promoted */');
 });
 
 it('should set promoted', () => {
   const ad = ads[1];
   const wrapper = shallowMount(DaCardAd, { propsData: { ad } });
-  expect(wrapper.vm.promoted).toEqual('Promoted by CodeFund');
+  expect(wrapper.vm.promoted).toEqual('/* Promoted by CodeFund */');
 });
 
 it('should set size to small when size is not defined', () => {
