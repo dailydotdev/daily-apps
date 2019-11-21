@@ -6,8 +6,8 @@
       </h5>
     </a>
     <a class="insane__promoted micro2" target="_blank"
-       :href="ad.referralLink" v-if="ad && ad.referralLink">/* {{ promoted }} */</a>
-    <span class="insane__promoted micro2" v-else>/* {{ promoted }} */</span>
+       :href="ad.referralLink" v-if="ad && ad.referralLink">{{ promoted }}</a>
+    <span class="insane__promoted micro2" v-else>{{ promoted }}</span>
     <img v-for="(item, index) in pixel" :key="index" :src="item" class="insane__pixel"/>
   </div>
 </template>

@@ -13,10 +13,20 @@ export default {
 
     promoted() {
       if (this.ad.company) {
-        return `Promoted by ${this.ad.company}`;
+        return `/* Promoted by ${this.ad.company} */`;
       }
 
-      return 'Promoted';
+      return '/* Promoted */';
+    },
+  },
+
+  methods: {
+    truncatePromoted(text, maxLength) {
+      const fallback = '/* Promoted */';
+      if (fallback.length < maxLength) {
+        return fallback;
+      }
+      return '';
     },
   },
 

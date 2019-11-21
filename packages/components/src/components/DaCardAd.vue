@@ -7,19 +7,21 @@
       <img v-for="(item, index) in pixel" :key="index" :src="item" class="card__pixel"/>
     </template>
     <a slot="footer" class="card__footer__promoted micro2" target="_blank"
-       :href="ad.referralLink" v-if="ad && ad.referralLink">/* {{ promoted }} */</a>
-    <span slot="footer" class="card__footer__promoted micro2" v-else>/* {{ promoted }} */</span>
+       :href="ad.referralLink" v-if="ad && ad.referralLink">{{ promoted }}</a>
+    <da-line-clamp slot="footer" class="card__footer__promoted micro2" v-else :lines="1"
+                   :truncate="truncatePromoted" :text="promoted"></da-line-clamp>
   </DaCard>
 </template>
 
 <script>
 import DaCard from './DaCard.vue';
+import DaLineClamp from './DaLineClamp.vue';
 import adMixin from '../common/adMixin';
 
 export default {
   name: 'DaCardAd',
   mixins: [adMixin],
-  components: { DaCard },
+  components: { DaCard, DaLineClamp },
 
   computed: {
     size() {
@@ -44,6 +46,7 @@ export default {
 }
 
 .card__footer__promoted {
+  max-width: 100%;
   color: var(--theme-secondary);
   text-transform: uppercase;
   text-decoration: none;
