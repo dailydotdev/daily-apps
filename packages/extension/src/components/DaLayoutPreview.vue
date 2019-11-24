@@ -53,7 +53,6 @@ export default {
   padding: 12px 12px 0;
   background: var(--theme-background-primary);
   border-radius: 8px;
-  box-shadow: var(--theme-shadow-offset) 0 16px 0 rgba(0, 0, 0, 0.1);
 
   &.card-mode {
     &.roomy {
