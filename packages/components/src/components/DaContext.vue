@@ -38,13 +38,20 @@ export default {
 
 <style>
 .context .btn {
-  height: 40px;
+  height: 41px;
   padding: 0 16px;
   margin: 0;
+  border-bottom: 1px solid var(--theme-background-primary);
   cursor: pointer;
+  --button-border-radius: 0;
 
   & {
     @mixin nuggets;
+  }
+
+  &:last-child {
+    height: 40px;
+    border-bottom: none;
   }
 }
 </style>
