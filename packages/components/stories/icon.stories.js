@@ -9,7 +9,7 @@ const icons = requireIcons.keys()
 storiesOf('icon', module)
   .addDecorator(withKnobs)
   .add('default', () => ({
-    template: '<svgicon :icon="icon" :key="icon"/>',
+    template: '<svgicon :name="icon" :key="icon"/>',
     props: {
       icon: {
         default: select('icon', icons, icons[0]),

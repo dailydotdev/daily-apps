@@ -7,7 +7,7 @@ import mdyDateFilter from './common/mdyDateFilter';
 Vue.config.productionTip = false;
 
 Vue.use(svgicon);
-Vue.directive('tooltip', tooltip);
+Vue.directive('tooltip', tooltip(Vue));
 Vue.filter('mdyDate', mdyDateFilter);
 
 new Vue({

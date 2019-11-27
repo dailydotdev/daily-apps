@@ -34,11 +34,11 @@ storiesOf('Buttons', module)
     ...themeKnob(),
   }))
   .add('left icon', () => ({
-    template: '<button class="btn" :class="cls"><svgicon icon="user_daily"/><span>Icon to the left of me</span></button>',
+    template: '<button class="btn" :class="cls"><svgicon name="user_daily"/><span>Icon to the left of me</span></button>',
     ...themeKnob(),
   }))
   .add('right icon', () => ({
-    template: '<button class="btn" :class="cls"><span>Icon to the right</span><svgicon icon="user_daily"/></button>',
+    template: '<button class="btn" :class="cls"><span>Icon to the right</span><svgicon name="user_daily"/></button>',
     ...themeKnob(),
   }))
   .add('big', () => ({
@@ -46,11 +46,11 @@ storiesOf('Buttons', module)
     ...themeKnob(),
   }))
   .add('only icon', () => ({
-    template: '<button class="btn-icon"><svgicon icon="mobile"/></button>',
+    template: '<button class="btn-icon"><svgicon name="mobile"/></button>',
   }))
   .add('with tooltip', () => ({
     data: () => ({
       content: 'Mobile view',
     }),
-    template: '<button v-tooltip.bottom="content" class="btn-icon"><svgicon icon="mobile"/></button>',
+    template: '<button v-tooltip.bottom="content" class="btn-icon"><svgicon name="mobile"/></button>',
   }));

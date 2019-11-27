@@ -1,6 +1,6 @@
 import { mount, createLocalVue, config } from '@vue/test-utils';
 import Vuex from 'vuex';
-import svgicon from 'vue-svgicon';
+import icons from '@daily/components/src/icons';
 import tooltip from '@daily/components/src/directives/tooltip';
 import DaSearch from '@daily/components/src/components/DaSearch.vue';
 import DaHome from '../src/routes/Home.vue';
@@ -15,8 +15,8 @@ config.stubs['transition'] = true;
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
-localVue.use(svgicon);
-localVue.directive('tooltip', tooltip);
+localVue.use(icons);
+localVue.directive('tooltip', tooltip(localVue));
 localVue.component('da-search', DaSearch);
 localVue.component('da-context', DaContext);
 localVue.component('da-header', DaHeader);
@@ -45,7 +45,7 @@ beforeEach(() => {
       search: jest.fn(),
     },
     getters: {
-      feed: state => state['posts'],
+      feed: state => state.posts,
       showAd: jest.fn(),
       emptyFeed: () => false,
     },
@@ -123,5 +123,5 @@ it('should search query', () => {
   const wrapper = mount(DaHome, { store, localVue });
   wrapper.find('.search-btn').trigger('click');
   wrapper.find('.content__header .search').vm.$emit('submit', 'hello');
-  expect(feed.actions.search).toBeCalledWith(expect.anything(), 'hello', undefined);
+  expect(feed.actions.search).toBeCalledWith(expect.anything(), 'hello');
 });

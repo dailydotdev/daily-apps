@@ -6,8 +6,8 @@
       @change="toggle">
     <span class="mode-switch__slider"/>
     <span class="mode-switch__handle shadow1" ref="handle"/>
-    <svgicon :icon="firstIcon" class="mode-switch__icon mode-switch__icon--first"/>
-    <svgicon :icon="secondIcon" class="mode-switch__icon mode-switch__icon--second"/>
+    <svgicon :name="firstIcon" class="mode-switch__icon mode-switch__icon--first"/>
+    <svgicon :name="secondIcon" class="mode-switch__icon mode-switch__icon--second"/>
   </label>
 </template>
 

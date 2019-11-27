@@ -1,10 +1,10 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import svgicon from 'vue-svgicon';
+import icons from '@daily/components/src/icons';
 import DmHeader from '../src/components/DmHeader.vue';
 
 const localVue = createLocalVue();
 
-localVue.use(svgicon);
+localVue.use(icons);
 
 it('should emit "filterToggle" when switch toggle', () => {
   const wrapper = shallowMount(DmHeader, { localVue, propsData: { filterChecked: false } });

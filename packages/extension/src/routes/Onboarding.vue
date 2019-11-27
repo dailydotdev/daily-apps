@@ -1,7 +1,7 @@
 <template>
   <div class="page onboarding">
     <header class="onboarding__header">
-      <svgicon icon="logo" class="onboarding__header__logo"/>
+      <svgicon name="logo" class="onboarding__header__logo"/>
       <div class="onboarding__nav">
         <div v-for="index in steps" :key="index" class="onboarding__nav__item"
              :class="{selected: currentStep === index }"></div>

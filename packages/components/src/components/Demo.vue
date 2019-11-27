@@ -1,7 +1,7 @@
 <template>
   <div class="demo">
     <h1>
-      <svgicon icon="logo" class="title__icon"/>
+      <svgicon name="logo" class="title__icon"/>
       Daily Components Demo
       <DaIconToggle pressed-icon="moon" icon="sun" class="theme-selector" @toggle="toggleTheme"/>
     </h1>
@@ -46,18 +46,18 @@
             Sign in
           </button>
           <button class="btn btn-hollow">
-            <svgicon icon="user_daily"/>
+            <svgicon name="user_daily"/>
             <span>Sign in</span>
           </button>
           <button class="btn btn-invert">
             <span>Sign in</span>
-            <svgicon icon="user_daily"/>
+            <svgicon name="user_daily"/>
           </button>
           <button class="btn btn-invert" disabled>
             Disabled
           </button>
           <button class="btn btn-nav">
-            <svgicon icon="arrow"/>
+            <svgicon name="arrow"/>
             <span>Back home</span>
           </button>
           <button class="btn btn-menu">
@@ -76,10 +76,10 @@
         <div class="horizontal_container">
           <h3>Icon Buttons</h3>
           <button class="btn-icon" title="button">
-            <svgicon icon="mobile"/>
+            <svgicon name="mobile"/>
           </button>
           <a href="https://www.dailynow.co" target="_blank" class="btn-icon" title="anchor">
-            <svgicon icon="bag"/>
+            <svgicon name="bag"/>
           </a>
         </div>
       </div>
@@ -103,7 +103,7 @@
       <h2>Icons</h2>
       <div class="horizontal_container">
         <div v-for="(item, index) in icons" :key="index" class="icons_container">
-          <svgicon :icon="item"/>
+          <svgicon :name="item"/>
           <div class="icons_container__text micro1">{{item}}</div>
         </div>
       </div>
@@ -145,13 +145,13 @@
     <section>
       <h2>Context Menu</h2>
       <button class="btn-icon" title="Open context menu" @click.prevent="openMenu">
-        <svgicon icon="menu"/>
+        <svgicon name="menu"/>
       </button>
     </section>
     <section>
       <h2>Modal</h2>
       <button class="btn-icon" title="Open modal" @click.prevent="showModal = true">
-        <svgicon icon="terminal"/>
+        <svgicon name="terminal"/>
       </button>
     </section>
     <section>

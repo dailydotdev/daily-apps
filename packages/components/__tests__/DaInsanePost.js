@@ -10,7 +10,7 @@ const localVue = createLocalVue();
 
 localVue.use(svgicon);
 localVue.filter('mdyDate', mdyDateFilter);
-localVue.directive('tooltip', tooltip);
+localVue.directive('tooltip', tooltip(localVue));
 localVue.component('da-line-clamp', DaLineClamp);
 
 it('should emit click event', () => {

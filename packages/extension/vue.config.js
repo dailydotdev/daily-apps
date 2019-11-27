@@ -33,8 +33,9 @@ module.exports = {
   productionSourceMap: false,
   chainWebpack: (config) => {
     config.resolve.symlinks(false);
-    config.plugins.delete('prefetch-standalone/standalone');
-    config.plugins.delete('preload-standalone/standalone');
+    config.plugins
+      .delete('prefetch-standalone/standalone')
+      .delete('preload-standalone/standalone');
   },
   configureWebpack: (config) => {
     const plugins = [

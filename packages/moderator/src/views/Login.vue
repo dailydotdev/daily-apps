@@ -1,12 +1,12 @@
 <template>
   <div class="login page">
     <a :href="getLoginLink('github')" class="btn btn-big btn-water-cheese">
-      <svgicon icon="github"/>
+      <svgicon name="github"/>
       <span>Sign in with GitHub</span>
     </a>
     <span class="login__or">Or</span>
     <a :href="getLoginLink('google')" class="btn btn-hollow">
-      <svgicon icon="google"/>
+      <svgicon name="google"/>
     </a>
   </div>
 </template>

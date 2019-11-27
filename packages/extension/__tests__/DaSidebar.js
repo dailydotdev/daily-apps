@@ -1,6 +1,6 @@
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import svgicon from 'vue-svgicon';
+import icons from '@daily/components/src/icons';
 import tooltip from '@daily/components/src/directives/tooltip';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
@@ -18,8 +18,8 @@ const REQUEST_URL = 'https://dailynow.co';
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
-localVue.use(svgicon);
-localVue.directive('tooltip', tooltip);
+localVue.use(icons);
+localVue.directive('tooltip', tooltip(localVue));
 localVue.component('da-mode-switch', DaModeSwitch);
 
 let feed;
@@ -140,7 +140,7 @@ it('should commit "setEnablePublication" when removing publication', (done) => {
       .find('.sidebar__sources .sidebar__enabled')
       .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnablePublication)
-      .toBeCalledWith(expect.anything(), { index: 0, enabled: false }, undefined);
+      .toBeCalledWith(expect.anything(), { index: 0, enabled: false });
     done();
   });
 });
@@ -153,7 +153,7 @@ it('should commit "setEnablePublication" when adding publication', (done) => {
       .find('.sidebar__sources .sidebar__disabled')
       .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnablePublication)
-      .toBeCalledWith(expect.anything(), { index: 1, enabled: true }, undefined);
+      .toBeCalledWith(expect.anything(), { index: 1, enabled: true });
     done();
   });
 });
@@ -188,7 +188,7 @@ it('should dispatch "setEnableTag" when removing tag', (done) => {
       .find('.sidebar__tags .sidebar__enabled')
       .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnableTag)
-      .toBeCalledWith(expect.anything(), { tag: feed.state.tags[0], enabled: false }, undefined);
+      .toBeCalledWith(expect.anything(), { tag: feed.state.tags[0], enabled: false });
     done();
   });
 });
@@ -201,7 +201,7 @@ it('should commit "setEnableTag" when adding tag', (done) => {
       .find('.sidebar__tags .sidebar__disabled')
       .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnableTag)
-      .toBeCalledWith(expect.anything(), { tag: feed.state.tags[2], enabled: true }, undefined);
+      .toBeCalledWith(expect.anything(), { tag: feed.state.tags[2], enabled: true });
     done();
   });
 });
@@ -263,7 +263,7 @@ it('should dispatch "setFilter" with publication filter', (done) => {
       .toBeCalledWith(expect.anything(), {
         type: 'publication',
         info: feed.state.publications[1],
-      }, undefined);
+      });
     done();
   });
 });
@@ -279,7 +279,7 @@ it('should dispatch "setFilter" with tag filter', (done) => {
       .toBeCalledWith(expect.anything(), {
         type: 'tag',
         info: feed.state.tags[2],
-      }, undefined);
+      });
     done();
   });
 });

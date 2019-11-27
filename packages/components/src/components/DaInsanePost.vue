@@ -25,11 +25,11 @@
         <button class="btn-icon insane__reveal__bookmark"
                 v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
                 @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
-          <svgicon icon="bookmark"/>
+          <svgicon name="bookmark"/>
         </button>
         <button class="btn-icon insane__reveal__menu" v-tooltip="'More'"
                 @click="$emit('menu', { post, event: $event })" v-if="showMenu">
-          <svgicon icon="menu"/>
+          <svgicon name="menu"/>
         </button>
       </div>
       <transition name="insane-notification">
@@ -38,7 +38,7 @@
         </div>
       </transition>
     </div>
-    <svgicon icon="menu" class="insane__reveal__menu--duplicate" slot="other" v-if="menuOpened"/>
+    <svgicon name="menu" class="insane__reveal__menu--duplicate" slot="other" v-if="menuOpened"/>
   </div>
 </template>
 

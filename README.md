@@ -23,7 +23,7 @@ This is a monorepo with most of Daily's frontend projects. It was created as par
 ## Technology
 
 * Yarn for managing dependencies.
-* Node v10.12.0 (a `.nvmrc` is presented for [nvm](https://github.com/nvm-sh/nvm) users).
+* Node v10.13.0 (a `.nvmrc` is presented for [nvm](https://github.com/nvm-sh/nvm) users).
 * [lerna](https://github.com/lerna/lerna) for managing the monorepo.
 
 ## Projects
@@ -69,7 +69,7 @@ npx lerna run build
 
 ## Firefox Review
 
-* Install node v10.12.0 and yarn
+* Install node v10.13.0 and yarn
 * Install `lerna` as a global package `yarn global add lerna` 
 * Bootstrap project `lerna bootstrap`
 * Build project `lerna run build`

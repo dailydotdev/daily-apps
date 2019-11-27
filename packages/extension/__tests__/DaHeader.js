@@ -1,6 +1,6 @@
-import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import svgicon from 'vue-svgicon';
+import icons from '@daily/components/src/icons';
 import tooltip from '@daily/components/src/directives/tooltip';
 import DaIconToggle from '@daily/components/src/components/DaIconToggle.vue';
 import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
@@ -9,8 +9,8 @@ import DaHeader from '../src/components/DaHeader.vue';
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
-localVue.use(svgicon);
-localVue.directive('tooltip', tooltip);
+localVue.use(icons);
+localVue.directive('tooltip', tooltip(localVue));
 localVue.component('da-icon-toggle', DaIconToggle);
 localVue.component('da-switch', DaSwitch);
 
@@ -72,7 +72,7 @@ it('should commit "setShowBookmarks" when switch is toggled', (done) => {
   wrapper.find('.header__switch').find('.switch__handle').trigger('transitionend');
   wrapper.find('.header__switch').find('.switch__handle').trigger('transitionend');
   setTimeout(() => {
-    expect(feed.actions.setShowBookmarks).toBeCalledWith(expect.anything(), true, undefined);
+    expect(feed.actions.setShowBookmarks).toBeCalledWith(expect.anything(), true);
     done();
   }, 100);
 });
@@ -113,14 +113,14 @@ it('should mutate state when clicking no on instruction popup', () => {
   const wrapper = mount(DaHeader, { store, localVue });
   wrapper.findAll('.instructions .btn').at(0).trigger('click');
   expect(ui.mutations.nextInstruction).toBeCalledWith(expect.anything(), undefined);
-  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), false, undefined);
+  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), false);
 });
 
 it('should mutate state when clicking yes on instruction popup', () => {
   const wrapper = mount(DaHeader, { store, localVue });
   wrapper.findAll('.instructions .btn').at(1).trigger('click');
   expect(ui.mutations.nextInstruction).toBeCalledWith(expect.anything(), undefined);
-  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), true, undefined);
+  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), true);
 });
 
 it('should emit "menu" on dnd-mode button click', () => {

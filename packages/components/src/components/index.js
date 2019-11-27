@@ -3,7 +3,7 @@ import svgicon from 'vue-svgicon';
 import tooltip from '../directives/tooltip';
 
 Vue.use(svgicon);
-Vue.directive('tooltip', tooltip);
+Vue.directive('tooltip', tooltip(Vue));
 
 const requireComponent = require.context('.', false, /Da[\w-]+.vue$/);
 

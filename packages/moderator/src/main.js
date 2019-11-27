@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import svgicon from 'vue-svgicon';
+import icons from '@daily/components/src/icons';
 import App from './App.vue';
 import router from './router';
 import store from './store';
@@ -7,7 +7,7 @@ import store from './store';
 
 Vue.config.productionTip = false;
 
-Vue.use(svgicon);
+Vue.use(icons);
 
 new Vue({
   router,

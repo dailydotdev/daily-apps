@@ -9,7 +9,7 @@ storiesOf('DaContext', module)
     template: `
     <div>
       <button class="btn-icon" title="Open context menu" @click="openMenu">
-        <svgicon icon="menu"/>
+        <svgicon name="menu"/>
       </button>
       <DaContext ref="context">
         <button class="btn btn-menu" @click="broken">Broken link</button>

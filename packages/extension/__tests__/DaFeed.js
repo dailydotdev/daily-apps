@@ -1,6 +1,6 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import svgicon from 'vue-svgicon';
+import icons from '@daily/components/src/icons';
 import tooltip from '@daily/components/src/directives/tooltip';
 import mdyDateFilter from '@daily/components/src/common/mdyDateFilter';
 import { createDummyEvent } from './fixtures/helpers';
@@ -14,8 +14,8 @@ import DaCardPlaceholder from '../../components/src/components/DaCardPlaceholder
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
-localVue.use(svgicon);
-localVue.directive('tooltip', tooltip);
+localVue.use(icons);
+localVue.directive('tooltip', tooltip(localVue));
 localVue.filter('mdyDate', mdyDateFilter);
 localVue.component('da-card-post', DaCardPost);
 localVue.component('da-insane-post', DaInsanePost);
@@ -119,7 +119,7 @@ it('should dispatch "setFilter" with publication filter', (done) => {
       .toBeCalledWith(expect.anything(), {
         type: 'publication',
         info: expectedPublication,
-      }, undefined);
+      });
     done();
   });
 });
@@ -134,7 +134,7 @@ it('should dispatch "setFilter" with publication filter when in insane mode', ()
     .toBeCalledWith(expect.anything(), {
       type: 'publication',
       info: expectedPublication,
-    }, undefined);
+    });
 });
 
 it('should not show menu button when logged out', () => {
