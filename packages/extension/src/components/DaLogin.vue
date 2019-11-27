@@ -1,22 +1,22 @@
 <template>
   <da-modal class="login-modal invert" @close="$emit('close')">
     <da-svg src="/graphics/login_bg.svg" class="login__background" slot="background"/>
-    <svgicon icon="logo" class="login__logo"/>
+    <svgicon name="logo" class="login__logo"/>
     <h1>Sign in to Daily</h1>
     <div class="login__desc">
-      <svgicon icon="link" class="login__desc__icon"/>
+      <svgicon name="link" class="login__desc__icon"/>
       <p class="login__desc__text">
         Influence content by requesting sources & articles
       </p>
     </div>
     <div class="login__desc">
-      <svgicon icon="mobile" class="login__desc__icon"/>
+      <svgicon name="mobile" class="login__desc__icon"/>
       <p class="login__desc__text">
         Sync settings and bookmarks across devices & browsers
       </p>
     </div>
     <div class="login__desc">
-      <svgicon icon="user" class="login__desc__icon"/>
+      <svgicon name="user" class="login__desc__icon"/>
       <p class="login__desc__text">
         Help the community by moderating irrelevant content
       </p>
@@ -24,13 +24,13 @@
     <div class="login__buttons">
       <a :href="getLoginLink('github')" class="btn btn-big btn-water-cheese"
          @click="onLogin('github')">
-        <svgicon icon="github"/>
+        <svgicon name="github"/>
         <span>Sign in with GitHub</span>
       </a>
       <span class="login__buttons__or">Or</span>
       <a :href="getLoginLink('google')" class="btn btn-hollow"
          @click="onLogin('google')">
-        <svgicon icon="google"/>
+        <svgicon name="google"/>
       </a>
     </div>
   </da-modal>

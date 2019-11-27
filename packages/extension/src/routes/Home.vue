@@ -7,7 +7,7 @@
                 @requested-source="showRequestModal = true"
                 @login="onLogin('Sidebar')"></da-sidebar>
     <div class="line-numbers" @mouseenter="$refs.sidebar.open()">
-      <svgicon icon="hamburger" class="line-numbers_icon"/>
+      <svgicon name="hamburger" class="line-numbers_icon"/>
       <div class="line-numbers__lines" ref="lineNumbers">
         <pre v-for="n in lineNumbers" class="micro2" :key="n">{{ n }}</pre>
       </div>
@@ -32,7 +32,7 @@
           <transition name="fade">
             <button class="btn btn-water content__header__add-filter" v-if="!hasFilter"
                     @click="onAddFilter">
-              <svgicon icon="plus"/>
+              <svgicon name="plus"/>
               <span>Add To Feed</span>
             </button>
           </transition>

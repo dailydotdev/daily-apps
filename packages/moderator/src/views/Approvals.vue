@@ -15,7 +15,7 @@
               <img :src="item.pubImage" alt="Source logo"/>
             </span>
             <span class="btn-icon" title="Change logo" v-else>
-              <svgicon icon="plus"/>
+              <svgicon name="plus"/>
             </span>
           </label>
           <da-editable-text class="big" placeholder="Enter source name"

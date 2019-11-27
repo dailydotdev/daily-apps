@@ -1,10 +1,10 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import svgicon from 'vue-svgicon';
+import icons from '@daily/components/src/icons';
 import DmForm from '../src/components/DmForm.vue';
 
 const localVue = createLocalVue();
 
-localVue.use(svgicon);
+localVue.use(icons);
 
 it('should emit "menu" when clicking on menu', () => {
   const wrapper = shallowMount(DmForm, { localVue });

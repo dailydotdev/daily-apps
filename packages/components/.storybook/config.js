@@ -9,7 +9,7 @@ import '../stories/style.pcss';
 import tooltip from '../src/directives/tooltip';
 
 Vue.use(svgicon);
-Vue.directive('tooltip', tooltip);
+Vue.directive('tooltip', tooltip(Vue));
 
 addParameters({
   options: {

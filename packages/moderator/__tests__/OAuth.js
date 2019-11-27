@@ -39,7 +39,7 @@ it('should set page to approvals on filter toggle', (next) => {
   });
 
   expect(user.actions.authenticate)
-    .toBeCalledWith(expect.anything(), { provider: 'github', code: '12345' }, undefined);
+    .toBeCalledWith(expect.anything(), { provider: 'github', code: '12345' });
 
   setTimeout(() => {
     expect($router.replace).toBeCalledWith('/');

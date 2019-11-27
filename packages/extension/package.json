@@ -26,7 +26,6 @@
     "vue": "^2.5.17",
     "vue-masonry-css": "^1.0.3",
     "vue-router": "^3.0.2",
-    "vue-svgicon": "^3.2.2",
     "vuex": "^3.0.1",
     "webextension-polyfill": "^0.4.0"
   },
@@ -57,7 +56,9 @@
     "jest-junit": "^6.4.0",
     "ora": "^3.3.0",
     "postcss-custom-media": "^7.0.7",
-    "postcss-mixins": "^6.2.1",
+    "postcss-extend": "^1.0.5",
+    "postcss-loader": "^3.0.0",
+    "postcss-mixins": "^6.2.0",
     "postcss-nested": "^4.1.2",
     "vue-cli-plugin-browser-extension": "^0.14.0",
     "vue-template-compiler": "^2.5.17",

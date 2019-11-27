@@ -8,15 +8,17 @@
     "test": "yarn lint && vue-cli-service test:unit",
     "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/components/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit",
     "lint": "vue-cli-service lint",
-    "icons": "vsvg -s ./svg -t ./icons",
+    "icons": "vsvg -s ./svg -t ./icons --tpl ./svg/template.js",
     "test:unit": "vue-cli-service test:unit",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
     "dialog-polyfill": "^0.4.10",
+    "dompurify": "^2.0.7",
     "lazysizes": "^4.1.4",
-    "vue-context": "^3.4.0"
+    "vue-context": "^3.4.0",
+    "vue-svgicon": "^3.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
@@ -53,7 +55,6 @@
     "vue": "^2.5.17",
     "vue-loader": "^15.7.0",
     "vue-style-loader": "^4.1.2",
-    "vue-svgicon": "^3.2.2",
     "vue-template-compiler": "^2.5.17",
     "webpack": "^4.26.1"
   },
@@ -111,7 +112,6 @@
     "logos/*"
   ],
   "peerDependencies": {
-    "vue": "^2.5.17",
-    "vue-svgicon": "^3.2.2"
+    "vue": "^2.5.17"
   }
 }

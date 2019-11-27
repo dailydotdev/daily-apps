@@ -42,5 +42,5 @@ it('should authenticate user', async () => {
     propsData: props,
   });
   expect(user.actions.authenticate)
-    .toBeCalledWith(expect.anything(), props, undefined);
+    .toBeCalledWith(expect.anything(), props);
 });

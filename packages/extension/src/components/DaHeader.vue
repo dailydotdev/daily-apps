@@ -1,12 +1,12 @@
 <template>
   <header class="header">
     <button class="header__logo" @click="onBackHome">
-      <svgicon icon="logo" class="header__logo__icon"/>
+      <svgicon name="logo" class="header__logo__icon"/>
     </button>
     <div class="separator"></div>
     <button class="btn-icon btn-layout" v-tooltip.bottom="'Layout Settings'"
             :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)">
-      <svgicon icon="layout"/>
+      <svgicon name="layout"/>
     </button>
     <da-switch class="header__switch" icon="bookmark" :checked="showBookmarks"
                v-tooltip.bottom="showBookmarks ? 'Back to feed' : 'Show your bookmarks'"
@@ -21,23 +21,23 @@
     </template>
     <a class="btn-icon" href="https://github.com/dailynowco/daily" target="_blank"
        v-tooltip.bottom="'Check out our repository'">
-      <svgicon icon="github"/>
+      <svgicon name="github"/>
     </a>
     <a class="btn-icon" href="https://www.producthunt.com/posts/daily-2-0" target="_blank"
        v-tooltip.bottom="'Our Product Hunt page'">
-      <svgicon icon="ph"/>
+      <svgicon name="ph"/>
     </a>
     <div class="separator"></div>
     <button class="btn-icon" v-tooltip.bottom="'Daily Go'" @click="$emit('go')">
-      <svgicon icon="mobile"/>
+      <svgicon name="mobile"/>
     </button>
     <button class="btn-icon btn-dnd" v-tooltip.bottom="'Do Not Disturb'"
             :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)">
-      <svgicon icon="timer"/>
+      <svgicon name="timer"/>
     </button>
     <button class="btn-icon btn-terminal" v-tooltip.bottom="'Latest updates'"
             :class="{ 'active': notificationsOpened }" @click="toggleNotifications">
-      <svgicon icon="terminal"/>
+      <svgicon name="terminal"/>
       <span class="header__badge" v-if="showNotificationBadge"></span>
     </button>
     <button class="header__profile" v-if="isLoggedIn" @click="$emit('profile')">
@@ -45,7 +45,7 @@
     </button>
     <button class="btn btn-water-cheese header__sign-in" v-else
             @click="$emit('login')">
-      <svgicon icon="user_daily"/>
+      <svgicon name="user_daily"/>
       <span>Sign in</span>
     </button>
     <div class="instructions invert" v-if="topSitesInstructions">
@@ -136,15 +136,15 @@ export default {
 
   methods: {
     loadIcons() {
-            import('@daily/components/icons/logo');
-            import('@daily/components/icons/layout');
-            import('@daily/components/icons/bookmark');
-            import('@daily/components/icons/user_daily');
-            import('@daily/components/icons/terminal');
-            import('@daily/components/icons/mobile');
-            import('@daily/components/icons/ph');
-            import('@daily/components/icons/github');
-            import('@daily/components/icons/timer');
+      import('@daily/components/icons/logo');
+      import('@daily/components/icons/layout');
+      import('@daily/components/icons/bookmark');
+      import('@daily/components/icons/user_daily');
+      import('@daily/components/icons/terminal');
+      import('@daily/components/icons/mobile');
+      import('@daily/components/icons/ph');
+      import('@daily/components/icons/github');
+      import('@daily/components/icons/timer');
     },
 
     async getTopSites() {

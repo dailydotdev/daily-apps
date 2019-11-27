@@ -20,11 +20,11 @@
       <button class="btn-icon btn-small card__footer__bookmark"
               v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
               @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
-        <svgicon icon="bookmark"/>
+        <svgicon name="bookmark"/>
       </button>
       <button class="btn-icon btn-small card__footer__menu" v-tooltip="'More'"
               @click="$emit('menu', { post, event: $event })" v-if="showMenu">
-        <svgicon icon="menu" ref="orig"/>
+        <svgicon name="menu" ref="orig"/>
       </button>
       <transition name="post-notification">
         <div class="card__footer__notification nuggets" v-if="notifying">
@@ -32,7 +32,7 @@
         </div>
       </transition>
     </template>
-    <svgicon icon="menu" class="card__menu--duplicate" ref="dup"
+    <svgicon name="menu" class="card__menu--duplicate" ref="dup"
              slot="other" v-if="menuOpened"/>
   </da-card>
 </template>

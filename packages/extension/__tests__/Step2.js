@@ -1,7 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
-import svgicon from 'vue-svgicon';
+import icons from '@daily/components/src/icons';
 import { contentService } from '../src/common/services';
 import Step2 from '../src/routes/Step2.vue';
 
@@ -17,7 +17,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(VueRouter);
-localVue.use(svgicon);
+localVue.use(icons);
 
 let feed;
 let ui;
@@ -95,7 +95,7 @@ it('should enable tag when clicking on the relevant button', (done) => {
   wrapper.vm.$nextTick(() => {
     wrapper.find('.tags__buttons .btn').trigger('click');
     expect(feed.actions.setEnableTag)
-      .toBeCalledWith(expect.anything(), { tag: feed.state.tags[1], enabled: false }, undefined);
+      .toBeCalledWith(expect.anything(), { tag: feed.state.tags[1], enabled: false });
     done();
   });
 });

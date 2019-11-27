@@ -2,22 +2,12 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:10.12.0
+      - image: circleci/node:10.13.0
     steps:
       - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
           command: npx lerna bootstrap
-      - save_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}
-          paths:
-            - ./node_modules
-            - ./packages/components/node_modules
-            - ./packages/extension/node_modules
-            - ./packages/moderator/node_modules
-            - ./packages/services/node_modules
       - run:
           name: Build
           command: npx lerna run build
@@ -31,11 +21,10 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - node_modules
             - packages
   deploy_mod:
     docker:
-      - image: circleci/node:10.12.0
+      - image: circleci/node:10.13.0
     steps:
       - attach_workspace:
           at: .
@@ -45,7 +34,7 @@ jobs:
           working_directory: packages/moderator
   deploy_storybook:
     docker:
-      - image: circleci/node:10.12.0
+      - image: circleci/node:10.13.0
     steps:
       - attach_workspace:
           at: .

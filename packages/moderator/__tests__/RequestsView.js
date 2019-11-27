@@ -1,6 +1,6 @@
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
-import svgicon from 'vue-svgicon';
+import icons from '@daily/components/src/icons';
 import DaEditableText from '@daily/components/src/components/DaEditableText.vue';
 import DaContext from '@daily/components/src/components/DaContext.vue';
 import { createDummyEvent } from './fixtures/helpers';
@@ -10,7 +10,7 @@ import Requests from '../src/views/Requests.vue';
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
-localVue.use(svgicon);
+localVue.use(icons);
 localVue.component('da-editable-text', DaEditableText);
 localVue.component('da-context', DaContext);
 localVue.component('dm-form', DmForm);
@@ -73,7 +73,7 @@ it('should decline request on content menu click', (done) => {
   setTimeout(() => {
     wrapper.find('.requests__context button').trigger('click');
     expect(requests.actions.declineOpenRequest)
-      .toBeCalledWith(expect.anything(), { id: 2, reason: 'exists' }, undefined);
+      .toBeCalledWith(expect.anything(), { id: 2, reason: 'exists' });
     done();
   }, 10);
 });
@@ -86,7 +86,7 @@ it('should approve request on approve button click', () => {
   const form = wrapper.findAll('.form').at(0);
   form.vm.$emit('submit');
   expect(requests.actions.approveOpenRequest)
-    .toBeCalledWith(expect.anything(), { id: 1 }, undefined);
+    .toBeCalledWith(expect.anything(), { id: 1 });
 });
 
 it('should edit request url on editable submit', () => {
@@ -97,5 +97,5 @@ it('should edit request url on editable submit', () => {
   const editable = wrapper.findAll('.form .editable').at(0);
   editable.vm.$emit('submit', 'https://newurl.com');
   expect(requests.actions.editOpenRequest)
-    .toBeCalledWith(expect.anything(), { id: 1, edit: { url: 'https://newurl.com' } }, undefined);
+    .toBeCalledWith(expect.anything(), { id: 1, edit: { url: 'https://newurl.com' } });
 });

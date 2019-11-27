@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <a href="https://www.dailynow.co" target="_blank" class="header__logo">
-      <svgicon icon="logo" class="header__logo__icon"/>
+      <svgicon name="logo" class="header__logo__icon"/>
     </a>
     <da-mode-switch class="header__switch"
                     first-icon="user" second-icon="v"

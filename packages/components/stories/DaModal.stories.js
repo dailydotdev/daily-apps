@@ -8,7 +8,7 @@ storiesOf('DaModal', module)
     template: `
     <div>
       <button class="btn-icon" title="Open modal" @click.prevent="showModal = true">
-        <svgicon icon="terminal"/>
+        <svgicon name="terminal"/>
       </button>
       <DaModal class="story-modal" v-if="showModal" @close="showModal = false" ref="modal">
         <p class="story-modal__text">

@@ -7,17 +7,17 @@
       </div>
       <button class="btn-icon form__header__menu" title="Open menu"
               @click="$emit('menu', $event)">
-        <svgicon icon="menu" ref="orig"/>
+        <svgicon name="menu" ref="orig"/>
       </button>
       <button class="btn btn-square btn-water-cheese form__header__approve" title="Approve"
               @click="$emit('submit')" :disabled="disableSubmit">
-        <svgicon icon="v"/>
+        <svgicon name="v"/>
       </button>
     </header>
     <div class="form__content">
       <slot></slot>
     </div>
-    <svgicon icon="menu" class="form__menu--duplicate" ref="dup" v-if="menuOpened"/>
+    <svgicon name="menu" class="form__menu--duplicate" ref="dup" v-if="menuOpened"/>
   </div>
 </template>
 

@@ -11,7 +11,7 @@ export default {};
 </script>
 
 <style>
-@import '../../../node_modules/@daily/components/src/styles/global.pcss';
+@import '../node_modules/@daily/components/src/styles/global.pcss';
 
 html {
   background: var(--theme-background-primary);
