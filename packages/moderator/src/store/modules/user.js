@@ -11,8 +11,8 @@ export default {
     setProfile(state, profile) {
       state.profile = profile;
     },
-    updateToken(state, newToken) {
-      state.profile = { ...state.profile, ...newToken };
+    setChallenge(state, challenge) {
+      state.challenge = challenge;
     },
   },
   getters: {
@@ -21,20 +21,14 @@ export default {
     },
   },
   actions: {
-    async authenticate({ commit }, { provider, code }) {
-      const profile = await authService.authenticate(provider, code);
-      contentService.setAccessToken(profile.accessToken);
+    async authenticate({ commit, state }, { code }) {
+      const profile = await authService.authenticate(code, state.challenge.verifier);
+      contentService.setIsLoggedIn(true);
       commit('setProfile', profile);
     },
-
-    async refreshToken({ commit, state }) {
-      if (state.profile) {
-        const dt = state.profile.expiresIn - new Date();
-        if (dt <= 60 * 60 * 1000) {
-          const token = await authService.refreshToken(state.profile.refreshToken);
-          commit('updateToken', { accessToken: token.token, expiresIn: token.expiresIn });
-        }
-      }
+    async generateChallenge({ commit }) {
+      const challenge = await authService.generateChallenge();
+      commit('setChallenge', challenge);
     },
   },
 };

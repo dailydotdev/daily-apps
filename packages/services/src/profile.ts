@@ -16,10 +16,6 @@ export interface Notification {
 }
 
 export interface ProfileService {
-    setAccessToken(token: string): void;
-
-    clearAccessToken(): void;
-
     fetchSettings(): Promise<Settings>;
 
     updateSettings(settings: Settings): Promise<void>;
@@ -36,14 +32,6 @@ export class ProfileServiceImpl implements ProfileService {
             withCredentials: true,
             timeout: 10000,
         });
-    }
-
-    setAccessToken(token: string): void {
-        this.request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-
-    clearAccessToken(): void {
-        delete this.request.defaults.headers.common['Authorization'];
     }
 
     async fetchSettings(): Promise<Settings> {

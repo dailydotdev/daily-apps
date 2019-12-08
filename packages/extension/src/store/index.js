@@ -7,7 +7,7 @@ import sync from './plugins/sync';
 import ui from './modules/ui';
 import feed from './modules/feed';
 import user from './modules/user';
-import { contentService, profileService } from '../common/services';
+import { contentService } from '../common/services';
 
 Vue.use(Vuex);
 
@@ -48,8 +48,7 @@ export default new Vuex.Store({
       }
 
       if (state.user.profile) {
-        profileService.setAccessToken(state.user.profile.accessToken);
-        contentService.setAccessToken(state.user.profile.accessToken);
+        contentService.setIsLoggedIn(true);
       }
 
       state.initialized = true;

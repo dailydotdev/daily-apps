@@ -25,8 +25,8 @@ export default {
   },
 
   async mounted() {
-    const { params, query } = this.$route;
-    await this.authenticate({ provider: params.provider, code: query.code });
+    const { query } = this.$route;
+    await this.authenticate({ code: query.code });
     this.$router.replace('/');
   },
 };

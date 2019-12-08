@@ -1,9 +1,12 @@
 import axios, {AxiosInstance} from 'axios';
 import {dateReviver, reviveJSON} from './utils';
 
-export interface AccessToken {
-    token: string,
+export interface Expiration {
     expiresIn: Date,
+}
+
+export interface UserId {
+    id: String,
 }
 
 export interface User {
@@ -12,21 +15,23 @@ export interface User {
     name: string,
     image: string,
     newUser: boolean,
-    accessToken: string,
-    expiresIn: Date,
-    refreshToken: string,
+}
+
+export interface CodeChallenge {
+    challenge: string,
+    verifier: string,
 }
 
 export interface AuthService {
-    refreshToken(token: string): Promise<AccessToken>;
-
     logout(): Promise<void>;
 
-    authenticate(provider: string, code: string): Promise<User>;
+    authenticate(code: string, verifier: string): Promise<User>;
 
-    getAuthorizationUrl(provider: string, redirectUri: string): string;
+    getAuthorizationUrl(provider: string, redirectUri: string, codeChallenge: string): string;
 
-    getUserId(): Promise<string>;
+    getUserProfile(): Promise<UserId|User>;
+
+    generateChallenge(): Promise<CodeChallenge>;
 }
 
 export class AuthServiceImpl implements AuthService {
@@ -42,26 +47,36 @@ export class AuthServiceImpl implements AuthService {
         });
     }
 
-    async refreshToken(token: string): Promise<AccessToken> {
-        const res = await this.request.post('/v1/auth/refresh', {refreshToken: token});
-        return reviveJSON(res.data, dateReviver);
-    }
-
     async logout(): Promise<void> {
         await this.request.post<void>('/v1/users/logout');
     }
 
-    async authenticate(provider: string, code: string): Promise<User> {
-        const res = await this.request.post<User>(`/v1/auth/${provider}/authenticate`, {code});
+    async authenticate(code: string, verifier: string): Promise<User> {
+        const res = await this.request.post<User>(`/v1/auth/authenticate`, {code, code_verifier: verifier});
         return reviveJSON(res.data, dateReviver);
     }
 
-    getAuthorizationUrl(provider: string, redirectUri: string): string {
-        return `${this.baseURL}/v1/auth/${provider}/authorize?redirect_uri=${encodeURI(redirectUri)}`;
+    getAuthorizationUrl(provider: string, redirectUri: string, codeChallenge: string): string {
+        return `${this.baseURL}/v1/auth/authorize?provider=${provider}&redirect_uri=${encodeURI(redirectUri)}&code_challenge=${codeChallenge}`;
     }
 
-    async getUserId(): Promise<string> {
+    async getUserProfile(): Promise<UserId|User> {
         const res = await this.request.get('/v1/users/me');
-        return res.data.id;
+        return res.data;
+    }
+
+    async generateChallenge(): Promise<CodeChallenge> {
+        const array = new Uint32Array(32);
+        window.crypto.getRandomValues(array);
+        const verifier = Array.from(array, dec => ('0' + dec.toString(16)).substr(-2)).join('');
+
+        const encoder = new TextEncoder();
+        const data = encoder.encode(verifier);
+        const hashed = await window.crypto.subtle.digest('SHA-256', data);
+        const challenge = btoa(String.fromCharCode(...new Uint8Array(hashed)))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=/g, '');
+        return {verifier, challenge};
     }
 }

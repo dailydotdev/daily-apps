@@ -5,6 +5,5 @@ export default async (to, from, next) => {
     return next({ path: '/login' });
   }
 
-  await store.dispatch('user/refreshToken');
   return next();
 };

@@ -7,16 +7,11 @@ jest.mock('../src/common/services', () => ({
   authService: {
     authenticate: jest.fn(),
     logout: jest.fn(),
-    getUserId: jest.fn(),
-    refreshToken: jest.fn(),
-  },
-  profileService: {
-    setAccessToken: jest.fn(),
-    clearAccessToken: jest.fn(),
+    getUserProfile: jest.fn(),
+    generateChallenge: jest.fn(),
   },
   contentService: {
-    setAccessToken: jest.fn(),
-    clearAccessToken: jest.fn(),
+    setIsLoggedIn: jest.fn(),
   },
 }));
 
@@ -26,7 +21,7 @@ jest.mock('../src/common/cache', () => ({
 }));
 
 beforeEach(() => {
-    window.ga = () => {
+  window.ga = () => {
   };
 });
 
@@ -48,19 +43,18 @@ it('should authenticate user and set profile', async () => {
   const profile = {
     name: 'John',
     image: 'http://image.com',
-    accessToken: 'hello'
+    accessToken: 'hello',
   };
   authService.authenticate.mockReturnValue(profile);
-  const state = { profile: null };
+  const state = { profile: null, challenge: { verifier: 'verifier' } };
   await testAction(
     module.actions.authenticate,
     { provider: 'google', code: '12345' },
     state,
-    [{ type: 'setProfile', payload: profile }]
+    [{ type: 'setProfile', payload: profile }],
   );
-  expect(authService.authenticate).toBeCalledWith('google', '12345');
-  expect(profileService.setAccessToken).toBeCalledWith('hello');
-  expect(contentService.setAccessToken).toBeCalledWith('hello');
+  expect(authService.authenticate).toBeCalledWith('12345', 'verifier');
+  expect(contentService.setIsLoggedIn).toBeCalledWith(true);
 });
 
 it('should do nothing when authentication fails', async () => {
@@ -70,12 +64,12 @@ it('should do nothing when authentication fails', async () => {
     module.actions.authenticate,
     { provider: 'google', code: '12345' },
     state,
-    []
+    [],
   );
 });
 
 it('should logout and reset all preferences', async () => {
-  authService.getUserId.mockReturnValue(Promise.resolve('1'));
+  authService.getUserProfile.mockReturnValue(Promise.resolve({ id: '1' }));
   const state = { profile: null };
   await testAction(
     module.actions.logout,
@@ -85,52 +79,59 @@ it('should logout and reset all preferences', async () => {
     [{ type: 'ui/reset', payload: null }, { type: 'feed/reset', payload: null }],
   );
   expect(setCache).toBeCalledWith(ANALYTICS_ID_KEY, '1');
-  expect(profileService.clearAccessToken).toBeCalledTimes(1);
-  expect(contentService.clearAccessToken).toBeCalledTimes(1);
+  expect(contentService.setIsLoggedIn).toBeCalledWith(false);
 });
 
-it('should not refresh token if user is not logged in', async () => {
-  const state = { profile: null };
+it('should set code challenge in state', () => {
+  const state = {};
+  const expected = { verifier: 'verifier', challenge: 'challenge' };
+  module.mutations.setChallenge(state, expected);
+  expect(state.challenge).toEqual(expected);
+});
+
+it('should generate code challenge', async () => {
+  authService.generateChallenge.mockReturnValue(Promise.resolve({
+    verifier: 'verifier',
+    challenge: 'challenge',
+  }));
+  const state = {};
   await testAction(
-    module.actions.refreshToken,
+    module.actions.generateChallenge,
+    null,
+    state,
+    [{ type: 'setChallenge', payload: { verifier: 'verifier', challenge: 'challenge' } }],
+  );
+  expect(authService.generateChallenge).toBeCalled();
+});
+
+it('should do nothing if not logged in', async () => {
+  const state = {};
+  await testAction(
+    module.actions.validateAuth,
     null,
     state,
   );
 });
 
-it('should not refresh token if token is far from expiring', async () => {
-  const state = { profile: { expiresIn: new Date(Date.now() + 120 * 60 * 1000) } };
+it('should update profile if still logged in', async () => {
+  const state = { profile: { id: '1', providers: ['github'] } };
+  authService.getUserProfile.mockReturnValue(Promise.resolve({ id: '2', providers: ['github'] }));
   await testAction(
-    module.actions.refreshToken,
+    module.actions.validateAuth,
     null,
     state,
+    [{ type: 'setProfile', payload: { id: '2', providers: ['github'] } }],
   );
 });
 
-it('should refresh token if token is almost expiring', async () => {
-  const token = { token: 'token', expiresIn: new Date() };
-  authService.refreshToken.mockReturnValue(Promise.resolve(token));
-  const state = { profile: { expiresIn: new Date(Date.now() + 20 * 60 * 1000) } };
+it('should logout if not logged in anymore', async () => {
+  const state = { profile: { id: '1', providers: ['github'] } };
+  authService.getUserProfile.mockReturnValue(Promise.resolve({ id: '2' }));
   await testAction(
-    module.actions.refreshToken,
+    module.actions.validateAuth,
     null,
     state,
-    [{
-      type: 'updateToken',
-      payload: { accessToken: token.token, expiresIn: token.expiresIn }
-    }],
+    [],
+    [{ type: 'logout', payload: null }],
   );
-});
-
-it('should update token in state', () => {
-  const state = {
-    profile: {
-      accessToken: 'token', expiresIn: new Date(Date.now() + 20 * 60 * 1000),
-    },
-  };
-  const expected = {
-    accessToken: 'token1', expiresIn: new Date(),
-  };
-  module.mutations.updateToken(state, expected);
-  expect(state.profile).toEqual(expected);
 });

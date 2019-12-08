@@ -28,7 +28,7 @@ function encode(val: string) {
 }
 
 beforeEach(() => {
-    service.clearAccessToken();
+    service.setIsLoggedIn(false);
 });
 
 it('should fetch publications from server', async () => {
@@ -45,11 +45,8 @@ it('should fetch publications from server', async () => {
 it('should send publication request', async () => {
     const body = {source: 'https://www.dailynow.co'};
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .post('/v1/publications/requests', body)
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.requestPublication(body.source);
 });
@@ -58,11 +55,8 @@ it('should report post', async () => {
     const reason = 'nsfw';
     const postId = '12345';
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .post(`/v1/posts/${postId}/report`, {reason})
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.reportPost(postId, reason);
 });
@@ -70,11 +64,8 @@ it('should report post', async () => {
 it('should hide post', async () => {
     const postId = '12345';
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .post(`/v1/posts/${postId}/hide`)
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.hidePost(postId);
 });
@@ -84,11 +75,8 @@ it('should fetch open pub requests from server', async () => {
     const expected: PubRequest[] = response.map((x: any) => ({...x, createdAt: new Date(x.createdAt)}));
 
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .get('/v1/publications/requests/open')
         .reply(200, response);
-
-    service.setAccessToken('token');
 
     const actual = await service.fetchOpenPubRequests();
     expect(actual).toEqual(expected);
@@ -98,22 +86,16 @@ it('should edit an existing pub request', async () => {
     const payload: PubRequestEdit = {url: 'https://dailynow.co'};
 
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .put('/v1/publications/requests/1', payload)
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.editPubRequest(1, payload);
 });
 
 it('should approve an existing pub request', async () => {
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .post('/v1/publications/requests/1/approve')
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.approvePubRequest(1);
 });
@@ -122,22 +104,16 @@ it('should decline an existing pub request', async () => {
     const reason: string = 'exists';
 
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .post('/v1/publications/requests/1/decline', {reason})
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.declinePubRequest(1, reason);
 });
 
 it('should publish an existing pub request', async () => {
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .post('/v1/publications/requests/1/publish')
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.publishPubRequest(1);
 });
@@ -179,12 +155,10 @@ it('should fetch personal latest posts from server', async () => {
     const query = `${encode(fetchPersonalLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
 
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .get(`/graphql?query=${query}`)
         .reply(200, {data: {latest: latestResponse}});
 
-    service.setAccessToken('token');
-
+    service.setIsLoggedIn(true);
     const actual = await service.fetchLatestPosts(
         new Date('2018-11-28T08:27:45.612Z'),
         0,
@@ -239,42 +213,6 @@ it('should fetch posts by tag from server', async () => {
     expect(actual).toEqual(latestExpected);
 });
 
-it('should clear access token', async () => {
-    const inputParams = {
-        latest: '2018-11-28T08:27:45.612Z',
-        page: 0,
-        pageSize: 5,
-        sortBy: 'popularity',
-    };
-
-    const query1 = `${encode(fetchPersonalLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
-    const query2 = `${encode(fetchLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
-
-    nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
-        .get(`/graphql?query=${query1}`)
-        .reply(200, {data: {latest: latestResponse}});
-
-    service.setAccessToken('token');
-
-    await service.fetchLatestPosts(
-        new Date('2018-11-28T08:27:45.612Z'),
-        0,
-    );
-
-    nock(baseURL)
-        .matchHeader('authorization', (val: string) => !val)
-        .get(`/graphql?query=${query2}`)
-        .reply(200, {data: {latest: latestResponse}});
-
-    service.clearAccessToken();
-
-    await service.fetchLatestPosts(
-        new Date('2018-11-28T08:27:45.612Z'),
-        0,
-    );
-});
-
 it('should fetch bookmarks from server', async () => {
     const inputParams = {
         latest: '2018-11-28T08:27:45.612Z',
@@ -285,12 +223,10 @@ it('should fetch bookmarks from server', async () => {
     const query = `${encode(fetchBookmarksQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
 
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .get(`/graphql?query=${query}`)
         .reply(200, {data: {bookmarks: bookResponse}});
 
-    service.setAccessToken('token');
-
+    service.setIsLoggedIn(true);
     const actual = await service.fetchBookmarks(
         new Date('2018-11-28T08:27:45.612Z'),
         0,
@@ -301,11 +237,8 @@ it('should fetch bookmarks from server', async () => {
 
 it('should fetch feed pubs from server', async () => {
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .get('/v1/feeds/publications')
         .reply(200, feedPubsResponse);
-
-    service.setAccessToken('token');
 
     const actual = await service.fetchFeedPublications();
 
@@ -319,22 +252,17 @@ it('should update feed pubs', async () => {
     }];
 
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .post('/v1/feeds/publications', body)
         .reply(204);
 
-    service.setAccessToken('token');
-
+    service.setIsLoggedIn(true);
     await service.updateFeedPublications(body);
 });
 
 it('should fetch user tags from server', async () => {
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .get('/v1/feeds/tags')
         .reply(200, [{tag: 'javascript'}, {tag: 'golang'}]);
-
-    service.setAccessToken('token');
 
     const actual = await service.fetchUserTags();
 
@@ -343,22 +271,16 @@ it('should fetch user tags from server', async () => {
 
 it('should add user tags', async () => {
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .post('/v1/feeds/tags', [{tag: 'javascript'}])
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.addUserTags(['javascript']);
 });
 
 it('should delete user tags', async () => {
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .delete('/v1/feeds/tags', {tag: 'javascript'})
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.deleteUserTag('javascript');
 });
@@ -367,11 +289,8 @@ it('should add bookmarks', async () => {
     const body: string[] = ['id'];
 
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .post('/v1/posts/bookmarks', body)
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.addBookmarks(body);
 });
@@ -380,11 +299,8 @@ it('should remove bookmark', async () => {
     const id = 'id';
 
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .delete(`/v1/posts/${id}/bookmark`)
         .reply(204);
-
-    service.setAccessToken('token');
 
     await service.removeBookmark(id);
 });

@@ -77,9 +77,7 @@ export interface SearchSuggestionResults {
 }
 
 export interface ContentService {
-    setAccessToken(token: string): void;
-
-    clearAccessToken(): void;
+    setIsLoggedIn(isLogged: boolean): void;
 
     fetchPublications(): Promise<Publication[]>;
 
@@ -136,6 +134,7 @@ export class ContentServiceImpl implements ContentService {
     private readonly request: AxiosInstance;
     private readonly baseURL: string;
     private readonly pageSize: number;
+    private isLogged: boolean = false;
 
     constructor(baseURL: string, pageSize: number) {
         this.baseURL = baseURL;
@@ -159,19 +158,15 @@ export class ContentServiceImpl implements ContentService {
 
     private getPostFields(): string {
         const base = 'id,title,url,publishedAt,createdAt,image,ratio,placeholder,views,readTime,publication { id, name, image },tags';
-        if (this.request.defaults.headers.common['Authorization']) {
+        if (this.isLogged) {
             return `${base},bookmarked,read`;
         }
 
         return base;
     }
 
-    setAccessToken(token: string): void {
-        this.request.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-
-    clearAccessToken(): void {
-        delete this.request.defaults.headers.common['Authorization'];
+    setIsLoggedIn(isLogged: boolean): void {
+        this.isLogged = isLogged;
     }
 
     async fetchPublications(): Promise<Publication[]> {

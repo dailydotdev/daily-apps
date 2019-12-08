@@ -5,10 +5,10 @@ import { testAction } from './fixtures/helpers';
 jest.mock('../src/common/services', () => ({
   authService: {
     authenticate: jest.fn(),
-    refreshToken: jest.fn(),
+    generateChallenge: jest.fn(),
   },
   contentService: {
-    setAccessToken: jest.fn(),
+    setIsLoggedIn: jest.fn(),
   },
 }));
 
@@ -26,59 +26,40 @@ it('should authenticate user and set profile', async () => {
     accessToken: 'hello',
   };
   authService.authenticate.mockReturnValue(profile);
-  const state = { profile: null };
+  const state = {
+    profile: null, challenge: {
+      verifier: 'verifier',
+      challenge: 'challenge',
+    },
+  };
   await testAction(
     module.actions.authenticate,
-    { provider: 'google', code: '12345' },
+    { code: '12345' },
     state,
     [{ type: 'setProfile', payload: profile }],
   );
-  expect(authService.authenticate).toBeCalledWith('google', '12345');
-  expect(contentService.setAccessToken).toBeCalledWith('hello');
+  expect(authService.authenticate).toBeCalledWith('12345', 'verifier');
+  expect(contentService.setIsLoggedIn).toBeCalledWith(true);
 });
 
-it('should not refresh token if user is not logged in', async () => {
-  const state = { profile: null };
+it('should set code challenge in state', () => {
+  const state = {};
+  const expected = { verifier: 'verifier', challenge: 'challenge' };
+  module.mutations.setChallenge(state, expected);
+  expect(state.challenge).toEqual(expected);
+});
+
+it('should generate code challenge', async () => {
+  authService.generateChallenge.mockReturnValue(Promise.resolve({
+    verifier: 'verifier',
+    challenge: 'challenge',
+  }));
+  const state = {};
   await testAction(
-    module.actions.refreshToken,
+    module.actions.generateChallenge,
     null,
     state,
+    [{ type: 'setChallenge', payload: { verifier: 'verifier', challenge: 'challenge' } }],
   );
-});
-
-it('should not refresh token if token is far from expiring', async () => {
-  const state = { profile: { expiresIn: new Date(Date.now() + 120 * 60 * 1000) } };
-  await testAction(
-    module.actions.refreshToken,
-    null,
-    state,
-  );
-});
-
-it('should refresh token if token is almost expiring', async () => {
-  const token = { token: 'token', expiresIn: new Date() };
-  authService.refreshToken.mockReturnValue(Promise.resolve(token));
-  const state = { profile: { expiresIn: new Date(Date.now() + 20 * 60 * 1000) } };
-  await testAction(
-    module.actions.refreshToken,
-    null,
-    state,
-    [{
-      type: 'updateToken',
-      payload: { accessToken: token.token, expiresIn: token.expiresIn },
-    }],
-  );
-});
-
-it('should update token in state', () => {
-  const state = {
-    profile: {
-      accessToken: 'token', expiresIn: new Date(Date.now() + 20 * 60 * 1000),
-    },
-  };
-  const expected = {
-    accessToken: 'token1', expiresIn: new Date(),
-  };
-  module.mutations.updateToken(state, expected);
-  expect(state.profile).toEqual(expected);
+  expect(authService.generateChallenge).toBeCalled();
 });

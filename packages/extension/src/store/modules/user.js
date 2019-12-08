@@ -1,4 +1,4 @@
-import { authService, profileService, contentService } from '../../common/services';
+import { authService, contentService } from '../../common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../../common/cache';
 
 const updateAnalyticsUser = (id) => {
@@ -8,6 +8,7 @@ const updateAnalyticsUser = (id) => {
 
 const initialState = () => ({
   profile: null,
+  challenge: null,
 });
 
 export default {
@@ -17,11 +18,11 @@ export default {
     setProfile(state, profile) {
       state.profile = profile;
     },
-    updateToken(state, newToken) {
-      state.profile = { ...state.profile, ...newToken };
-    },
     confirmNewUser(state) {
       state.profile = { ...state.profile, newUser: false };
+    },
+    setChallenge(state, challenge) {
+      state.challenge = challenge;
     },
   },
   getters: {
@@ -30,12 +31,10 @@ export default {
     },
   },
   actions: {
-    async authenticate({ commit }, { provider, code }) {
+    async authenticate({ commit, state }, { provider, code }) {
       try {
-        const profile = await authService.authenticate(provider, code);
-
-        profileService.setAccessToken(profile.accessToken);
-        contentService.setAccessToken(profile.accessToken);
+        const profile = await authService.authenticate(code, state.challenge.verifier);
+        contentService.setIsLoggedIn(true);
 
         ga('send', 'event', 'Login', 'Done', provider);
         await updateAnalyticsUser(profile.id);
@@ -49,23 +48,28 @@ export default {
 
     async logout({ commit, dispatch }) {
       // TODO: handle error
-      profileService.clearAccessToken();
-      contentService.clearAccessToken();
+      contentService.setIsLoggedIn(false);
       commit('setProfile', null);
       await authService.logout();
       await Promise.all([
         dispatch('ui/reset', null, { root: true }),
         dispatch('feed/reset', null, { root: true }),
-        authService.getUserId().then(updateAnalyticsUser),
+        authService.getUserProfile().then(profile => updateAnalyticsUser(profile.id)),
       ]);
     },
 
-    async refreshToken({ commit, state }) {
+    async generateChallenge({ commit }) {
+      const challenge = await authService.generateChallenge();
+      commit('setChallenge', challenge);
+    },
+
+    async validateAuth({ commit, state, dispatch }) {
       if (state.profile) {
-        const dt = state.profile.expiresIn - new Date();
-        if (dt <= 60 * 60 * 1000) {
-          const token = await authService.refreshToken(state.profile.refreshToken);
-          commit('updateToken', { accessToken: token.token, expiresIn: token.expiresIn });
+        const profile = await authService.getUserProfile();
+        if (profile.providers) {
+          commit('setProfile', profile);
+        } else {
+          dispatch('logout');
         }
       }
     },
