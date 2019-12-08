@@ -3,7 +3,7 @@ import { contentService } from '../../common/services';
 
 const time2Cache = time => (time ? time.getTime() : null);
 
-const vue2Json = x => ({ ...x });
+const vue2Json = x => JSON.parse(JSON.stringify(x));
 
 const post2Cache = p => ({
   ...p,
@@ -30,15 +30,7 @@ const stateToCache = (state) => {
     ...ui,
     lastNotificationTime: time2Cache(state.ui.lastNotificationTime),
   };
-
-  if (state.user.profile && state.user.profile.expiresIn) {
-    toCache.user = {
-      profile: {
-        ...toCache.user.profile,
-        expiresIn: time2Cache(state.user.profile.expiresIn),
-      },
-    };
-  }
+  toCache.user = vue2Json(state.user);
 
   return toCache;
 };
@@ -47,7 +39,7 @@ const plugin = (store) => {
   store.subscribe((mutation, state) => {
     if (mutation.type !== 'loadFromCache' && mutation.type.indexOf('reset') < 0) {
       setCache(STATE_KEY, stateToCache(state))
-      // eslint-disable-next-line no-console
+        // eslint-disable-next-line no-console
         .catch(err => console.warn('failed to cache state', err));
     }
   });

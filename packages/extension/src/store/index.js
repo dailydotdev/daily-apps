@@ -41,10 +41,6 @@ export default new Vuex.Store({
           state.feed.posts = (cached.feed.posts || []).map(cache2Post);
           state.feed.bookmarks = (cached.feed.bookmarks || []).map(cache2Post);
         }
-
-        if (cached.user && cached.user.profile) {
-          state.user.profile.expiresIn = cache2Time(cached.user.profile.expiresIn);
-        }
       }
 
       if (state.user.profile) {

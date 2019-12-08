@@ -40,7 +40,7 @@ export default {
         await updateAnalyticsUser(profile.id);
 
         commit('setProfile', profile);
-      } catch {
+      } catch (err) {
         // TODO: handle error
         ga('send', 'event', 'Login', 'Failed', provider);
       }
