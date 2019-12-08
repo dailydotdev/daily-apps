@@ -78,9 +78,6 @@ beforeEach(() => {
     getters: {
       isLoggedIn: state => !!state.profile,
     },
-    actions: {
-      refreshToken: jest.fn(),
-    },
   };
 
   store = new Vuex.Store({

@@ -12,22 +12,27 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { authService } from '../common/services';
-import anonymousGuard from '../router/guards/anonymous';
+import codeChallengeGuard from '../router/guards/codeChallenge';
 
 export default {
   name: 'Login',
 
-  beforeRouteEnter: anonymousGuard,
+  beforeRouteEnter: codeChallengeGuard,
+
+  computed: {
+    ...mapState('user', ['challenge']),
+  },
 
   methods: {
     getLoginLink(provider) {
       const redirectUri = `${window.location.origin}/oauth/${provider}/callback`;
-      return authService.getAuthorizationUrl(provider, redirectUri);
+      return authService.getAuthorizationUrl(provider, redirectUri, this.challenge.challenge);
     },
   },
 
-  mounted() {
+  async mounted() {
     import('@daily/components/icons/google');
     import('@daily/components/icons/github');
   },

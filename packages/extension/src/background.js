@@ -9,8 +9,8 @@ import {
 } from './common/cache';
 
 const cacheUserId = async () => {
-  const id = await authService.getUserId();
-  return setCache(ANALYTICS_ID_KEY, id);
+  const profile = await authService.getUserProfile();
+  return setCache(ANALYTICS_ID_KEY, profile.id);
 };
 
 const migrateVersion1 = async () => {

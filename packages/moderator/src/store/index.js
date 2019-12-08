@@ -23,7 +23,7 @@ export default new Vuex.Store({
       }
 
       if (state.user.profile) {
-        contentService.setAccessToken(state.user.profile.accessToken);
+        contentService.setIsLoggedIn(true);
       }
 
       state.initialized = true;

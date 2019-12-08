@@ -285,18 +285,20 @@ export default {
     },
 
     async initHome() {
+      this.generateChallenge();
+
       Promise.all([
         this.fetchPublications(),
         this.fetchTags(),
       ]).then(() => this.fetchNextFeedPage())
         .then(() => this.contentObserver.observe(this.$refs.anchor))
-      // TODO: handle error
-      // eslint-disable-next-line no-console
+        // TODO: handle error
+        // eslint-disable-next-line no-console
         .catch(console.error);
 
       this.fetchNotifications()
-      // TODO: handle error
-      // eslint-disable-next-line no-console
+        // TODO: handle error
+        // eslint-disable-next-line no-console
         .catch(console.error);
     },
 
@@ -327,7 +329,7 @@ export default {
         if (query.length) {
           const res = await contentService.searchSuggestion(query);
           if (res.query === this.$refs.search.query()
-                        && res.query !== this.$store.state.feed.search) {
+            && res.query !== this.$store.state.feed.search) {
             this.searchSuggestions = res.hits;
           }
         } else {
@@ -353,7 +355,8 @@ export default {
       addFilterToFeed: 'feed/addFilterToFeed',
       search: 'feed/search',
       fetchNotifications: 'ui/fetchNotifications',
-      refreshToken: 'user/refreshToken',
+      generateChallenge: 'user/generateChallenge',
+      validateAuth: 'user/validateAuth',
     }),
 
     ...mapMutations({
@@ -451,21 +454,21 @@ export default {
   },
 
   async mounted() {
-        import('@daily/components/icons/arrow');
-        import('@daily/components/icons/plus');
-        import('@daily/components/icons/hamburger');
-        import('@daily/components/icons/magnifying');
+    import('@daily/components/icons/arrow');
+    import('@daily/components/icons/plus');
+    import('@daily/components/icons/hamburger');
+    import('@daily/components/icons/magnifying');
 
-        if (this.cta.icon) {
-            import(`@daily/components/icons/${this.cta.icon}`);
-        }
+    if (this.cta.icon) {
+      import(`@daily/components/icons/${this.cta.icon}`);
+    }
 
-        this.updateLines();
-        await this.refreshToken();
+    this.updateLines();
 
-        requestIdleCallback(async () => {
-          await this.initHome();
-        });
+    requestIdleCallback(async () => {
+      await this.initHome();
+      await this.validateAuth();
+    });
   },
 };
 </script>

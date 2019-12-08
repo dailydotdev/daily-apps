@@ -21,11 +21,9 @@ it('should fetch settings from server', async () => {
     };
 
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .get('/v1/settings')
         .reply(200, expected);
 
-    service.setAccessToken('token');
     const actual = await service.fetchSettings();
 
     expect(actual).toEqual(expected);
@@ -42,11 +40,9 @@ it('should update settings', async () => {
     };
 
     nock(baseURL)
-        .matchHeader('authorization', 'Bearer token')
         .post('/v1/settings', body)
         .reply(204);
 
-    service.setAccessToken('token');
     await service.updateSettings(body);
 });
 
