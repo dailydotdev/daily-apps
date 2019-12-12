@@ -3,10 +3,12 @@
 </template>
 
 <script>
+import { debounce } from 'debounce';
+
 const elements = [];
-window.addEventListener('resize', () => {
+window.addEventListener('resize', debounce(() => {
   elements.forEach(el => el.updateText());
-});
+}, 400));
 
 const ellipsis = (text, maxLength) => {
   if (text.length <= maxLength) {
@@ -60,17 +62,25 @@ export default {
     updateText() {
       let i = 1;
       if (this.offset) {
-        while (!this.isOverflow() && this.offset) {
+        while (!this.isOverflow() && this.offset > 0) {
           this.offset -= i * 2;
           i += 1;
+          this.updateHtml();
+        }
+        if (this.offset < 0) {
+          this.offset = 0;
           this.updateHtml();
         }
       }
 
       i = 1;
-      while (this.isOverflow()) {
+      while (this.isOverflow() && this.offset < this.text.length) {
         this.offset += i * 2;
         i += 1;
+        this.updateHtml();
+      }
+      if (this.offset > this.text.length) {
+        this.offset = this.text.length;
         this.updateHtml();
       }
     },
