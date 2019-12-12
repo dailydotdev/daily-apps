@@ -14,6 +14,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "debounce": "^1.2.0",
     "dialog-polyfill": "^0.4.10",
     "dompurify": "^2.0.7",
     "lazysizes": "^4.1.4",
