@@ -88,6 +88,15 @@ const getFeed = (state) => {
   return 'posts';
 };
 
+const setBookmarkInFeed = (state, id, bookmarked) => {
+  const feed = getFeed(state);
+  const post = setPostBookmark(state, feed, id, bookmarked);
+  if (feed !== 'posts') {
+    setPostBookmark(state, 'posts', id, bookmarked);
+  }
+  return post;
+};
+
 export default {
   namespaced: true,
   state: initialState(),
@@ -108,6 +117,7 @@ export default {
       const tag = state.tags.find(t => t.name === state.filter.info.name);
       return tag && tag.enabled;
     },
+    hasConflicts: state => state.conflictBookmarks && state.conflictBookmarks.length > 0,
   },
   mutations: {
     setShowBookmarks(state, value) {
@@ -154,11 +164,7 @@ export default {
       state.loading = loading;
     },
     toggleBookmarks(state, { id, bookmarked }) {
-      const feed = getFeed(state);
-      const post = setPostBookmark(state, feed, id, bookmarked);
-      if (feed !== 'posts') {
-        setPostBookmark(state, 'posts', id, bookmarked);
-      }
+      const post = setBookmarkInFeed(state, id, bookmarked);
 
       if (!bookmarked) {
         const index = state.bookmarks.findIndex(bookmark => bookmark.id === id);
@@ -194,6 +200,18 @@ export default {
     },
     setAds(state, ads) {
       state.ads = ads;
+    },
+    checkBookmarksConflicts(state) {
+      if (state.bookmarks.length) {
+        state.conflictBookmarks = state.bookmarks;
+      }
+    },
+    clearBookmarksConflicts(state) {
+      state.conflictBookmarks = null;
+    },
+    mergeBookmarksConflicts(state) {
+      state.conflictBookmarks.map(p => setBookmarkInFeed(state, p.id, true));
+      state.conflictBookmarks = null;
     },
   },
   actions: {
@@ -367,6 +385,11 @@ export default {
         // eslint-disable-next-line no-console
         console.error(err);
       }
+    },
+
+    async mergeBookmarksConflicts({ commit, state }) {
+      await contentService.addBookmarks(state.conflictBookmarks.map(b => b.id));
+      commit('mergeBookmarksConflicts');
     },
   },
 };

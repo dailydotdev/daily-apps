@@ -1,5 +1,6 @@
 <template>
-  <da-modal class="consent-modal" @close="$emit('close')" ref="modal">
+  <da-modal class="consent-modal" @close="$emit('close')" ref="modal"
+            :close-on-click="false">
     <p>
       To improve Daily we use analytics platforms.
       We kindly ask your approval for tracking your activity here (such as clicks and page views).
