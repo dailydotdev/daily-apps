@@ -9,6 +9,7 @@ jest.mock('../src/common/services', () => ({
     updateFeedPublications: jest.fn(),
     addUserTags: jest.fn(),
     deleteUserTag: jest.fn(),
+    addBookmarks: jest.fn(),
   },
   monetizationService: {
     fetchAd: jest.fn(),
@@ -496,15 +497,61 @@ it('should set ads in state', () => {
 });
 
 it('should fetch ads', async () => {
-  monetizationService.fetchAd.mockReturnValue([{title: 'ad'}]);
-  const state = { };
+  monetizationService.fetchAd.mockReturnValue([{ title: 'ad' }]);
+  const state = {};
   await testAction(
     module.actions.fetchAds,
     undefined,
     state,
     [{
       type: 'setAds',
-      payload: [{title: 'ad'}],
+      payload: [{ title: 'ad' }],
     }],
   );
+});
+
+it('should not find bookmarks conflicts', () => {
+  const state = { bookmarks: [] };
+  module.mutations.checkBookmarksConflicts(state);
+  expect(state.conflictBookmarks).toEqual(undefined);
+});
+
+it('should find bookmarks conflicts', () => {
+  const state = { bookmarks: [{ id: '1' }] };
+  module.mutations.checkBookmarksConflicts(state);
+  expect(state.conflictBookmarks).toEqual([{ id: '1' }]);
+});
+
+it('should clear bookmarks conflicts', () => {
+  const state = { conflictBookmarks: [{ id: '1' }] };
+  module.mutations.clearBookmarksConflicts(state);
+  expect(state.conflictBookmarks).toEqual(null);
+});
+
+it('should merge bookmarks conflicts', () => {
+  const state = {
+    posts: [{ id: '1' }, { id: '2' }, { id: '3' }],
+    conflictBookmarks: [{ id: '1' }, { id: '3' }],
+  };
+  module.mutations.mergeBookmarksConflicts(state);
+  expect(state).toEqual({
+    posts: [{ id: '1', bookmarked: true }, { id: '2' }, { id: '3', bookmarked: true }],
+    conflictBookmarks: null,
+  });
+});
+
+it('should fetch ads', async () => {
+  contentService.addBookmarks.mockReturnValue(Promise.resolve());
+  const state = {
+    posts: [{ id: '1' }, { id: '2' }, { id: '3' }],
+    conflictBookmarks: [{ id: '1' }, { id: '3' }],
+  };
+  await testAction(
+    module.actions.mergeBookmarksConflicts,
+    undefined,
+    state,
+    [{ type: 'mergeBookmarksConflicts' }],
+  );
+  expect(contentService.addBookmarks)
+    .toBeCalledWith(['1', '3']);
 });

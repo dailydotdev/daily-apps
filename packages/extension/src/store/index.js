@@ -40,6 +40,7 @@ export default new Vuex.Store({
           state.feed.latest = cache2Time(cached.feed.latest);
           state.feed.posts = (cached.feed.posts || []).map(cache2Post);
           state.feed.bookmarks = (cached.feed.bookmarks || []).map(cache2Post);
+          state.feed.conflictBookmarks = (cached.feed.conflictBookmarks || []).map(cache2Post);
         }
       }
 

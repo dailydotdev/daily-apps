@@ -103,6 +103,8 @@
     <da-welcome v-if="showReadyModal" @close="nextInstruction"/>
     <da-login v-if="showLoginModal" @close="showLoginModal = false"/>
     <da-profile v-if="showProfileModal" @close="showProfileModal = false"/>
+    <da-merge v-if="hasConflicts" @confirm="mergeBookmarksConflicts"
+              @cancel="clearBookmarksConflicts"/>
     <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
       <template slot="title">Terminal</template>
       <template slot="content">
@@ -174,6 +176,7 @@ export default {
     DaCongrats: () => import('../components/DaCongrats.vue'),
     DaRequest: () => import('../components/DaRequest.vue'),
     DaSettings: () => import('../components/DaSettings.vue'),
+    DaMerge: () => import('../components/DaMerge.vue'),
   },
 
   data() {
@@ -354,12 +357,14 @@ export default {
       fetchPublications: 'feed/fetchPublications',
       addFilterToFeed: 'feed/addFilterToFeed',
       search: 'feed/search',
+      mergeBookmarksConflicts: 'feed/mergeBookmarksConflicts',
       fetchNotifications: 'ui/fetchNotifications',
       generateChallenge: 'user/generateChallenge',
       validateAuth: 'user/validateAuth',
     }),
 
     ...mapMutations({
+      clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
       hideNotifications: 'ui/hideNotifications',
@@ -373,6 +378,8 @@ export default {
     ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed']),
+    ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
+    ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
       title(state) {
         let res = '';
@@ -408,12 +415,6 @@ export default {
       showSearchFeed(state) {
         return state.feed.search && state.feed.search.length;
       },
-    }),
-
-    ...mapGetters({
-      emptyFeed: 'feed/emptyFeed',
-      hasFilter: 'feed/hasFilter',
-      isLoggedIn: 'user/isLoggedIn',
     }),
     showFilterHeader() {
       return this.filter && !this.showBookmarks;

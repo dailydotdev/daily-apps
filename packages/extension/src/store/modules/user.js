@@ -39,6 +39,9 @@ export default {
         ga('send', 'event', 'Login', 'Done', provider);
         await updateAnalyticsUser(profile.id);
 
+        if (!profile.newUser) {
+          commit('feed/checkBookmarksConflicts', null, { root: true });
+        }
         commit('setProfile', profile);
       } catch (err) {
         // TODO: handle error

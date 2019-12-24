@@ -39,11 +39,28 @@ it('should set newUser to false in state', () => {
   expect(state).toEqual(expected);
 });
 
-it('should authenticate user and set profile', async () => {
+it('should authenticate user, set profile and check for bookmarks conflicts', async () => {
   const profile = {
     name: 'John',
     image: 'http://image.com',
-    accessToken: 'hello',
+  };
+  authService.authenticate.mockReturnValue(profile);
+  const state = { profile: null, challenge: { verifier: 'verifier' } };
+  await testAction(
+    module.actions.authenticate,
+    { provider: 'google', code: '12345' },
+    state,
+    [{ type: 'feed/checkBookmarksConflicts', payload: null }, { type: 'setProfile', payload: profile }],
+  );
+  expect(authService.authenticate).toBeCalledWith('12345', 'verifier');
+  expect(contentService.setIsLoggedIn).toBeCalledWith(true);
+});
+
+it('should authenticate user and set profile without checking for conflicts', async () => {
+  const profile = {
+    name: 'John',
+    image: 'http://image.com',
+    newUser: true,
   };
   authService.authenticate.mockReturnValue(profile);
   const state = { profile: null, challenge: { verifier: 'verifier' } };
