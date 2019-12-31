@@ -105,6 +105,7 @@
     <da-profile v-if="showProfileModal" @close="showProfileModal = false"/>
     <da-merge v-if="hasConflicts" @confirm="mergeBookmarksConflicts"
               @cancel="clearBookmarksConflicts"/>
+    <da-consent v-if="showNewTerms" @confirm="agreeToTerms"/>
     <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
       <template slot="title">Terminal</template>
       <template slot="content">
@@ -156,6 +157,7 @@ import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
 import { contentService } from '../common/services';
+import { TERMS_CONSENT_KEY, getCache, setCache } from '../common/cache';
 
 export default {
   name: 'Home',
@@ -177,6 +179,7 @@ export default {
     DaRequest: () => import('../components/DaRequest.vue'),
     DaSettings: () => import('../components/DaSettings.vue'),
     DaMerge: () => import('../components/DaMerge.vue'),
+    DaConsent: () => import('../components/DaConsent'),
   },
 
   data() {
@@ -186,6 +189,7 @@ export default {
       showRequestModal: false,
       showLoginModal: false,
       showProfileModal: false,
+      showNewTerms: false,
       lineNumbers: 1,
       showSearch: false,
       searchSuggestions: [],
@@ -290,6 +294,11 @@ export default {
     async initHome() {
       this.generateChallenge();
 
+      getCache(TERMS_CONSENT_KEY)
+        .then((consent) => {
+          this.showNewTerms = !consent;
+        });
+
       Promise.all([
         this.fetchPublications(),
         this.fetchTags(),
@@ -349,6 +358,11 @@ export default {
 
     onAlgoliaClick() {
       ga('send', 'event', 'Search', 'Algolia');
+    },
+
+    async agreeToTerms() {
+      await setCache(TERMS_CONSENT_KEY, true);
+      this.showNewTerms = false;
     },
 
     ...mapActions({
