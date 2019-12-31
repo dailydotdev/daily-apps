@@ -52,7 +52,7 @@ export default {
 
   methods: {
     proceed() {
-      setCache(TERMS_CONSENT_KEY, this.analyticsConsent);
+      setCache(TERMS_CONSENT_KEY, this.termsConsent);
       if (this.isFirefox) {
         setCache(ANALYTICS_CONSENT_KEY, this.analyticsConsent);
         initializeAnalytics(this.analyticsConsent, null);
