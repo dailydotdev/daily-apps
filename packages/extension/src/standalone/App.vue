@@ -1,7 +1,6 @@
 <template>
   <div class="app">
     <router-view></router-view>
-    <da-consent v-if="showConsent" @close="optOut" @opt-in="optIn" @opt-out="optOut"/>
   </div>
 </template>
 
@@ -9,22 +8,10 @@
 import 'focus-visible';
 import { mapGetters } from 'vuex';
 import initializeAnalytics from '../common/analytics';
-import { getCache, setCache, CONSENT_KEY } from '../common/cache';
+import { getCache, ANALYTICS_CONSENT_KEY } from '../common/cache';
 import { browserName } from '../common/browser';
 
-const setAnalyticsConsent = value => setCache(CONSENT_KEY, value);
-
 export default {
-  components: {
-    DaConsent: () => import('../components/DaConsent'),
-  },
-
-  data() {
-    return {
-      showConsent: false,
-    };
-  },
-
   computed: {
     ...mapGetters({ isLoggedIn: 'user/isLoggedIn' }),
   },
@@ -34,25 +21,11 @@ export default {
       initializeAnalytics(consent, this.isLoggedIn ? this.$store.state.user.profile.id : null);
     },
 
-    optOut() {
-      setAnalyticsConsent(false);
-      this.initializeAnalytics(false);
-      this.showConsent = false;
-    },
-
-    optIn() {
-      setAnalyticsConsent(true);
-      this.initializeAnalytics(true);
-      this.showConsent = false;
-    },
-
     startTracking() {
       if (browserName === 'firefox') {
-        getCache(CONSENT_KEY, null)
+        getCache(ANALYTICS_CONSENT_KEY, null)
           .then((consent) => {
-            if (consent === null) {
-              this.showConsent = true;
-            } else {
+            if (consent !== null) {
               this.initializeAnalytics(consent);
             }
           })
