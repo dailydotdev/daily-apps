@@ -103,6 +103,9 @@
     <da-welcome v-if="showReadyModal" @close="nextInstruction"/>
     <da-login v-if="showLoginModal" @close="showLoginModal = false"/>
     <da-profile v-if="showProfileModal" @close="showProfileModal = false"/>
+    <da-merge v-if="hasConflicts" @confirm="mergeBookmarksConflicts"
+              @cancel="clearBookmarksConflicts"/>
+    <da-consent v-if="showNewTerms" @confirm="agreeToTerms"/>
     <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
       <template slot="title">Terminal</template>
       <template slot="content">
@@ -154,6 +157,7 @@ import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
 import { contentService } from '../common/services';
+import { TERMS_CONSENT_KEY, getCache, setCache } from '../common/cache';
 
 export default {
   name: 'Home',
@@ -174,6 +178,8 @@ export default {
     DaCongrats: () => import('../components/DaCongrats.vue'),
     DaRequest: () => import('../components/DaRequest.vue'),
     DaSettings: () => import('../components/DaSettings.vue'),
+    DaMerge: () => import('../components/DaMerge.vue'),
+    DaConsent: () => import('../components/DaConsent'),
   },
 
   data() {
@@ -183,6 +189,7 @@ export default {
       showRequestModal: false,
       showLoginModal: false,
       showProfileModal: false,
+      showNewTerms: false,
       lineNumbers: 1,
       showSearch: false,
       searchSuggestions: [],
@@ -287,6 +294,11 @@ export default {
     async initHome() {
       this.generateChallenge();
 
+      getCache(TERMS_CONSENT_KEY)
+        .then((consent) => {
+          this.showNewTerms = !consent;
+        });
+
       Promise.all([
         this.fetchPublications(),
         this.fetchTags(),
@@ -348,18 +360,25 @@ export default {
       ga('send', 'event', 'Search', 'Algolia');
     },
 
+    async agreeToTerms() {
+      await setCache(TERMS_CONSENT_KEY, true);
+      this.showNewTerms = false;
+    },
+
     ...mapActions({
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       fetchTags: 'feed/fetchTags',
       fetchPublications: 'feed/fetchPublications',
       addFilterToFeed: 'feed/addFilterToFeed',
       search: 'feed/search',
+      mergeBookmarksConflicts: 'feed/mergeBookmarksConflicts',
       fetchNotifications: 'ui/fetchNotifications',
       generateChallenge: 'user/generateChallenge',
       validateAuth: 'user/validateAuth',
     }),
 
     ...mapMutations({
+      clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
       hideNotifications: 'ui/hideNotifications',
@@ -373,6 +392,8 @@ export default {
     ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed']),
+    ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
+    ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
       title(state) {
         let res = '';
@@ -408,12 +429,6 @@ export default {
       showSearchFeed(state) {
         return state.feed.search && state.feed.search.length;
       },
-    }),
-
-    ...mapGetters({
-      emptyFeed: 'feed/emptyFeed',
-      hasFilter: 'feed/hasFilter',
-      isLoggedIn: 'user/isLoggedIn',
     }),
     showFilterHeader() {
       return this.filter && !this.showBookmarks;

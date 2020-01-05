@@ -1,7 +1,7 @@
 <template>
   <transition name="modal">
     <dialog class="modal" ref="dialog">
-      <div class="modal__backdrop" @click="close"></div>
+      <div class="modal__backdrop" @click="backdropClicked"></div>
       <div class="modal__background">
         <slot name="background"></slot>
       </div>
@@ -18,11 +18,18 @@ import dialogPolyfill from 'dialog-polyfill/dialog-polyfill';
 export default {
   name: 'DaModal',
 
+  props: {
+    closeOnClick: {
+      type: Boolean,
+      default: true,
+    },
+  },
+
   created() {
     this.keyup = (event) => {
-      if (event.key === 'Escape') {
-        this.$emit('close');
-        document.body.removeEventListener('keyup', this.keyup);
+      event.preventDefault();
+      if (this.closeOnClick && event.key === 'Escape') {
+        this.close();
       }
     };
     this.keyup = this.keyup.bind(this);
@@ -31,13 +38,19 @@ export default {
   mounted() {
     dialogPolyfill.registerDialog(this.$refs.dialog);
     this.$refs.dialog.showModal();
-    document.body.addEventListener('keyup', this.keyup);
+    document.body.addEventListener('keydown', this.keyup);
   },
 
   methods: {
     close() {
+      document.body.removeEventListener('keydown', this.keyup);
       this.$refs.dialog.close();
       this.$emit('close');
+    },
+    backdropClicked() {
+      if (this.closeOnClick) {
+        this.close();
+      }
     },
   },
 };

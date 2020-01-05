@@ -49,6 +49,7 @@ export default {
 .page.onboarding {
   padding: 16px 24px;
   align-items: center;
+  background: var(--color-pepper-80);
 
   & main {
     display: flex;

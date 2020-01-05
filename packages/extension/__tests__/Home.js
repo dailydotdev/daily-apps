@@ -48,6 +48,7 @@ beforeEach(() => {
       feed: state => state.posts,
       showAd: jest.fn(),
       emptyFeed: () => false,
+      hasConflicts: () => false,
     },
   };
 

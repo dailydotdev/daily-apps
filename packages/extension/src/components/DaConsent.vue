@@ -1,18 +1,14 @@
 <template>
-  <da-modal class="consent-modal" @close="$emit('close')" ref="modal">
+  <da-modal class="consent-modal" ref="modal" :close-on-click="false">
     <p>
-      To improve Daily we use analytics platforms.
-      We kindly ask your approval for tracking your activity here (such as clicks and page views).
-      We promise to never misuse it.
-      <br><br>
-      Do you agree to opt-in?
+      We have updated our <a href="https://www.dailynow.co/eula" target="_blank">Terms</a>,
+      <a href="https://www.dailynow.co/privacy" target="_blank">Privacy</a> and
+      <a href="https://www.dailynow.co/cookie" target="_blank">Cookie Policy</a>.
+      Take a minute to read them before you proceed.
     </p>
     <div class="consent__buttons">
-      <button class="btn btn-big btn-modal btn-invert" @click="$emit('opt-in')">
-        Yes, I'd love to
-      </button>
-      <button class="btn btn-big btn-hollow" @click="$emit('opt-out')" autofocus>
-        No
+      <button class="btn btn-big btn-modal btn-invert" @click="$emit('confirm')" autofocus>
+        I agree
       </button>
     </div>
   </da-modal>
@@ -49,6 +45,10 @@ export default {
     & > .btn {
       margin: 0 8px;
     }
+  }
+
+  & a, & a:visited {
+    color: var(--color-water-50);
   }
 }
 </style>
