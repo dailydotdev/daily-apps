@@ -2,13 +2,16 @@
   <div class="card" :class="cls">
     <a :href="url" target="_blank" class="card__link" @click="$emit('click')">
       <div class="card__background" :style="imgStyle">
-        <img class="card__background__image lazyload"
-             :data-lowsrc="placeholder"
-             :data-src="image" :key="image"/>
+        <img
+          class="card__background__image lazyload"
+          :data-lowsrc="placeholder"
+          :data-src="image"
+          :key="image"
+        />
       </div>
       <div class="card__content card__hover">
         <h5 class="card__title">
-          <da-line-clamp :text="title" :lines="lines"/>
+          <da-line-clamp :text="title" :lines="lines" />
         </h5>
         <slot name="content"></slot>
       </div>
@@ -21,64 +24,64 @@
 </template>
 
 <script>
-import 'lazysizes/plugins/blur-up/ls.blur-up';
-import 'lazysizes';
-import DaLineClamp from './DaLineClamp.vue';
+import "lazysizes/plugins/blur-up/ls.blur-up";
+import "lazysizes";
+import DaLineClamp from "./DaLineClamp.vue";
 
 export default {
-  name: 'DaCard',
+  name: "DaCard",
 
   components: {
-    DaLineClamp,
+    DaLineClamp
   },
 
   props: {
     size: {
       type: String,
-      required: true,
+      required: true
     },
     url: {
       type: String,
-      required: true,
+      required: true
     },
     placeholder: String,
     image: {
       type: String,
-      required: true,
+      required: true
     },
     title: {
       type: String,
-      required: true,
+      required: true
     },
     imageBackground: {
       type: String,
-      default: 'none',
+      default: "none"
     },
     lines: {
       type: Number,
-      default: 3,
-    },
+      default: 3
+    }
   },
 
   computed: {
     imgStyle() {
       return {
-        background: this.imageBackground,
+        background: this.imageBackground
       };
     },
 
     cls() {
       return {
-        [this.size]: true,
+        [this.size]: true
       };
-    },
+    }
   },
 
   methods: {
     truncateTitle(text) {
       return text[0];
-    },
-  },
+    }
+  }
 };
 </script>
 <style>
@@ -131,7 +134,7 @@ export default {
   flex: 1;
 
   &:before {
-    content: '';
+    content: "";
     display: block;
     padding-top: 100.71%;
   }
@@ -152,7 +155,7 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .2s linear;
+  transition: transform 0.2s linear;
   transform-origin: center;
   will-change: transform;
 }
@@ -168,7 +171,7 @@ export default {
   z-index: 1;
 
   &:before {
-    content: '';
+    content: "";
     display: block;
     padding-top: 44%;
   }
@@ -204,9 +207,8 @@ export default {
   }
 }
 
-.card__hover {
-  transition: transform 0.2s ease-in;
-  transform-origin: center;
+.card__background__image {
+  transition: transform 0.4s ease-out;
 }
 
 .card:hover,
@@ -216,19 +218,31 @@ export default {
   }
 }
 
-.animate-cards {
-  & .card {
+.card--post {
+  transition: all 0.4s ease-out;
+  transform-origin: center;
+}
 
-    & .card__hover {
-      will-change: transform;
-    }
+.card--post::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border-radius: 8px;
+  box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.4);
+  transition: opacity 0.4s ease-in-out;
+}
 
-    &:hover,
-    &.hover {
-      & .card__hover {
-        transform: translate(0, -16px) scale(1.02);
-      }
-    }
+.loaded.bright .card--post::after {
+  box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.24);
+}
+
+.card--post:hover {
+  transform: translateY(-4px);
+
+  &:after {
+    opacity: 1;
   }
 }
 </style>
