@@ -11,7 +11,7 @@
       </div>
       <div class="card__content card__hover">
         <h5 class="card__title">
-          <da-line-clamp :text="title" :lines="lines"/>
+          <da-line-clamp :text="title" :lines="lines" />
         </h5>
         <slot name="content"></slot>
       </div>
@@ -32,56 +32,56 @@ export default {
   name: 'DaCard',
 
   components: {
-    DaLineClamp,
+    DaLineClamp
   },
 
   props: {
     size: {
       type: String,
-      required: true,
+      required: true
     },
     url: {
       type: String,
-      required: true,
+      required: true
     },
     placeholder: String,
     image: {
       type: String,
-      required: true,
+      required: true
     },
     title: {
       type: String,
-      required: true,
+      required: true
     },
     imageBackground: {
       type: String,
-      default: 'none',
+      default: 'none'
     },
     lines: {
       type: Number,
-      default: 3,
-    },
+      default: 3
+    }
   },
 
   computed: {
     imgStyle() {
       return {
-        background: this.imageBackground,
+        background: this.imageBackground
       };
     },
 
     cls() {
       return {
-        [this.size]: true,
+        [this.size]: true
       };
-    },
+    }
   },
 
   methods: {
     truncateTitle(text) {
       return text[0];
-    },
-  },
+    }
+  }
 };
 </script>
 <style>
@@ -155,7 +155,7 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.2s linear;
+  transition: transform 0.4s ease-out;
   transform-origin: center;
   will-change: transform;
 }
@@ -207,10 +207,6 @@ export default {
   }
 }
 
-.card__background__image {
-  transition: transform 0.4s ease-out;
-}
-
 .card:hover,
 .card.hover {
   & .card__background__image {
@@ -219,22 +215,25 @@ export default {
 }
 
 .card--post {
-  transition: all 0.4s ease-out;
-  transform-origin: center;
+  transition-property: opacity ease-out, translate ease-out;
+  transition-duration: 0.4s;
 }
 
 .card--post::after {
   content: '';
+  z-index: -1;
   position: absolute;
-  width: 100%;
-  height: 100%;
+  margin: 16px 16px 0px 16px;
+  width: calc(100% - 32px);
+  height: calc(100% - 16px);
+  background-color: var(--theme-background-primary);
   opacity: 0;
   border-radius: 8px;
   box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.4);
   transition: opacity 0.4s ease-in-out;
 }
 
-.loaded.bright .card--post::after {
+.bright .card--post::after {
   box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.24);
 }
 
