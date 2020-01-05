@@ -2,9 +2,12 @@
   <div class="card" :class="cls">
     <a :href="url" target="_blank" class="card__link" @click="$emit('click')">
       <div class="card__background" :style="imgStyle">
-        <img class="card__background__image lazyload"
-             :data-lowsrc="placeholder"
-             :data-src="image" :key="image"/>
+        <img
+          class="card__background__image lazyload"
+          :data-lowsrc="placeholder"
+          :data-src="image"
+          :key="image"
+        />
       </div>
       <div class="card__content card__hover">
         <h5 class="card__title">
@@ -152,7 +155,7 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .2s linear;
+  transition: transform 0.4s ease-out;
   transform-origin: center;
   will-change: transform;
 }
@@ -204,11 +207,6 @@ export default {
   }
 }
 
-.card__hover {
-  transition: transform 0.2s ease-in;
-  transform-origin: center;
-}
-
 .card:hover,
 .card.hover {
   & .card__background__image {
@@ -216,19 +214,34 @@ export default {
   }
 }
 
-.animate-cards {
-  & .card {
+.card--post {
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
 
-    & .card__hover {
-      will-change: transform;
-    }
+.card--post::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 16px 16px 0 16px;
+  opacity: 0;
+  border-radius: 8px;
+  z-index: -1;
+  box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.4);
+  transition: opacity 0.4s ease-in-out;
+}
 
-    &:hover,
-    &.hover {
-      & .card__hover {
-        transform: translate(0, -16px) scale(1.02);
-      }
-    }
+.bright .card--post::after {
+  box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.24);
+}
+
+.card--post:hover {
+  transform: translateY(-4px);
+
+  &:after {
+    opacity: 1;
   }
 }
 </style>
