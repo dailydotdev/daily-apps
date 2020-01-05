@@ -134,7 +134,7 @@ export default {
   flex: 1;
 
   &:before {
-    content: "";
+    content: '';
     display: block;
     padding-top: 100.71%;
   }
@@ -171,7 +171,7 @@ export default {
   z-index: 1;
 
   &:before {
-    content: "";
+    content: '';
     display: block;
     padding-top: 44%;
   }
@@ -224,7 +224,7 @@ export default {
 }
 
 .card--post::after {
-  content: "";
+  content: '';
   position: absolute;
   width: 100%;
   height: 100%;
