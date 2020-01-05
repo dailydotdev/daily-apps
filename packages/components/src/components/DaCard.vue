@@ -11,7 +11,7 @@
       </div>
       <div class="card__content card__hover">
         <h5 class="card__title">
-          <da-line-clamp :text="title" :lines="lines" />
+          <da-line-clamp :text="title" :lines="lines"/>
         </h5>
         <slot name="content"></slot>
       </div>
@@ -32,56 +32,56 @@ export default {
   name: 'DaCard',
 
   components: {
-    DaLineClamp
+    DaLineClamp,
   },
 
   props: {
     size: {
       type: String,
-      required: true
+      required: true,
     },
     url: {
       type: String,
-      required: true
+      required: true,
     },
     placeholder: String,
     image: {
       type: String,
-      required: true
+      required: true,
     },
     title: {
       type: String,
-      required: true
+      required: true,
     },
     imageBackground: {
       type: String,
-      default: 'none'
+      default: 'none',
     },
     lines: {
       type: Number,
-      default: 3
-    }
+      default: 3,
+    },
   },
 
   computed: {
     imgStyle() {
       return {
-        background: this.imageBackground
+        background: this.imageBackground,
       };
     },
 
     cls() {
       return {
-        [this.size]: true
+        [this.size]: true,
       };
-    }
+    },
   },
 
   methods: {
     truncateTitle(text) {
       return text[0];
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
@@ -215,20 +215,20 @@ export default {
 }
 
 .card--post {
-  transition-property: opacity ease-out, translate ease-out;
-  transition-duration: 0.4s;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
 .card--post::after {
   content: '';
-  z-index: -1;
   position: absolute;
-  margin: 16px 16px 0px 16px;
-  width: calc(100% - 32px);
-  height: calc(100% - 16px);
-  background-color: var(--theme-background-primary);
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 16px 16px 0 16px;
   opacity: 0;
   border-radius: 8px;
+  z-index: -1;
   box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.4);
   transition: opacity 0.4s ease-in-out;
 }
