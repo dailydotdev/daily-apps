@@ -11,7 +11,7 @@
       </div>
       <div class="card__content card__hover">
         <h5 class="card__title">
-          <da-line-clamp :text="title" :lines="lines" />
+          <da-line-clamp :text="title" :lines="lines"/>
         </h5>
         <slot name="content"></slot>
       </div>
@@ -24,64 +24,64 @@
 </template>
 
 <script>
-import "lazysizes/plugins/blur-up/ls.blur-up";
-import "lazysizes";
-import DaLineClamp from "./DaLineClamp.vue";
+import 'lazysizes/plugins/blur-up/ls.blur-up';
+import 'lazysizes';
+import DaLineClamp from './DaLineClamp.vue';
 
 export default {
-  name: "DaCard",
+  name: 'DaCard',
 
   components: {
-    DaLineClamp
+    DaLineClamp,
   },
 
   props: {
     size: {
       type: String,
-      required: true
+      required: true,
     },
     url: {
       type: String,
-      required: true
+      required: true,
     },
     placeholder: String,
     image: {
       type: String,
-      required: true
+      required: true,
     },
     title: {
       type: String,
-      required: true
+      required: true,
     },
     imageBackground: {
       type: String,
-      default: "none"
+      default: 'none',
     },
     lines: {
       type: Number,
-      default: 3
-    }
+      default: 3,
+    },
   },
 
   computed: {
     imgStyle() {
       return {
-        background: this.imageBackground
+        background: this.imageBackground,
       };
     },
 
     cls() {
       return {
-        [this.size]: true
+        [this.size]: true,
       };
-    }
+    },
   },
 
   methods: {
     truncateTitle(text) {
       return text[0];
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
