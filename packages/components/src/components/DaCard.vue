@@ -214,34 +214,36 @@ export default {
   }
 }
 
-.card--post {
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-}
+.animate-cards {
+  & .card {
+    transition: transform 0.4s ease-out;
 
-.card--post::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: 16px 16px 0 16px;
-  opacity: 0;
-  border-radius: 8px;
-  z-index: -1;
-  box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.4);
-  transition: opacity 0.4s ease-in-out;
-}
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: 16px 16px 0 16px;
+      opacity: 0;
+      border-radius: 8px;
+      z-index: -1;
+      box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.64);
+      transition: opacity 0.4s ease-in-out;
+    }
 
-.bright .card--post::after {
-  box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.24);
-}
+    &:hover {
+      transform: translateY(-4px);
 
-.card--post:hover {
-  transform: translateY(-4px);
-
-  &:after {
-    opacity: 1;
+      &:after {
+        opacity: 1;
+      }
+    }
   }
+}
+
+.bright .animate-cards .card::after {
+  box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.24);
 }
 </style>
