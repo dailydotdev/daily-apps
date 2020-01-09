@@ -1,4 +1,5 @@
 {
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com; object-src 'self'",
   "background": {
     "persistent": false
   }
