@@ -10,15 +10,6 @@ const ctas = [{
     background: 'black',
   },
 }, {
-  text: 'Join Daily community',
-  icon: 'medium',
-  link: 'https://medium.com/daily-now',
-  name: 'Medium',
-  style: {
-    color: 'white',
-    background: '#008bff',
-  },
-}, {
   text: 'Join our Slack',
   logo: 'slack',
   link: 'https://slack.dailynow.co',
