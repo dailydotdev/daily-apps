@@ -10,6 +10,15 @@ const ctas = [{
     background: 'black',
   },
 }, {
+  text: 'Follow us on Instagram',
+  logo: 'instagram',
+  link: 'https://www.instagram.com/dailynowco/',
+  name: 'Instagram',
+  style: {
+    color: '#838886',
+    background: 'white',
+  },
+}, {
   text: 'Join our Slack',
   logo: 'slack',
   link: 'https://slack.dailynow.co',
