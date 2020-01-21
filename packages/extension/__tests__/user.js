@@ -39,7 +39,7 @@ it('should set newUser to false in state', () => {
   expect(state).toEqual(expected);
 });
 
-it('should authenticate user, set profile and check for bookmarks conflicts', async () => {
+it('should authenticate user and check for bookmarks conflicts', async () => {
   const profile = {
     name: 'John',
     image: 'http://image.com',
@@ -50,13 +50,14 @@ it('should authenticate user, set profile and check for bookmarks conflicts', as
     module.actions.authenticate,
     { provider: 'google', code: '12345' },
     state,
-    [{ type: 'feed/checkBookmarksConflicts', payload: null }, { type: 'setProfile', payload: profile }],
+    [{ type: 'feed/checkBookmarksConflicts', payload: null }],
+    [{ type: 'login', payload: profile }],
   );
   expect(authService.authenticate).toBeCalledWith('12345', 'verifier');
-  expect(contentService.setIsLoggedIn).toBeCalledWith(true);
+  // expect(contentService.setIsLoggedIn).toBeCalledWith(true);
 });
 
-it('should authenticate user and set profile without checking for conflicts', async () => {
+it('should authenticate user without checking for conflicts', async () => {
   const profile = {
     name: 'John',
     image: 'http://image.com',
@@ -68,10 +69,10 @@ it('should authenticate user and set profile without checking for conflicts', as
     module.actions.authenticate,
     { provider: 'google', code: '12345' },
     state,
-    [{ type: 'setProfile', payload: profile }],
+    [],
+    [{ type: 'login', payload: profile }],
   );
   expect(authService.authenticate).toBeCalledWith('12345', 'verifier');
-  expect(contentService.setIsLoggedIn).toBeCalledWith(true);
 });
 
 it('should do nothing when authentication fails', async () => {
@@ -137,7 +138,8 @@ it('should update profile if still logged in', async () => {
     module.actions.validateAuth,
     null,
     state,
-    [{ type: 'setProfile', payload: { id: '2', providers: ['github'] } }],
+    [],
+    [{ type: 'login', payload: { id: '2', providers: ['github'] } }],
   );
 });
 
@@ -151,4 +153,19 @@ it('should logout if not logged in anymore', async () => {
     [],
     [{ type: 'logout', payload: null }],
   );
+});
+
+it('should mark user as logged-in', async () => {
+  const profile = {
+    name: 'John',
+    image: 'http://image.com',
+  };
+  const state = { profile: null };
+  await testAction(
+    module.actions.login,
+    profile,
+    state,
+    [{ type: 'setProfile', payload: profile }],
+  );
+  expect(contentService.setIsLoggedIn).toBeCalledWith(true);
 });
