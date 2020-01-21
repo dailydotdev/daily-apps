@@ -26,11 +26,12 @@ export interface ProfileService {
 export class ProfileServiceImpl implements ProfileService {
     private readonly request: AxiosInstance;
 
-    constructor(baseURL: string) {
+    constructor(baseURL: string, app: string | null = null) {
         this.request = axios.create({
             baseURL,
             withCredentials: true,
             timeout: 10000,
+            headers: app ? {app} : {},
         });
     }
 
