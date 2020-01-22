@@ -123,7 +123,7 @@ export default {
   },
   methods: {
     onKeyPress({ keyCode }) {
-      const { validKeys, focusedAtIndex, getTopLeftMostPost, getNewPost, getPostElementIndex } = this;
+      const { validKeys, focusedAtIndex, getTopLeftMostPost, getNewPost, getPostElementIndex, focusOnPost } = this;
       const { showSearch, enableSearch } = this.$props;
       const keyCodes = Object.values(validKeys);
 
@@ -134,6 +134,8 @@ export default {
       const post = focusedAtIndex === null ? getTopLeftMostPost() : getNewPost(keyCode);
       
       const index = getPostElementIndex(post);
+
+      focusOnPost(index);
     },
 
     getTopLeftMostPost() {
@@ -204,6 +206,59 @@ export default {
           currentPost.nextSibling === null) return currentPost;
 
       return currentPost.nextSibling;
+    },
+
+    focusOnPost(index) {
+      const { $refs, focusedAtIndex, insaneMode, animateInsanePost, animateCard, removeHoverOnExistingPost } = this;
+
+      if (!$refs.posts[index]) return;
+
+      if (index === focusedAtIndex) return;
+
+      const animate = insaneMode ? animateInsanePost : animateCard;
+      
+      animate($refs.posts[index]);
+
+      removeHoverOnExistingPost();
+
+      this.focusedAtIndex = index;
+    },
+
+    animateInsanePost(post) {
+      if (post.ad) return post.$el.classList.add("hover");
+
+      const [insane] = post.$el.getElementsByClassName("insane--post");
+      
+      insane.getElementsByClassName("insane__link")[0].focus();
+      insane.classList.add("hover")
+    },
+
+    animateCard(post) {
+      post.$el.getElementsByClassName("card__link")[0].focus();
+      post.$el.classList.add("hover");
+    },
+
+    removeHoverOnExistingPost() {
+      const { focusedAtIndex, insaneMode, removeInsaneHover, removeCardHover, $refs } = this;
+
+      if (focusedAtIndex === null) return;
+
+      const removeHover = insaneMode ? removeInsaneHover : removeCardHover;
+
+      removeHover($refs.posts[focusedAtIndex]);
+
+      this.focusedAtIndex = null;
+    },
+
+    removeInsaneHover(post) {
+      if (post.ad) return post.$el.classList.remove("hover");
+
+      const [insane] = post.$el.getElementsByClassName("insane--post");
+      insane.classList.remove("hover");
+    },
+
+    removeCardHover(post) {
+      post.$el.classList.remove("hover");
     },
 
     getFirstChildElement(parent) {
