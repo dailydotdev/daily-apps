@@ -123,13 +123,25 @@ export default {
   },
   methods: {
     onKeyPress({ keyCode }) {
-      const { validKeys } = this;
+      const { validKeys, focusedAtIndex, getTopLeftMostPost, getNewPost, getPostElementIndex } = this;
       const { showSearch, enableSearch } = this.$props;
       const keyCodes = Object.values(validKeys);
 
       if (showSearch || keyCodes.indexOf(keyCode) === -1) return false;
 
       if (keyCode === validKeys['/']) return enableSearch();
+
+      const post = focusedAtIndex === null ? getTopLeftMostPost() : getNewPost(keyCode);
+      
+      const index = getPostElementIndex(post);
+    },
+
+    getTopLeftMostPost() {
+      if (this.$refs.posts.length === 0) return console.error();
+
+      const parent = this.$refs.posts[0].$el.parentElement;
+
+      return this.getFirstChildElement(this.insaneMode ? parent : parent.parentElement.firstChild);
     },
 
     getNewPost(keyCode) {
@@ -192,6 +204,20 @@ export default {
           currentPost.nextSibling === null) return currentPost;
 
       return currentPost.nextSibling;
+    },
+
+    getFirstChildElement(parent) {
+      const child = Array.from(parent.childNodes).find(child =>
+          (child.previousSibling === null && child.nodeType == Node.ELEMENT_NODE) ||
+          (child.previousSibling && child.previousSibling.nodeType !== Node.ELEMENT_NODE));
+
+      const index = this.getPostElementIndex(child);
+
+      return index >= 0 ? child : child.nextSibling;
+    },
+
+    getPostElementIndex(postElement) {
+      return this.$refs.posts.findIndex(post => post.$el == postElement);
     },
 
     getElementIndexFromSiblings(targetElement) {
