@@ -94,7 +94,7 @@
           </p>
         </div>
       </template>
-      <da-feed v-else-if="showFeed"/>
+      <da-feed v-else-if="showFeed" :searchBar="showSearch" :enableSearch="enableSearch"/>
     </main>
     <div id="anchor" ref="anchor"></div>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
@@ -484,6 +484,7 @@ export default {
       await this.initHome();
       await this.validateAuth();
     });
+
   },
 };
 </script>

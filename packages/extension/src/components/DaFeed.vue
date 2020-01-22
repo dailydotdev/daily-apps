@@ -70,6 +70,9 @@ export default {
       showAd: 'feed/showAd',
       isLoggedIn: 'user/isLoggedIn',
     }),
+    validKeys() {
+      return { "h": 104, "j": 106, "k": 107, "l": 108, "/": 47, "b": 98 }
+    },
     focusedItemId() {
       const item = this.focusedItem;
       return item && item.post && item.post.id;
@@ -119,6 +122,16 @@ export default {
     },
   },
   methods: {
+    onKeyPress({ keyCode }) {
+      const { validKeys } = this;
+      const { showSearch, enableSearch } = this.$props;
+      const keyCodes = Object.values(validKeys);
+
+      if (showSearch || keyCodes.indexOf(keyCode) === -1) return false;
+
+      if (keyCode === validKeys['/']) return enableSearch();
+    },
+
     onAdClick(ad) {
       ga('send', 'event', 'Ad', 'Click', ad.source);
       this.fetchAds();
@@ -200,6 +213,8 @@ export default {
     if (!this.ads.length) {
       this.fetchAds();
     }
+
+    window.addEventListener("keypress", this.onKeyPress)
   },
 };
 </script>
