@@ -78,7 +78,7 @@ export default {
       return item && item.post && item.post.id;
     },
     focusedItem() {
-      if (!this.focusedAtIndex) return null;
+      if (this.focusedAtIndex === null) return null;
       return this.$refs.posts[this.focusedAtIndex];
     },
     gutter() {
@@ -123,13 +123,15 @@ export default {
   },
   methods: {
     onKeyPress({ keyCode }) {
-      const { validKeys, focusedAtIndex, getTopLeftMostPost, getNewPost, getPostElementIndex, focusOnPost } = this;
+      const { validKeys, focusedAtIndex, getTopLeftMostPost, getNewPost, getPostElementIndex, focusOnPost, triggerBookmark } = this;
       const { showSearch, enableSearch } = this.$props;
       const keyCodes = Object.values(validKeys);
 
       if (showSearch || keyCodes.indexOf(keyCode) === -1) return false;
 
       if (keyCode === validKeys['/']) return enableSearch();
+
+      if (keyCode === validKeys['b']) return triggerBookmark();
 
       const post = focusedAtIndex === null ? getTopLeftMostPost() : getNewPost(keyCode);
       
@@ -280,6 +282,14 @@ export default {
       while ((element = element.previousSibling) != null) index++;
 
       return index;
+    },
+
+    triggerBookmark() {
+      if (this.focusedAtIndex === null) return;
+
+      const { post } = this.$refs.posts[this.focusedAtIndex];
+
+      this.onBookmark({ post, bookmarked: !post.bookmarked });
     },
 
     onAdClick(ad) {
