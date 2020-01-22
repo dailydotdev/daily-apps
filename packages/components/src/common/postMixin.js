@@ -14,6 +14,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    hover: {
+      type: Boolean,
+      default: false
+    }
   },
 
   data() {

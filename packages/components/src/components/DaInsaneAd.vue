@@ -37,4 +37,9 @@ export default {
   width: 0;
   height: 0;
 }
+
+.insane--ad.hover {
+  border: 1px solid #2A76D2;
+  border-radius: 8px 8px 0px 0px;
+}
 </style>

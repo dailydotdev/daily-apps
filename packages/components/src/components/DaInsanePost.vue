@@ -65,6 +65,7 @@ export default {
         read: this.post.read,
         'menu-opened': this.menuOpened,
         'hide-menu': !this.showMenu,
+        hover: this.hover
       };
     },
   },
@@ -82,10 +83,26 @@ export default {
   width: 100%;
 }
 
+.insane--post.hover {
+  .reveal {
+    transform: translateX(-56px);
+  }
+
+  &:hover, &.menu-opened {
+    & .reveal {
+      transform: translateX(-88px);
+    }
+  }
+}
+
 .insane--post {
   position: relative;
   transition: opacity 0.1s;
   will-change: transform;
+
+  & .insane__link {
+    outline: none;
+  }
 
   & .reveal {
     transition: transform 0.2s ease-out;

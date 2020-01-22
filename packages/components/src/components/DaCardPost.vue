@@ -60,7 +60,7 @@ export default {
         bookmarked: this.post.bookmarked,
         read: this.post.read,
         'menu-opened': this.menuOpened,
-        hover: this.menuOpened,
+        hover: this.menuOpened || this.hover,
       };
     },
     tagsStr() {

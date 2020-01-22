@@ -207,14 +207,11 @@ export default {
   }
 }
 
-.card:hover,
-.card.hover {
-  & .card__background__image {
-    transform: translate(0, 4px) scale(1.05);
-  }
-}
-
 .animate-cards {
+  .card__link {
+    outline: none;
+  }
+
   & .card {
     transition: transform 0.4s ease-out;
 
@@ -240,6 +237,19 @@ export default {
         opacity: 1;
       }
     }
+  }
+}
+
+.card:hover,
+.card.hover {
+  transform: translateY(-4px);
+
+  & .card__background__image {
+    transform: translate(0, 4px) scale(1.05);
+  }
+
+  &:after {
+    opacity: 1;
   }
 }
 
