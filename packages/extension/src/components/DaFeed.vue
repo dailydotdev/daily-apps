@@ -3,24 +3,24 @@
     <div class="feed__insane" v-if="insaneMode">
       <template v-if="showAd">
         <da-insane-placeholder v-if="!ads.length"/>
-        <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item"
+        <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
                       @click="onAdClick" @impression="onAdImpression"/>
       </template>
       <da-insane-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                       @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
-                      @click="onPostClick" :show-menu="isLoggedIn"
-                      :menu-opened="selectedPostId === item.id"/>
+                      @click="onPostClick" :show-menu="isLoggedIn" :hover="focusedItemId === item.id"
+                      :menu-opened="selectedPostId === item.id" />
     </div>
     <masonry class="feed__cards" :cols="cols" :gutter="gutter" :key="gutter" v-else>
       <template v-if="showAd">
         <da-card-placeholder v-if="!ads.length"/>
-        <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"
+        <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
                     @click="onAdClick" @impression="onAdImpression"/>
       </template>
       <da-card-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                     @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
-                    @click="onPostClick" :show-menu="isLoggedIn"
-                    :menu-opened="selectedPostId === item.id"/>
+                    @click="onPostClick" :show-menu="isLoggedIn" :hover="focusedItemId === item.id"
+                    :menu-opened="selectedPostId === item.id" />
     </masonry>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
                 @close="selectedPostId = null">
@@ -52,9 +52,14 @@ export default {
     DaInsanePlaceholder: () => import(/* webpackChunkName: "insane" */ '@daily/components/src/components/DaInsanePlaceholder.vue'),
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
   },
+  props: {
+    enableSearch: Function,
+    showSearch: false,
+  },
   data() {
     return {
       selectedPostId: null,
+      focusedAtIndex: null
     };
   },
   computed: {
@@ -65,6 +70,14 @@ export default {
       showAd: 'feed/showAd',
       isLoggedIn: 'user/isLoggedIn',
     }),
+    focusedItemId() {
+      const item = this.focusedItem;
+      return item && item.post && item.post.id;
+    },
+    focusedItem() {
+      if (!this.focusedAtIndex) return null;
+      return this.$refs.posts[this.focusedAtIndex];
+    },
     gutter() {
       if (this.spaciness === 'roomy') {
         return 48;
