@@ -132,6 +132,75 @@ export default {
       if (keyCode === validKeys['/']) return enableSearch();
     },
 
+    getNewPost(keyCode) {
+      const { validKeys, getLeftPost, getAbovePost, getRightPost, getBelowPost, focusedAtIndex } = this;
+      
+      if (keyCode === validKeys["h"])
+        return getLeftPost();
+
+      if (keyCode === validKeys["l"])
+        return getRightPost();
+
+      if (keyCode === validKeys["j"])
+        return getBelowPost();
+
+      if (keyCode === validKeys["k"])
+        return getAbovePost();
+    },
+
+    getLeftPost() {
+      const { focusedAtIndex, getElementIndexFromSiblings, $refs, insaneMode } = this
+      
+      const currentPost = $refs.posts[focusedAtIndex].$el;
+
+      if (!currentPost.parentElement.previousSibling || insaneMode) return currentPost;
+
+      const index = getElementIndexFromSiblings(currentPost);
+
+      return currentPost.parentElement.previousSibling.childNodes[index];
+    },
+
+    getRightPost() {
+      const { focusedAtIndex, getElementIndexFromSiblings, $refs, insaneMode } = this
+
+      const currentPost = $refs.posts[focusedAtIndex].$el;
+
+      if (!currentPost.parentElement.nextSibling || insaneMode) return currentPost;
+      
+      const index = getElementIndexFromSiblings(currentPost);
+
+      return currentPost.parentElement.nextSibling.childNodes[index];
+    },
+
+    getAbovePost() {
+      const { focusedAtIndex, getElementIndexFromSiblings, $refs } = this
+
+      const currentPost = $refs.posts[focusedAtIndex].$el;
+
+      if ((currentPost.previousSibling && currentPost.previousSibling.nodeType !== Node.ELEMENT_NODE) ||
+          currentPost.previousSibling === null) return currentPost;
+
+      return currentPost.previousSibling;
+    },
+
+    getBelowPost() {
+      const { focusedAtIndex, getElementIndexFromSiblings, $refs } = this
+
+      const currentPost = $refs.posts[focusedAtIndex].$el;
+
+      if ((currentPost.nextSibling && currentPost.nextSibling.nodeType !== Node.ELEMENT_NODE) ||
+          currentPost.nextSibling === null) return currentPost;
+
+      return currentPost.nextSibling;
+    },
+
+    getElementIndexFromSiblings(targetElement) {
+      let index = 0, element = targetElement;
+      while ((element = element.previousSibling) != null) index++;
+
+      return index;
+    },
+
     onAdClick(ad) {
       ga('send', 'event', 'Ad', 'Click', ad.source);
       this.fetchAds();
