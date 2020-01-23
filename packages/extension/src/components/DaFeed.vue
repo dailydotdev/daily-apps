@@ -145,7 +145,7 @@ export default {
 
       const parent = this.$refs.posts[0].$el.parentElement;
 
-      return this.getFirstChildElement(this.insaneMode ? parent : parent.parentElement.firstChild);
+      return (this.insaneMode ? parent : parent.parentElement.firstElementChild).firstElementChild;
     },
 
     getNewPost(keyCode) {
@@ -169,11 +169,11 @@ export default {
       
       const currentPost = $refs.posts[focusedAtIndex].$el;
 
-      if (!currentPost.parentElement.previousSibling || insaneMode) return currentPost;
+      if (!currentPost.parentElement.previousElementSibling || insaneMode) return currentPost;
 
       const index = getElementIndexFromSiblings(currentPost);
 
-      return currentPost.parentElement.previousSibling.childNodes[index];
+      return currentPost.parentElement.previousElementSibling.childNodes[index];
     },
 
     getRightPost() {
@@ -181,11 +181,11 @@ export default {
 
       const currentPost = $refs.posts[focusedAtIndex].$el;
 
-      if (!currentPost.parentElement.nextSibling || insaneMode) return currentPost;
+      if (!currentPost.parentElement.nextElementSibling || insaneMode) return currentPost;
       
       const index = getElementIndexFromSiblings(currentPost);
 
-      return currentPost.parentElement.nextSibling.childNodes[index];
+      return currentPost.parentElement.nextElementSibling.childNodes[index];
     },
 
     getAbovePost() {
@@ -193,10 +193,9 @@ export default {
 
       const currentPost = $refs.posts[focusedAtIndex].$el;
 
-      if ((currentPost.previousSibling && currentPost.previousSibling.nodeType !== Node.ELEMENT_NODE) ||
-          currentPost.previousSibling === null) return currentPost;
+      if (currentPost.previousElementSibling === null) return currentPost;
 
-      return currentPost.previousSibling;
+      return currentPost.previousElementSibling;
     },
 
     getBelowPost() {
@@ -204,10 +203,9 @@ export default {
 
       const currentPost = $refs.posts[focusedAtIndex].$el;
 
-      if ((currentPost.nextSibling && currentPost.nextSibling.nodeType !== Node.ELEMENT_NODE) ||
-          currentPost.nextSibling === null) return currentPost;
+      if (currentPost.nextElementSibling === null) return currentPost;
 
-      return currentPost.nextSibling;
+      return currentPost.nextElementSibling;
     },
 
     focusOnPost(index) {
@@ -263,23 +261,13 @@ export default {
       post.$el.classList.remove("hover");
     },
 
-    getFirstChildElement(parent) {
-      const child = Array.from(parent.childNodes).find(child =>
-          (child.previousSibling === null && child.nodeType == Node.ELEMENT_NODE) ||
-          (child.previousSibling && child.previousSibling.nodeType !== Node.ELEMENT_NODE));
-
-      const index = this.getPostElementIndex(child);
-
-      return index >= 0 ? child : child.nextSibling;
-    },
-
     getPostElementIndex(postElement) {
       return this.$refs.posts.findIndex(post => post.$el == postElement);
     },
 
     getElementIndexFromSiblings(targetElement) {
       let index = 0, element = targetElement;
-      while ((element = element.previousSibling) != null) index++;
+      while ((element = element.previousElementSibling) != null) index++;
 
       return index;
     },
