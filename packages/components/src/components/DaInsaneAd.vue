@@ -41,5 +41,9 @@ export default {
 .insane--ad.hover {
   border: 1px solid #2A76D2;
   border-radius: 8px 8px 0px 0px;
+
+  & .insane__link {
+    outline: none;
+  }
 }
 </style>

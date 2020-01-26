@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       selectedPostId: null,
-      focusedAtIndex: null
+      focusedAtIndex: null,
     };
   },
   computed: {
@@ -72,7 +72,9 @@ export default {
       isLoggedIn: 'user/isLoggedIn',
     }),
     validKeys() {
-      return { "h": 104, "j": 106, "k": 107, "l": 108, "/": 47, "b": 98 }
+      return {
+        h: 104, j: 106, k: 107, l: 108, '/': 47, b: 98,
+      };
     },
     focusedItemId() {
       const item = this.focusedItem;
@@ -132,10 +134,10 @@ export default {
 
       if (keyCode === validKeys['/']) return enableSearch();
 
-      if (keyCode === validKeys['b']) return this.triggerBookmark();
+      if (keyCode === validKeys.b) return this.triggerBookmark();
 
       const post = focusedAtIndex === null ? this.getTopLeftMostPost() : this.getNewPost(keyCode);
-      
+
       const index = this.getPostElementIndex(post);
 
       return this.focusOnPost(index);
@@ -150,51 +152,53 @@ export default {
     },
 
     getNewPost(keyCode) {
-      const { validKeys, getLeftPost, getAbovePost, getRightPost, getBelowPost, focusedAtIndex } = this;
-      
-      if (keyCode === validKeys["h"])
-        return getLeftPost();
+      const { validKeys } = this;
 
-      if (keyCode === validKeys["l"])
-        return getRightPost();
+      if (keyCode === validKeys.h) {
+        return this.getLeftPost();
+      }
 
-      if (keyCode === validKeys["j"])
-        return getBelowPost();
+      if (keyCode === validKeys.l) {
+        return this.getRightPost();
+      }
 
-      if (keyCode === validKeys["k"])
-        return getAbovePost();
+      if (keyCode === validKeys.j) {
+        return this.getBelowPost();
+      }
 
-      return this.$refs.posts[focusedAtIndex].$el;
+      if (keyCode === validKeys.k) {
+        return this.getAbovePost();
+      }
+
+      return this.$refs.posts[this.focusedAtIndex].$el;
     },
 
     getLeftPost() {
-      const { focusedAtIndex, getElementIndexFromSiblings, $refs, insaneMode } = this
-      
-      const currentPost = $refs.posts[focusedAtIndex].$el;
+      const currentPost = this.$refs.posts[this.focusedAtIndex].$el;
 
-      if (!currentPost.parentElement.previousElementSibling || insaneMode) return currentPost;
+      if (!currentPost.parentElement.previousElementSibling || this.insaneMode) {
+        return currentPost;
+      }
 
-      const index = getElementIndexFromSiblings(currentPost);
+      const index = this.getElementIndexFromSiblings(currentPost);
 
       return currentPost.parentElement.previousElementSibling.childNodes[index];
     },
 
     getRightPost() {
-      const { focusedAtIndex, getElementIndexFromSiblings, $refs, insaneMode } = this
+      const currentPost = this.$refs.posts[this.focusedAtIndex].$el;
 
-      const currentPost = $refs.posts[focusedAtIndex].$el;
+      if (!currentPost.parentElement.nextElementSibling || this.insaneMode) {
+        return currentPost;
+      }
 
-      if (!currentPost.parentElement.nextElementSibling || insaneMode) return currentPost;
-      
-      const index = getElementIndexFromSiblings(currentPost);
-
+      const index = this.getElementIndexFromSiblings(currentPost);
+      console.log(index);
       return currentPost.parentElement.nextElementSibling.childNodes[index];
     },
 
     getAbovePost() {
-      const { focusedAtIndex, $refs } = this
-
-      const currentPost = $refs.posts[focusedAtIndex].$el;
+      const currentPost = this.$refs.posts[this.focusedAtIndex].$el;
 
       if (currentPost.previousElementSibling === null) return currentPost;
 
@@ -202,9 +206,7 @@ export default {
     },
 
     getBelowPost() {
-      const { focusedAtIndex, $refs } = this
-
-      const currentPost = $refs.posts[focusedAtIndex].$el;
+      const currentPost = this.$refs.posts[this.focusedAtIndex].$el;
 
       if (currentPost.nextElementSibling === null) return currentPost;
 
@@ -219,7 +221,7 @@ export default {
       if (index === focusedAtIndex) return;
 
       const animate = this.insaneMode ? this.animateInsanePost : this.animateCard;
-      
+
       animate($refs.posts[index]);
 
       this.removeHoverOnExistingPost();
@@ -228,23 +230,23 @@ export default {
     },
 
     animateInsanePost(post) {
-      const [insane] = post.ad ? [post.$el] : post.$el.getElementsByClassName("insane--post");
+      const [insane] = post.ad ? [post.$el] : post.$el.getElementsByClassName('insane--post');
 
-      insane.getElementsByClassName("insane__link")[0].focus();
-      insane.classList.add("hover");
+      insane.getElementsByClassName('insane__link')[0].focus();
+      insane.classList.add('hover');
     },
 
     animateCard(post) {
-      post.$el.getElementsByClassName("card__link")[0].focus();
-      post.$el.classList.add("hover");
+      post.$el.getElementsByClassName('card__link')[0].focus();
+      post.$el.classList.add('hover');
     },
 
     removeHoverOnExistingPost() {
-      const { focusedAtIndex, insaneMode, removeInsaneHover, removeCardHover, $refs } = this;
+      const { focusedAtIndex, $refs } = this;
 
       if (focusedAtIndex === null) return;
 
-      const removeHover = insaneMode ? removeInsaneHover : removeCardHover;
+      const removeHover = this.insaneMode ? this.removeInsaneHover : this.removeCardHover;
 
       removeHover($refs.posts[focusedAtIndex]);
 
@@ -252,14 +254,12 @@ export default {
     },
 
     removeInsaneHover(post) {
-      if (post.ad) return post.$el.classList.remove("hover");
-
-      const [insane] = post.$el.getElementsByClassName("insane--post");
-      insane.classList.remove("hover");
+      const [insane] = post.ad ? [post.$el] : post.$el.getElementsByClassName('insane--post');
+      insane.classList.remove('hover');
     },
 
     removeCardHover(post) {
-      post.$el.classList.remove("hover");
+      post.$el.classList.remove('hover');
     },
 
     getPostElementIndex(postElement) {
@@ -267,10 +267,11 @@ export default {
     },
 
     getElementIndexFromSiblings(targetElement) {
-      let index = 0, element = targetElement;
+      let index = 0;
+      let element = targetElement.previousElementSibling;
       while (element !== null) {
         element = element.previousElementSibling;
-        index += 1; 
+        index += 1;
       }
 
       return index;
@@ -366,7 +367,7 @@ export default {
       this.fetchAds();
     }
 
-    window.addEventListener("keypress", this.onKeyPress)
+    window.addEventListener('keypress', this.onKeyPress)
   },
 };
 </script>
