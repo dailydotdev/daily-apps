@@ -8,8 +8,9 @@
       </template>
       <da-insane-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                       @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
-                      @click="onPostClick" :show-menu="isLoggedIn" :hover="focusedItemId === item.id"
-                      :menu-opened="selectedPostId === item.id" />
+                      @click="onPostClick" :show-menu="isLoggedIn"
+                      :menu-opened="selectedPostId === item.id"
+                      :hover="focusedItemId === item.id" />
     </div>
     <masonry class="feed__cards" :cols="cols" :gutter="gutter" :key="gutter" v-else>
       <template v-if="showAd">
@@ -54,7 +55,7 @@ export default {
   },
   props: {
     enableSearch: Function,
-    showSearch: false,
+    showSearch: Boolean,
   },
   data() {
     return {
@@ -123,7 +124,7 @@ export default {
   },
   methods: {
     onKeyPress({ keyCode }) {
-      const { validKeys, focusedAtIndex, getTopLeftMostPost, getNewPost, getPostElementIndex, focusOnPost, triggerBookmark } = this;
+      const { validKeys, focusedAtIndex } = this;
       const { showSearch, enableSearch } = this.$props;
       const keyCodes = Object.values(validKeys);
 
@@ -131,13 +132,13 @@ export default {
 
       if (keyCode === validKeys['/']) return enableSearch();
 
-      if (keyCode === validKeys['b']) return triggerBookmark();
+      if (keyCode === validKeys['b']) return this.triggerBookmark();
 
-      const post = focusedAtIndex === null ? getTopLeftMostPost() : getNewPost(keyCode);
+      const post = focusedAtIndex === null ? this.getTopLeftMostPost() : this.getNewPost(keyCode);
       
-      const index = getPostElementIndex(post);
+      const index = this.getPostElementIndex(post);
 
-      focusOnPost(index);
+      return this.focusOnPost(index);
     },
 
     getTopLeftMostPost() {
@@ -162,6 +163,8 @@ export default {
 
       if (keyCode === validKeys["k"])
         return getAbovePost();
+
+      return this.$refs.posts[focusedAtIndex].$el;
     },
 
     getLeftPost() {
@@ -189,7 +192,7 @@ export default {
     },
 
     getAbovePost() {
-      const { focusedAtIndex, getElementIndexFromSiblings, $refs } = this
+      const { focusedAtIndex, $refs } = this
 
       const currentPost = $refs.posts[focusedAtIndex].$el;
 
@@ -199,7 +202,7 @@ export default {
     },
 
     getBelowPost() {
-      const { focusedAtIndex, getElementIndexFromSiblings, $refs } = this
+      const { focusedAtIndex, $refs } = this
 
       const currentPost = $refs.posts[focusedAtIndex].$el;
 
@@ -209,28 +212,26 @@ export default {
     },
 
     focusOnPost(index) {
-      const { $refs, focusedAtIndex, insaneMode, animateInsanePost, animateCard, removeHoverOnExistingPost } = this;
+      const { $refs, focusedAtIndex } = this;
 
       if (!$refs.posts[index]) return;
 
       if (index === focusedAtIndex) return;
 
-      const animate = insaneMode ? animateInsanePost : animateCard;
+      const animate = this.insaneMode ? this.animateInsanePost : this.animateCard;
       
       animate($refs.posts[index]);
 
-      removeHoverOnExistingPost();
+      this.removeHoverOnExistingPost();
 
       this.focusedAtIndex = index;
     },
 
     animateInsanePost(post) {
-      if (post.ad) return post.$el.classList.add("hover");
+      const [insane] = post.ad ? [post.$el] : post.$el.getElementsByClassName("insane--post");
 
-      const [insane] = post.$el.getElementsByClassName("insane--post");
-      
       insane.getElementsByClassName("insane__link")[0].focus();
-      insane.classList.add("hover")
+      insane.classList.add("hover");
     },
 
     animateCard(post) {
@@ -262,12 +263,15 @@ export default {
     },
 
     getPostElementIndex(postElement) {
-      return this.$refs.posts.findIndex(post => post.$el == postElement);
+      return this.$refs.posts.findIndex(post => post.$el === postElement);
     },
 
     getElementIndexFromSiblings(targetElement) {
       let index = 0, element = targetElement;
-      while ((element = element.previousElementSibling) != null) index++;
+      while (element !== null) {
+        element = element.previousElementSibling;
+        index += 1; 
+      }
 
       return index;
     },
