@@ -176,9 +176,7 @@ export default {
     getLeftPost() {
       const currentPost = this.$refs.posts[this.focusedAtIndex].$el;
 
-      if (!currentPost.parentElement.previousElementSibling || this.insaneMode) {
-        return currentPost;
-      }
+      if (!currentPost.parentElement.previousElementSibling || this.insaneMode) return currentPost;
 
       const index = this.getElementIndexFromSiblings(currentPost);
 
@@ -188,12 +186,10 @@ export default {
     getRightPost() {
       const currentPost = this.$refs.posts[this.focusedAtIndex].$el;
 
-      if (!currentPost.parentElement.nextElementSibling || this.insaneMode) {
-        return currentPost;
-      }
+      if (!currentPost.parentElement.nextElementSibling || this.insaneMode) return currentPost;
 
       const index = this.getElementIndexFromSiblings(currentPost);
-      console.log(index);
+
       return currentPost.parentElement.nextElementSibling.childNodes[index];
     },
 
