@@ -14,7 +14,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    hover: {
+    selected: {
       type: Boolean,
       default: false
     }

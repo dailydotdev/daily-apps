@@ -65,7 +65,7 @@ export default {
         read: this.post.read,
         'menu-opened': this.menuOpened,
         'hide-menu': !this.showMenu,
-        hover: this.hover
+        hover: this.selected
       };
     },
   },

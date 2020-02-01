@@ -4,24 +4,27 @@
       <template v-if="showAd">
         <da-insane-placeholder v-if="!ads.length"/>
         <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
-                      @click="onAdClick" @impression="onAdImpression"/>
+                      @click="onAdClick" @impression="onAdImpression"
+                      :selected="focusedItem === item"/>
       </template>
       <da-insane-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                       @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                       @click="onPostClick" :show-menu="isLoggedIn"
                       :menu-opened="selectedPostId === item.id"
-                      :hover="focusedItemId === item.id" />
+                      :selected="focusedItem === item" />
     </div>
     <masonry class="feed__cards" :cols="cols" :gutter="gutter" :key="gutter" v-else>
       <template v-if="showAd">
         <da-card-placeholder v-if="!ads.length"/>
         <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
-                    @click="onAdClick" @impression="onAdImpression"/>
+                    @click="onAdClick" @impression="onAdImpression"
+                    :selected="focusedItem === item"/>
       </template>
       <da-card-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                     @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
-                    @click="onPostClick" :show-menu="isLoggedIn" :hover="focusedItemId === item.id"
-                    :menu-opened="selectedPostId === item.id" />
+                    @click="onPostClick" :show-menu="isLoggedIn"
+                    :menu-opened="selectedPostId === item.id"
+                    :selected="focusedItem === item"/>
     </masonry>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
                 @close="selectedPostId = null">
@@ -76,13 +79,12 @@ export default {
         h: 104, j: 106, k: 107, l: 108, '/': 47, b: 98,
       };
     },
-    focusedItemId() {
-      const item = this.focusedItem;
-      return item && item.post && item.post.id;
-    },
     focusedItem() {
-      if (this.focusedAtIndex === null) return null;
-      return this.$refs.posts[this.focusedAtIndex];
+      if (this.focusedAtIndex === null) return {};
+
+      const { post, ad } = this.$refs.posts[this.focusedAtIndex];
+
+      return post || ad;
     },
     gutter() {
       if (this.spaciness === 'roomy') {
@@ -216,46 +218,15 @@ export default {
 
       if (index === focusedAtIndex) return;
 
-      const animate = this.insaneMode ? this.animateInsanePost : this.animateCard;
-
-      animate($refs.posts[index]);
-
-      this.removeHoverOnExistingPost();
+      this.hoverPost($refs.posts[index]);
 
       this.focusedAtIndex = index;
     },
 
-    animateInsanePost(post) {
-      const [insane] = post.ad ? [post.$el] : post.$el.getElementsByClassName('insane--post');
-
-      insane.getElementsByClassName('insane__link')[0].focus();
-      insane.classList.add('hover');
-    },
-
-    animateCard(post) {
-      post.$el.getElementsByClassName('card__link')[0].focus();
-      post.$el.classList.add('hover');
-    },
-
-    removeHoverOnExistingPost() {
-      const { focusedAtIndex, $refs } = this;
-
-      if (focusedAtIndex === null) return;
-
-      const removeHover = this.insaneMode ? this.removeInsaneHover : this.removeCardHover;
-
-      removeHover($refs.posts[focusedAtIndex]);
-
-      this.focusedAtIndex = null;
-    },
-
-    removeInsaneHover(post) {
-      const [insane] = post.ad ? [post.$el] : post.$el.getElementsByClassName('insane--post');
-      insane.classList.remove('hover');
-    },
-
-    removeCardHover(post) {
-      post.$el.classList.remove('hover');
+    hoverPost(item) {
+      const linkType = this.insaneMode ? 'insane__link' : 'card__link';
+      
+      item.$el.getElementsByClassName(linkType)[0].focus();
     },
 
     getPostElementIndex(postElement) {

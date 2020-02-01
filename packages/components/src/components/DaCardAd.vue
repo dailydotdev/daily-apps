@@ -1,5 +1,5 @@
 <template>
-  <DaCard class="card--a" :class="ad.source" :title="ad.description" :url="ad.link"
+  <DaCard class="card--a" :class="cls" :title="ad.description" :url="ad.link"
           :image="ad.image" :placeholder="ad.placeholder" :size="size"
           :image-background="ad.backgroundColor" @click="$emit('click', ad)"
           :lines="4">
@@ -26,6 +26,12 @@ export default {
   computed: {
     size() {
       return this.ad.size || 'small';
+    },
+    cls() {
+      return {
+        [this.ad.source]: this.ad.source,
+        hover: this.selected
+      }
     },
   },
 };

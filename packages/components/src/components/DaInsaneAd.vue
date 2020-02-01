@@ -1,5 +1,5 @@
 <template>
-  <div class="insane insane--ad">
+  <div class="insane insane--ad" :class="cls">
     <a :href="ad.link" target="_blank" class="insane__link" @click="$emit('click', ad)">
       <h5 class="insane__title">
         <da-line-clamp :text="ad.description" :lines="3"/>
@@ -22,6 +22,13 @@ export default {
   components: {
     DaLineClamp,
   },
+  computed: {
+    cls() {
+      return {
+        hover: this.selected
+      }
+    },
+  }
 };
 </script>
 

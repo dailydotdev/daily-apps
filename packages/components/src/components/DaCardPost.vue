@@ -57,10 +57,10 @@ export default {
   computed: {
     cls() {
       return {
-        bookmarked: this.post.bookmarked,
         read: this.post.read,
         'menu-opened': this.menuOpened,
-        hover: this.menuOpened || this.hover,
+        bookmarked: this.post.bookmarked,
+        hover: this.menuOpened || this.selected,
       };
     },
     tagsStr() {
