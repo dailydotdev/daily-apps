@@ -83,6 +83,7 @@ export default {
   width: 100%;
 }
 
+.insane--ad.hover,
 .insane--post.hover {
   .reveal {
     transform: translateX(-56px);
@@ -95,6 +96,11 @@ export default {
   }
 }
 
+.insane--ad .insane__reveal {
+  width: 58px;
+}
+
+.insane--ad,
 .insane--post {
   position: relative;
   transition: opacity 0.1s;

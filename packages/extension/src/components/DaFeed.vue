@@ -4,7 +4,7 @@
       <template v-if="showAd">
         <da-insane-placeholder v-if="!ads.length"/>
         <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
-                      @click="onAdClick" @impression="onAdImpression"
+                      @click="onAdClick" @impression="onAdImpression" :show-menu="isLoggedIn"
                       :selected="focusedItem === item"/>
       </template>
       <da-insane-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
@@ -146,7 +146,7 @@ export default {
     },
 
     getTopLeftMostPost() {
-      if (this.$refs.posts.length === 0) return console.error();
+      if (this.$refs.posts.length === 0) return;
 
       const parent = this.$refs.posts[0].$el.parentElement;
 
@@ -225,7 +225,7 @@ export default {
 
     hoverPost(item) {
       const linkType = this.insaneMode ? 'insane__link' : 'card__link';
-      
+
       item.$el.getElementsByClassName(linkType)[0].focus();
     },
 
