@@ -5,26 +5,26 @@
         <da-insane-placeholder v-if="!ads.length"/>
         <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
                       @click="onAdClick" @impression="onAdImpression" :show-menu="isLoggedIn"
-                      :selected="focusedItem === item"/>
+                      :selected="focusedPost === item"/>
       </template>
       <da-insane-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                       @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                       @click="onPostClick" :show-menu="isLoggedIn"
                       :menu-opened="selectedPostId === item.id"
-                      :selected="focusedItem === item" />
+                      :selected="focusedPost === item" />
     </div>
     <masonry class="feed__cards" :cols="cols" :gutter="gutter" :key="gutter" v-else>
       <template v-if="showAd">
         <da-card-placeholder v-if="!ads.length"/>
         <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
                     @click="onAdClick" @impression="onAdImpression"
-                    :selected="focusedItem === item"/>
+                    :selected="focusedPost === item"/>
       </template>
       <da-card-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                     @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                     @click="onPostClick" :show-menu="isLoggedIn"
                     :menu-opened="selectedPostId === item.id"
-                    :selected="focusedItem === item"/>
+                    :selected="focusedPost === item"/>
     </masonry>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
                 @close="selectedPostId = null">
@@ -42,6 +42,7 @@ import {
 } from 'vuex';
 import VueMasonry from 'vue-masonry-css';
 import { contentService } from '../common/services';
+import navService from '../../../components/src/common/keyNavigationService'
 
 Vue.use(VueMasonry);
 
@@ -56,14 +57,10 @@ export default {
     DaInsanePlaceholder: () => import(/* webpackChunkName: "insane" */ '@daily/components/src/components/DaInsanePlaceholder.vue'),
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
   },
-  props: {
-    enableSearch: Function,
-    showSearch: Boolean,
-  },
   data() {
     return {
+      selectedPost: null,
       selectedPostId: null,
-      focusedAtIndex: null,
     };
   },
   computed: {
@@ -74,17 +71,12 @@ export default {
       showAd: 'feed/showAd',
       isLoggedIn: 'user/isLoggedIn',
     }),
-    validKeys() {
-      return {
-        h: 104, j: 106, k: 107, l: 108, '/': 47, b: 98,
-      };
-    },
-    focusedItem() {
-      if (this.focusedAtIndex === null) return {};
+    focusedPost() {
+      if (!this.selectedPost) return null;
 
-      const { post, ad } = this.$refs.posts[this.focusedAtIndex];
+      const item = this.selectedPost;
 
-      return post || ad;
+      return item.ad || item.post;
     },
     gutter() {
       if (this.spaciness === 'roomy') {
@@ -127,129 +119,8 @@ export default {
     },
   },
   methods: {
-    onKeyPress({ keyCode }) {
-      const { validKeys, focusedAtIndex } = this;
-      const { showSearch, enableSearch } = this.$props;
-      const keyCodes = Object.values(validKeys);
-
-      if (showSearch || keyCodes.indexOf(keyCode) === -1) return false;
-
-      if (keyCode === validKeys['/']) return enableSearch();
-
-      if (keyCode === validKeys.b) return this.triggerBookmark();
-
-      const post = focusedAtIndex === null ? this.getTopLeftMostPost() : this.getNewPost(keyCode);
-
-      const index = this.getPostElementIndex(post);
-
-      return this.focusOnPost(index);
-    },
-
-    getTopLeftMostPost() {
-      if (this.$refs.posts.length === 0) return;
-
-      const parent = this.$refs.posts[0].$el.parentElement;
-
-      return (this.insaneMode ? parent : parent.parentElement.firstElementChild).firstElementChild;
-    },
-
-    getNewPost(keyCode) {
-      const { validKeys } = this;
-
-      if (keyCode === validKeys.h) {
-        return this.getLeftPost();
-      }
-
-      if (keyCode === validKeys.l) {
-        return this.getRightPost();
-      }
-
-      if (keyCode === validKeys.j) {
-        return this.getBelowPost();
-      }
-
-      if (keyCode === validKeys.k) {
-        return this.getAbovePost();
-      }
-
-      return this.$refs.posts[this.focusedAtIndex].$el;
-    },
-
-    getLeftPost() {
-      const currentPost = this.$refs.posts[this.focusedAtIndex].$el;
-
-      if (!currentPost.parentElement.previousElementSibling || this.insaneMode) return currentPost;
-
-      const index = this.getElementIndexFromSiblings(currentPost);
-
-      return currentPost.parentElement.previousElementSibling.childNodes[index];
-    },
-
-    getRightPost() {
-      const currentPost = this.$refs.posts[this.focusedAtIndex].$el;
-
-      if (!currentPost.parentElement.nextElementSibling || this.insaneMode) return currentPost;
-
-      const index = this.getElementIndexFromSiblings(currentPost);
-
-      return currentPost.parentElement.nextElementSibling.childNodes[index];
-    },
-
-    getAbovePost() {
-      const currentPost = this.$refs.posts[this.focusedAtIndex].$el;
-
-      if (currentPost.previousElementSibling === null) return currentPost;
-
-      return currentPost.previousElementSibling;
-    },
-
-    getBelowPost() {
-      const currentPost = this.$refs.posts[this.focusedAtIndex].$el;
-
-      if (currentPost.nextElementSibling === null) return currentPost;
-
-      return currentPost.nextElementSibling;
-    },
-
-    focusOnPost(index) {
-      const { $refs, focusedAtIndex } = this;
-
-      if (!$refs.posts[index]) return;
-
-      if (index === focusedAtIndex) return;
-
-      this.hoverPost($refs.posts[index]);
-
-      this.focusedAtIndex = index;
-    },
-
-    hoverPost(item) {
-      const linkType = this.insaneMode ? 'insane__link' : 'card__link';
-
-      item.$el.getElementsByClassName(linkType)[0].focus();
-    },
-
-    getPostElementIndex(postElement) {
-      return this.$refs.posts.findIndex(post => post.$el === postElement);
-    },
-
-    getElementIndexFromSiblings(targetElement) {
-      let index = 0;
-      let element = targetElement.previousElementSibling;
-      while (element !== null) {
-        element = element.previousElementSibling;
-        index += 1;
-      }
-
-      return index;
-    },
-
-    triggerBookmark() {
-      if (this.focusedAtIndex === null) return;
-
-      const { post } = this.$refs.posts[this.focusedAtIndex];
-
-      this.onBookmark({ post, bookmarked: !post.bookmarked });
+    navigateDailyFeed(keyCode) {
+      return this.selectedPost = navService.navigateDaily(this, this.selectedPost, keyCode);
     },
 
     onAdClick(ad) {
@@ -333,8 +204,6 @@ export default {
     if (!this.ads.length) {
       this.fetchAds();
     }
-
-    window.addEventListener('keypress', this.onKeyPress)
   },
 };
 </script>
