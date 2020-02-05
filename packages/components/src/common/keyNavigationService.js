@@ -5,20 +5,22 @@ export const validKeys = { h: 104, j: 106, k: 107, l: 108, '/': 47, b: 98 }
 
 export function navigateDaily(feedComp, current, keyCode) {
   const posts = feedComp.$refs.posts;
+  const postOrAdProp = current && (current.post || current.ad);
+  const item = posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
 
-  if (posts.length === 0) return;
+  if (posts.length === 0) return null;
 
-  if (Object.values(validKeys).indexOf(keyCode) === -1) return false;
+  if (Object.values(validKeys).indexOf(keyCode) === -1) return null;
 
   if (keyCode === validKeys['/']) return feedComp.$parent.enableSearch();
 
-  if (keyCode === validKeys.b && current) return triggerBookmark(current);
+  if (keyCode === validKeys.b && item) return triggerBookmark(item);
 
-  const el = !current ? getTopLeftMostPostEl(posts) : getNewPostEl(keyCode, current.$el);
+  const el = !item ? getTopLeftMostPostEl(posts) : getNewPostEl(keyCode, item.$el);
 
   const selectedPost = getPostByElement(posts, el);
 
-  if (selectedPost === current) return selectedPost;
+  if (selectedPost === item) return selectedPost;
 
   hoverPost(selectedPost);
 
@@ -90,7 +92,7 @@ function hoverPost(selectedPost) {
 }
 
 function triggerBookmark(post) {
-  if (post.ad) return;
+  if (post.ad) return null;
 
   return post.$emit("bookmark", { post: post.post, bookmarked: !post.post.bookmarked });
 }
