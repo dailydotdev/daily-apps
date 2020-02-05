@@ -42,7 +42,7 @@ import {
 } from 'vuex';
 import VueMasonry from 'vue-masonry-css';
 import { contentService } from '../common/services';
-import navService from '../../../components/src/common/keyNavigationService'
+import { navigateDaily } from '../../../components/src/common/keyNavigationService'
 
 Vue.use(VueMasonry);
 
@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     navigateDailyFeed(keyCode) {
-      return this.selectedPost = navService.navigateDaily(this, this.selectedPost, keyCode);
+      this.selectedPost = navigateDaily(this, this.selectedPost, keyCode);
     },
 
     onAdClick(ad) {
