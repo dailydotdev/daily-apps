@@ -3,28 +3,15 @@ import store from '../../../extension/src/store';
 
 export const validKeys = { h: 104, j: 106, k: 107, l: 108, '/': 47, b: 98 }
 
-export function navigateDaily(feedComp, current, keyCode) {
-  const posts = feedComp.$refs.posts;
-  const postOrAdProp = current && (current.post || current.ad);
-  const item = posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
+function getPostByElement(posts, elementToFind) {
+  return posts.find(post => post.$el === elementToFind);
+}
 
-  if (posts.length === 0) return null;
-
-  if (Object.values(validKeys).indexOf(keyCode) === -1) return null;
-
-  if (keyCode === validKeys['/']) return feedComp.$parent.enableSearch();
-
-  if (keyCode === validKeys.b && item) return triggerBookmark(item);
-
-  const el = !item ? getTopLeftMostPostEl(posts) : getNewPostEl(keyCode, item.$el);
-
-  const selectedPost = getPostByElement(posts, el);
-
-  if (selectedPost === item) return selectedPost;
-
-  hoverPost(selectedPost);
-
-  return selectedPost;
+function hoverPost(selectedPost) {
+  const insaneMode = store.state.ui.insaneMode;
+  const linkType = insaneMode ? 'insane__link' : 'card__link';
+  
+  selectedPost.$el.getElementsByClassName(linkType)[0].focus();
 }
 
 function getTopLeftMostPostEl(posts) {
@@ -32,18 +19,6 @@ function getTopLeftMostPostEl(posts) {
   const insaneMode = store.state.ui.insaneMode;
   
   return (insaneMode ? parent : parent.parentElement.firstElementChild).firstElementChild;
-}
-
-function getNewPostEl(keyCode, currentElement) {
-  if (keyCode === validKeys.h) return getLeftPost(currentElement);
-
-  if (keyCode === validKeys.l) return getRightPost(currentElement);
-
-  if (keyCode === validKeys.j) return getBelowPost(currentElement);
-
-  if (keyCode === validKeys.k) return getAbovePost(currentElement);
-
-  return currentElement;
 }
 
 function getLeftPost(el) {
@@ -76,25 +51,46 @@ function getBelowPost(element) {
   return element.nextElementSibling;
 }
 
-function getPostByElement(posts, elementToFind) {
-  return posts.find(post => post.$el === elementToFind);
-}
+function getNewPostEl(keyCode, currentElement) {
+  if (keyCode === validKeys.h) return getLeftPost(currentElement);
 
-function getPostIndexByElement(posts, elementToFind) {
-  return posts.findIndex(post => post.$el === elementToFind);
-}
+  if (keyCode === validKeys.l) return getRightPost(currentElement);
 
-function hoverPost(selectedPost) {
-  const insaneMode = store.state.ui.insaneMode;
-  const linkType = insaneMode ? 'insane__link' : 'card__link';
-  
-  selectedPost.$el.getElementsByClassName(linkType)[0].focus();
+  if (keyCode === validKeys.j) return getBelowPost(currentElement);
+
+  if (keyCode === validKeys.k) return getAbovePost(currentElement);
+
+  return currentElement;
 }
 
 function triggerBookmark(post) {
   if (post.ad) return null;
 
   return post.$emit("bookmark", { post: post.post, bookmarked: !post.post.bookmarked });
+}
+
+export function navigateDaily(feedComp, current, keyCode) {
+  const posts = feedComp.$refs.posts;
+  const postOrAdProp = current && (current.post || current.ad);
+  const item = posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
+
+  if (posts.length === 0) return null;
+
+  if (Object.values(validKeys).indexOf(keyCode) === -1) return null;
+
+  if (keyCode === validKeys['/']) return feedComp.$parent.enableSearch();
+
+  if (keyCode === validKeys.b && item) return triggerBookmark(item);
+
+  const el = !item ? getTopLeftMostPostEl(posts) : getNewPostEl(keyCode, item.$el);
+
+  const selectedPost = getPostByElement(posts, el);
+
+  if (selectedPost === item) return selectedPost;
+
+  hoverPost(selectedPost);
+
+  return selectedPost;
 }
 
 Object.freeze(validKeys);
