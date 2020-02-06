@@ -17,8 +17,16 @@ function hoverPost(selectedPost) {
 function getTopLeftMostPostEl(posts) {
   const parent = posts[0].$el.parentElement;
   const insaneMode = store.state.ui.insaneMode;
-  
-  return (insaneMode ? parent : parent.parentElement.firstElementChild).firstElementChild;
+
+  let child = (insaneMode ? parent : parent.parentElement.firstElementChild).firstElementChild;
+  let result = getPostByElement(posts, child);
+
+  while(!result && child) {
+    child = child.nextElementSibling;
+    result = getPostByElement(posts, child);
+  }
+
+  return child;
 }
 
 function getLeftPost(el) {
