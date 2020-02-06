@@ -1,5 +1,5 @@
-import { getElementIndexFromSiblings } from './domHelper';
-import store from '../../../extension/src/store';
+import { getElementIndexFromSiblings } from '@daily/components/src/common/domHelper';
+import store from '../store';
 
 export const validKeys = { h: 104, j: 106, k: 107, l: 108, '/': 47, b: 98 }
 

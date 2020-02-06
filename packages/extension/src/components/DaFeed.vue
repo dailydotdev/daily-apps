@@ -42,7 +42,7 @@ import {
 } from 'vuex';
 import VueMasonry from 'vue-masonry-css';
 import { contentService } from '../common/services';
-import { navigateDaily } from '../../../components/src/common/keyNavigationService'
+import { navigateDaily } from '../common/keyNavigationService'
 
 Vue.use(VueMasonry);
 
