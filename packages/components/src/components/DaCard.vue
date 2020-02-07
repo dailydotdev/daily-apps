@@ -208,7 +208,7 @@ export default {
   }
 }
 
-.animate-cards {
+.animate-cards .feed {
   & .card {
     transition: transform 0.4s ease-out;
 
@@ -226,13 +226,14 @@ export default {
       box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.64);
       transition: opacity 0.4s ease-in-out;
     }
+  }
 
-    & .hover, :hover {
-      transform: translateY(-4px);
+  & .card.hover,
+    .card:hover {
+    transform: translateY(-4px);
 
-      &:after {
-        opacity: 1;
-      }
+    &:after {
+      opacity: 1;
     }
   }
 }
