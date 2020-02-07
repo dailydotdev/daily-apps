@@ -132,6 +132,7 @@ export default {
 .card__link {
   position: relative;
   flex: 1;
+  outline: none;
 
   &:before {
     content: '';
@@ -208,10 +209,6 @@ export default {
 }
 
 .animate-cards {
-  .card__link {
-    outline: none;
-  }
-
   & .card {
     transition: transform 0.4s ease-out;
 
@@ -230,7 +227,7 @@ export default {
       transition: opacity 0.4s ease-in-out;
     }
 
-    &:hover {
+    & .hover, :hover {
       transform: translateY(-4px);
 
       &:after {
@@ -242,14 +239,8 @@ export default {
 
 .card:hover,
 .card.hover {
-  transform: translateY(-4px);
-
   & .card__background__image {
     transform: translate(0, 4px) scale(1.05);
-  }
-
-  &:after {
-    opacity: 1;
   }
 }
 
