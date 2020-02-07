@@ -1,68 +1,21 @@
-import { getElementIndexFromSiblings } from '@daily/components/src/common/domHelper';
 import store from '../store';
+import {
+  getPostByElement,
+  getAbovePost,
+  getBelowPost,
+  getLeftPost,
+  getRightPost,
+  getTopLeftMostPostEl,
+  hoverPost
+} from '@daily/components/src/common/domHelper';
 
-export const validKeys = { h: 104, j: 106, k: 107, l: 108, '/': 47, b: 98 }
+export const validKeys = { h: 104,
+  j: 106, k: 107, l: 108, '/': 47, b: 98 }
 
-function getPostByElement(posts, elementToFind) {
-  return posts.find(post => post.$el === elementToFind);
-}
+function getNewPostEl(keyCode, currentElement, insaneMode) {
+  if (keyCode === validKeys.h && !insaneMode) return getLeftPost(currentElement);
 
-function hoverPost(selectedPost) {
-  const insaneMode = store.state.ui.insaneMode;
-  const linkType = insaneMode ? 'insane__link' : 'card__link';
-  
-  selectedPost.$el.getElementsByClassName(linkType)[0].focus();
-}
-
-function getTopLeftMostPostEl(posts) {
-  const parent = posts[0].$el.parentElement;
-  const insaneMode = store.state.ui.insaneMode;
-
-  let child = (insaneMode ? parent : parent.parentElement.firstElementChild).firstElementChild;
-  let result = getPostByElement(posts, child);
-
-  while(!result && child) {
-    child = child.nextElementSibling;
-    result = getPostByElement(posts, child);
-  }
-
-  return child;
-}
-
-function getLeftPost(el) {
-  const insaneMode = store.state.ui.insaneMode;
-  if (!el.parentElement.previousElementSibling || insaneMode) return el;
-
-  const index = getElementIndexFromSiblings(el);
-
-  return el.parentElement.previousElementSibling.childNodes[index];
-}
-
-function getRightPost(el) {
-  const insaneMode = store.state.ui.insaneMode;
-  if (!el.parentElement.nextElementSibling || insaneMode) return el;
-
-  const index = getElementIndexFromSiblings(el);
-
-  return el.parentElement.nextElementSibling.childNodes[index];
-}
-
-function getAbovePost(element) {
-  if (element.previousElementSibling === null) return element;
-
-  return element.previousElementSibling;
-}
-
-function getBelowPost(element) {
-  if (element.nextElementSibling === null) return element;
-
-  return element.nextElementSibling;
-}
-
-function getNewPostEl(keyCode, currentElement) {
-  if (keyCode === validKeys.h) return getLeftPost(currentElement);
-
-  if (keyCode === validKeys.l) return getRightPost(currentElement);
+  if (keyCode === validKeys.l && !insaneMode) return getRightPost(currentElement);
 
   if (keyCode === validKeys.j) return getBelowPost(currentElement);
 
@@ -77,12 +30,21 @@ function triggerBookmark(post) {
   return post.$emit("bookmark", { post: post.post, bookmarked: !post.post.bookmarked });
 }
 
+function getCurrentPost(posts, current) {
+  if (!current) return null;
+
+  const postOrAdProp = current.post || current.ad;
+  
+  return posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
+}
+
 export function navigateDaily(feedComp, current, keyCode) {
   const posts = feedComp.$refs.posts;
-  const postOrAdProp = current && (current.post || current.ad);
-  const item = posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
+  const insaneMode = store.state.ui.insaneMode;
 
   if (posts.length === 0) return null;
+
+  const item = getCurrentPost(posts, current);
 
   if (Object.values(validKeys).indexOf(keyCode) === -1) return null;
 
@@ -90,13 +52,15 @@ export function navigateDaily(feedComp, current, keyCode) {
 
   if (keyCode === validKeys.b && item) return triggerBookmark(item);
 
-  const el = !item ? getTopLeftMostPostEl(posts) : getNewPostEl(keyCode, item.$el);
+  const element = !item
+    ? getTopLeftMostPostEl(posts, insaneMode)
+    : getNewPostEl(keyCode, item.$el, insaneMode);
 
-  const selectedPost = getPostByElement(posts, el);
+  const selectedPost = getPostByElement(posts, element);
 
   if (selectedPost === item) return selectedPost;
 
-  hoverPost(selectedPost);
+  hoverPost(selectedPost, insaneMode);
 
   return selectedPost;
 }
