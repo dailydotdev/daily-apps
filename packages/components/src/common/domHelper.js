@@ -55,10 +55,8 @@ export function getTopLeftMostPostEl(posts, insaneMode) {
   return child;
 }
 
-export function hoverPost(selectedPost, insaneMode) {
-  const linkType = insaneMode ? 'insane__link' : 'card__link';
-  
-  selectedPost.$el.getElementsByClassName(linkType)[0].focus();
+export function hoverPost(selectedPost) {
+  selectedPost.$el.getElementsByClassName(`post__link`)[0].focus();
 }
 
 export default {

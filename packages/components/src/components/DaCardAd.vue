@@ -6,7 +6,7 @@
     <template slot="content">
       <img v-for="(item, index) in pixel" :key="index" :src="item" class="card__pixel"/>
     </template>
-    <a slot="footer" class="card__footer__promoted micro2" target="_blank"
+    <a slot="footer" class="card__footer__promoted micro2 post__link" target="_blank"
        :href="ad.referralLink" v-if="ad && ad.referralLink">{{ promoted }}</a>
     <da-line-clamp slot="footer" class="card__footer__promoted micro2" v-else :lines="1"
                    :truncate="truncatePromoted" :text="promoted"></da-line-clamp>

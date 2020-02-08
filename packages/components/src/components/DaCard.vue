@@ -1,6 +1,6 @@
 <template>
   <div class="card" :class="cls">
-    <a :href="url" target="_blank" class="card__link" @click="$emit('click')">
+    <a :href="url" target="_blank" class="card__link post__link" @click="$emit('click')">
       <div class="card__background" :style="imgStyle">
         <img
           class="card__background__image lazyload"

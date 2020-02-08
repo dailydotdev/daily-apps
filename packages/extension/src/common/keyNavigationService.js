@@ -56,7 +56,7 @@ export function navigateDaily(keyCode, posts, enableSearch, { current, insaneMod
 
   if (selectedPost === item) return selectedPost;
 
-  hoverPost(selectedPost, insaneMode);
+  hoverPost(selectedPost);
 
   return selectedPost;
 }
