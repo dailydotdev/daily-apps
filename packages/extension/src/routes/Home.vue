@@ -494,6 +494,10 @@ export default {
 
     window.addEventListener('keypress', this.onKeyPress)
   },
+
+  beforeDestroy() {
+    window.removeEventListener('keypress', this.onKeyPress);
+  },
 };
 </script>
 <style>
