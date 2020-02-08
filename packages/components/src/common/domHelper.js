@@ -62,5 +62,12 @@ export function hoverPost(selectedPost, insaneMode) {
 }
 
 export default {
-  getElementIndexFromSiblings
+  getPostByElement,
+  getElementIndexFromSiblings,
+  getLeftPost,
+  getRightPost,
+  getBelowPost,
+  getAbovePost,
+  getTopLeftMostPostEl,
+  hoverPost
 }
