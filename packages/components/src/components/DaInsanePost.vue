@@ -89,7 +89,7 @@ export default {
 }
 
 .insane--ad .insane__reveal {
-  width: 58px;
+  width: 56px;
 }
 
 .insane--ad,
@@ -112,7 +112,7 @@ export default {
     }
   }
 
-  &.hide-menu:hover, &.hide-menu.hover .reveal {
+  &.hide-menu:hover .reveal, &.hide-menu.hover .reveal {
     transform: translateX(-56px);
   }
 
