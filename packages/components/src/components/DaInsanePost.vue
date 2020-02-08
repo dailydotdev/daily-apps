@@ -39,7 +39,7 @@
         </div>
       </transition>
     </div>
-    <svgicon name="menu" class="insane__reveal__menu--duplicate" slot="other" v-if="menuOpened || selected"/>
+    <svgicon name="menu" class="insane__reveal__menu--duplicate" slot="other" v-if="menuOpened"/>
   </div>
 </template>
 
