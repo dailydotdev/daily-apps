@@ -1,4 +1,3 @@
-import store from '../store';
 import {
   getPostByElement,
   getAbovePost,
@@ -38,17 +37,14 @@ function getCurrentPost(posts, current) {
   return posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
 }
 
-export function navigateDaily(feedComp, current, keyCode) {
-  const posts = feedComp.$refs.posts;
-  const insaneMode = store.state.ui.insaneMode;
-
+export function navigateDaily(keyCode, posts, enableSearch, { current, insaneMode }) {
   if (posts.length === 0) return null;
 
   const item = getCurrentPost(posts, current);
 
   if (Object.values(validKeys).indexOf(keyCode) === -1) return null;
 
-  if (keyCode === validKeys['/']) return feedComp.$parent.enableSearch();
+  if (keyCode === validKeys['/']) return enableSearch();
 
   if (keyCode === validKeys.b && item) return triggerBookmark(item);
 

@@ -120,7 +120,14 @@ export default {
   },
   methods: {
     navigateDailyFeed(keyCode) {
-      this.selectedPost = navigateDaily(this, this.selectedPost, keyCode);
+      const options = { insaneMode: this.insaneMode, current: this.selectedPost };
+
+      this.selectedPost = navigateDaily(
+        keyCode,
+        this.$refs.posts,
+        this.$parent.enableSearch,
+        options
+      );
     },
 
     onAdClick(ad) {
