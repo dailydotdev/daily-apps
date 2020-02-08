@@ -32,6 +32,7 @@ jest.mock('../src/common/services', () => ({
     hidePost: jest.fn(),
   },
 }));
+
 const Parent = {
   methods: {
     enableSearch: jest.fn()
@@ -59,6 +60,7 @@ beforeEach(() => {
         'url': 'https://app.dailynow.co/r/0b14843f08279a41ea69c1edd35a2c16',
         'publishedAt': '2019-06-12T00:51:56.000Z',
         'bookmarked': false,
+
         'createdAt': '2019-06-12T18:54:48.000Z',
         'publication': {
           'id': 'devto',
@@ -163,25 +165,23 @@ describe('key events', () => {
   it('should hover post using "h, j, k, l" keys or do nothing when not applicable', () => {
     const wrapper = mount(DaFeed, { store, localVue });
 
-    const initialPost = navigateDaily(wrapper.vm, null, validKeys.k);
+    const initialPost = navigateDaily(validKeys.k, wrapper.vm.$refs.posts, wrapper.vm.$parent.enableSearch, { current: null });
     expect(initialPost.post.id).toEqual(wrapper.vm.$refs.posts[0].post.id);
 
-    const goRight = navigateDaily(wrapper.vm, initialPost, validKeys.l);
+    const goRight = navigateDaily(validKeys.l, wrapper.vm.$refs.posts, wrapper.vm.$parent.enableSearch, { current: initialPost});
     expect(goRight.post.id).toEqual(wrapper.vm.$refs.posts[2].post.id);
 
-    const goLeft = navigateDaily(wrapper.vm, goRight, validKeys.h);
+    const goLeft = navigateDaily(validKeys.h, wrapper.vm.$refs.posts, wrapper.vm.$parent.enableSearch, { current: goRight});
     expect(goLeft.post.id).toEqual(wrapper.vm.$refs.posts[0].post.id);
 
-    const goDown = navigateDaily(wrapper.vm, goLeft, validKeys.j);
+    const goDown = navigateDaily(validKeys.j, wrapper.vm.$refs.posts, wrapper.vm.$parent.enableSearch, { current: goLeft});
     expect(goDown.post.id).toEqual(wrapper.vm.$refs.posts[1].post.id);
   });
 
-  it('should bookmark when "b" is pressed', () => {
-    const wrapper = mount(DaFeed, { store, localVue });
+  it('should emit "bookmark" when "b" is pressed', () => {
+    const wrapper = mount(DaFeed, { store, localVue, parent: Parent });
     const posts = wrapper.vm.$refs.posts;
 
-    navigateDaily(wrapper.vm, posts[0], validKeys.b);
-    expect(feed.mutations.toggleBookmarks)
-    .toBeCalledWith(expect.anything(), { id: posts[0].post.id, bookmarked: true });
+    expect(navigateDaily(validKeys.b, posts, wrapper.vm.$parent.enableSearch, posts[0])).toBeTruthy();
   });
 });
