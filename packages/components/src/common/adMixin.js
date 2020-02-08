@@ -4,10 +4,6 @@ export default {
       type: Object,
       required: true,
     },
-    showMenu: {
-      type: Boolean,
-      default: true,
-    },
     selected: {
       type: Boolean,
       default: false
