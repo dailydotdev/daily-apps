@@ -59,7 +59,7 @@ export default {
   },
   data() {
     return {
-      selectedPost: null,
+      hoveredPost: null,
       selectedPostId: null,
     };
   },
@@ -72,9 +72,9 @@ export default {
       isLoggedIn: 'user/isLoggedIn',
     }),
     focusedPost() {
-      if (!this.selectedPost) return null;
+      if (!this.hoveredPost) return null;
 
-      const item = this.selectedPost;
+      const item = this.hoveredPost;
 
       return item.ad || item.post;
     },
@@ -120,9 +120,9 @@ export default {
   },
   methods: {
     navigateDailyFeed(keyCode) {
-      const options = { insaneMode: this.insaneMode, current: this.selectedPost };
+      const options = { insaneMode: this.insaneMode, current: this.hoveredPost };
 
-      this.selectedPost = navigateDaily(
+      this.hoveredPost = navigateDaily(
         keyCode,
         this.$refs.posts,
         this.$parent.enableSearch,
