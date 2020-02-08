@@ -208,7 +208,7 @@ export default {
   }
 }
 
-.animate-cards .feed {
+.animate-cards {
   & .card {
     transition: transform 0.4s ease-out;
 
