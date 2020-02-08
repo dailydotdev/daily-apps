@@ -193,7 +193,6 @@ export default {
       lineNumbers: 1,
       showSearch: false,
       searchSuggestions: [],
-      selectedPost: null
     };
   },
 
