@@ -1,5 +1,5 @@
 <template>
-  <div class="insane insane--ad" :class="cls">
+  <div class="insane insane--ad hide-menu" :class="cls">
     <a :href="ad.link" target="_blank" class="insane__link post__link" @click="$emit('click', ad)">
       <h5 class="insane__title">
         <da-line-clamp :text="ad.description" :lines="3"/>

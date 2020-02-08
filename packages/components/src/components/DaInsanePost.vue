@@ -30,7 +30,7 @@
         </button>
         <button class="btn-icon insane__reveal__menu" v-tooltip="'More'"
                 @click="$emit('menu', { post, event: $event })" v-if="showMenu">
-          <svgicon name="menu"/>
+          <svgicon name="menu" class="menu__icon"/>
         </button>
       </div>
       <transition name="insane-notification">
@@ -39,7 +39,7 @@
         </div>
       </transition>
     </div>
-    <svgicon name="menu" class="insane__reveal__menu--duplicate" slot="other" v-if="menuOpened"/>
+    <svgicon name="menu" class="insane__reveal__menu--duplicate" slot="other" v-if="menuOpened || selected"/>
   </div>
 </template>
 
@@ -82,18 +82,9 @@ export default {
 .insane__wrapper {
   position: relative;
   width: 100%;
-}
 
-.insane--ad.hover,
-.insane--post.hover {
-  .reveal {
-    transform: translateX(-56px);
-  }
-
-  &:hover, &.menu-opened {
-    & .reveal {
-      transform: translateX(-88px);
-    }
+  & .menu__icon {
+    opacity: 0;
   }
 }
 
@@ -115,13 +106,13 @@ export default {
     transition: transform 0.2s ease-out;
   }
 
-  &:hover, &.menu-opened {
+  &:hover, &.menu-opened, &.hover {
     & .reveal {
       transform: translateX(-88px);
     }
   }
 
-  &.hide-menu:hover .reveal {
+  &.hide-menu:hover, &.hide-menu.hover .reveal {
     transform: translateX(-56px);
   }
 
@@ -131,6 +122,10 @@ export default {
     & .insane__title {
       color: var(--theme-secondary);
     }
+  }
+
+  & .menu__icon {
+    opacity: 1;
   }
 }
 
@@ -199,7 +194,7 @@ export default {
 
 .insane__wrapper .insane__reveal__menu--duplicate {
   position: absolute;
-  display: block;
+  opacity: 0;
   right: 13px;
   bottom: 25px;
   width: 24px;
