@@ -3,7 +3,7 @@ import { browserName } from './common/browser';
 const ctas = [{
   text: 'Daily is 100% open source',
   icon: 'github',
-  link: 'https://github.com/dailynowco/daily',
+  link: 'https://github.com/dailydotdev/daily',
   name: 'Github',
   style: {
     color: 'white',
@@ -12,7 +12,7 @@ const ctas = [{
 }, {
   text: 'Follow us on Instagram',
   logo: 'instagram',
-  link: 'https://www.instagram.com/dailynowco/',
+  link: 'https://www.instagram.com/dailydotdev/',
   name: 'Instagram',
   style: {
     color: '#838886',
@@ -21,7 +21,7 @@ const ctas = [{
 }, {
   text: 'Join our Slack',
   logo: 'slack',
-  link: 'https://slack.dailynow.co',
+  link: 'https://slack.daily.dev',
   name: 'Slack',
   style: {
     color: '#838886',
@@ -30,7 +30,7 @@ const ctas = [{
 }, {
   text: 'Follow real-time updates',
   icon: 'twitter',
-  link: 'https://twitter.com/dailynowco',
+  link: 'https://twitter.com/dailydotdev',
   name: 'Twitter',
   style: {
     color: 'white',
@@ -39,7 +39,7 @@ const ctas = [{
 }, {
   text: 'Like us on Facebook',
   icon: 'facebook',
-  link: 'https://www.facebook.com/dailynowco',
+  link: 'https://www.facebook.com/dailydotdev',
   name: 'Facebook',
   style: {
     color: 'white',

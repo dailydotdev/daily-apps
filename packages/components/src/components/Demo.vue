@@ -78,7 +78,7 @@
           <button class="btn-icon" title="button">
             <svgicon name="mobile"/>
           </button>
-          <a href="https://www.dailynow.co" target="_blank" class="btn-icon" title="anchor">
+          <a href="https://daily.dev" target="_blank" class="btn-icon" title="anchor">
             <svgicon name="bag"/>
           </a>
         </div>
