@@ -16,12 +16,12 @@
     </header>
     <footer class="profile__footer">
       <a target="_blank" href="https://github.com/dailydotdev/daily/issues/new">Report an issue</a>
-      <a target="_blank" href="https://www.daily.dev/privacy">Privacy Policy</a>
-      <a target="_blank" class="caption" href="https://www.daily.dev/cookie">
+      <a target="_blank" href="https://daily.dev/privacy">Privacy Policy</a>
+      <a target="_blank" class="caption" href="https://daily.dev/cookie">
         Cookie Policy
       </a>
       <div class="profile__footer__row">
-        <a target="_blank" href="https://www.daily.dev/terms">
+        <a target="_blank" href="https://daily.dev/terms">
           Terms of Service</a>
         <div class="caption">// Version {{ version }}</div>
       </div>
