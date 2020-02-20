@@ -94,7 +94,7 @@
           </p>
         </div>
       </template>
-      <da-feed v-else-if="showFeed"/>
+      <da-feed v-else-if="showFeed" ref='feed'/>
     </main>
     <div id="anchor" ref="anchor"></div>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
@@ -360,6 +360,12 @@ export default {
       ga('send', 'event', 'Search', 'Algolia');
     },
 
+    onKeyPress({ keyCode }) {
+      if (this.showSearch) return this.fetchSearchSuggestions();
+
+      return this.$refs.feed.navigateDailyFeed(keyCode);
+    },
+
     async agreeToTerms() {
       await setCache(TERMS_CONSENT_KEY, true);
       this.showNewTerms = false;
@@ -435,7 +441,7 @@ export default {
     },
     showMainFeed() {
       return !this.showBookmarks && !this.filter && !this.showSearchFeed;
-    },
+    }
   },
 
   watch: {
@@ -484,6 +490,12 @@ export default {
       await this.initHome();
       await this.validateAuth();
     });
+
+    window.addEventListener('keypress', this.onKeyPress)
+  },
+
+  beforeDestroy() {
+    window.removeEventListener('keypress', this.onKeyPress);
   },
 };
 </script>

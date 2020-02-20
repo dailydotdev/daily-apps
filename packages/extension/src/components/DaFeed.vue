@@ -3,24 +3,28 @@
     <div class="feed__insane" v-if="insaneMode">
       <template v-if="showAd">
         <da-insane-placeholder v-if="!ads.length"/>
-        <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item"
-                      @click="onAdClick" @impression="onAdImpression"/>
+        <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
+                      @click="onAdClick" @impression="onAdImpression" :show-menu="isLoggedIn"
+                      :selected="focusedPost === item"/>
       </template>
       <da-insane-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                       @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                       @click="onPostClick" :show-menu="isLoggedIn"
-                      :menu-opened="selectedPostId === item.id"/>
+                      :menu-opened="selectedPostId === item.id"
+                      :selected="focusedPost === item" />
     </div>
     <masonry class="feed__cards" :cols="cols" :gutter="gutter" :key="gutter" v-else>
       <template v-if="showAd">
         <da-card-placeholder v-if="!ads.length"/>
-        <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item"
-                    @click="onAdClick" @impression="onAdImpression"/>
+        <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
+                    @click="onAdClick" @impression="onAdImpression"
+                    :selected="focusedPost === item"/>
       </template>
       <da-card-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
                     @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                     @click="onPostClick" :show-menu="isLoggedIn"
-                    :menu-opened="selectedPostId === item.id"/>
+                    :menu-opened="selectedPostId === item.id"
+                    :selected="focusedPost === item"/>
     </masonry>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
                 @close="selectedPostId = null">
@@ -38,6 +42,7 @@ import {
 } from 'vuex';
 import VueMasonry from 'vue-masonry-css';
 import { contentService } from '../common/services';
+import { navigateDaily } from '../common/keyNavigationService'
 
 Vue.use(VueMasonry);
 
@@ -54,6 +59,7 @@ export default {
   },
   data() {
     return {
+      hoveredPost: null,
       selectedPostId: null,
     };
   },
@@ -65,6 +71,13 @@ export default {
       showAd: 'feed/showAd',
       isLoggedIn: 'user/isLoggedIn',
     }),
+    focusedPost() {
+      if (!this.hoveredPost) return null;
+
+      const item = this.hoveredPost;
+
+      return item.ad || item.post;
+    },
     gutter() {
       if (this.spaciness === 'roomy') {
         return 48;
@@ -106,6 +119,17 @@ export default {
     },
   },
   methods: {
+    navigateDailyFeed(keyCode) {
+      const options = { insaneMode: this.insaneMode, current: this.hoveredPost };
+
+      this.hoveredPost = navigateDaily(
+        keyCode,
+        this.$refs.posts,
+        this.$parent.enableSearch,
+        options
+      );
+    },
+
     onAdClick(ad) {
       ga('send', 'event', 'Ad', 'Click', ad.source);
       this.fetchAds();
