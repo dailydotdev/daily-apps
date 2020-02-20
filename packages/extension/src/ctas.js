@@ -21,7 +21,7 @@ const ctas = [{
 }, {
   text: 'Join our Slack',
   logo: 'slack',
-  link: 'https://slack.daily.dev',
+  link: 'https://dailydotdev.slack.com/',
   name: 'Slack',
   style: {
     color: '#838886',
