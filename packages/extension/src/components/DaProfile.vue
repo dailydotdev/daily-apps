@@ -21,7 +21,7 @@
         Cookie Policy
       </a>
       <div class="profile__footer__row">
-        <a target="_blank" href="https://www.daily.dev/eula">
+        <a target="_blank" href="https://www.daily.dev/terms">
           Terms of Service</a>
         <div class="caption">// Version {{ version }}</div>
       </div>
