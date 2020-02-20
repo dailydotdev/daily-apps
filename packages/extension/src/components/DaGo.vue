@@ -9,7 +9,7 @@
       <da-svg src="/graphics/arrow.svg" class="go-modal__arrow second"/>
       <da-svg src="/graphics/arrow.svg" class="go-modal__arrow first"/>
     </div>
-    <h1><a href="https://go.dailynow.co">go.dailynow.co</a></h1>
+    <h1><a href="https://go.daily.dev">go.daily.dev</a></h1>
     <p>You can enjoy Daily on your mobile device as well. Give it a try!</p>
   </da-modal>
 </template>
