@@ -133,6 +133,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    vimNavigation: {
+      type: Object
+    }
   },
 
   data() {
@@ -196,6 +199,7 @@ export default {
 
       ga('send', 'event', 'Sidebar', 'Toggle', 'Open');
       this.setOpened(true);
+      this.vimNavigation.disableVim();
     },
     close() {
       if (!this.opened) {
@@ -205,6 +209,7 @@ export default {
       ga('send', 'event', 'Sidebar', 'Toggle', 'Close');
       this.resetRequest();
       this.setOpened(false);
+      this.vimNavigation.enableVim();
     },
     toggleFilter(checked) {
       ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');

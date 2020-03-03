@@ -3,7 +3,7 @@
     <da-header @go="onGoClicked" @login="onLogin('Header')"
                @profile="onProfile" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
-    <da-sidebar ref="sidebar" :disabled="showBookmarks"
+    <da-sidebar ref="sidebar" :disabled="showBookmarks" :vimNavigation="vimNavigation"
                 @requested-source="showRequestModal = true"
                 @login="onLogin('Sidebar')"></da-sidebar>
     <div class="line-numbers" @mouseenter="$refs.sidebar.open()">
@@ -371,6 +371,14 @@ export default {
       this.showNewTerms = false;
     },
 
+    enableVim() {
+      window.addEventListener('keypress', this.onKeyPress)
+    },
+
+    disableVim() {
+      window.removeEventListener('keypress', this.onKeyPress);
+    },
+
     ...mapActions({
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       fetchTags: 'feed/fetchTags',
@@ -415,7 +423,7 @@ export default {
 
         return res;
       },
-
+      
       clsObj(state) {
         return {
           'animate-cards': state.ui.enableCardAnimations,
@@ -441,6 +449,12 @@ export default {
     },
     showMainFeed() {
       return !this.showBookmarks && !this.filter && !this.showSearchFeed;
+    },
+    vimNavigation() {
+      return {
+        enableVim: this.enableVim,
+        disableVim: this.disableVim
+      }
     }
   },
 
@@ -491,11 +505,11 @@ export default {
       await this.validateAuth();
     });
 
-    window.addEventListener('keypress', this.onKeyPress)
+    this.enableVim();
   },
 
   beforeDestroy() {
-    window.removeEventListener('keypress', this.onKeyPress);
+    this.disableVim();
   },
 };
 </script>
