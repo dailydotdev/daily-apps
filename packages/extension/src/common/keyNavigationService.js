@@ -5,11 +5,17 @@ import {
   getLeftPost,
   getRightPost,
   getTopLeftMostPostEl,
-  hoverPost
+  hoverPost,
 } from '@daily/components/src/common/domHelper';
 
-export const validKeys = { h: 104,
-  j: 106, k: 107, l: 108, '/': 47, b: 98 }
+export const validKeys = {
+  h: 104,
+  j: 106,
+  k: 107,
+  l: 108,
+  '/': 47,
+  b: 98,
+};
 
 function getNewPostEl(keyCode, currentElement, insaneMode) {
   if (keyCode === validKeys.h && !insaneMode) return getLeftPost(currentElement);
@@ -26,14 +32,14 @@ function getNewPostEl(keyCode, currentElement, insaneMode) {
 function triggerBookmark(post) {
   if (post.ad) return null;
 
-  return post.$emit("bookmark", { post: post.post, bookmarked: !post.post.bookmarked });
+  return post.$emit('bookmark', { post: post.post, bookmarked: !post.post.bookmarked });
 }
 
 function getCurrentPost(posts, current) {
   if (!current) return null;
 
   const postOrAdProp = current.post || current.ad;
-  
+
   return posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
 }
 
@@ -64,5 +70,5 @@ export function navigateDaily(keyCode, posts, enableSearch, { current, insaneMod
 Object.freeze(validKeys);
 
 export default {
-  navigateDaily
-}
+  navigateDaily,
+};
