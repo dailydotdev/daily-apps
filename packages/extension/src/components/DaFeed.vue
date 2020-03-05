@@ -42,7 +42,7 @@ import {
 } from 'vuex';
 import VueMasonry from 'vue-masonry-css';
 import { contentService } from '../common/services';
-import { navigateDaily } from '../common/keyNavigationService'
+import { navigateDaily } from '../common/keyNavigationService';
 
 Vue.use(VueMasonry);
 
@@ -126,7 +126,7 @@ export default {
         keyCode,
         this.$refs.posts,
         this.$parent.enableSearch,
-        options
+        options,
       );
     },
 
@@ -178,7 +178,7 @@ export default {
         .catch(console.error);
 
       setTimeout(() => {
-        this.$refs.posts.find(com => com.post.id === postId).notify('Thanks for reporting!');
+        this.$refs.posts.find(com => com.post && com.post.id === postId).notify('Thanks for reporting!');
         setTimeout(() => this.removePost(postId), 1000);
       }, 100);
     },

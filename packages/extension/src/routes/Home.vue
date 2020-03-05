@@ -441,7 +441,7 @@ export default {
     },
     showMainFeed() {
       return !this.showBookmarks && !this.filter && !this.showSearchFeed;
-    }
+    },
   },
 
   watch: {
@@ -491,7 +491,7 @@ export default {
       await this.validateAuth();
     });
 
-    window.addEventListener('keypress', this.onKeyPress)
+    window.addEventListener('keypress', this.onKeyPress);
   },
 
   beforeDestroy() {
