@@ -191,7 +191,6 @@ export default {
     ...mapMutations({
       removePost: 'feed/removePost',
       toggleBookmarks: 'feed/toggleBookmarks',
-      setDaFeedRef: 'feed/setDaFeedRef',
     }),
   },
 

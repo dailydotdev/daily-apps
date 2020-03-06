@@ -330,6 +330,7 @@ export default {
     },
 
     enableSearch() {
+      disableKeyBindings();
       this.showSearch = true;
       setTimeout(() => this.$refs.search && this.$refs.search.focus(), 100);
     },
@@ -353,18 +354,13 @@ export default {
 
     onSearchBlur() {
       if (!this.$refs.search.query().length) {
+        enableKeyBindings()
         this.showSearch = false;
       }
     },
 
     onAlgoliaClick() {
       ga('send', 'event', 'Search', 'Algolia');
-    },
-
-    onKeyPress({ keyCode }) {
-      if (this.showSearch) return this.fetchSearchSuggestions();
-
-      return this.$refs.feed.navigateDailyFeed(keyCode);
     },
 
     async agreeToTerms() {

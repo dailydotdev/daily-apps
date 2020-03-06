@@ -69,16 +69,16 @@ function navigate(keyCode, posts, enableSearch, { current, insaneMode }) {
 }
 
 function navigateDaily({keyCode}) {
-  const { daFeedRef, hoveredPost } = store.state;
+  const { daFeedRef, hoveredPost } = store.state.feed;
   const options = { insaneMode: daFeedRef.insaneMode, current: hoveredPost };
-  const hoveredPost = navigate(
+  const newHoveredPost = navigate(
         keyCode,
         daFeedRef.$refs.posts,
         daFeedRef.$parent.enableSearch,
         options
       );
 
-  store.commit('feed/setHoveredPost', hoveredPost);
+  store.commit('feed/setHoveredPost', newHoveredPost);
 }
 
 export function enableKeyBindings() {
