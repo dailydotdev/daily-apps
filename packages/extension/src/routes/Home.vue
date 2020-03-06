@@ -3,7 +3,7 @@
     <da-header @go="onGoClicked" @login="onLogin('Header')"
                @profile="onProfile" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
-    <da-sidebar ref="sidebar" :disabled="showBookmarks" :vimNavigation="vimNavigation"
+    <da-sidebar ref="sidebar" :disabled="showBookmarks"
                 @requested-source="showRequestModal = true"
                 @login="onLogin('Sidebar')"></da-sidebar>
     <div class="line-numbers" @mouseenter="$refs.sidebar.open()">
@@ -371,15 +371,9 @@ export default {
       this.showNewTerms = false;
     },
 
-    enableVim() {
-      window.addEventListener('keypress', this.onKeyPress)
-    },
-
-    disableVim() {
-      window.removeEventListener('keypress', this.onKeyPress);
-    },
-
     ...mapActions({
+      enableKeyBindings: 'feed/enableKeyBindings',
+      disableKeyBindings: 'feed/disableKeyBindings',
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       fetchTags: 'feed/fetchTags',
       fetchPublications: 'feed/fetchPublications',
@@ -392,6 +386,7 @@ export default {
     }),
 
     ...mapMutations({
+      setDaFeedReference: 'feed/setDaFeedReference',
       clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
@@ -405,7 +400,7 @@ export default {
   computed: {
     ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'daFeedRef']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
@@ -450,12 +445,6 @@ export default {
     showMainFeed() {
       return !this.showBookmarks && !this.filter && !this.showSearchFeed;
     },
-    vimNavigation() {
-      return {
-        enableVim: this.enableVim,
-        disableVim: this.disableVim
-      }
-    }
   },
 
   watch: {
@@ -505,11 +494,15 @@ export default {
       await this.validateAuth();
     });
 
-    this.enableVim();
+    this.setDaFeedReference(this.$refs.feed);
+    
+    this.$nextTick(() => {
+      this.enableKeyBindings();
+    });
   },
 
   beforeDestroy() {
-    this.disableVim();
+    this.disableKeyBindings();
   },
 };
 </script>

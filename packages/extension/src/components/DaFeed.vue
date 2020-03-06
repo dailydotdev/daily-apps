@@ -42,7 +42,6 @@ import {
 } from 'vuex';
 import VueMasonry from 'vue-masonry-css';
 import { contentService } from '../common/services';
-import { navigateDaily } from '../common/keyNavigationService'
 
 Vue.use(VueMasonry);
 
@@ -59,13 +58,12 @@ export default {
   },
   data() {
     return {
-      hoveredPost: null,
       selectedPostId: null,
     };
   },
   computed: {
     ...mapState('ui', ['insaneMode', 'spaciness']),
-    ...mapState('feed', ['ads']),
+    ...mapState('feed', ['ads', 'hoveredPost']),
     ...mapGetters({
       posts: 'feed/feed',
       showAd: 'feed/showAd',
@@ -119,17 +117,6 @@ export default {
     },
   },
   methods: {
-    navigateDailyFeed(keyCode) {
-      const options = { insaneMode: this.insaneMode, current: this.hoveredPost };
-
-      this.hoveredPost = navigateDaily(
-        keyCode,
-        this.$refs.posts,
-        this.$parent.enableSearch,
-        options
-      );
-    },
-
     onAdClick(ad) {
       ga('send', 'event', 'Ad', 'Click', ad.source);
       this.fetchAds();
@@ -204,6 +191,7 @@ export default {
     ...mapMutations({
       removePost: 'feed/removePost',
       toggleBookmarks: 'feed/toggleBookmarks',
+      setDaFeedRef: 'feed/setDaFeedRef',
     }),
   },
 
