@@ -3,7 +3,7 @@
   "version": "2.14.1",
   "private": true,
   "scripts": {
-    "serve": "yarn manifest && vue-cli-service build --mode development --watch",
+    "serve": "TARGET=development yarn manifest && vue-cli-service build --mode development --watch",
     "build": "yarn manifest && vue-cli-service build",
     "build:chrome": "TARGET=chrome yarn build --mode chrome",
     "build:firefox": "TARGET=firefox yarn build --mode firefox",
