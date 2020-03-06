@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import { contentService, monetizationService } from '../../common/services';
-import { navigate } from '../../common/keyNavigationService';
 
 const setPostBookmark = (state, key, id, value) => {
   const index = state[key].findIndex(post => post.id === id);
@@ -123,16 +122,8 @@ export default {
     hasConflicts: state => state.conflictBookmarks && state.conflictBookmarks.length > 0,
   },
   mutations: {
-    setHoveredPost(state, keyCode) {
-      const { daFeedRef, hoveredPost } = state;
-      const options = { insaneMode: daFeedRef.insaneMode, current: hoveredPost };
-
-      state.hoveredPost = navigate(
-        keyCode,
-        daFeedRef.$refs.posts,
-        daFeedRef.$parent.enableSearch,
-        options
-      );
+    setHoveredPost(state, hoveredPost) {
+      state.hoveredPost = hoveredPost;
     },
     setDaFeedReference(state, value) {
       state.daFeedRef = value;

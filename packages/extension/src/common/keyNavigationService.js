@@ -44,7 +44,7 @@ function getCurrentPost(posts, current) {
   return posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
 }
 
-export function navigate(keyCode, posts, enableSearch, { current, insaneMode }) {
+function navigate(keyCode, posts, enableSearch, { current, insaneMode }) {
   if (posts.length === 0) return null;
 
   const item = getCurrentPost(posts, current);
@@ -68,6 +68,19 @@ export function navigate(keyCode, posts, enableSearch, { current, insaneMode }) 
   return selectedPost;
 }
 
+function navigateDaily({keyCode}) {
+  const { daFeedRef, hoveredPost } = store.state;
+  const options = { insaneMode: daFeedRef.insaneMode, current: hoveredPost };
+  const hoveredPost = navigate(
+        keyCode,
+        daFeedRef.$refs.posts,
+        daFeedRef.$parent.enableSearch,
+        options
+      );
+
+  store.commit('feed/setHoveredPost', hoveredPost);
+}
+
 export function enableKeyBindings() {
   window.addEventListener('keypress', navigateDaily);
 }
@@ -76,12 +89,9 @@ export function disableKeyBindings() {
   window.removeEventListener('keypress', navigateDaily);
 }
 
-function navigateDaily({keyCode}) {
-  store.commit('feed/setHoveredPost', keyCode);
-}
-
 Object.freeze(validKeys);
 
 export default {
-  navigateDaily,
-};
+  enableKeyBindings,
+  disableKeyBindings
+}
