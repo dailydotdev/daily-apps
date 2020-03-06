@@ -133,9 +133,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    vimNavigation: {
-      type: Object
-    }
   },
 
   data() {
@@ -192,6 +189,10 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      enableKeyBindings: 'feed/enableKeyBindings',
+      disableKeyBindings: 'feed/disableKeyBindings',
+    }),
     open() {
       if (this.opened || this.disabled) {
         return;
@@ -199,7 +200,7 @@ export default {
 
       ga('send', 'event', 'Sidebar', 'Toggle', 'Open');
       this.setOpened(true);
-      this.vimNavigation.disableVim();
+      this.disableKeyBindings();
     },
     close() {
       if (!this.opened) {
@@ -209,7 +210,7 @@ export default {
       ga('send', 'event', 'Sidebar', 'Toggle', 'Close');
       this.resetRequest();
       this.setOpened(false);
-      this.vimNavigation.enableVim();
+      this.enableKeyBindings();
     },
     toggleFilter(checked) {
       ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');
