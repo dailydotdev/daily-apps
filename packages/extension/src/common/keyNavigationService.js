@@ -7,6 +7,7 @@ import {
   getTopLeftMostPostEl,
   hoverPost
 } from '@daily/components/src/common/domHelper';
+import store from '../store';
 
 export const validKeys = { h: 104,
   j: 106, k: 107, l: 108, '/': 47, b: 98 }
@@ -37,7 +38,7 @@ function getCurrentPost(posts, current) {
   return posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
 }
 
-export function navigateDaily(keyCode, posts, enableSearch, { current, insaneMode }) {
+export function navigate(keyCode, posts, enableSearch, { current, insaneMode }) {
   if (posts.length === 0) return null;
 
   const item = getCurrentPost(posts, current);
@@ -59,6 +60,18 @@ export function navigateDaily(keyCode, posts, enableSearch, { current, insaneMod
   hoverPost(selectedPost);
 
   return selectedPost;
+}
+
+export function enableKeyBindings() {
+  window.addEventListener('keypress', navigateDaily);
+}
+
+export function disableKeyBindings() {
+  window.removeEventListener('keypress', navigateDaily);
+}
+
+function navigateDaily({keyCode}) {
+  store.commit('feed/setHoveredPost', keyCode);
 }
 
 Object.freeze(validKeys);

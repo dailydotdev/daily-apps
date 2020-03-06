@@ -158,6 +158,7 @@ import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
 import { contentService } from '../common/services';
 import { TERMS_CONSENT_KEY, getCache, setCache } from '../common/cache';
+import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
 
 export default {
   name: 'Home',
@@ -372,8 +373,6 @@ export default {
     },
 
     ...mapActions({
-      enableKeyBindings: 'feed/enableKeyBindings',
-      disableKeyBindings: 'feed/disableKeyBindings',
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       fetchTags: 'feed/fetchTags',
       fetchPublications: 'feed/fetchPublications',
@@ -497,12 +496,12 @@ export default {
     this.setDaFeedReference(this.$refs.feed);
     
     this.$nextTick(() => {
-      this.enableKeyBindings();
+      enableKeyBindings();
     });
   },
 
   beforeDestroy() {
-    this.disableKeyBindings();
+    disableKeyBindings();
   },
 };
 </script>
