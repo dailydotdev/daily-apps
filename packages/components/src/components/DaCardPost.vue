@@ -153,6 +153,17 @@ export default {
   }
 }
 
+.read.card--post,
+.menu-opened.card--post {
+  &:hover,
+  &.hover {
+    &:after {
+      opacity: 0;
+      transition: none;
+    }
+  }
+}
+
 .card__tags,
 .card__read-time {
   opacity: 0;

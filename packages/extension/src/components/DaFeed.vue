@@ -165,7 +165,7 @@ export default {
         .catch(console.error);
 
       setTimeout(() => {
-        this.$refs.posts.find(com => com.post.id === postId).notify('Thanks for reporting!');
+        this.$refs.posts.find(com => com.post && com.post.id === postId).notify('Thanks for reporting!');
         setTimeout(() => this.removePost(postId), 1000);
       }, 100);
     },
