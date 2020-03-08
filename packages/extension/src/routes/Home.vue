@@ -158,6 +158,7 @@ import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
 import { contentService } from '../common/services';
 import { TERMS_CONSENT_KEY, getCache, setCache } from '../common/cache';
+import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
 
 export default {
   name: 'Home',
@@ -329,6 +330,7 @@ export default {
     },
 
     enableSearch() {
+      disableKeyBindings();
       this.showSearch = true;
       setTimeout(() => this.$refs.search && this.$refs.search.focus(), 100);
     },
@@ -352,18 +354,13 @@ export default {
 
     onSearchBlur() {
       if (!this.$refs.search.query().length) {
+        enableKeyBindings()
         this.showSearch = false;
       }
     },
 
     onAlgoliaClick() {
       ga('send', 'event', 'Search', 'Algolia');
-    },
-
-    onKeyPress({ keyCode }) {
-      if (this.showSearch) return this.fetchSearchSuggestions();
-
-      return this.$refs.feed.navigateDailyFeed(keyCode);
     },
 
     async agreeToTerms() {
@@ -384,6 +381,7 @@ export default {
     }),
 
     ...mapMutations({
+      setDaFeedReference: 'feed/setDaFeedReference',
       clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
@@ -415,7 +413,7 @@ export default {
 
         return res;
       },
-
+      
       clsObj(state) {
         return {
           'animate-cards': state.ui.enableCardAnimations,
@@ -491,11 +489,15 @@ export default {
       await this.validateAuth();
     });
 
-    window.addEventListener('keypress', this.onKeyPress);
+    this.setDaFeedReference(this.$refs.feed);
+    
+    this.$nextTick(() => {
+      enableKeyBindings();
+    });
   },
 
   beforeDestroy() {
-    window.removeEventListener('keypress', this.onKeyPress);
+    disableKeyBindings();
   },
 };
 </script>

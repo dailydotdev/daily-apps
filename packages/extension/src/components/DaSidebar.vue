@@ -120,6 +120,7 @@ import 'lazysizes';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import { contentService } from '../common/services';
+import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
 
 export default {
   name: 'DaSidebar',
@@ -196,6 +197,7 @@ export default {
 
       ga('send', 'event', 'Sidebar', 'Toggle', 'Open');
       this.setOpened(true);
+      disableKeyBindings();
     },
     close() {
       if (!this.opened) {
@@ -205,6 +207,7 @@ export default {
       ga('send', 'event', 'Sidebar', 'Toggle', 'Close');
       this.resetRequest();
       this.setOpened(false);
+      enableKeyBindings();
     },
     toggleFilter(checked) {
       ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');

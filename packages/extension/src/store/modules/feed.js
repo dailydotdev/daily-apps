@@ -25,6 +25,8 @@ const initialState = () => ({
   search: null,
   showFeed: true,
   ads: [],
+  daFeedRef: null,
+  hoveredPost: null,
 });
 
 const isLoggedIn = state => !!state.user.profile;
@@ -120,6 +122,12 @@ export default {
     hasConflicts: state => state.conflictBookmarks && state.conflictBookmarks.length > 0,
   },
   mutations: {
+    setHoveredPost(state, hoveredPost) {
+      state.hoveredPost = hoveredPost;
+    },
+    setDaFeedReference(state, value) {
+      state.daFeedRef = value;
+    },
     setShowBookmarks(state, value) {
       state.showBookmarks = value;
     },
