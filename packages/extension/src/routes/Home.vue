@@ -395,7 +395,7 @@ export default {
   computed: {
     ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'daFeedRef']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
