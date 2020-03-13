@@ -469,7 +469,7 @@ export default {
           ga('send', 'event', 'Feed', 'Scroll', 'Next Page', this.page);
         }
       }
-    }, { root: null, rootMargin: '0px', threshold: 1 });
+    }, { root: null, rootMargin: '5px', threshold: 1 });
   },
 
   async mounted() {
