@@ -95,6 +95,9 @@
         </div>
       </template>
       <da-feed v-else-if="showFeed" ref='feed'/>
+      <div v-if="this.$store.state.feed.loading" class="loading_spinner">
+        <DaSpinner/>
+      </div>
     </main>
     <div id="anchor" ref="anchor"></div>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
@@ -149,6 +152,7 @@
 import {
   mapState, mapActions, mapMutations, mapGetters,
 } from 'vuex';
+import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
 import DaDndMessage from '../components/DaDndMessage.vue';
@@ -164,6 +168,7 @@ export default {
   name: 'Home',
 
   components: {
+    DaSpinner,
     DaSidebar,
     DaDndMessage,
     DaHeader,
@@ -395,7 +400,7 @@ export default {
   computed: {
     ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
@@ -875,5 +880,9 @@ export default {
   & img {
     height: 100%;
   }
+}
+.loading_spinner {
+  margin: auto;
+  margin-top: 10;
 }
 </style>
