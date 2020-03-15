@@ -95,9 +95,7 @@
         </div>
       </template>
       <da-feed v-else-if="showFeed" ref='feed'/>
-      <div v-if="this.$store.state.feed.loading" class="loading_spinner">
-        <DaSpinner/>
-      </div>
+      <DaSpinner v-if="this.$store.state.feed.loading" class="feed-spinner"/>
     </main>
     <div id="anchor" ref="anchor"></div>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
@@ -359,7 +357,7 @@ export default {
 
     onSearchBlur() {
       if (!this.$refs.search.query().length) {
-        enableKeyBindings()
+        enableKeyBindings();
         this.showSearch = false;
       }
     },
@@ -418,7 +416,7 @@ export default {
 
         return res;
       },
-      
+
       clsObj(state) {
         return {
           'animate-cards': state.ui.enableCardAnimations,
@@ -495,7 +493,7 @@ export default {
     });
 
     this.setDaFeedReference(this.$refs.feed);
-    
+
     this.$nextTick(() => {
       enableKeyBindings();
     });
@@ -881,8 +879,8 @@ export default {
     height: 100%;
   }
 }
-.loading_spinner {
-  margin: auto;
-  margin-top: 10;
+
+.feed-spinner {
+  margin: 16px auto auto;
 }
 </style>
