@@ -762,7 +762,7 @@ export default {
   & .btn {
     margin-top: 8px;
     align-self: stretch;
-    justify-content: flex-end;
+    justify-content: center;
   }
 }
 
