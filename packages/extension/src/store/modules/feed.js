@@ -155,7 +155,11 @@ export default {
     },
     addPosts(state, { posts, type }) {
       // TODO: add tests
-      state[type] = state[type].concat(posts);
+      if (posts && posts.length > 0) {
+        const postsToAdd = posts[0].id === state[type][state[type].length - 1].id
+          ? posts.slice(1) : posts;
+        state[type] = state[type].concat(postsToAdd);
+      }
     },
     removePost(state, postId) {
       const feed = getFeed(state);
