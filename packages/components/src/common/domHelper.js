@@ -47,7 +47,7 @@ export function getTopLeftMostPostEl(posts, insaneMode) {
   let child = (insaneMode ? parent : parent.parentElement.firstElementChild).firstElementChild;
   let result = getPostByElement(posts, child);
 
-  while(!result && child) {
+  while (!result && child) {
     child = child.nextElementSibling;
     result = getPostByElement(posts, child);
   }
@@ -56,7 +56,7 @@ export function getTopLeftMostPostEl(posts, insaneMode) {
 }
 
 export function hoverPost(selectedPost) {
-  selectedPost.$el.getElementsByClassName(`post__link`)[0].focus();
+  selectedPost.$el.getElementsByClassName('post__link')[0].focus();
 }
 
 export default {
@@ -67,5 +67,5 @@ export default {
   getBelowPost,
   getAbovePost,
   getTopLeftMostPostEl,
-  hoverPost
-}
+  hoverPost,
+};

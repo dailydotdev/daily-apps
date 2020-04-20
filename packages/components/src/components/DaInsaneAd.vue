@@ -26,10 +26,10 @@ export default {
   computed: {
     cls() {
       return {
-        hover: this.selected
-      }
+        hover: this.selected,
+      };
     },
-  }
+  },
 };
 </script>
 
