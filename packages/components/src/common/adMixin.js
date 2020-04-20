@@ -6,8 +6,8 @@ export default {
     },
     selected: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   computed: {

@@ -30,8 +30,8 @@ export default {
     cls() {
       return {
         [this.ad.source]: this.ad.source,
-        hover: this.selected
-      }
+        hover: this.selected,
+      };
     },
   },
 };
