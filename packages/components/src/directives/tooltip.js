@@ -20,18 +20,17 @@ export default function (Vue) {
         return element.ownerDocument.body;
       case '#document':
         return element.body;
+      default: {
+        const getStyleComputedProp = getComputedStyle(element);
+        const { overflow, overflowX, overflowY } = getStyleComputedProp;
+
+        if (/(auto|scroll|overlay)/.test(overflow + overflowY + overflowX)) {
+          return element;
+        }
+
+        return getScrollParent(element.parentNode);
+      }
     }
-
-    const getStyleComputedProp = getComputedStyle(element);
-    const overflow = getStyleComputedProp.overflow;
-    const overflowX = getStyleComputedProp.overflowX;
-    const overflowY = getStyleComputedProp.overflowY;
-
-    if (/(auto|scroll|overlay)/.test(overflow + overflowY + overflowX)) {
-      return element;
-    }
-
-    return getScrollParent(element.parentNode);
   };
 
   const getPlacement = (modifiers) => {
@@ -72,7 +71,8 @@ export default function (Vue) {
     vnode.content = value;
     vnode.placement = getPlacement(modifiers);
     vnode.show = true;
-    setTimeout(() => positionTooltip(el, vnode.$el, vnode.placement, appendTo === document.body ? window.scrollY : appendTo.scrollTop), 10);
+    const scrollY = appendTo === document.body ? window.scrollY : appendTo.scrollTop;
+    setTimeout(() => positionTooltip(el, vnode.$el, vnode.placement, scrollY), 10);
   };
 
   const hideTooltip = (el) => {
