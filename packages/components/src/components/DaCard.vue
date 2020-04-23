@@ -1,6 +1,6 @@
 <template>
   <div class="card" :class="cls">
-    <a :href="url" target="_blank" class="card__link" @click="$emit('click')">
+    <a :href="url" target="_blank" class="card__link post__link" @click="$emit('click')">
       <div class="card__background" :style="imgStyle">
         <img
           class="card__background__image lazyload"
@@ -132,6 +132,7 @@ export default {
 .card__link {
   position: relative;
   flex: 1;
+  outline: none;
 
   &:before {
     content: '';
@@ -207,13 +208,6 @@ export default {
   }
 }
 
-.card:hover,
-.card.hover {
-  & .card__background__image {
-    transform: translate(0, 4px) scale(1.05);
-  }
-}
-
 .animate-cards {
   & .card {
     transition: transform 0.4s ease-out;
@@ -232,14 +226,22 @@ export default {
       box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.64);
       transition: opacity 0.4s ease-in-out;
     }
+  }
 
-    &:hover {
-      transform: translateY(-4px);
+  & .card.hover,
+    .card:hover {
+    transform: translateY(-4px);
 
-      &:after {
-        opacity: 1;
-      }
+    &:after {
+      opacity: 1;
     }
+  }
+}
+
+.card:hover,
+.card.hover {
+  & .card__background__image {
+    transform: translate(0, 4px) scale(1.05);
   }
 }
 

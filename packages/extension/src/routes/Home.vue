@@ -94,7 +94,8 @@
           </p>
         </div>
       </template>
-      <da-feed v-else-if="showFeed"/>
+      <da-feed v-else-if="showFeed" ref='feed'/>
+      <DaSpinner v-if="this.$store.state.feed.loading" class="feed-spinner"/>
     </main>
     <div id="anchor" ref="anchor"></div>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
@@ -149,6 +150,7 @@
 import {
   mapState, mapActions, mapMutations, mapGetters,
 } from 'vuex';
+import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
 import DaDndMessage from '../components/DaDndMessage.vue';
@@ -158,11 +160,13 @@ import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
 import { contentService } from '../common/services';
 import { TERMS_CONSENT_KEY, getCache, setCache } from '../common/cache';
+import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
 
 export default {
   name: 'Home',
 
   components: {
+    DaSpinner,
     DaSidebar,
     DaDndMessage,
     DaHeader,
@@ -329,6 +333,7 @@ export default {
     },
 
     enableSearch() {
+      disableKeyBindings();
       this.showSearch = true;
       setTimeout(() => this.$refs.search && this.$refs.search.focus(), 100);
     },
@@ -352,6 +357,7 @@ export default {
 
     onSearchBlur() {
       if (!this.$refs.search.query().length) {
+        enableKeyBindings();
         this.showSearch = false;
       }
     },
@@ -378,6 +384,7 @@ export default {
     }),
 
     ...mapMutations({
+      setDaFeedReference: 'feed/setDaFeedReference',
       clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
@@ -391,7 +398,7 @@ export default {
   computed: {
     ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
@@ -465,7 +472,7 @@ export default {
           ga('send', 'event', 'Feed', 'Scroll', 'Next Page', this.page);
         }
       }
-    }, { root: null, rootMargin: '0px', threshold: 1 });
+    }, { root: null, rootMargin: '5px', threshold: 1 });
   },
 
   async mounted() {
@@ -484,6 +491,16 @@ export default {
       await this.initHome();
       await this.validateAuth();
     });
+
+    this.setDaFeedReference(this.$refs.feed);
+
+    this.$nextTick(() => {
+      enableKeyBindings();
+    });
+  },
+
+  beforeDestroy() {
+    disableKeyBindings();
   },
 };
 </script>
@@ -745,7 +762,7 @@ export default {
   & .btn {
     margin-top: 8px;
     align-self: stretch;
-    justify-content: flex-end;
+    justify-content: center;
   }
 }
 
@@ -861,5 +878,9 @@ export default {
   & img {
     height: 100%;
   }
+}
+
+.feed-spinner {
+  margin: 16px auto auto;
 }
 </style>

@@ -136,13 +136,14 @@ export class ContentServiceImpl implements ContentService {
     private readonly pageSize: number;
     private isLogged: boolean = false;
 
-    constructor(baseURL: string, pageSize: number) {
+    constructor(baseURL: string, pageSize: number, app: string | null = null) {
         this.baseURL = baseURL;
         this.pageSize = pageSize;
         this.request = axios.create({
             baseURL,
             withCredentials: true,
             timeout: 10000,
+            headers: app ? {app} : {},
         });
     }
 

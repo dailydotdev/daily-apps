@@ -29,7 +29,7 @@ export interface AuthService {
 
     getAuthorizationUrl(provider: string, redirectUri: string, codeChallenge: string): string;
 
-    getUserProfile(): Promise<UserId|User>;
+    getUserProfile(): Promise<UserId | User>;
 
     generateChallenge(): Promise<CodeChallenge>;
 }
@@ -38,12 +38,13 @@ export class AuthServiceImpl implements AuthService {
     private readonly request: AxiosInstance;
     private readonly baseURL: string;
 
-    constructor(baseURL: string) {
+    constructor(baseURL: string, app: string | null = null) {
         this.baseURL = baseURL;
         this.request = axios.create({
             baseURL,
             withCredentials: true,
             timeout: 10000,
+            headers: app ? {app} : {},
         });
     }
 
@@ -60,7 +61,7 @@ export class AuthServiceImpl implements AuthService {
         return `${this.baseURL}/v1/auth/authorize?provider=${provider}&redirect_uri=${encodeURI(redirectUri)}&code_challenge=${codeChallenge}`;
     }
 
-    async getUserProfile(): Promise<UserId|User> {
+    async getUserProfile(): Promise<UserId | User> {
         const res = await this.request.get('/v1/users/me');
         return res.data;
     }

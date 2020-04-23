@@ -36,7 +36,7 @@ For development it is recommended to use `yarn serve` as it uses the development
 
 For loading the unpacked version please look [at this guide for Chrome](https://developer.chrome.com/extensions/getstarted) and [this guide for Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Temporary_Installation_in_Firefox). Both cases should point to `dist` folder.
 
-**Please make sure you have a local environment of Daily services up and running with seed data, otherwise you won't see any data in your local version. For more information, [click here](https://github.com/dailynowco/daily#setting-up-local-environment).**
+**Please make sure you have a local environment of Daily services up and running with seed data, otherwise you won't see any data in your local version. For more information, [click here](https://github.com/dailydotdev/daily#setting-up-local-environment).**
 
 #### Production
 
