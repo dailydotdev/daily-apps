@@ -597,7 +597,7 @@ form.sidebar__element {
   bottom: 0;
   background: var(--theme-background-secondary);
   border-top: 1px solid var(--theme-separator);
-  z-index: 2;
+  z-index: 10001;
   --button-border-radius: 0;
 
   & .sidebar__element__image {
