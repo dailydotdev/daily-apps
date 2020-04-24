@@ -25,6 +25,8 @@ const initialState = () => ({
   search: null,
   showFeed: true,
   ads: [],
+  daFeedRef: null,
+  hoveredPost: null,
 });
 
 const isLoggedIn = state => !!state.user.profile;
@@ -120,6 +122,12 @@ export default {
     hasConflicts: state => state.conflictBookmarks && state.conflictBookmarks.length > 0,
   },
   mutations: {
+    setHoveredPost(state, hoveredPost) {
+      state.hoveredPost = hoveredPost;
+    },
+    setDaFeedReference(state, value) {
+      state.daFeedRef = value;
+    },
     setShowBookmarks(state, value) {
       state.showBookmarks = value;
     },
@@ -147,7 +155,11 @@ export default {
     },
     addPosts(state, { posts, type }) {
       // TODO: add tests
-      state[type] = state[type].concat(posts);
+      if (posts && posts.length > 0) {
+        const postsToAdd = posts[0].id === state[type][state[type].length - 1].id
+          ? posts.slice(1) : posts;
+        state[type] = state[type].concat(postsToAdd);
+      }
     },
     removePost(state, postId) {
       const feed = getFeed(state);

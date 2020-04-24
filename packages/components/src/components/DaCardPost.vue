@@ -57,10 +57,10 @@ export default {
   computed: {
     cls() {
       return {
-        bookmarked: this.post.bookmarked,
         read: this.post.read,
         'menu-opened': this.menuOpened,
-        hover: this.menuOpened,
+        bookmarked: this.post.bookmarked,
+        hover: this.menuOpened || this.selected,
       };
     },
     tagsStr() {
@@ -150,6 +150,17 @@ export default {
 
   & .card__link, & .card__footer {
     opacity: 0.4;
+  }
+}
+
+.read.card--post,
+.menu-opened.card--post {
+  &:hover,
+  &.hover {
+    &:after {
+      opacity: 0;
+      transition: none;
+    }
   }
 }
 

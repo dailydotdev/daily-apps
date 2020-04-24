@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve --port 8090",
     "build": "yarn icons && vue-cli-service build --target lib --name components src/components/index.js",
     "test": "yarn lint && vue-cli-service test:unit",
-    "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/components/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit",
+    "test:ci": "yarn lint && JEST_JUNIT_OUTPUT=../../test-results/components/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit",
     "lint": "vue-cli-service lint",
     "icons": "vsvg -s ./svg -t ./icons --tpl ./svg/template.js",
     "test:unit": "vue-cli-service test:unit",

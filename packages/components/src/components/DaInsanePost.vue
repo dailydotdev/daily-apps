@@ -1,7 +1,8 @@
 <template>
   <div class="insane__wrapper">
     <div class="insane insane--post" :class="cls">
-      <a :href="post.url" target="_blank" class="insane__link" @click="$emit('click', post)">
+      <a :href="post.url" target="_blank" class="insane__link post__link"
+          @click="$emit('click', post)">
         <h5 class="insane__title">
           <da-line-clamp :text="post.title" :lines="3"/>
         </h5>
@@ -29,7 +30,7 @@
         </button>
         <button class="btn-icon insane__reveal__menu" v-tooltip="'More'"
                 @click="$emit('menu', { post, event: $event })" v-if="showMenu">
-          <svgicon name="menu"/>
+          <svgicon name="menu" class="menu__icon"/>
         </button>
       </div>
       <transition name="insane-notification">
@@ -65,6 +66,7 @@ export default {
         read: this.post.read,
         'menu-opened': this.menuOpened,
         'hide-menu': !this.showMenu,
+        hover: this.selected,
       };
     },
   },
@@ -80,24 +82,37 @@ export default {
 .insane__wrapper {
   position: relative;
   width: 100%;
+
+  & .menu__icon {
+    opacity: 0;
+  }
 }
 
+.insane--ad .insane__reveal {
+  width: 56px;
+}
+
+.insane--ad,
 .insane--post {
   position: relative;
   transition: opacity 0.1s;
   will-change: transform;
 
+  & .insane__link {
+    outline: none;
+  }
+
   & .reveal {
     transition: transform 0.2s ease-out;
   }
 
-  &:hover, &.menu-opened {
+  &:hover, &.menu-opened, &.hover {
     & .reveal {
       transform: translateX(-88px);
     }
   }
 
-  &.hide-menu:hover .reveal {
+  &.hide-menu:hover .reveal, &.hide-menu.hover .reveal {
     transform: translateX(-56px);
   }
 
@@ -107,6 +122,10 @@ export default {
     & .insane__title {
       color: var(--theme-secondary);
     }
+  }
+
+  & .menu__icon {
+    opacity: 1;
   }
 }
 
@@ -175,7 +194,7 @@ export default {
 
 .insane__wrapper .insane__reveal__menu--duplicate {
   position: absolute;
-  display: block;
+  opacity: 0;
   right: 13px;
   bottom: 25px;
   width: 24px;

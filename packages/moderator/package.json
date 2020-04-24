@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
     "test": "yarn lint && vue-cli-service test:unit",
-    "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/moderator/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit"
+    "test:ci": "yarn lint && JEST_JUNIT_OUTPUT=../../test-results/moderator/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit"
   },
   "dependencies": {
     "@daily/components": "*",

@@ -4,6 +4,10 @@ export default {
       type: Object,
       required: true,
     },
+    selected: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {

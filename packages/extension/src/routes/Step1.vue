@@ -15,9 +15,9 @@
       <div class="onboarding__consent">
         <da-switch class="small" @toggle="termsConsent = $event"/>
         <div>I agree to the
-          <a href="https://www.dailynow.co/eula" target="_blank">Terms</a>,
-          <a href="https://www.dailynow.co/privacy" target="_blank">Privacy</a> and
-          <a href="https://www.dailynow.co/cookie" target="_blank">Cookie Policy</a>.
+          <a href="https://daily.dev/terms" target="_blank">Terms</a>,
+          <a href="https://daily.dev/privacy" target="_blank">Privacy</a> and
+          <a href="https://daily.dev/cookie" target="_blank">Cookie Policy</a>.
         </div>
       </div>
     </div>

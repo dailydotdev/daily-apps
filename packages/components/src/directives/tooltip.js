@@ -4,9 +4,34 @@ import DaTooltip from '../components/DaTooltip.vue';
 export default function (Vue) {
   const DaTooltipClass = Vue.extend(DaTooltip);
   let vnode = null;
+  let appendedTo = null;
   let targetElement = null;
   let overTimeout = null;
   let outTimeout = null;
+
+  const getScrollParent = (element) => {
+    if (!element) {
+      return document.body;
+    }
+
+    switch (element.nodeName) {
+      case 'HTML':
+      case 'BODY':
+        return element.ownerDocument.body;
+      case '#document':
+        return element.body;
+      default: {
+        const getStyleComputedProp = getComputedStyle(element);
+        const { overflow, overflowX, overflowY } = getStyleComputedProp;
+
+        if (/(auto|scroll|overlay)/.test(overflow + overflowY + overflowX)) {
+          return element;
+        }
+
+        return getScrollParent(element.parentNode);
+      }
+    }
+  };
 
   const getPlacement = (modifiers) => {
     const keys = Object.keys(modifiers);
@@ -16,38 +41,46 @@ export default function (Vue) {
     return 'top';
   };
 
-  const positionTooltip = (target, tooltip, placement) => {
+  const positionTooltip = (target, tooltip, placement, scrollY) => {
     const targetRect = target.getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
     tooltip.removeAttribute('style');
     tooltip.style.position = 'absolute';
     tooltip.style.left = `${targetRect.left + (targetRect.width - tooltipRect.width) / 2}px`;
     if (placement === 'top') {
-      tooltip.style.top = `${targetRect.top + window.scrollY - tooltipRect.height - 5}px`;
+      tooltip.style.top = `${targetRect.top + scrollY - tooltipRect.height - 5}px`;
     } else {
-      tooltip.style.top = `${targetRect.bottom + window.scrollY + 5}px`;
+      tooltip.style.top = `${targetRect.bottom + scrollY + 5}px`;
     }
   };
 
   const createTooltip = () => {
     vnode = new DaTooltipClass();
     vnode.$mount();
-    document.body.appendChild(vnode.$el);
   };
 
   const showTooltip = (el, value, modifiers) => {
+    const appendTo = getScrollParent(el.parentNode);
+    if (appendedTo !== appendTo) {
+      appendTo.appendChild(vnode.$el);
+      appendedTo = appendTo;
+    }
+
     targetElement = el;
     el.setAttribute('aria-describedby', 'toolip');
     vnode.content = value;
     vnode.placement = getPlacement(modifiers);
     vnode.show = true;
-    setTimeout(() => positionTooltip(el, vnode.$el, vnode.placement), 10);
+    const scrollY = appendTo === document.body ? window.scrollY : appendTo.scrollTop;
+    setTimeout(() => positionTooltip(el, vnode.$el, vnode.placement, scrollY), 10);
   };
 
   const hideTooltip = (el) => {
     targetElement = null;
     el.removeAttribute('aria-describedby');
     vnode.show = false;
+    appendedTo.removeChild(vnode.$el);
+    appendedTo = false;
   };
 
   const removeEvents = (el) => {

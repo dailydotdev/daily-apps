@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <a href="https://www.dailynow.co" target="_blank" class="header__logo">
+    <a href="https://daily.dev" target="_blank" class="header__logo">
       <svgicon name="logo" class="header__logo__icon"/>
     </a>
     <da-mode-switch class="header__switch"

@@ -31,18 +31,23 @@ export default {
     },
   },
   actions: {
-    async authenticate({ commit, state }, { provider, code }) {
+    async login({ commit, state }, profile) {
+      contentService.setIsLoggedIn(true);
+      if (!state.profile || state.profile.id !== profile.id) {
+        await updateAnalyticsUser(profile.id);
+      }
+      commit('setProfile', profile);
+    },
+
+    async authenticate({ commit, state, dispatch }, { provider, code }) {
       try {
         const profile = await authService.authenticate(code, state.challenge.verifier);
-        contentService.setIsLoggedIn(true);
-
         ga('send', 'event', 'Login', 'Done', provider);
-        await updateAnalyticsUser(profile.id);
 
         if (!profile.newUser) {
           commit('feed/checkBookmarksConflicts', null, { root: true });
         }
-        commit('setProfile', profile);
+        await dispatch('login', profile);
       } catch (err) {
         // TODO: handle error
         ga('send', 'event', 'Login', 'Failed', provider);
@@ -66,14 +71,12 @@ export default {
       commit('setChallenge', challenge);
     },
 
-    async validateAuth({ commit, state, dispatch }) {
-      if (state.profile) {
-        const profile = await authService.getUserProfile();
-        if (profile.providers) {
-          commit('setProfile', profile);
-        } else {
-          dispatch('logout');
-        }
+    async validateAuth({ dispatch, state }) {
+      const profile = await authService.getUserProfile();
+      if (profile.providers) {
+        await dispatch('login', profile);
+      } else if (state.profile) {
+        await dispatch('logout');
       }
     },
   },

@@ -19,7 +19,7 @@
       </a>
       <div class="separator"></div>
     </template>
-    <a class="btn-icon" href="https://github.com/dailynowco/daily" target="_blank"
+    <a class="btn-icon" href="https://github.com/dailydotdev/daily" target="_blank"
        v-tooltip.bottom="'Check out our repository'">
       <svgicon name="github"/>
     </a>
@@ -159,7 +159,7 @@ export default {
     },
 
     getIconUrl(url) {
-      return `https://app.dailynow.co/icon?url=${encodeURIComponent(url)}&size=20`;
+      return `https://api.daily.dev/icon?url=${encodeURIComponent(url)}&size=20`;
     },
 
     mouseUp(data) {
