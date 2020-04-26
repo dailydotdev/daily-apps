@@ -8,6 +8,7 @@ export interface Settings {
     showTopSites: boolean;
     theme: string;
     spaciness: string;
+    showOnlyNotReadPosts: boolean;
 }
 
 export interface Notification {

@@ -17,6 +17,7 @@ const initialState = () => ({
   enableCardAnimations: true,
   onboarding: false,
   instructionsStep: 0,
+  showOnlyNotReadPosts: false,
 });
 
 export default {
@@ -37,6 +38,10 @@ export default {
 
     setEnableCardAnimations(state, value) {
       state.enableCardAnimations = value;
+    },
+
+    setShowOnlyNotReadPosts(state, value) {
+      state.showOnlyNotReadPosts = value;
     },
 
     setSpaciness(state, value) {
@@ -85,6 +90,7 @@ export default {
       state.insaneMode = def.insaneMode;
       state.showTopSites = def.showTopSites;
       state.enableCardAnimations = def.enableCardAnimations;
+      state.showOnlyNotReadPosts = def.showOnlyNotReadPosts;
     },
 
     doneOnboarding(state) {

@@ -22,6 +22,11 @@
       <da-switch label="Card animations" class="small settings__animations"
                  :checked="enableCardAnimations" @toggle="toggleCardAnimations"/>
     </div>
+    <div class="settings__column">
+      <h5>&zwnj;</h5>
+      <da-switch label="Hide read posts" class="small settings__hide-read-posts"
+                 :checked="showOnlyNotReadPosts" @toggle="toggleShowOnlyNotReadPosts"/>
+    </div>
   </div>
 </template>
 
@@ -48,7 +53,7 @@ export default {
   },
   computed: {
     ...mapState('ui', [
-      'showTopSites', 'insaneMode', 'spaciness', 'enableCardAnimations',
+      'showTopSites', 'insaneMode', 'spaciness', 'enableCardAnimations', 'showOnlyNotReadPosts',
     ]),
     ...mapState({
       theme: state => themes.indexOf(state.ui.theme),
@@ -67,6 +72,10 @@ export default {
       ga('send', 'event', 'Settings', 'Click', 'Top Sites');
       // TODO: handle error
       await this.$store.dispatch('ui/setShowTopSites', val);
+    },
+    toggleShowOnlyNotReadPosts(val) {
+      this.$store.commit('ui/setShowOnlyNotReadPosts', val);
+      ga('send', 'event', 'Settings', 'Click', 'Hide Read Posts');
     },
     toggleCardAnimations(val) {
       ga('send', 'event', 'Settings', 'Click', 'Card Animations');
