@@ -219,7 +219,7 @@ export class ContentServiceImpl implements ContentService {
         await this.request.post(`/v1/posts/${postId}/hide`);
     }
 
-    async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[], sortBy: string = 'popularity'): Promise<Post[]> {
+    async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[], sortBy: string = 'popularity', showOnlyNotReadPosts: boolean = false): Promise<Post[]> {
         const inputParams = {
             latest: latest.toISOString(),
             page,
@@ -227,6 +227,7 @@ export class ContentServiceImpl implements ContentService {
             ...pubs && {pubs: pubs.join()},
             ...tags && {tags: tags.join()},
             sortBy,
+            ...showOnlyNotReadPosts && {read: false}
         };
 
         const {data: res} = await this.request.get('/graphql', {
