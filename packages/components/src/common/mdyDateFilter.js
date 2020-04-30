@@ -12,16 +12,14 @@ const fourWeeks = 2419200000;
  * @param {Date} date
  * @returns {number}
  */
-const getYearMs = function getYearMilliseconds(date) {
-  return date - new Date(date.getFullYear(), 0, 0);
-};
+const getYearMs = date => date - new Date(date.getFullYear(), 0, 0);
 
 /**
  * Returns whether a given date is yesterday.
  * @param {Date} date
  * @returns {Boolean}
  */
-const isYesterday = function dateIsYesterday(date, now = new Date()) {
+const isYesterday = (date, now = new Date()) => {
   const dateMs = date.getTime();
   const dateDayMs = dateMs - (dateMs % oneDay);
 
