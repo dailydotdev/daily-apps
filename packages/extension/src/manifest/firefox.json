@@ -7,5 +7,6 @@
   "permissions": [
     "https://daily.dev/",
     "https://dailynow.co/"
-  ]
+  ],
+  "content_security_policy": "object-src 'self'"
 }
