@@ -44,14 +44,14 @@ it('should return time ago in weeks when less than a month', () => {
   expect(actual).toEqual(expected);
 });
 
-it('should return "This (month)" when less than a year and same year', () => {
+it('should return "this (month)" when less than a year and same year', () => {
   const expected = 'this Feb';
   const date = new Date(2020, 1, 6, 6, 37, 22);
   const actual = mdyDateFilter(date.toISOString(), now);
   expect(actual).toEqual(expected);
 });
 
-it('should return "Last (month)" when less than a year and last year', () => {
+it('should return "last (month)" when less than a year and last year', () => {
   const expected = 'last Jun';
   const date = new Date(2019, 5, 28, 14, 40, 12);
   const actual = mdyDateFilter(date.toISOString(), now);
