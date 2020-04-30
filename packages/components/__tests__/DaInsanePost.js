@@ -54,7 +54,7 @@ it('should set read time and tags', () => {
 it('should show publication date', () => {
   const post = posts[1];
   const wrapper = mount(DaInsanePost, { localVue, propsData: { post } });
-  expect(wrapper.find('.insane__views').element.innerHTML.trim()).toEqual('Jun 12, 2019');
+  expect(wrapper.find('.insane__views').element.innerHTML.trim()).toEqual('Jun 12, 2018');
 });
 
 it('should emit publication event on click', () => {
