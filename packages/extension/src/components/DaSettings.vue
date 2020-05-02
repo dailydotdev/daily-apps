@@ -21,9 +21,6 @@
                  :checked="theme > 0" @toggle="toggleTheme"/>
       <da-switch label="Card animations" class="small settings__animations"
                  :checked="enableCardAnimations" @toggle="toggleCardAnimations"/>
-    </div>
-    <div class="settings__column">
-      <h5>&zwnj;</h5>
       <da-switch label="Hide read posts" class="small settings__hide-read-posts"
                  :checked="showOnlyNotReadPosts" @toggle="toggleShowOnlyNotReadPosts"/>
     </div>
@@ -120,6 +117,7 @@ export default {
 .settings__column {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
 
   & h5 {
     color: var(--theme-disabled);
@@ -129,14 +127,30 @@ export default {
 
   & .switch {
     margin: 6px 0;
+    /* Handle cases for children from after first row
+      - Every child after 1st row has 32px left margin
+      - First child of every column has a top margin of 34px
+      - Last child of every column has a bottom margin of 0px
+    */
+    &:nth-child(1n+5) {
+      margin-left: 32px;
+    }
+    &:nth-child(3n+2) {
+      margin-top: 34px;
+    }
+    &:nth-child(3n+4) {
+      margin-bottom: 0px;
+    }
 
+    /*Handle special case for 1st and 4th element */
     &:first-of-type {
-      margin-top: 0;
+      margin-top: 0px;
+    }
+    &:nth-child(4) {
+      margin-top: 6px;
+      margin-bottom: 0px;
     }
 
-    &:last-of-type {
-      margin-bottom: 0;
-    }
   }
 }
 </style>
