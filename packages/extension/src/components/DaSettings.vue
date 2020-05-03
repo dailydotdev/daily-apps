@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import { themes } from '@daily/services';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
@@ -70,9 +70,10 @@ export default {
       // TODO: handle error
       await this.$store.dispatch('ui/setShowTopSites', val);
     },
-    toggleShowOnlyNotReadPosts(val) {
-      this.$store.commit('ui/setShowOnlyNotReadPosts', val);
+    async toggleShowOnlyNotReadPosts(val) {
       ga('send', 'event', 'Settings', 'Click', 'Hide Read Posts');
+      this.$store.commit('ui/setShowOnlyNotReadPosts', val);
+      this.refreshFeed();
     },
     toggleCardAnimations(val) {
       ga('send', 'event', 'Settings', 'Click', 'Card Animations');
@@ -83,6 +84,9 @@ export default {
       this.$store.dispatch('ui/setTheme', newTheme);
       ga('send', 'event', 'Settings', 'Theme', this.theme);
     },
+    ...mapActions({
+      refreshFeed: 'feed/refreshFeed',
+    }),
   },
   mounted() {
         import('@daily/components/icons/card');
