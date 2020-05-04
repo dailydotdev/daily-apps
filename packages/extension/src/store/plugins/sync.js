@@ -11,6 +11,7 @@ const syncSettings = (state) => {
       enableCardAnimations: state.ui.enableCardAnimations,
       insaneMode: state.ui.insaneMode,
       spaciness: state.ui.spaciness,
+      showOnlyNotReadPosts: state.ui.showOnlyNotReadPosts,
     });
   }
 
@@ -74,6 +75,7 @@ const plugin = (store) => {
       store.commit('ui/setShowTopSites', settings.showTopSites);
       store.commit('ui/setEnableCardAnimations', settings.enableCardAnimations);
       store.commit('ui/setSpaciness', settings.spaciness);
+      store.commit('ui/setShowOnlyNotReadPosts', settings.showOnlyNotReadPosts);
       store.commit('feed/setPublications',
         state.feed.publications.map(p => ({ ...p, enabled: true })));
       const pr1 = store.dispatch('ui/setTheme', settings.theme);
@@ -116,6 +118,7 @@ const plugin = (store) => {
       case 'ui/setShowTopSites':
       case 'ui/setEnableCardAnimations':
       case 'ui/setSpaciness':
+      case 'ui/setShowOnlyNotReadPosts':
         // TODO: handle error
         await syncSettings(state);
         break;

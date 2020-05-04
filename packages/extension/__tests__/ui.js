@@ -1,5 +1,5 @@
-import module from '../src/store/modules/ui';
 import { applyTheme } from '@daily/services';
+import module from '../src/store/modules/ui';
 import { testAction } from './fixtures/helpers';
 import { profileService } from '../src/common/services';
 
@@ -10,7 +10,7 @@ jest.mock('../src/common/services', () => ({
 }));
 
 jest.mock('@daily/services', () => ({
-  applyTheme: jest.fn()
+  applyTheme: jest.fn(),
 }));
 
 it('should set onboarding to true in state', () => {
@@ -51,7 +51,13 @@ it('should set enable card animation in state', () => {
   expect(state.enableCardAnimations).toEqual(true);
 });
 
-it('should set enable card animation in state', () => {
+it('should set show only not read posts in state', () => {
+  const state = {};
+  module.mutations.setShowOnlyNotReadPosts(state, true);
+  expect(state.showOnlyNotReadPosts).toEqual(true);
+});
+
+it('should set spaciness in state', () => {
   const state = {};
   module.mutations.setSpaciness(state, 'roomy');
   expect(state.spaciness).toEqual('roomy');
@@ -118,12 +124,12 @@ it('should fetch notifications and update state', async () => {
 });
 
 it('should reset settings', () => {
-  const notifications =
-    [{ timestamp: new Date() }, { timestamp: new Date(Date.now() - 1000) }];
+  const notifications = [{ timestamp: new Date() }, { timestamp: new Date(Date.now() - 1000) }];
   const state = {
     insaneMode: true,
     showTopSites: true,
     enableCardAnimations: false,
+    showOnlyNotReadPosts: true,
     showNotificationBadge: true,
     notifications,
   };
@@ -132,6 +138,7 @@ it('should reset settings', () => {
     insaneMode: false,
     showTopSites: false,
     enableCardAnimations: true,
+    showOnlyNotReadPosts: false,
     showNotificationBadge: true,
     notifications,
   });
@@ -142,8 +149,7 @@ it('should reset everything', async () => {
     undefined,
     {},
     [{ type: 'resetSettings', payload: null }],
-    [{ type: 'setTheme', payload: null }],
-  );
+    [{ type: 'setTheme', payload: null }]);
 });
 
 it('should increment instructionStep', () => {

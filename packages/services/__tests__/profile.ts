@@ -14,6 +14,7 @@ it('should fetch settings from server', async () => {
     const expected: Settings = {
         appInsaneMode: false,
         enableCardAnimations: true,
+        showOnlyNotReadPosts: false,
         insaneMode: true,
         showTopSites: false,
         theme: 'darcula',
@@ -33,6 +34,7 @@ it('should update settings', async () => {
     const body: Settings = {
         appInsaneMode: false,
         enableCardAnimations: true,
+        showOnlyNotReadPosts: true,
         insaneMode: true,
         showTopSites: false,
         theme: 'darcula',

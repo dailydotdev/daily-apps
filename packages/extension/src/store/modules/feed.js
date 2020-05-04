@@ -46,7 +46,7 @@ const addBookmarked = (state, posts, loggedIn) => {
   return posts;
 };
 
-const fetchPosts = async (state, loggedIn) => {
+const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
   if (loggedIn && state.showBookmarks) {
     return contentService.fetchBookmarks(state.latest, state.page);
   }
@@ -65,13 +65,15 @@ const fetchPosts = async (state, loggedIn) => {
   }
 
   if (loggedIn) {
-    return contentService.fetchLatestPosts(state.latest, state.page, null, null, state.sortBy);
+    // eslint-disable-next-line max-len
+    return contentService.fetchLatestPosts(state.latest, state.page, null, null, state.sortBy, showOnlyNotReadPosts);
   }
 
   const enabledPubs = state.publications.filter(p => p.enabled).map(p => p.id);
   const pubs = enabledPubs.length === state.publications.length ? [] : enabledPubs;
   const tags = state.tags.filter(t => t.enabled).map(t => t.name);
-  return contentService.fetchLatestPosts(state.latest, state.page, pubs, tags, state.sortBy);
+  // eslint-disable-next-line max-len
+  return contentService.fetchLatestPosts(state.latest, state.page, pubs, tags, state.sortBy, showOnlyNotReadPosts);
 };
 
 const getFeed = (state) => {
@@ -256,6 +258,7 @@ export default {
 
     async fetchNextFeedPage({ commit, state, rootState }) {
       // TODO: add tests
+
       if (state.loading) {
         return false;
       }
@@ -268,8 +271,10 @@ export default {
 
       const type = getFeed(state);
       const loggedIn = !!rootState.user.profile;
+      const { showOnlyNotReadPosts } = rootState.ui;
       // TODO: add tests addBookmarked
-      const posts = addBookmarked(state, await fetchPosts(state, loggedIn), loggedIn);
+      // eslint-disable-next-line max-len
+      const posts = addBookmarked(state, await fetchPosts(state, loggedIn, showOnlyNotReadPosts), loggedIn);
 
       if (!state.page) {
         commit('setPosts', { posts, type });

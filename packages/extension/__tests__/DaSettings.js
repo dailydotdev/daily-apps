@@ -28,6 +28,7 @@ beforeEach(() => {
       insaneMode: false,
       showTopSites: false,
       enabledCardAnimation: false,
+      showOnlyNotReadPosts: false,
     },
     actions: {
       setTheme: jest.fn(),
@@ -37,6 +38,7 @@ beforeEach(() => {
       setInsaneMode: jest.fn(),
       setSpaciness: jest.fn(),
       setEnableCardAnimations: jest.fn(),
+      setShowOnlyNotReadPosts: jest.fn(),
     },
   };
 
@@ -73,4 +75,10 @@ it('should commit "setEnableCardAnimations" when setting is changed', () => {
   const wrapper = mount(DaSettings, { store, localVue });
   wrapper.find('.settings__animations').vm.$emit('toggle', true);
   expect(ui.mutations.setEnableCardAnimations).toBeCalledWith(expect.anything(), true);
+});
+
+it('should commit "setShowOnlyNotReadPosts" when setting is changed', () => {
+  const wrapper = mount(DaSettings, { store, localVue });
+  wrapper.find('.settings__hide-read-posts').vm.$emit('toggle', true);
+  expect(ui.mutations.setShowOnlyNotReadPosts).toBeCalledWith(expect.anything(), true);
 });
