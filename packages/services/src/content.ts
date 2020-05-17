@@ -37,7 +37,7 @@ export interface TagsSearchResult {
 }
 
 export interface PubRequest {
-    id: Number;
+    id: String;
     createdAt: Date;
     url: string;
     userId: string;
@@ -85,15 +85,15 @@ export interface ContentService {
 
     fetchOpenPubRequests(): Promise<PubRequest[]>;
 
-    editPubRequest(id: Number, obj: PubRequestEdit): Promise<void>;
+    editPubRequest(id: String, obj: PubRequestEdit): Promise<void>;
 
-    approvePubRequest(id: Number): Promise<void>;
+    approvePubRequest(id: String): Promise<void>;
 
-    declinePubRequest(id: Number, reason: string): Promise<void>;
+    declinePubRequest(id: String, reason: string): Promise<void>;
 
-    publishPubRequest(id: Number): Promise<void>;
+    publishPubRequest(id: String): Promise<void>;
 
-    uploadPubRequestLogo(id: Number, file: File): Promise<string>;
+    uploadPubRequestLogo(id: String, file: File): Promise<string>;
 
     reportPost(postId: string, reason: string): Promise<void>;
 
@@ -184,31 +184,43 @@ export class ContentServiceImpl implements ContentService {
         return res.data.map((x: any) => reviveJSON(x, dateReviver));
     }
 
-    async editPubRequest(id: Number, obj: PubRequestEdit): Promise<void> {
+    async editPubRequest(id: String, obj: PubRequestEdit): Promise<void> {
         await this.request.put(`/v1/publications/requests/${id}`, obj);
     }
 
-    async approvePubRequest(id: Number): Promise<void> {
+    async approvePubRequest(id: String): Promise<void> {
         await this.request.post(`/v1/publications/requests/${id}/approve`);
     }
 
-    async declinePubRequest(id: Number, reason: string): Promise<void> {
+    async declinePubRequest(id: String, reason: string): Promise<void> {
         await this.request.post(`/v1/publications/requests/${id}/decline`, {reason});
     }
 
-    async publishPubRequest(id: Number): Promise<void> {
+    async publishPubRequest(id: String): Promise<void> {
         await this.request.post(`/v1/publications/requests/${id}/publish`);
     }
 
-    async uploadPubRequestLogo(id: Number, file: File): Promise<string> {
+    async uploadPubRequestLogo(id: String, file: File): Promise<string> {
+        const MUTATION = `
+  mutation UploadSourceRequestLogo($file: Upload!) {
+  uploadSourceRequestLogo(id: "${id}", file: $file) {
+    sourceImage
+  }
+}`;
+
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('operations', JSON.stringify({
+            query: MUTATION,
+            variables: { file: null },
+        }))
+        formData.append('map', JSON.stringify({ '0': ['variables.file'] }))
+        formData.append('0', file);
         const res: any = await this.request.post(
-            `/v1/publications/requests/${id}/logo`,
+            `/graphql`,
             formData,
             {headers: {'Content-Type': 'multipart/form-data'}},
         );
-        return res.data.img;
+        return res.data.data.uploadSourceRequestLogo.sourceImage;
     }
 
     async reportPost(postId: string, reason: string): Promise<void> {

@@ -89,7 +89,7 @@ it('should edit an existing pub request', async () => {
         .put('/v1/publications/requests/1', payload)
         .reply(204);
 
-    await service.editPubRequest(1, payload);
+    await service.editPubRequest('1', payload);
 });
 
 it('should approve an existing pub request', async () => {
@@ -97,7 +97,7 @@ it('should approve an existing pub request', async () => {
         .post('/v1/publications/requests/1/approve')
         .reply(204);
 
-    await service.approvePubRequest(1);
+    await service.approvePubRequest('1');
 });
 
 it('should decline an existing pub request', async () => {
@@ -107,7 +107,7 @@ it('should decline an existing pub request', async () => {
         .post('/v1/publications/requests/1/decline', {reason})
         .reply(204);
 
-    await service.declinePubRequest(1, reason);
+    await service.declinePubRequest('1', reason);
 });
 
 it('should publish an existing pub request', async () => {
@@ -115,7 +115,7 @@ it('should publish an existing pub request', async () => {
         .post('/v1/publications/requests/1/publish')
         .reply(204);
 
-    await service.publishPubRequest(1);
+    await service.publishPubRequest('1');
 });
 
 it('should fetch latest posts from server', async () => {
