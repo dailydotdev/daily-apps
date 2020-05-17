@@ -1,5 +1,5 @@
 <template>
-  <span ref="content" :aria-label="text"></span>
+  <span ref="content" :title="text"></span>
 </template>
 
 <script>
