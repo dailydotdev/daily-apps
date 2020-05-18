@@ -12,8 +12,12 @@
   align-items: center;
   width: 100%;
   height: 32px;
-  background-color: var(--color-onion-40);
+  background: var(--theme-primary);
   text-align: center;
+
+  &, & button {
+    color: var(--theme-background-primary);
+  }
 
   & p {
     font-style: oblique;
@@ -23,8 +27,7 @@
     padding: 0;
     margin-left: 8px;
     border: none;
-    background-color: inherit;
-    color: var(--color-salt-10);
+    background: none;
     cursor: pointer;
     text-decoration: underline;
   }
