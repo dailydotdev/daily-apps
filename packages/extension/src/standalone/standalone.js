@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VueApollo from 'vue-apollo';
 import icons from '@daily/components/src/icons';
 import tooltip from '@daily/components/src/directives/tooltip';
 import mdyDateFilter from '@daily/components/src/common/mdyDateFilter';
@@ -8,9 +9,16 @@ import store from '../store';
 import { getCache, STATE_KEY } from '../common/cache';
 import { debug } from '../common/config';
 import { browserName } from '../common/browser';
+import { apolloClient, persistor } from '../apollo';
+
+Vue.use(VueApollo);
+const apolloProvider = new VueApollo({
+  defaultClient: apolloClient,
+});
 
 const loadFromCache = async () => {
   const state = await getCache(STATE_KEY, {});
+  const apolloCacheLoad = persistor.restore();
 
   if (!store.state.initialized) {
     store.commit('loadFromCache', state);
@@ -34,6 +42,7 @@ const loadFromCache = async () => {
   if (state.ui.dndModeTime && !isDnd) {
     store.commit('ui/disableDndMode');
   }
+  await apolloCacheLoad;
 };
 
 // TODO: handle error
@@ -103,6 +112,7 @@ new Vue({
   el: '#app',
   store,
   router,
+  apolloProvider,
   render: h => h(App),
 });
 

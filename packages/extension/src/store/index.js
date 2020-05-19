@@ -11,7 +11,7 @@ import { contentService } from '../common/services';
 
 Vue.use(Vuex);
 
-const cache2Time = time => (time ? new Date(time) : null);
+const cache2Time = time => ((time || time === 0) ? new Date(time) : null);
 
 const cache2Post = p => ({
   ...p,
@@ -34,6 +34,9 @@ export default new Vuex.Store({
 
         if (cached.ui) {
           state.ui.lastNotificationTime = cache2Time(cached.ui.lastNotificationTime);
+          if (cached.ui.lastBannerSeen !== undefined) {
+            state.ui.lastBannerSeen = cache2Time(cached.ui.lastBannerSeen);
+          }
         }
 
         if (cached.feed) {

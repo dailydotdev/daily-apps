@@ -32,6 +32,7 @@ const stateToCache = (state) => {
   toCache.ui = {
     ...ui,
     lastNotificationTime: time2Cache(state.ui.lastNotificationTime),
+    lastBannerSeen: time2Cache(state.ui.lastBannerSeen),
   };
   toCache.user = vue2Json(state.user);
 

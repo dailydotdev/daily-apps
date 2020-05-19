@@ -27,3 +27,4 @@ yarn-error.log*
 /dist-zip
 
 manifest.json
+schema.graphql
