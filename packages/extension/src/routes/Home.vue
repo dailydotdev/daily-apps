@@ -1,5 +1,8 @@
 <template>
   <div class="home page" :class="clsObj">
+    <da-banner :theme="banner.theme" :title="banner.title"
+               :subtitle="banner.subtitle" :cta="banner.cta"
+               :url="banner.url" v-if="showBanner" @close="closeBanner"/>
     <da-header @go="onGoClicked" @login="onLogin('Header')"
                @profile="onProfile" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
@@ -150,6 +153,7 @@
 import {
   mapState, mapActions, mapMutations, mapGetters,
 } from 'vuex';
+import gql from 'graphql-tag';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
@@ -164,6 +168,23 @@ import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationSe
 
 export default {
   name: 'Home',
+
+  apollo: {
+    banner: {
+      query: gql`query Banner($lastSeen: DateTime) {
+banner(lastSeen: $lastSeen) {
+  timestamp, cta, subtitle, theme, title, url
+}
+}`,
+      fetchPolicy: 'cache-only',
+      variables() {
+        return { lastSeen: this.lastBannerSeen };
+      },
+      skip() {
+        return !this.lastBannerSeen.toISOString;
+      },
+    },
+  },
 
   components: {
     DaSpinner,
@@ -184,6 +205,7 @@ export default {
     DaSettings: () => import('../components/DaSettings.vue'),
     DaMerge: () => import('../components/DaMerge.vue'),
     DaConsent: () => import('../components/DaConsent'),
+    DaBanner: () => import('../components/DaBanner'),
   },
 
   data() {
@@ -197,6 +219,8 @@ export default {
       lineNumbers: 1,
       showSearch: false,
       searchSuggestions: [],
+      lastPriorityData: false,
+      banner: null,
     };
   },
 
@@ -312,6 +336,7 @@ export default {
         // eslint-disable-next-line no-console
         .catch(console.error);
 
+      this.lastPriorityData = true;
       this.fetchNotifications()
         // TODO: handle error
         // eslint-disable-next-line no-console
@@ -371,6 +396,12 @@ export default {
       this.showNewTerms = false;
     },
 
+    closeBanner() {
+      this.$apollo.queries.banner.skip = true;
+      this.setLastBannerSeen(new Date(this.banner.timestamp));
+      this.banner = undefined;
+    },
+
     ...mapActions({
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       fetchTags: 'feed/fetchTags',
@@ -391,12 +422,13 @@ export default {
       hideNotifications: 'ui/hideNotifications',
       nextInstruction: 'ui/nextInstruction',
       setShowDndMenu: 'ui/setShowDndMenu',
+      setLastBannerSeen: 'ui/setLastBannerSeen',
       confirmNewUser: 'user/confirmNewUser',
     }),
   },
 
   computed: {
-    ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu']),
+    ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
@@ -422,6 +454,7 @@ export default {
           'animate-cards': state.ui.enableCardAnimations,
           [state.ui.spaciness]: true,
           [state.ui.insaneMode ? 'insane-mode' : 'card-mode']: true,
+          'show-banner': this.showBanner,
         };
       },
 
@@ -443,9 +476,17 @@ export default {
     showMainFeed() {
       return !this.showBookmarks && !this.filter && !this.showSearchFeed;
     },
+    showBanner() {
+      return this.banner && this.banner.title;
+    },
   },
 
   watch: {
+    lastPriorityData(val) {
+      if (val) {
+        this.$apollo.queries.banner.setOptions({ fetchPolicy: 'cache-and-network' });
+      }
+    },
     posts() {
       this.updateLines();
     },
@@ -509,6 +550,7 @@ export default {
   padding-top: 48px;
   padding-left: 36px;
 
+  --banner-height: 40px;
   --cards-margin: 32px;
   --num-cards: 2;
   --content-margin: 40px;
@@ -574,6 +616,21 @@ export default {
     &.cozy {
       --num-cards: 5;
     }
+  }
+
+  &.show-banner {
+    margin-top: var(--banner-height);
+
+    & .sidebar {
+      padding-top: var(--banner-height);
+    }
+  }
+
+  & .banner {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: var(--banner-height);
   }
 }
 

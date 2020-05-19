@@ -18,6 +18,7 @@ const initialState = () => ({
   onboarding: false,
   instructionsStep: 0,
   showOnlyNotReadPosts: false,
+  lastBannerSeen: new Date(0),
 });
 
 export default {
@@ -95,6 +96,10 @@ export default {
 
     doneOnboarding(state) {
       state.onboarding = true;
+    },
+
+    setLastBannerSeen(state, value) {
+      state.lastBannerSeen = value;
     },
   },
   getters: {

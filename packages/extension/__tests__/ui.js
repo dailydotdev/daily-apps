@@ -184,3 +184,10 @@ it('should set show dnd menu', () => {
   module.mutations.setShowDndMenu(state, true);
   expect(state.showDndMenu).toEqual(true);
 });
+
+it('should set lastBannerSeen', () => {
+  const now = new Date();
+  const state = { lastBannerSeen: new Date(0) };
+  module.mutations.setLastBannerSeen(state, now);
+  expect(state.lastBannerSeen).toEqual(now);
+});

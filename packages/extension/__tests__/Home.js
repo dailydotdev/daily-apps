@@ -40,6 +40,7 @@ beforeEach(() => {
     },
     mutations: {
       setPublications: jest.fn(),
+      setDaFeedReference: jest.fn(),
     },
     actions: {
       search: jest.fn(),
@@ -122,4 +123,22 @@ it('should search query', () => {
   wrapper.find('.search-btn').trigger('click');
   wrapper.find('.content__header .search').vm.$emit('submit', 'hello');
   expect(feed.actions.search).toBeCalledWith(expect.anything(), 'hello');
+});
+
+it('should show banner when data is available', (done) => {
+  const wrapper = mount(DaHome, { store, localVue });
+  wrapper.setData({
+    banner: {
+      timestamp: new Date(0),
+      cta: 'Click here',
+      subtitle: 'Sub',
+      theme: 'gradient-bacon-onion',
+      title: 'Title',
+      url: 'https://daily.dev',
+    },
+  });
+  setTimeout(() => {
+    expect(wrapper.find('.banner')).toMatchSnapshot();
+    done();
+  });
 });
