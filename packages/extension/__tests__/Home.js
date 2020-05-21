@@ -37,6 +37,8 @@ beforeEach(() => {
     state: {
       publications: [],
       posts: [],
+      showBookmarks: false,
+      filter: null,
     },
     mutations: {
       setPublications: jest.fn(),
@@ -116,6 +118,20 @@ it('should open search bar when clicking on the button', () => {
   expect(wrapper.find('.content__header .search').element).toBeUndefined();
   wrapper.find('.search-btn').trigger('click');
   expect(wrapper.find('.content__header .search').element).toBeTruthy();
+});
+
+it('should close search bar when switching to bookmarks', () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  wrapper.find('.search-btn').trigger('click');
+  feed.state.showBookmarks = true;
+  expect(wrapper.find('.content__header .search').element).toBeUndefined();
+});
+
+it('should close search bar when setting filter', () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  wrapper.find('.search-btn').trigger('click');
+  feed.state.filter = { type: 'publication', info: { id: 'angular', name: 'Angular' } }
+  expect(wrapper.find('.content__header .search').element).toBeUndefined();
 });
 
 it('should search query', () => {
