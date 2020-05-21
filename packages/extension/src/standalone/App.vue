@@ -44,7 +44,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="postcss">
 @import '../../node_modules/@daily/components/src/styles/global.pcss';
 
 html.loaded {
