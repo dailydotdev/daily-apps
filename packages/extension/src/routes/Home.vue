@@ -492,9 +492,11 @@ banner(lastSeen: $lastSeen) {
     },
     showBookmarks() {
       this.trackPageView();
+      this.clearSearch();
     },
     filter() {
       this.trackPageView();
+      this.clearSearch();
     },
     showSearchFeed(val) {
       if (!val) {
