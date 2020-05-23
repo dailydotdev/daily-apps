@@ -16,6 +16,7 @@ export const validKeys = {
   l: 108,
   '/': 47,
   b: 98,
+  esc: 27
 };
 
 function getNewPostEl(keyCode, currentElement, insaneMode) {
@@ -44,14 +45,16 @@ function getCurrentPost(posts, current) {
   return posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
 }
 
-function navigate(keyCode, posts, enableSearch, { current, insaneMode }) {
+function navigate(keyCode, posts, search, { current, insaneMode }) {
+  if (keyCode === validKeys.esc) return search.clear();
+
   if (posts.length === 0) return null;
 
   const item = getCurrentPost(posts, current);
 
   if (Object.values(validKeys).indexOf(keyCode) === -1) return null;
 
-  if (keyCode === validKeys['/']) return enableSearch();
+  if (keyCode === validKeys['/']) return search.enable();
 
   if (keyCode === validKeys.b && item) return triggerBookmark(item);
 
@@ -68,13 +71,20 @@ function navigate(keyCode, posts, enableSearch, { current, insaneMode }) {
   return selectedPost;
 }
 
+const clearSearch = (daHome) => {
+  daHome.clearSearch();
+  daHome.onSearchSubmit();
+}
+
 function navigateDaily({ keyCode }) {
   const { daFeedRef, hoveredPost } = store.state.feed;
+  const parent = daFeedRef.$parent;
+  const search = { enable: parent.enableSearch, clear: () => clearSearch(parent) }
   const options = { insaneMode: daFeedRef.insaneMode, current: hoveredPost };
   const newHoveredPost = navigate(
     keyCode,
     daFeedRef.$refs.posts,
-    daFeedRef.$parent.enableSearch,
+    search,
     options,
   );
 
@@ -82,11 +92,11 @@ function navigateDaily({ keyCode }) {
 }
 
 export function enableKeyBindings() {
-  window.addEventListener('keypress', navigateDaily);
+  window.addEventListener('keydown', navigateDaily);
 }
 
 export function disableKeyBindings() {
-  window.removeEventListener('keypress', navigateDaily);
+  window.removeEventListener('keydown', navigateDaily);
 }
 
 Object.freeze(validKeys);
