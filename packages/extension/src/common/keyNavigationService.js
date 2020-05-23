@@ -77,7 +77,6 @@ const clearSearch = (daHome) => {
 }
 
 function navigateDaily({ keyCode }) {
-  console.log(keyCode);
   const { daFeedRef, hoveredPost } = store.state.feed;
   const parent = daFeedRef.$parent;
   const search = { enable: parent.enableSearch, clear: () => clearSearch(parent) }

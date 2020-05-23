@@ -381,8 +381,8 @@ banner(lastSeen: $lastSeen) {
     },
 
     onSearchBlur() {
+      enableKeyBindings();
       if (!this.$refs.search.query().length) {
-        enableKeyBindings();
         this.showSearch = false;
       }
     },
