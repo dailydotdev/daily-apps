@@ -10,12 +10,12 @@ import {
 import store from '../store';
 
 export const validKeys = {
-  h: 104,
-  j: 106,
-  k: 107,
-  l: 108,
-  '/': 47,
-  b: 98,
+  h: 72,
+  j: 74,
+  k: 75,
+  l: 76,
+  '/': 191,
+  b: 66,
   esc: 27
 };
 
@@ -77,6 +77,7 @@ const clearSearch = (daHome) => {
 }
 
 function navigateDaily({ keyCode }) {
+  console.log(keyCode);
   const { daFeedRef, hoveredPost } = store.state.feed;
   const parent = daFeedRef.$parent;
   const search = { enable: parent.enableSearch, clear: () => clearSearch(parent) }
