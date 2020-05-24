@@ -45,8 +45,8 @@ function getCurrentPost(posts, current) {
   return posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
 }
 
-function navigate(keyCode, posts, search, { current, insaneMode }) {
-  if (keyCode === validKeys.esc) return search.clear();
+function navigate(keyCode, posts, search, backToMainFeed, { current, insaneMode }) {
+  if (keyCode === validKeys.esc) return backToMainFeed();
 
   if (posts.length === 0) return null;
 
@@ -71,20 +71,16 @@ function navigate(keyCode, posts, search, { current, insaneMode }) {
   return selectedPost;
 }
 
-const clearSearch = (daHome) => {
-  daHome.clearSearch();
-  daHome.onSearchSubmit();
-};
-
 function navigateDaily({ keyCode }) {
   const { daFeedRef, hoveredPost } = store.state.feed;
-  const parent = daFeedRef.$parent;
-  const search = { enable: parent.enableSearch, clear: () => clearSearch(parent) };
+  const parent = daFeedRef().$parent;
+  const search = { enable: parent.enableSearch };
   const options = { insaneMode: daFeedRef.insaneMode, current: hoveredPost };
   const newHoveredPost = navigate(
     keyCode,
-    daFeedRef.$refs.posts,
+    daFeedRef().$refs.posts,
     search,
+    () => store.dispatch('feed/backToMainFeed'),
     options,
   );
 

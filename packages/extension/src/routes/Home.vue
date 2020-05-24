@@ -545,7 +545,7 @@ banner(lastSeen: $lastSeen) {
       await this.validateAuth();
     });
 
-    this.setDaFeedReference(this.$refs.feed);
+    this.setDaFeedReference(() => this.$refs.feed);
 
     this.$nextTick(() => {
       enableKeyBindings();

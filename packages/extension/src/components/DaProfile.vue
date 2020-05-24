@@ -20,7 +20,7 @@
       <da-text-field class="profile__field" name="title" label="Job title"
         :value="title" @validity="updateFormValidity"/>
       <button type="submit" class="profile__submit btn btn-invert btn-big"
-        :disabled="disableSubmit" @click.prevent="submitForm">
+        :disabled="disableSubmit" @click.prevent="submitForm" autofocus>
         Save Changes
       </button>
     </form>
