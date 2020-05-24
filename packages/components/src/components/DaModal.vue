@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import dialogPolyfill from 'dialog-polyfill/dialog-polyfill';
-
 export default {
   name: 'DaModal',
 
@@ -27,17 +25,24 @@ export default {
 
   created() {
     this.keyup = (event) => {
-      event.preventDefault();
-      if (this.closeOnClick && event.key === 'Escape') {
-        this.close();
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        if (this.closeOnClick) {
+          this.close();
+        }
       }
     };
     this.keyup = this.keyup.bind(this);
   },
 
-  mounted() {
-    dialogPolyfill.registerDialog(this.$refs.dialog);
-    this.$refs.dialog.showModal();
+  async mounted() {
+    if (typeof HTMLDialogElement !== 'function') {
+      const dialogPolyfill = await import('dialog-polyfill/dialog-polyfill');
+      dialogPolyfill.default.registerDialog(this.$refs.dialog);
+    }
+    if (this.$refs.dialog.showModal) {
+      this.$refs.dialog.showModal();
+    }
     document.body.addEventListener('keydown', this.keyup);
   },
 

@@ -49,9 +49,10 @@ export default {
       type: String,
       default: 'text',
     },
-    hint: String,
     saveHintSpace: Boolean,
+    hint: String,
     maxlength: Number,
+    value: String,
   },
 
   data() {
@@ -68,10 +69,16 @@ export default {
       return this.saveHintSpace || (this.hint && this.hint.length);
     },
     remainingChars() {
-      if (this.value) {
-        return this.maxlength - this.value.length;
+      if (this.currentValue) {
+        return this.maxlength - this.currentValue.length;
       }
       return this.maxlength;
+    },
+  },
+
+  watches: {
+    value(val) {
+      this.updateValue(val);
     },
   },
 
@@ -79,9 +86,18 @@ export default {
     if (this.icon) {
       import(`../../icons/${this.icon}`);
     }
+    if (this.value) {
+      this.updateValue(this.value);
+    }
   },
 
   methods: {
+    updateInvalid(val) {
+      if (this.invalid !== val) {
+        this.$emit('validity', !val);
+      }
+      this.invalid = val;
+    },
     clearIdleTimeout() {
       if (this.idleTimeout) {
         clearTimeout(this.idleTimeout);
@@ -91,18 +107,18 @@ export default {
     onBlurOverride() {
       this.onBlur();
       this.clearIdleTimeout();
-      this.invalid = !this.$refs.input.checkValidity();
+      this.updateInvalid(!this.$refs.input.checkValidity());
     },
     onInputOverride() {
       this.onInput();
       this.clearIdleTimeout();
       const invalid = !this.$refs.input.checkValidity();
       if (!invalid) {
-        this.invalid = false;
+        this.updateInvalid(false);
       } else {
         this.idleTimeout = setTimeout(() => {
           this.idleTimeout = null;
-          this.invalid = true;
+          this.updateInvalid(true);
         }, 1500);
       }
     },
@@ -161,7 +177,7 @@ export default {
   flex: 1;
 
   &:first-child {
-    margin-left: 16px;
+    margin-left: 12px;
   }
 }
 
@@ -175,6 +191,7 @@ export default {
 
 .text-field__hint {
   display: none;
+  height: 22px;
   margin-top: 4px;
   padding: 0 8px;
   color: var(--theme-disabled);
@@ -190,6 +207,6 @@ export default {
 
 .text-field__count {
   color: var(--theme-secondary);
-  margin-right: 16px;
+  margin-right: 12px;
 }
 </style>

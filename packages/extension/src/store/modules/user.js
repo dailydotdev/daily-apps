@@ -74,10 +74,16 @@ export default {
     async validateAuth({ dispatch, state }) {
       const profile = await authService.getUserProfile();
       if (profile.providers) {
-        await dispatch('login', profile);
+        // Keep newUser true according multiple sessions until confirmed
+        await dispatch('login', Object.assign({}, profile, { newUser: state.profile && state.profile.newUser }));
       } else if (state.profile) {
         await dispatch('logout');
       }
+    },
+
+    async updateProfile({ commit, state }, newProfile) {
+      await authService.updateUserProfile(newProfile);
+      commit('setProfile', Object.assign({}, state.profile, newProfile, { infoConfirmed: true }));
     },
   },
 };

@@ -107,6 +107,7 @@
     <da-welcome v-if="showReadyModal" @close="nextInstruction"/>
     <da-login v-if="showLoginModal" @close="showLoginModal = false"/>
     <da-profile v-if="showProfileModal" @close="showProfileModal = false"/>
+    <da-confirm-account v-if="showConfirmAccountModal"/>
     <da-merge v-if="hasConflicts" @confirm="mergeBookmarksConflicts"
               @cancel="clearBookmarksConflicts"/>
     <da-consent v-if="showNewTerms" @confirm="agreeToTerms"/>
@@ -206,6 +207,7 @@ banner(lastSeen: $lastSeen) {
     DaMerge: () => import('../components/DaMerge.vue'),
     DaConsent: () => import('../components/DaConsent'),
     DaBanner: () => import('../components/DaBanner'),
+    DaConfirmAccount: () => import('../components/DaConfirmAccount'),
   },
 
   data() {
@@ -458,9 +460,17 @@ banner(lastSeen: $lastSeen) {
         };
       },
 
+      showConfirmAccountModal(state) {
+        if (this.isLoggedIn) {
+          return !state.user.profile.infoConfirmed;
+        }
+
+        return false;
+      },
+
       showCongratsModal(state) {
         if (this.isLoggedIn) {
-          return state.user.profile.newUser;
+          return state.user.profile.newUser && state.user.profile.infoConfirmed;
         }
 
         return false;
