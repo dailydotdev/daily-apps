@@ -8,19 +8,22 @@ export default {
   data() {
     return {
       focused: false,
-      value: null,
+      currentValue: null,
     };
   },
 
   computed: {
     inputPlaceholder() {
-      if (this.focused && this.placeholder) {
-        return this.placeholder;
+      if (this.focused) {
+        if (this.placeholder) {
+          return this.placeholder;
+        }
+        return '';
       }
       return this.label;
     },
     hasInput() {
-      return this.value && this.value.length;
+      return this.currentValue && this.currentValue.length;
     },
     active() {
       return !this.disabled && this.hasInput;
@@ -29,7 +32,7 @@ export default {
 
   methods: {
     onInput() {
-      this.value = this.$refs.input.value;
+      this.currentValue = this.$refs.input.value;
     },
     onFocus() {
       this.focused = true;
@@ -37,9 +40,12 @@ export default {
     onBlur() {
       this.focused = false;
     },
-    clearInput() {
-      this.$refs.input.value = '';
+    updateValue(value) {
+      this.$refs.input.value = value;
       this.onInput();
+    },
+    clearInput() {
+      this.updateValue('');
     },
     focusInput() {
       if (!this.focused) {

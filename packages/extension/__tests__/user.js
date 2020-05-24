@@ -143,6 +143,18 @@ it('should update profile if still logged in', async () => {
   );
 });
 
+it('should keep newUser set when validating auth', async () => {
+  const state = { profile: { id: '1', providers: ['github'], newUser: true } };
+  authService.getUserProfile.mockReturnValue(Promise.resolve({ id: '2', providers: ['github'] }));
+  await testAction(
+    module.actions.validateAuth,
+    null,
+    state,
+    [],
+    [{ type: 'login', payload: { id: '2', providers: ['github'], newUser: true } }],
+  );
+});
+
 it('should logout if not logged in anymore', async () => {
   const state = { profile: { id: '1', providers: ['github'] } };
   authService.getUserProfile.mockReturnValue(Promise.resolve({ id: '2' }));

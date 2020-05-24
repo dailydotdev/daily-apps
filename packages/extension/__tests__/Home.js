@@ -22,6 +22,7 @@ localVue.component('da-context', DaContext);
 localVue.component('da-header', DaHeader);
 localVue.component('da-sidebar', DaSidebar);
 localVue.component('da-feed', DaFeed);
+localVue.filter('provider', value => value);
 
 let feed;
 let ui;
@@ -52,6 +53,7 @@ beforeEach(() => {
       showAd: jest.fn(),
       emptyFeed: () => false,
       hasConflicts: () => false,
+      hasFilter: () => false,
     },
   };
 

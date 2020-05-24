@@ -78,3 +78,33 @@ it('should get user profile', async () => {
 
     expect(actual).toEqual(expected);
 });
+
+it('should update user profile', async () => {
+    const expected: User = {
+        id: 'id',
+        name: 'John',
+        image: 'https://image.com',
+        company: 'ACME',
+        title: 'Developer',
+        infoConfirmed: true,
+    };
+
+    nock(baseURL)
+        .put('/v1/users/me', {
+            name: 'John',
+            image: 'https://image.com',
+            company: 'ACME',
+            title: 'Developer',
+        })
+        .reply(200, expected);
+
+    const service = new AuthServiceImpl(baseURL);
+    const actual = await service.updateUserProfile({
+        name: 'John',
+        image: 'https://image.com',
+        company: 'ACME',
+        title: 'Developer',
+    });
+
+    expect(actual).toEqual(expected);
+});
