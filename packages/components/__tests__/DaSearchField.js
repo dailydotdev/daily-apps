@@ -26,19 +26,6 @@ it('should set placeholder when focused', () => {
     .toEqual(propsData.placeholder);
 });
 
-it('should set placeholder as label when focused and no placeholder given', () => {
-  const wrapper = mount(DaSearchField, {
-    localVue, propsData: {
-      label: 'Search',
-      icon: 'magnifying',
-    },
-  });
-  const input = wrapper.find('input');
-  input.element.focus();
-  expect(input.element.placeholder)
-    .toEqual(propsData.label);
-});
-
 it('should show the clear button when there is input', () => {
   const wrapper = mount(DaSearchField, { localVue, propsData });
   const input = wrapper.find('input');
