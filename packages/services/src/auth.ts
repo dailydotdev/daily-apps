@@ -9,12 +9,18 @@ export interface UserId {
     id: String,
 }
 
-export interface User {
-    id: string,
-    providers: string[],
+export interface UserProfile {
     name: string,
     image: string,
-    newUser: boolean,
+    company?: string,
+    title?: string,
+}
+
+export interface User extends UserProfile {
+    id: string,
+    providers?: string[],
+    infoConfirmed?: boolean,
+    newUser?: boolean,
 }
 
 export interface CodeChallenge {
@@ -30,6 +36,8 @@ export interface AuthService {
     getAuthorizationUrl(provider: string, redirectUri: string, codeChallenge: string): string;
 
     getUserProfile(): Promise<UserId | User>;
+
+    updateUserProfile(profile: UserProfile): Promise<User>;
 
     generateChallenge(): Promise<CodeChallenge>;
 }
@@ -63,6 +71,11 @@ export class AuthServiceImpl implements AuthService {
 
     async getUserProfile(): Promise<UserId | User> {
         const res = await this.request.get('/v1/users/me');
+        return res.data;
+    }
+
+    async updateUserProfile(profile: UserProfile): Promise<User> {
+        const res = await this.request.put('/v1/users/me', profile);
         return res.data;
     }
 
