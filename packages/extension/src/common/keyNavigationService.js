@@ -16,7 +16,7 @@ export const validKeys = {
   l: 76,
   '/': 191,
   b: 66,
-  esc: 27
+  esc: 27,
 };
 
 function getNewPostEl(keyCode, currentElement, insaneMode) {
@@ -74,12 +74,12 @@ function navigate(keyCode, posts, search, { current, insaneMode }) {
 const clearSearch = (daHome) => {
   daHome.clearSearch();
   daHome.onSearchSubmit();
-}
+};
 
 function navigateDaily({ keyCode }) {
   const { daFeedRef, hoveredPost } = store.state.feed;
   const parent = daFeedRef.$parent;
-  const search = { enable: parent.enableSearch, clear: () => clearSearch(parent) }
+  const search = { enable: parent.enableSearch, clear: () => clearSearch(parent) };
   const options = { insaneMode: daFeedRef.insaneMode, current: hoveredPost };
   const newHoveredPost = navigate(
     keyCode,
