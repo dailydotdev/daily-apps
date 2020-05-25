@@ -57,7 +57,7 @@ export default {
 
   data() {
     return {
-      invalid: false,
+      invalid: null,
     };
   },
 
@@ -91,6 +91,10 @@ export default {
     }
   },
 
+  destroyed() {
+    this.clearIdleTimeout();
+  },
+
   methods: {
     updateInvalid(val) {
       if (this.invalid !== val) {
@@ -107,7 +111,9 @@ export default {
     onBlurOverride() {
       this.onBlur();
       this.clearIdleTimeout();
-      this.updateInvalid(!this.$refs.input.checkValidity());
+      if (this.$refs.input) {
+        this.updateInvalid(!this.$refs.input.checkValidity());
+      }
     },
     onInputOverride() {
       this.onInput();

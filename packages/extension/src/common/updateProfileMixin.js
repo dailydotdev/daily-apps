@@ -55,10 +55,10 @@ export default {
     async submitForm() {
       ga('send', 'event', this.$options.name.substr(2), 'Update');
       const data = Array.from(this.$refs.form.elements).reduce((acc, val) => {
-        if (val.value === '') {
+        if (val.name === '') {
           return acc;
         }
-        return Object.assign(acc, { [val.name]: val.value });
+        return Object.assign(acc, { [val.name]: val.value.length ? val.value : null });
       }, {});
       try {
         this.disableSubmit = true;
