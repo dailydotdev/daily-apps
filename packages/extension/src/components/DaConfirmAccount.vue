@@ -14,7 +14,7 @@
       <da-text-field class="confirm-acc__field" name="title" label="Job title"
         :value="title" @validity="updateFormValidity"/>
       <div class="confirm-acc__buttons">
-        <button class="confirm-acc__logout btn btn-hollow btn-big"
+        <button type="button" class="confirm-acc__logout btn btn-hollow btn-big"
           @click="onLogout">
           Cancel
         </button>

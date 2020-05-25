@@ -53,10 +53,19 @@ it('should set aria-live when input is not valid', () => {
   expect(wrapper.find('.text-field__hint').attributes()['aria-live']).toEqual('assertive');
 });
 
-it('should have trigger validity event when input is not valid', () => {
+it('should trigger validity event when input is not valid', () => {
   const props = { ...propsData, required: true };
   const wrapper = mount(DaTextField, { localVue, propsData: props });
   const input = wrapper.find('input');
   input.trigger('blur');
   expect(wrapper.emitted().validity[0]).toEqual([false]);
+});
+
+it('should trigger validity event when input is valid', () => {
+  const props = { ...propsData, required: true };
+  const wrapper = mount(DaTextField, { localVue, propsData: props });
+  const input = wrapper.find('input');
+  input.element.value = 'test';
+  input.trigger('input');
+  expect(wrapper.emitted().validity[0]).toEqual([true]);
 });

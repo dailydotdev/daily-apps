@@ -124,7 +124,7 @@ export default {
 }
 
 .profile__links, .profile__version {
-  padding: 0 0 0 32px;
+  padding: 0 16px;
 }
 
 .profile__links {
