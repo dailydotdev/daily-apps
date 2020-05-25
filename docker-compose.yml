@@ -24,7 +24,7 @@ services:
     depends_on:
       - "daily-mysql"
     volumes:
-      - ./wait-for.sh:/wait-for.sh
+      - ./wait-for.sh:/opt/app/wait-for.sh
     command: ["./wait-for.sh", "daily-mysql:3306", "--", "yarn", "start"]
     ports:
       - "4000:4000"
@@ -53,7 +53,7 @@ services:
     depends_on:
       - "daily-postgres"
     volumes:
-      - ./wait-for.sh:/wait-for.sh
+      - ./wait-for.sh:/opt/app/wait-for.sh
     command: ["./wait-for.sh", "daily-postgres:5432", "--", "npm", "run", "start"]
     ports:
       - "5000:5000"
