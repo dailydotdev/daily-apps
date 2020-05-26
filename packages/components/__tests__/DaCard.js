@@ -10,7 +10,7 @@ it('should set card class to large', () => {
       image: 'https://www.dailynow.co',
     },
   });
-  expect(wrapper.element.firstChild.classList.contains('large')).toEqual(true);
+  expect(wrapper.element.classList.contains('large')).toEqual(true);
 });
 
 it('should set card class to small', () => {
@@ -22,7 +22,7 @@ it('should set card class to small', () => {
       image: 'https://www.dailynow.co',
     },
   });
-  expect(wrapper.element.firstChild.classList.contains('small')).toEqual(true);
+  expect(wrapper.element.classList.contains('small')).toEqual(true);
 });
 
 it('should emit click event', () => {

@@ -1,27 +1,25 @@
 <template>
-  <div class="animation-wrapper">
-    <div class="card" :class="cls">
-      <a :href="url" target="_blank" class="card__link post__link" @click="$emit('click')">
-        <div class="card__background" :style="imgStyle">
-          <img
-            class="card__background__image lazyload"
-            :data-lowsrc="placeholder"
-            :data-src="image"
-            :key="image"
-          />
-        </div>
-        <div class="card__content card__hover">
-          <h5 class="card__title">
-            <da-line-clamp :text="title" :lines="lines"/>
-          </h5>
-          <slot name="content"></slot>
-        </div>
-      </a>
-      <div class="card__footer card__hover shadow1">
-        <slot name="footer"></slot>
+  <div class="card" :class="cls">
+    <a :href="url" target="_blank" class="card__link post__link" @click="$emit('click')">
+      <div class="card__background" :style="imgStyle">
+        <img
+          class="card__background__image lazyload"
+          :data-lowsrc="placeholder"
+          :data-src="image"
+          :key="image"
+        />
       </div>
-      <slot name="other"></slot>
+      <div class="card__content card__hover">
+        <h5 class="card__title">
+          <da-line-clamp :text="title" :lines="lines"/>
+        </h5>
+        <slot name="content"></slot>
+      </div>
+    </a>
+    <div class="card__footer card__hover shadow1">
+      <slot name="footer"></slot>
     </div>
+    <slot name="other"></slot>
   </div>
 </template>
 
@@ -129,6 +127,13 @@ export default {
   & .ls-blur-up-img.ls-inview.ls-original-loaded {
     opacity: 0;
   }
+
+  &:before {
+    position: absolute;
+    content: '';
+    height: 100%;
+    width: 100%;
+  }
 }
 
 .card__link {
@@ -230,26 +235,24 @@ export default {
     }
   }
 
-  & .animation-wrapper.hover,
-    .animation-wrapper:hover {
+  & .card.hover,
+    .card:hover {
+    transform: translateY(-4px);
 
-    & .card {
+    &:after {
+      opacity: 1;
+    }
 
-      transform: translateY(-4px);
-
-      &:after {
-        opacity: 1;
-      }
+    &:before {
+      transform: translateY(4px);
     }
   }
 }
 
-.animation-wrapper:hover,
-.animation-wrapper.hover {
-  & .card {
-    & .card__background__image {
-      transform: translate(0, 4px) scale(1.05);
-    }
+.card:hover,
+.card.hover {
+  & .card__background__image {
+    transform: translate(0, 4px) scale(1.05);
   }
 }
 
