@@ -226,6 +226,13 @@ export default {
       box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.64);
       transition: opacity 0.4s ease-in-out;
     }
+
+    &:before {
+      position: absolute;
+      content: '';
+      height: 100%;
+      width: 100%;
+    }
   }
 
   & .card.hover,
@@ -234,6 +241,10 @@ export default {
 
     &:after {
       opacity: 1;
+    }
+
+    &:before {
+      transform: translateY(4px);
     }
   }
 }
