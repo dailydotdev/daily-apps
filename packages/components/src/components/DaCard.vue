@@ -127,13 +127,6 @@ export default {
   & .ls-blur-up-img.ls-inview.ls-original-loaded {
     opacity: 0;
   }
-
-  &:before {
-    position: absolute;
-    content: '';
-    height: 100%;
-    width: 100%;
-  }
 }
 
 .card__link {
@@ -232,6 +225,13 @@ export default {
       z-index: -1;
       box-shadow: 0 16px 24px 0 rgba(0, 0, 0, 0.64);
       transition: opacity 0.4s ease-in-out;
+    }
+
+    &:before {
+      position: absolute;
+      content: '';
+      height: 100%;
+      width: 100%;
     }
   }
 
