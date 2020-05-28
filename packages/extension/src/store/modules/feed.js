@@ -24,9 +24,9 @@ const initialState = () => ({
   sortBy: 'popularity',
   search: null,
   showFeed: true,
-  ads: [],
   daFeedRef: null,
   hoveredPost: null,
+  ad: null,
 });
 
 const isLoggedIn = state => !!state.user.profile;
@@ -106,8 +106,7 @@ export default {
   state: initialState(),
   getters: {
     feed: state => state[getFeed(state)],
-    emptyFeed: state => !state[getFeed(state)].length,
-    showAd: state => !state.showBookmarks,
+    emptyFeed: state => state[getFeed(state)].findIndex(p => p.type !== 'ad') < 0,
     hasFilter: (state) => {
       if (!state.filter) {
         return false;
@@ -150,6 +149,22 @@ export default {
       } else {
         state.tags.push({ ...tag, enabled });
       }
+    },
+    clearAd(state) {
+      state.ad = null;
+    },
+    setAd(state, { ad, type }) {
+      const feed = state[type];
+      for (let i = feed.length - 1; i >= 0; i -= 1) {
+        if (feed[i].type === 'ad') {
+          if (feed[i].loading) {
+            Vue.set(state[type], i, { ...ad, type: 'ad' });
+            return;
+          }
+          break;
+        }
+      }
+      state.ad = ad;
     },
     setPosts(state, { posts, type }) {
       // TODO: add tests
@@ -212,9 +227,6 @@ export default {
     setShowFeed(state, show) {
       state.showFeed = show;
     },
-    setAds(state, ads) {
-      state.ads = ads;
-    },
     checkBookmarksConflicts(state) {
       if (state.bookmarks.length) {
         state.conflictBookmarks = state.bookmarks;
@@ -256,10 +268,17 @@ export default {
       commit('setTags', mergedTags);
     },
 
-    async fetchNextFeedPage({ commit, state, rootState }) {
+    async fetchNextFeedPage({
+      dispatch, commit, state, rootState,
+    }) {
       // TODO: add tests
-
       if (state.loading) {
+        return false;
+      }
+
+      const loggedIn = !!rootState.user.profile;
+      const type = getFeed(state);
+      if (type === 'bookmarks' && !loggedIn) {
         return false;
       }
 
@@ -268,13 +287,18 @@ export default {
       }
 
       commit('setLoading', true);
+      commit('clearAd');
+      dispatch('fetchAds', type);
 
-      const type = getFeed(state);
-      const loggedIn = !!rootState.user.profile;
       const { showOnlyNotReadPosts } = rootState.ui;
       // TODO: add tests addBookmarked
       // eslint-disable-next-line max-len
-      const posts = addBookmarked(state, await fetchPosts(state, loggedIn, showOnlyNotReadPosts), loggedIn);
+      let posts = addBookmarked(state, await fetchPosts(state, loggedIn, showOnlyNotReadPosts), loggedIn);
+      if (state.ad) {
+        posts = [{ ...state.ad, type: 'ad' }].concat(posts);
+      } else {
+        posts = [{ loading: true, type: 'ad' }].concat(posts);
+      }
 
       if (!state.page) {
         commit('setPosts', { posts, type });
@@ -390,13 +414,14 @@ export default {
       return dispatch('refreshFeed');
     },
 
-    async fetchAds({ commit }) {
+    async fetchAds({ commit }, type) {
       try {
         const ads = await monetizationService.fetchAd();
         if (!ads.length) {
           ga('send', 'event', 'Ad', 'NotAvailable');
+        } else {
+          commit('setAd', { ad: ads[0], type });
         }
-        commit('setAds', ads);
       } catch (err) {
         // TODO: handle error
         // eslint-disable-next-line no-console

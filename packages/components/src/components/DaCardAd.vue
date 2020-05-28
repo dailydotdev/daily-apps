@@ -37,6 +37,10 @@ export default {
 };
 </script>
 <style>
+.card--a {
+  position: relative;
+}
+
 .card--a .card__footer {
   justify-content: center;
 }
