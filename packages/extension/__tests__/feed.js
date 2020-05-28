@@ -490,10 +490,22 @@ it('should set empty search when no results', async () => {
   );
 });
 
-it('should set ads in state', () => {
-  const state = {};
-  module.mutations.setAds(state, [{ title: 'Ad' }]);
-  expect(state.ads).toEqual([{ title: 'Ad' }]);
+it('should set ad in state when feed is empty', () => {
+  const state = {posts: []};
+  module.mutations.setAd(state, { ad: { title: 'Ad'}, type: 'posts' });
+  expect(state.ad).toEqual({ title: 'Ad' });
+});
+
+it('should update ad in feed', () => {
+  const state = {posts: [{type: 'ad', loading: true}]};
+  module.mutations.setAd(state, { ad: { title: 'Ad'}, type: 'posts' });
+  expect(state.posts).toEqual([{ type: 'ad', title: 'Ad' }]);
+});
+
+it('should set ad in state when all ads were loaded', () => {
+  const state = {posts: [{type: 'ad', title: 'Ad'}]};
+  module.mutations.setAd(state, { ad: { title: 'Ad2'}, type: 'posts' });
+  expect(state.ad).toEqual({ title: 'Ad2' });
 });
 
 it('should fetch ads', async () => {
@@ -501,11 +513,11 @@ it('should fetch ads', async () => {
   const state = {};
   await testAction(
     module.actions.fetchAds,
-    undefined,
+    'posts',
     state,
     [{
-      type: 'setAds',
-      payload: [{ title: 'ad' }],
+      type: 'setAd',
+      payload: { ad: {title: 'ad'}, type: 'posts' },
     }],
   );
 });

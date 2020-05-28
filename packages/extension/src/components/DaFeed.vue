@@ -1,30 +1,34 @@
 <template>
   <div class="feed" :class="spaciness">
     <div class="feed__insane" v-if="insaneMode">
-      <template v-if="showAd">
-        <da-insane-placeholder v-if="!ads.length"/>
-        <da-insane-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
-                      @click="onAdClick" @impression="onAdImpression" :show-menu="isLoggedIn"
-                      :selected="focusedPost === item"/>
-      </template>
-      <da-insane-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
+      <template v-for="(item, index) in posts">
+        <template v-if="item.type === 'ad'">
+          <da-insane-placeholder v-if="item.loading" :key="index"/>
+          <da-insane-ad v-else :key="index" :ad="item" ref="posts"
+                        @click="onAdClick" @impression="onAdImpression" :show-menu="isLoggedIn"
+                        :selected="focusedPost === item"/>
+        </template>
+        <da-insane-post v-else :key="item.id" :post="item" ref="posts"
                       @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                       @click="onPostClick" :show-menu="isLoggedIn"
                       :menu-opened="selectedPostId === item.id"
                       :selected="focusedPost === item" />
+      </template>
     </div>
     <masonry class="feed__cards" :cols="cols" :gutter="gutter" :key="gutter" v-else>
-      <template v-if="showAd">
-        <da-card-placeholder v-if="!ads.length"/>
-        <da-card-ad v-for="(item, index) in ads" :key="index" :ad="item" ref="posts"
-                    @click="onAdClick" @impression="onAdImpression"
-                    :selected="focusedPost === item"/>
-      </template>
-      <da-card-post v-for="item in posts" ref="posts" :key="item.id" :post="item"
+      <template v-for="(item, index) in posts">
+        <template v-if="item.type === 'ad'">
+          <da-card-placeholder v-if="item.loading" :key="index"/>
+          <da-card-ad v-else :key="index" :ad="item" ref="posts"
+                      @click="onAdClick" @impression="onAdImpression"
+                      :selected="focusedPost === item"/>
+        </template>
+        <da-card-post v-else :key="item.id" :post="item" ref="posts"
                     @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                     @click="onPostClick" :show-menu="isLoggedIn"
                     :menu-opened="selectedPostId === item.id"
                     :selected="focusedPost === item"/>
+      </template>
     </masonry>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
                 @close="selectedPostId = null">
@@ -66,14 +70,14 @@ export default {
     ...mapState('feed', ['ads', 'hoveredPost']),
     ...mapGetters({
       posts: 'feed/feed',
-      showAd: 'feed/showAd',
       isLoggedIn: 'user/isLoggedIn',
     }),
     focusedPost() {
-      if (!this.hoveredPost) return null;
+      if (!this.hoveredPost) {
+        return null;
+      }
 
       const item = this.hoveredPost;
-
       return item.ad || item.post;
     },
     gutter() {
@@ -119,7 +123,6 @@ export default {
   methods: {
     onAdClick(ad) {
       ga('send', 'event', 'Ad', 'Click', ad.source);
-      this.fetchAds();
     },
 
     onAdImpression(ad) {
@@ -185,19 +188,12 @@ export default {
 
     ...mapActions({
       setFilter: 'feed/setFilter',
-      fetchAds: 'feed/fetchAds',
     }),
 
     ...mapMutations({
       removePost: 'feed/removePost',
       toggleBookmarks: 'feed/toggleBookmarks',
     }),
-  },
-
-  mounted() {
-    if (!this.ads.length) {
-      this.fetchAds();
-    }
   },
 };
 </script>

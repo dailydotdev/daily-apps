@@ -521,8 +521,8 @@ banner(lastSeen: $lastSeen) {
 
     this.contentObserver = new IntersectionObserver(async (entries) => {
       if (entries[0].isIntersecting) {
-        if (await this.fetchNextFeedPage() && this.page > 0) {
-          ga('send', 'event', 'Feed', 'Scroll', 'Next Page', this.page);
+        if (await this.fetchNextFeedPage()) {
+          ga('send', 'event', 'Feed', 'Scroll', 'Next Page');
         }
       }
     }, { root: null, rootMargin: '5px', threshold: 1 });
