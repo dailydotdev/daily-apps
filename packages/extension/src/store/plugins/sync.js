@@ -101,57 +101,57 @@ const plugin = (store) => {
     }
 
     switch (mutation.type) {
-      case 'loadFromCache':
-        if (state.ui && state.ui.theme) {
-          applyTheme(window.document, state.ui.theme, null);
-        }
+    case 'loadFromCache':
+      if (state.ui && state.ui.theme) {
+        applyTheme(window.document, state.ui.theme, null);
+      }
 
-        if (isLoggedIn(state)) {
-          requestIdleCallback(async () => {
-            // TODO: handle error
-            await fetchPersonalization(state);
-          });
+      if (isLoggedIn(state)) {
+        requestIdleCallback(async () => {
+          // TODO: handle error
+          await fetchPersonalization(state);
+        });
+      }
+      break;
+    case 'ui/setTheme':
+    case 'ui/setInsaneMode':
+    case 'ui/setShowTopSites':
+    case 'ui/setEnableCardAnimations':
+    case 'ui/setSpaciness':
+    case 'ui/setShowOnlyNotReadPosts':
+      // TODO: handle error
+      await syncSettings(state);
+      break;
+    case 'user/setProfile':
+      if (mutation.payload) {
+        if (mutation.payload.newUser) {
+          // TODO: handle error
+          await Promise.all([
+            syncSettings(state),
+            syncPublications(state),
+            syncBookmarks(state),
+            syncTags(state),
+          ]);
+        } else {
+          // TODO: handle error
+          await fetchPersonalization(state);
         }
-        break;
-      case 'ui/setTheme':
-      case 'ui/setInsaneMode':
-      case 'ui/setShowTopSites':
-      case 'ui/setEnableCardAnimations':
-      case 'ui/setSpaciness':
-      case 'ui/setShowOnlyNotReadPosts':
-        // TODO: handle error
-        await syncSettings(state);
-        break;
-      case 'user/setProfile':
-        if (mutation.payload) {
-          if (mutation.payload.newUser) {
-            // TODO: handle error
-            await Promise.all([
-              syncSettings(state),
-              syncPublications(state),
-              syncBookmarks(state),
-              syncTags(state),
-            ]);
-          } else {
-            // TODO: handle error
-            await fetchPersonalization(state);
-          }
+      }
+      break;
+    case 'feed/toggleBookmarks':
+      if (isLoggedIn(state)) {
+        const { id, bookmarked } = mutation.payload;
+        if (bookmarked) {
+          // TODO: handle error
+          await contentService.addBookmarks([id]);
+        } else {
+          // TODO: handle error
+          await contentService.removeBookmark(id);
         }
-        break;
-      case 'feed/toggleBookmarks':
-        if (isLoggedIn(state)) {
-          const { id, bookmarked } = mutation.payload;
-          if (bookmarked) {
-            // TODO: handle error
-            await contentService.addBookmarks([id]);
-          } else {
-            // TODO: handle error
-            await contentService.removeBookmark(id);
-          }
-        }
-        break;
-      default:
-        break;
+      }
+      break;
+    default:
+      break;
     }
   });
 };

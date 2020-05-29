@@ -1,3 +1,4 @@
+import MockDate from 'mockdate';
 import { applyTheme } from '@daily/services';
 import module from '../src/store/modules/ui';
 import { testAction } from './fixtures/helpers';
@@ -70,14 +71,42 @@ it('should set show settings in state', () => {
 });
 
 it('should show notifications and set state', () => {
+  const now = new Date();
+  MockDate.set(now);
   const state = {
     showNotificationBadge: true,
-    notifications: [{ timestamp: new Date() }, { timestamp: new Date(Date.now() - 1000) }],
   };
   module.mutations.showNotifications(state);
-  expect(state.lastNotificationTime).toEqual(new Date(state.notifications[0].timestamp.getTime() + 1));
+  MockDate.reset();
+  expect(state.lastNotificationTime).toEqual(now);
   expect(state.showNotificationBadge).toEqual(false);
   expect(state.showNotifications).toEqual(true);
+});
+
+it('should show notification badge when never seen notification', () => {
+  const state = {};
+  module.mutations.updateNotificationBadge(state, new Date());
+  expect(state.showNotificationBadge).toEqual(true);
+});
+
+it('should show notification badge when timestamp is newer than last seen', () => {
+  const now = new Date();
+  const state = {lastNotificationTime: new Date(now.getTime() - 1000)};
+  module.mutations.updateNotificationBadge(state, now);
+  expect(state.showNotificationBadge).toEqual(true);
+});
+
+it('should not show notification badge when timestamp is older than last seen', () => {
+  const now = new Date();
+  const state = {lastNotificationTime: now};
+  module.mutations.updateNotificationBadge(state, new Date(now.getTime() - 1000));
+  expect(state.showNotificationBadge).toEqual(false);
+});
+
+it('should not show notification badge when timestamp is undefined', () => {
+  const state = {};
+  module.mutations.updateNotificationBadge(state, undefined);
+  expect(state.showNotificationBadge).toEqual(false);
 });
 
 it('should hide notifications and set state', () => {
@@ -86,41 +115,6 @@ it('should hide notifications and set state', () => {
   };
   module.mutations.hideNotifications(state);
   expect(state.showNotifications).toEqual(false);
-});
-
-it('should set notifications and set state', () => {
-  const state = {};
-  const notifications = [{
-    html: '<span>Hello World</span>',
-    timestamp: new Date(),
-  }];
-  module.mutations.setNotifications(state, { notifications });
-  expect(state.notifications).toEqual(notifications);
-  expect(state.showNotificationBadge).toEqual(true);
-});
-
-it('should set notifications and not update badge', () => {
-  const state = {};
-  const notifications = [{
-    html: '<span>Hello World</span>',
-    timestamp: new Date(),
-  }];
-  module.mutations.setNotifications(state, { notifications, since: notifications[0].timestamp });
-  expect(state.notifications).toEqual(notifications);
-  expect(state.showNotificationBadge).toEqual(false);
-});
-
-it('should fetch notifications and update state', async () => {
-  const notifications = [{
-    html: '<span>Hello World</span>',
-    timestamp: new Date(),
-  }];
-  profileService.fetchNotifications.mockReturnValue(notifications);
-  const state = {};
-  await testAction(module.actions.fetchNotifications, undefined, state, [
-    { type: 'setNotifications', payload: { notifications, since: undefined } },
-  ]);
-  expect(profileService.fetchNotifications).toBeCalledTimes(1);
 });
 
 it('should reset settings', () => {

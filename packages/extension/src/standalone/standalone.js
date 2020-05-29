@@ -14,6 +14,12 @@ import { apolloClient, persistor } from '../apollo';
 Vue.use(VueApollo);
 const apolloProvider = new VueApollo({
   defaultClient: apolloClient,
+  defaultOptions: {
+    $query: {
+      fetchPolicy: 'cache-only',
+      notifyOnNetworkStatusChange: false,
+    }
+  }
 });
 
 const loadFromCache = async () => {

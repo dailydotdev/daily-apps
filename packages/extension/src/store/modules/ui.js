@@ -1,6 +1,4 @@
 import { applyTheme } from '@daily/services';
-import createDOMPurify from 'dompurify';
-import { profileService } from '../../common/services';
 
 const initialState = () => ({
   theme: null,
@@ -9,7 +7,6 @@ const initialState = () => ({
   dndModeTime: null,
   showDndMenu: false,
   showTopSites: false,
-  notifications: [],
   showNotificationBadge: false,
   lastNotificationTime: null,
   showNotifications: false,
@@ -50,7 +47,7 @@ export default {
     },
 
     showNotifications(state) {
-      state.lastNotificationTime = new Date(state.notifications[0].timestamp.getTime() + 1);
+      state.lastNotificationTime = new Date();
       state.showNotificationBadge = false;
       state.showNotifications = true;
     },
@@ -75,11 +72,11 @@ export default {
       state.dndModeTime = null;
     },
 
-    setNotifications(state, { notifications, since }) {
-      const DOMPurify = createDOMPurify(window);
-      state.notifications = notifications
-        .map(n => Object.assign({}, n, { html: DOMPurify.sanitize(n.html) }));
-      state.showNotificationBadge = !since || !!notifications.find(n => n.timestamp > since);
+    updateNotificationBadge(state, timestamp) {
+      const newNotification = state.lastNotificationTime && !!timestamp
+        && timestamp > state.lastNotificationTime;
+      const neverSeen = !state.lastNotificationTime && !!timestamp;
+      state.showNotificationBadge = newNotification || neverSeen;
     },
 
     nextInstruction(state) {
@@ -127,12 +124,6 @@ export default {
     setTheme({ commit, state }, theme) {
       applyTheme(window.document, theme, state.theme);
       return commit('setTheme', theme);
-    },
-
-    async fetchNotifications({ commit, state }) {
-      const since = state.lastNotificationTime;
-      const notifications = await profileService.fetchNotifications(since);
-      commit('setNotifications', { notifications, since });
     },
 
     reset({ commit, dispatch }) {

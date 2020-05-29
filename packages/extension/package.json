@@ -16,7 +16,7 @@
     "manifest": "node build/manifest.js"
   },
   "dependencies": {
-    "@daily/components": "^0.2.0",
+    "@daily/components": "^0.2.1",
     "@daily/services": "^0.1.0",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-cache-persist": "^0.1.1",
@@ -55,7 +55,7 @@
     "babel-jest": "^23.6.0",
     "browserslist": "^4.7.0",
     "bundlesize": "^0.18.0",
-    "caniuse-lite": "^1.0.30000989",
+    "caniuse-lite": "^1.0.30001066",
     "chalk": "^2.4.2",
     "deepmerge": "^3.2.0",
     "eslint": "^5.8.0",
@@ -63,6 +63,8 @@
     "imports-loader": "^0.8.0",
     "jest": "^23.6.0",
     "jest-junit": "^6.4.0",
+    "mock-apollo-client": "^0.4.0",
+    "mockdate": "^3.0.2",
     "ora": "^3.3.0",
     "postcss-custom-media": "^7.0.7",
     "postcss-extend": "^1.0.5",
@@ -96,6 +98,18 @@
             "state"
           ]
         }
+      ],
+      "indent": [
+        "error",
+        2,
+        {
+          "ignoredNodes": [
+            "TemplateLiteral"
+          ]
+        }
+      ],
+      "template-curly-spacing": [
+        "off"
       ]
     },
     "parserOptions": {

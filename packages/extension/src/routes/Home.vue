@@ -154,8 +154,9 @@
 import {
   mapState, mapActions, mapMutations, mapGetters,
 } from 'vuex';
-import gql from 'graphql-tag';
+import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
+import { BANNER_QUERY, LATEST_NOTIFICATIONS_QUERY } from '../common/graphql';
 import DaHeader from '../components/DaHeader.vue';
 import DaSidebar from '../components/DaSidebar.vue';
 import DaDndMessage from '../components/DaDndMessage.vue';
@@ -172,17 +173,26 @@ export default {
 
   apollo: {
     banner: {
-      query: gql`query Banner($lastSeen: DateTime) {
-banner(lastSeen: $lastSeen) {
-  timestamp, cta, subtitle, theme, title, url
-}
-}`,
-      fetchPolicy: 'cache-only',
+      query: BANNER_QUERY,
       variables() {
         return { lastSeen: this.lastBannerSeen };
       },
       skip() {
-        return !this.lastBannerSeen.toISOString;
+        return !this.lastBannerSeen || !this.lastBannerSeen.toISOString;
+      },
+    },
+    notifications: {
+      query: LATEST_NOTIFICATIONS_QUERY,
+      manual: true,
+      async result({ data, networkStatus, loading }, key) {
+        if (networkStatus === NetworkStatus.ready && !loading && data.latestNotifications) {
+          const dompurify = await import('dompurify');
+          const DOMPurify = dompurify.default(window);
+          this.notifications = data.latestNotifications
+            .map(n => ({ timestamp: new Date(n.timestamp), html: DOMPurify.sanitize(n.html) }));
+          const timestamp = this.notifications.length && this.notifications[0].timestamp;
+          this.updateNotificationBadge(timestamp);
+        }
       },
     },
   },
@@ -339,10 +349,6 @@ banner(lastSeen: $lastSeen) {
         .catch(console.error);
 
       this.lastPriorityData = true;
-      this.fetchNotifications()
-        // TODO: handle error
-        // eslint-disable-next-line no-console
-        .catch(console.error);
     },
 
     trackPageView() {
@@ -411,7 +417,6 @@ banner(lastSeen: $lastSeen) {
       addFilterToFeed: 'feed/addFilterToFeed',
       search: 'feed/search',
       mergeBookmarksConflicts: 'feed/mergeBookmarksConflicts',
-      fetchNotifications: 'ui/fetchNotifications',
       generateChallenge: 'user/generateChallenge',
       validateAuth: 'user/validateAuth',
     }),
@@ -425,12 +430,13 @@ banner(lastSeen: $lastSeen) {
       nextInstruction: 'ui/nextInstruction',
       setShowDndMenu: 'ui/setShowDndMenu',
       setLastBannerSeen: 'ui/setLastBannerSeen',
+      updateNotificationBadge: 'ui/updateNotificationBadge',
       confirmNewUser: 'user/confirmNewUser',
     }),
   },
 
   computed: {
-    ...mapState('ui', ['notifications', 'showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen']),
+    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
@@ -495,6 +501,7 @@ banner(lastSeen: $lastSeen) {
     lastPriorityData(val) {
       if (val) {
         this.$apollo.queries.banner.setOptions({ fetchPolicy: 'cache-and-network' });
+        this.$apollo.queries.notifications.setOptions({ fetchPolicy: 'cache-and-network' });
       }
     },
     posts() {
