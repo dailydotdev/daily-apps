@@ -1,6 +1,18 @@
+import MockDate from 'mockdate';
 import module from '../src/store/modules/feed';
-import { testAction } from './fixtures/helpers';
+import { testAction, runAction } from './fixtures/helpers';
 import { contentService, monetizationService } from '../src/common/services';
+import { apolloClient } from '../src/apollo';
+import {
+  FEED_QUERY,
+  ANONYMOUS_FEED_QUERY,
+  SOURCE_FEED_QUERY,
+  TAG_FEED_QUERY,
+  BOOKMARKS_FEED_QUERY,
+  SEARCH_POSTS_QUERY,
+} from '../src/common/graphql';
+
+jest.mock('../src/apollo');
 
 jest.mock('../src/common/services', () => ({
   contentService: {
@@ -15,6 +27,37 @@ jest.mock('../src/common/services', () => ({
     fetchAd: jest.fn(),
   },
 }));
+
+const emptyFeed = { 
+  data: {
+    feed: {
+      pageInfo: { hasNextPage: true, endCursor: 'cursor' },
+      edges: [],
+    },
+  },  
+};
+
+const anonymousHandler = jest.fn();
+const feedHandler = jest.fn();
+const bookmarksHandler = jest.fn();
+const sourceFeedHandler = jest.fn();
+const tagFeedHandler = jest.fn();
+const searchPostHandler = jest.fn();
+apolloClient.setRequestHandler(ANONYMOUS_FEED_QUERY, anonymousHandler);
+apolloClient.setRequestHandler(FEED_QUERY, feedHandler);
+apolloClient.setRequestHandler(BOOKMARKS_FEED_QUERY, bookmarksHandler);
+apolloClient.setRequestHandler(SOURCE_FEED_QUERY, sourceFeedHandler);
+apolloClient.setRequestHandler(TAG_FEED_QUERY, tagFeedHandler);
+apolloClient.setRequestHandler(SEARCH_POSTS_QUERY, searchPostHandler);
+
+beforeEach(() => {
+  anonymousHandler.mockReset();
+  feedHandler.mockReset();
+  bookmarksHandler.mockReset();
+  sourceFeedHandler.mockReset();
+  tagFeedHandler.mockReset();
+  searchPostHandler.mockReset();
+});
 
 it('should set show bookmarks in state', () => {
   const state = {};
@@ -317,11 +360,14 @@ it('should reset feed', () => {
       id: '1',
       bookmarked: true,
     }],
-    page: 1,
+    pageInfo: {
+      hasNextPage: true,
+      endCursor: 'cursor',
+    },
   };
   module.mutations.resetFeed(state);
   expect(state.customPosts).toEqual([]);
-  expect(state.page).toEqual(0);
+  expect(state.pageInfo).toEqual(null);
 });
 
 it('should enable publication from filter', async () => {
@@ -566,4 +612,255 @@ it('should fetch ads', async () => {
   );
   expect(contentService.addBookmarks)
     .toBeCalledWith(['1', '3']);
+});
+
+it('should set posts by type', () => {
+  const state = {};
+  module.mutations.setPosts(state, {posts: [{ id: '1' }, { id: '2' }, { id: '3' }], type: 'posts'});
+  expect(state.posts).toEqual([{ id: '1' }, { id: '2' }, { id: '3' }]);
+});
+
+it('should add posts by type', () => {
+  const state = { posts: [{ id: '1' }] };
+  module.mutations.addPosts(state, {posts: [{ id: '2' }, { id: '3' }], type: 'posts'});
+  expect(state.posts).toEqual([{ id: '1' }, { id: '2' }, { id: '3' }]);
+});
+
+it('should not fetch next page when loading', async () => {
+  const state = { loading: true };
+  const res = await testAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    [],
+  );
+  expect(res).toEqual(false);
+});
+
+it('should not fetch next page when no more page', async () => {
+  const state = { pageInfo: { hasNextPage: false } };
+  const res = await testAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    [],
+  );
+  expect(res).toEqual(false);
+});
+
+it('should fetch anonymous feed', async () => {
+  const now = new Date();
+  MockDate.set(now);
+  anonymousHandler.mockResolvedValue({ 
+    data: {
+      feed: {
+        pageInfo: { hasNextPage: true, endCursor: 'cursor' },
+        edges: [
+          { node: { id: '1', source: { id: 's' }, createdAt: now.toISOString(), ratio: 2 } },
+          { node: { id: '2', source: { id: 's' }, createdAt: now.toISOString(), ratio: 1 } },
+        ],
+      },
+    },  
+  });
+
+  const state = { bookmarks: [{ id: '2' }], publications: [], tags: [], latest: now, sortBy: 'popularity' };
+  const res = await testAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    [
+      { type: 'setLatest', payload: now },
+      { type: 'setLoading', payload: true },
+      { type: 'clearAd' },
+      { type: 'setPosts', payload: { posts: [
+        { type: 'ad', loading: true },
+        { id: '1', publication: { id: 's' }, createdAt: now, size: 'small', bookmarked: false, url: 'http://localhost:4000/r/1' },
+        { id: '2', publication: { id: 's' }, createdAt: now, size: 'medium', bookmarked: true, url: 'http://localhost:4000/r/2' },
+      ], type: 'posts' } },
+      { type: 'setLoading', payload: false },
+      { type: 'setPageInfo', payload: { hasNextPage: true, endCursor: 'cursor' } },
+    ],
+    [
+      { type: 'fetchAds', payload: 'posts' },
+    ],
+    {user: { profile: null }, ui: {} },
+  );
+  expect(res).toEqual(true);
+  expect(anonymousHandler).toBeCalledWith({ loggedIn: false, now, ranking: 'POPULARITY', filters: {excludeSources: undefined, includeTags: undefined}, after: undefined });
+  MockDate.reset();
+});
+
+it('should fetch next anonymous feed page', async () => {
+  const now = new Date();
+  MockDate.set(now);
+  anonymousHandler.mockResolvedValueOnce({ 
+    data: {
+      feed: {
+        pageInfo: { hasNextPage: true, endCursor: 'cursor' },
+        edges: [
+          { node: { id: '1', source: { id: 's' }, createdAt: now.toISOString(), ratio: 2 } },
+          { node: { id: '2', source: { id: 's' }, createdAt: now.toISOString(), ratio: 1 } },
+        ],
+      },
+    },  
+  });
+
+  const state = { pageInfo: { hasNextPage: true, endCursor: 'cursor' }, bookmarks: [], posts: [], publications: [], tags: [], latest: now, sortBy: 'popularity' };
+  const res = await testAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    [
+      { type: 'setLoading', payload: true },
+      { type: 'clearAd' },
+      { type: 'addPosts', payload: { posts: [
+        { type: 'ad', loading: true },
+        { id: '1', publication: { id: 's' }, createdAt: now, size: 'small', bookmarked: false, url: 'http://localhost:4000/r/1' },
+        { id: '2', publication: { id: 's' }, createdAt: now, size: 'medium', bookmarked: false, url: 'http://localhost:4000/r/2' },
+      ], type: 'posts' } },
+      { type: 'setLoading', payload: false },
+      { type: 'setPageInfo', payload: { hasNextPage: true, endCursor: 'cursor' } },
+    ],
+    [
+      { type: 'fetchAds', payload: 'posts' },
+    ],
+    {user: { profile: null }, ui: {} },
+  );
+  expect(res).toEqual(true);
+  expect(anonymousHandler).toBeCalledWith({ loggedIn: false, now, ranking: 'POPULARITY', filters: {excludeSources: undefined, includeTags: undefined}, after: 'cursor' });
+  MockDate.reset();
+});
+
+it('should apply local filters for anonymous feed', async () => {
+  const now = new Date();
+  MockDate.set(now);
+  anonymousHandler.mockResolvedValueOnce(emptyFeed);
+
+  const state = { bookmarks: [], publications: [{id: 'a', enabled: true}, {id: 'b', enabled: false}], tags: [{name: 'webdev', enabled: false}, {name: 'javascript', enabled: true}], latest: now, sortBy: 'popularity' };
+  const res = await runAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    {user: { profile: null }, ui: {} },
+  );
+  expect(res).toEqual(true);
+  expect(anonymousHandler).toBeCalledWith({ loggedIn: false, now, ranking: 'POPULARITY', filters: {excludeSources: ['b'], includeTags: ['javascript']}, after: undefined });
+  MockDate.reset();
+});
+
+it('should fetch user feed', async () => {
+  const now = new Date();
+  MockDate.set(now);
+  feedHandler.mockResolvedValueOnce(emptyFeed);
+
+  const state = { bookmarks: [], latest: now, sortBy: 'creation' };
+  const res = await runAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    {user: { profile: { id: 'u' } }, ui: {} },
+  );
+  expect(res).toEqual(true);
+  expect(feedHandler).toBeCalledWith({ loggedIn: true, now, ranking: 'TIME', after: undefined });
+  MockDate.reset();
+});
+
+it('should fetch user feed with only unread posts', async () => {
+  const now = new Date();
+  MockDate.set(now);
+  feedHandler.mockResolvedValueOnce(emptyFeed);
+
+  const state = { bookmarks: [], latest: now, sortBy: 'creation' };
+  const res = await runAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    {user: { profile: { id: 'u' } }, ui: { showOnlyNotReadPosts: true } },
+  );
+  expect(res).toEqual(true);
+  expect(feedHandler).toBeCalledWith({ loggedIn: true, now, ranking: 'TIME', after: undefined, unreadOnly: true });
+  MockDate.reset();
+});
+
+it('should fetch user bookmarks', async () => {
+  const now = new Date();
+  MockDate.set(now);
+  bookmarksHandler.mockResolvedValueOnce(emptyFeed);
+
+  const state = { bookmarks: [], latest: now, sortBy: 'creation', showBookmarks: true };
+  const res = await runAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    {user: { profile: { id: 'u' } }, ui: {} },
+  );
+  expect(res).toEqual(true);
+  expect(bookmarksHandler).toBeCalledWith({ loggedIn: true, now, after: undefined });
+  MockDate.reset();
+});
+
+it('should not fetch anything for anonymous bookmarks', async () => {
+  const now = new Date();
+  MockDate.set(now);
+
+  const state = { bookmarks: [], latest: now, sortBy: 'creation', showBookmarks: true };
+  const res = await runAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    { user: { profile: null, ui: {} } },
+  );
+  expect(res).toEqual(false);
+  MockDate.reset();
+});
+
+it('should fetch source feed', async () => {
+  const now = new Date();
+  MockDate.set(now);
+  sourceFeedHandler.mockResolvedValueOnce(emptyFeed);
+
+  const state = { bookmarks: [], latest: now, sortBy: 'popularity', filter: {type: 'publication', info: { id: 'a' } } };
+  const res = await runAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    {user: { profile: { id: 'u' } }, ui: {} },
+  );
+  expect(res).toEqual(true);
+  expect(sourceFeedHandler).toBeCalledWith({ loggedIn: true, now, after: undefined, ranking: 'TIME', source: 'a' });
+  MockDate.reset();
+});
+
+it('should fetch tag feed', async () => {
+  const now = new Date();
+  MockDate.set(now);
+  tagFeedHandler.mockResolvedValueOnce(emptyFeed);
+
+  const state = { bookmarks: [], latest: now, sortBy: 'popularity', filter: {type: 'tag', info: { name: 'webdev' } } };
+  const res = await runAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    {user: { profile: { id: 'u' } }, ui: {} },
+  );
+  expect(res).toEqual(true);
+  expect(tagFeedHandler).toBeCalledWith({ loggedIn: true, now, after: undefined, ranking: 'TIME', tag: 'webdev' });
+  MockDate.reset();
+});
+
+it('should search posts', async () => {
+  const now = new Date();
+  MockDate.set(now);
+  searchPostHandler.mockResolvedValueOnce(emptyFeed);
+
+  const state = { bookmarks: [], latest: now, search: 'node' };
+  const res = await runAction(
+    module.actions.fetchNextFeedPage,
+    undefined,
+    state,
+    {user: { profile: { id: 'u' } }, ui: {} },
+  );
+  expect(res).toEqual(true);
+  expect(searchPostHandler).toBeCalledWith({ loggedIn: true, now, after: undefined, query: 'node' });
+  MockDate.reset();
 });

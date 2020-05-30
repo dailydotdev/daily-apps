@@ -1,7 +1,6 @@
 import { mount, createLocalVue, config } from '@vue/test-utils';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
-import { createMockClient } from 'mock-apollo-client';
 import icons from '@daily/components/src/icons';
 import tooltip from '@daily/components/src/directives/tooltip';
 import DaSearch from '@daily/components/src/components/DaSearch.vue';
@@ -12,6 +11,9 @@ import DaSidebar from '../src/components/DaSidebar.vue';
 import DaFeed from '../src/components/DaFeed.vue';
 import { createDummyEvent } from './fixtures/helpers';
 import { LATEST_NOTIFICATIONS_QUERY } from '../src/common/graphql';
+import { apolloClient } from '../src/apollo';
+
+jest.mock('../src/apollo');
 
 config.stubs['transition'] = true;
 
@@ -170,11 +172,10 @@ it('should show banner when data is available', (done) => {
 
 it('should fetch notifications and update badge', (done) => {
   const now = new Date();
-  const client = createMockClient();
-  client.setRequestHandler(
+  apolloClient.setRequestHandler(
     LATEST_NOTIFICATIONS_QUERY,
     () => Promise.resolve({ data: { latestNotifications: [{html: 'hello world', timestamp: now.toISOString()}] } }));
-  const wrapper = mount(DaHome, { store, localVue, apolloProvider: new VueApollo({defaultClient: client }) });
+  const wrapper = mount(DaHome, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
   wrapper.vm.$apollo.queries.notifications.setOptions({ fetchPolicy: 'network-only' });
   setTimeout(() => {
     expect(wrapper.vm.notifications).toEqual([{html: 'hello world', timestamp: now}]);
