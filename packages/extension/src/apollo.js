@@ -26,6 +26,7 @@ const link = createPersistedQueryLink({ useGETForHashedQueries: true })
   .concat(createHttpLink({
     uri: `${process.env.VUE_APP_API_URL}/graphql`,
     useGETForQueries: true,
+    credentials: 'include',
   }));
 
 export const apolloClient = new ApolloClient({

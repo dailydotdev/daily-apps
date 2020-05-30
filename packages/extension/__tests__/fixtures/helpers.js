@@ -44,6 +44,16 @@ export const testAction = (action, payload, state, expectedMutations = [], expec
       .catch(reject);
   });
 
+  export const runAction = (action, payload, state, rootState = {}) =>
+  new Promise((resolve, reject) => {
+    const commit = jest.fn();
+    const dispatch = jest.fn();
+    Promise.resolve()
+      .then(() => action({ commit, dispatch, state, rootState }, payload))
+      .then(resolve)
+      .catch(reject);
+  });
+
 export const createDummyEvent = target => ({
   clientX: 0,
   clientY: 0,

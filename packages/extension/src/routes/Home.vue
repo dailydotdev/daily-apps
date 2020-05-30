@@ -184,7 +184,7 @@ export default {
     notifications: {
       query: LATEST_NOTIFICATIONS_QUERY,
       manual: true,
-      async result({ data, networkStatus, loading }, key) {
+      async result({ data, networkStatus, loading }) {
         if (networkStatus === NetworkStatus.ready && !loading && data.latestNotifications) {
           const dompurify = await import('dompurify');
           const DOMPurify = dompurify.default(window);

@@ -6,6 +6,8 @@ import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
 import { contentService } from '../src/common/services';
 
+jest.mock('../src/apollo');
+
 jest.mock('../src/common/services', () => ({
   contentService: {
     searchTags: jest.fn(),

@@ -18,8 +18,8 @@ const apolloProvider = new VueApollo({
     $query: {
       fetchPolicy: 'cache-only',
       notifyOnNetworkStatusChange: false,
-    }
-  }
+    },
+  },
 });
 
 const loadFromCache = async () => {

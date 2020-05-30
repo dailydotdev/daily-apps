@@ -1,5 +1,15 @@
 import Vue from 'vue';
+import { apolloClient } from '../../apollo';
 import { contentService, monetizationService } from '../../common/services';
+import {
+  FEED_QUERY,
+  ANONYMOUS_FEED_QUERY,
+  SOURCE_FEED_QUERY,
+  TAG_FEED_QUERY,
+  BOOKMARKS_FEED_QUERY,
+  SEARCH_POSTS_QUERY,
+} from '../../common/graphql';
+import { mapPost } from '../../common/post';
 
 const setPostBookmark = (state, key, id, value) => {
   const index = state[key].findIndex(post => post.id === id);
@@ -14,7 +24,7 @@ const initialState = () => ({
   tags: [],
   publications: [],
   showBookmarks: false,
-  page: 0,
+  pageInfo: null,
   loading: false,
   posts: [],
   customPosts: [],
@@ -32,11 +42,7 @@ const initialState = () => ({
 const isLoggedIn = state => !!state.user.profile;
 
 const addBookmarked = (state, posts, loggedIn) => {
-  if (loggedIn) {
-    if (state.showBookmarks) {
-      return posts.map(post => ({ ...post, bookmarked: true }));
-    }
-  } else if (state.bookmarks) {
+  if (!loggedIn && state.bookmarks) {
     return posts.map(post => ({
       ...post,
       bookmarked: state.bookmarks.findIndex(bookmark => bookmark.id === post.id) > -1,
@@ -47,33 +53,88 @@ const addBookmarked = (state, posts, loggedIn) => {
 };
 
 const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
-  if (loggedIn && state.showBookmarks) {
-    return contentService.fetchBookmarks(state.latest, state.page);
+  const base = {
+    loggedIn,
+    now: state.latest,
+    after: state.pageInfo ? state.pageInfo.endCursor : undefined,
+  };
+
+  if (state.showBookmarks) {
+    if (loggedIn) {
+      return apolloClient.query({
+        query: BOOKMARKS_FEED_QUERY,
+        variables: {
+          ...base,
+        },
+        fetchPolicy: 'no-cache',
+      });
+    }
+    return { data: { feed: { pageInfo: null, edges: [] } } };
   }
 
   if (state.filter) {
     if (state.filter.type === 'publication') {
-      return contentService.fetchPostsByPublication(state.latest, state.page, state.filter.info.id);
+      return apolloClient.query({
+        query: SOURCE_FEED_QUERY,
+        variables: {
+          ...base,
+          ranking: 'TIME',
+          source: state.filter.info.id,
+        },
+        fetchPolicy: 'no-cache',
+      });
     }
 
-    return contentService.fetchPostsByTag(state.latest, state.page, state.filter.info.name);
+    return apolloClient.query({
+      query: TAG_FEED_QUERY,
+      variables: {
+        ...base,
+        ranking: 'TIME',
+        tag: state.filter.info.name,
+      },
+      fetchPolicy: 'no-cache',
+    });
   }
 
   if (state.search) {
-    const res = await contentService.searchPosts(state.latest, state.page, state.search);
-    return res.hits;
+    return apolloClient.query({
+      query: SEARCH_POSTS_QUERY,
+      variables: {
+        ...base,
+        query: state.search,
+      },
+      fetchPolicy: 'no-cache',
+    });
   }
+
+  const ranking = state.sortBy === 'popularity' ? 'POPULARITY' : 'TIME';
 
   if (loggedIn) {
-    // eslint-disable-next-line max-len
-    return contentService.fetchLatestPosts(state.latest, state.page, null, null, state.sortBy, showOnlyNotReadPosts);
+    return apolloClient.query({
+      query: FEED_QUERY,
+      variables: {
+        ...base,
+        ranking,
+        unreadOnly: showOnlyNotReadPosts,
+      },
+      fetchPolicy: 'no-cache',
+    });
   }
 
-  const enabledPubs = state.publications.filter(p => p.enabled).map(p => p.id);
-  const pubs = enabledPubs.length === state.publications.length ? [] : enabledPubs;
+  const pubs = state.publications.filter(p => !p.enabled).map(p => p.id);
   const tags = state.tags.filter(t => t.enabled).map(t => t.name);
-  // eslint-disable-next-line max-len
-  return contentService.fetchLatestPosts(state.latest, state.page, pubs, tags, state.sortBy, showOnlyNotReadPosts);
+  return apolloClient.query({
+    query: ANONYMOUS_FEED_QUERY,
+    variables: {
+      ...base,
+      ranking,
+      filters: {
+        excludeSources: pubs.length ? pubs : undefined,
+        includeTags: tags.length ? tags : undefined,
+      },
+    },
+    fetchPolicy: 'no-cache',
+  });
 };
 
 const getFeed = (state) => {
@@ -167,15 +228,11 @@ export default {
       state.ad = ad;
     },
     setPosts(state, { posts, type }) {
-      // TODO: add tests
       state[type] = posts;
     },
     addPosts(state, { posts, type }) {
-      // TODO: add tests
       if (posts && posts.length > 0) {
-        const postsToAdd = posts[0].id === state[type][state[type].length - 1].id
-          ? posts.slice(1) : posts;
-        state[type] = state[type].concat(postsToAdd);
+        state[type] = state[type].concat(posts);
       }
     },
     removePost(state, postId) {
@@ -186,8 +243,8 @@ export default {
     setLatest(state, latest) {
       state.latest = latest;
     },
-    setPage(state, page) {
-      state.page = page;
+    setPageInfo(state, pageInfo) {
+      state.pageInfo = pageInfo;
     },
     setLoading(state, loading) {
       state.loading = loading;
@@ -206,11 +263,10 @@ export default {
       state.filter = filter;
     },
     resetFeed(state) {
-      state.page = 0;
+      state.pageInfo = null;
       state.customPosts = [];
     },
     resetPersonalization(state) {
-      // TODO: add tests
       state.filter = null;
       state.customPosts = [];
       state.bookmarks = [];
@@ -271,8 +327,7 @@ export default {
     async fetchNextFeedPage({
       dispatch, commit, state, rootState,
     }) {
-      // TODO: add tests
-      if (state.loading) {
+      if (state.loading || (state.pageInfo && !state.pageInfo.hasNextPage)) {
         return false;
       }
 
@@ -282,7 +337,7 @@ export default {
         return false;
       }
 
-      if (!state.page) {
+      if (!state.pageInfo) {
         commit('setLatest', new Date());
       }
 
@@ -291,26 +346,22 @@ export default {
       dispatch('fetchAds', type);
 
       const { showOnlyNotReadPosts } = rootState.ui;
-      // TODO: add tests addBookmarked
-      // eslint-disable-next-line max-len
-      let posts = addBookmarked(state, await fetchPosts(state, loggedIn, showOnlyNotReadPosts), loggedIn);
+      const res = await fetchPosts(state, loggedIn, showOnlyNotReadPosts);
+      let posts = addBookmarked(state, res.data.feed.edges.map(e => mapPost(e.node)), loggedIn);
       if (state.ad) {
         posts = [{ ...state.ad, type: 'ad' }].concat(posts);
       } else {
         posts = [{ loading: true, type: 'ad' }].concat(posts);
       }
 
-      if (!state.page) {
+      if (!state.pageInfo) {
         commit('setPosts', { posts, type });
       } else {
         commit('addPosts', { posts, type });
       }
 
       commit('setLoading', false);
-
-      if (posts.length) {
-        commit('setPage', state.page + 1);
-      }
+      commit('setPageInfo', res.data.feed.pageInfo);
 
       return true;
     },
