@@ -327,7 +327,6 @@ export default {
     async fetchNextFeedPage({
       dispatch, commit, state, rootState,
     }) {
-      // TODO: add tests
       if (state.loading || (state.pageInfo && !state.pageInfo.hasNextPage)) {
         return false;
       }
@@ -347,8 +346,6 @@ export default {
       dispatch('fetchAds', type);
 
       const { showOnlyNotReadPosts } = rootState.ui;
-      // TODO: add tests addBookmarked
-      // eslint-disable-next-line max-len
       const res = await fetchPosts(state, loggedIn, showOnlyNotReadPosts);
       let posts = addBookmarked(state, res.data.feed.edges.map(e => mapPost(e.node)), loggedIn);
       if (state.ad) {
