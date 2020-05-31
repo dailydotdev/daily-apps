@@ -1,5 +1,5 @@
 import axios, {AxiosInstance} from 'axios';
-import {dateReviver, ratioToSize, reviveJSON} from './utils';
+import {dateReviver, reviveJSON} from './utils';
 
 export interface Publication {
     id: string;
@@ -77,8 +77,6 @@ export interface SearchSuggestionResults {
 }
 
 export interface ContentService {
-    setIsLoggedIn(isLogged: boolean): void;
-
     fetchPublications(): Promise<Publication[]>;
 
     requestPublication(source: string): Promise<void>;
@@ -99,14 +97,6 @@ export interface ContentService {
 
     hidePost(postId: string): Promise<void>;
 
-    fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[]): Promise<Post[]>;
-
-    fetchPostsByPublication(latest: Date, page: number, pub: string): Promise<Post[]>;
-
-    fetchPostsByTag(latest: Date, page: number, tag: string): Promise<Post[]>;
-
-    fetchBookmarks(latest: Date, page: number): Promise<Post[]>;
-
     updateFeedPublications(pubs: FeedPublication[]): Promise<void>;
 
     fetchFeedPublications(): Promise<object>;
@@ -125,49 +115,19 @@ export interface ContentService {
 
     searchTags(query: string): Promise<TagsSearchResult>;
 
-    searchPosts(latest: Date, page: number, query: string): Promise<PostsSearchResult>;
-
     searchSuggestion(query: string): Promise<SearchSuggestionResults>;
 }
 
 export class ContentServiceImpl implements ContentService {
     private readonly request: AxiosInstance;
-    private readonly baseURL: string;
-    private readonly pageSize: number;
-    private isLogged: boolean = false;
 
-    constructor(baseURL: string, pageSize: number, app: string | null = null) {
-        this.baseURL = baseURL;
-        this.pageSize = pageSize;
+    constructor(baseURL: string, app: string | null = null) {
         this.request = axios.create({
             baseURL,
             withCredentials: true,
             timeout: 10000,
             headers: app ? {app} : {},
         });
-    }
-
-    private redirectLink(post: Post) {
-        return `${this.baseURL}/r/${post.id}`;
-    }
-
-    private mapPost(data: any): Post {
-        return Object.assign({},
-            ratioToSize(reviveJSON(data, dateReviver)),
-            {url: this.redirectLink(data)});
-    }
-
-    private getPostFields(): string {
-        const base = 'id,title,url,publishedAt,createdAt,image,ratio,placeholder,views,readTime,publication { id, name, image },tags';
-        if (this.isLogged) {
-            return `${base},bookmarked,read`;
-        }
-
-        return base;
-    }
-
-    setIsLoggedIn(isLogged: boolean): void {
-        this.isLogged = isLogged;
     }
 
     async fetchPublications(): Promise<Publication[]> {
@@ -231,80 +191,6 @@ export class ContentServiceImpl implements ContentService {
         await this.request.post(`/v1/posts/${postId}/hide`);
     }
 
-    async fetchLatestPosts(latest: Date, page: number, pubs?: string[], tags?: string[], sortBy: string = 'popularity', showOnlyNotReadPosts: boolean = false): Promise<Post[]> {
-        const inputParams = {
-            latest: latest.toISOString(),
-            page,
-            pageSize: this.pageSize,
-            ...pubs && {pubs: pubs.join()},
-            ...tags && {tags: tags.join()},
-            sortBy,
-            ...showOnlyNotReadPosts && {read: false}
-        };
-
-        const {data: res} = await this.request.get('/graphql', {
-            params: {
-                query: `query fetchLatest($params: QueryPostInput) { latest(params: $params) { ${this.getPostFields()} } }`,
-                variables: {params: inputParams},
-            },
-        });
-
-        return res.data.latest.map((p: any) => this.mapPost(p));
-    }
-
-    async fetchPostsByPublication(latest: Date, page: number, pub: string): Promise<Post[]> {
-        const inputParams = {
-            latest: latest.toISOString(),
-            page,
-            pageSize: this.pageSize,
-            pub,
-        };
-
-        const {data: res} = await this.request.get('/graphql', {
-            params: {
-                query: `query fetchPostsByPublication($params: PostByPublicationInput) { postsByPublication(params: $params) { ${this.getPostFields()} } }`,
-                variables: {params: inputParams},
-            },
-        });
-
-        return res.data.postsByPublication.map((p: any) => this.mapPost(p));
-    }
-
-    async fetchPostsByTag(latest: Date, page: number, tag: string): Promise<Post[]> {
-        const inputParams = {
-            latest: latest.toISOString(),
-            page,
-            pageSize: this.pageSize,
-            tag,
-        };
-
-        const {data: res} = await this.request.get('/graphql', {
-            params: {
-                query: `query fetchPostsByTag($params: PostByTagInput) { postsByTag(params: $params) { ${this.getPostFields()} } }`,
-                variables: {params: inputParams},
-            },
-        });
-
-        return res.data.postsByTag.map((p: any) => this.mapPost(p));
-    }
-
-    async fetchBookmarks(latest: Date, page: number): Promise<Post[]> {
-        const inputParams = {
-            latest: latest.toISOString(),
-            page,
-            pageSize: this.pageSize,
-        };
-
-        const {data: res} = await this.request.get('/graphql', {
-            params: {
-                query: `query fetchBookmarks($params: QueryPostInput) { bookmarks(params: $params) { ${this.getPostFields()} } }`,
-                variables: {params: inputParams},
-            },
-        });
-
-        return res.data.bookmarks.map((p: any) => this.mapPost(p));
-    }
-
     async fetchFeedPublications(): Promise<any> {
         const res = await this.request.get('/v1/feeds/publications');
         return res.data.reduce((acc: any, cur: FeedPublication) => Object.assign({}, acc, {[cur.publicationId]: cur.enabled}), {});
@@ -343,27 +229,6 @@ export class ContentServiceImpl implements ContentService {
     async searchTags(query: string): Promise<TagsSearchResult> {
         const res = await this.request.get(`/v1/tags/search?query=${query}`);
         return reviveJSON(res.data, dateReviver);
-    }
-
-    async searchPosts(latest: Date, page: number, query: string): Promise<PostsSearchResult> {
-        const inputParams = {
-            latest: latest.toISOString(),
-            page,
-            pageSize: this.pageSize,
-            query,
-        };
-
-        const {data: res} = await this.request.get('/graphql', {
-            params: {
-                query: `query postsSearch($params: PostSearchInput) { search(params: $params) { query, hits { ${this.getPostFields()} } } }`,
-                variables: {params: inputParams},
-            },
-        });
-
-        return {
-            query: res.data.search.query,
-            hits: res.data.search.hits.map((p: any) => this.mapPost(p)),
-        };
     }
 
     async searchSuggestion(query: string): Promise<SearchSuggestionResults> {

@@ -10,8 +10,10 @@ import DaHeader from '../src/components/DaHeader.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
 import DaFeed from '../src/components/DaFeed.vue';
 import { createDummyEvent } from './fixtures/helpers';
-import { LATEST_NOTIFICATIONS_QUERY } from '../src/common/graphql';
+import { LATEST_NOTIFICATIONS_QUERY } from '../src/graphql/home';
+import { SOURCES_QUERY } from '../src/graphql/sidebar';
 import { apolloClient } from '../src/apollo';
+import { POPULAR_TAGS_QUERY } from '../src/graphql/tags';
 
 jest.mock('../src/apollo');
 
@@ -53,6 +55,7 @@ beforeEach(() => {
     },
     actions: {
       search: jest.fn(),
+      fetchNextFeedPage: jest.fn(),
     },
     getters: {
       feed: state => state.posts,
@@ -90,6 +93,9 @@ beforeEach(() => {
     },
     getters: {
       isLoggedIn: state => !!state.profile,
+    },
+    actions: {
+      validateAuth: jest.fn(),
     },
   };
 
@@ -172,6 +178,8 @@ it('should show banner when data is available', (done) => {
 
 it('should fetch notifications and update badge', (done) => {
   const now = new Date();
+  apolloClient.setRequestHandler(SOURCES_QUERY, () => Promise.resolve({data: { sources: {} }}));
+  apolloClient.setRequestHandler(POPULAR_TAGS_QUERY, () => Promise.resolve({data: { popularTags: {} }}));
   apolloClient.setRequestHandler(
     LATEST_NOTIFICATIONS_QUERY,
     () => Promise.resolve({ data: { latestNotifications: [{html: 'hello world', timestamp: now.toISOString()}] } }));

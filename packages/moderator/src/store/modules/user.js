@@ -23,7 +23,6 @@ export default {
   actions: {
     async authenticate({ commit, state }, { code }) {
       const profile = await authService.authenticate(code, state.challenge.verifier);
-      contentService.setIsLoggedIn(true);
       commit('setProfile', profile);
     },
     async generateChallenge({ commit }) {

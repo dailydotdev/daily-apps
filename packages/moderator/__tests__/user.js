@@ -1,14 +1,11 @@
 import module from '../src/store/modules/user';
-import { authService, contentService } from '../src/common/services';
+import { authService } from '../src/common/services';
 import { testAction } from './fixtures/helpers';
 
 jest.mock('../src/common/services', () => ({
   authService: {
     authenticate: jest.fn(),
     generateChallenge: jest.fn(),
-  },
-  contentService: {
-    setIsLoggedIn: jest.fn(),
   },
 }));
 
@@ -39,7 +36,6 @@ it('should authenticate user and set profile', async () => {
     [{ type: 'setProfile', payload: profile }],
   );
   expect(authService.authenticate).toBeCalledWith('12345', 'verifier');
-  expect(contentService.setIsLoggedIn).toBeCalledWith(true);
 });
 
 it('should set code challenge in state', () => {

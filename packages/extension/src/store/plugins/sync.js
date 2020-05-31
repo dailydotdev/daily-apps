@@ -50,24 +50,10 @@ const syncBookmarks = (state) => {
   return Promise.resolve();
 };
 
-const mergeEnabledArray = (curr, update, defaultState, key) => {
-  const reset = curr.map(t => ({ ...t, enabled: defaultState }));
-  return update.reduce((acc, t) => {
-    const index = acc.findIndex(t2 => t[key] === t2[key]);
-    if (index < 0) {
-      acc.push(t);
-    } else {
-      // eslint-disable-next-line no-param-reassign
-      acc[index] = { ...t, enabled: t.enabled };
-    }
-    return acc;
-  }, reset);
-};
-
 const plugin = (store) => {
   let syncing = false;
 
-  const fetchPersonalization = async (state) => {
+  const fetchPersonalization = async () => {
     syncing = true;
     try {
       const settings = await profileService.fetchSettings();
@@ -76,19 +62,11 @@ const plugin = (store) => {
       store.commit('ui/setEnableCardAnimations', settings.enableCardAnimations);
       store.commit('ui/setSpaciness', settings.spaciness);
       store.commit('ui/setShowOnlyNotReadPosts', settings.showOnlyNotReadPosts);
-      store.commit('feed/setPublications',
-        state.feed.publications.map(p => ({ ...p, enabled: true })));
       const pr1 = store.dispatch('ui/setTheme', settings.theme);
       const pr2 = contentService.fetchFeedPublications()
-        .then(pubs => Object.keys(pubs).forEach(p => store.commit('feed/setEnablePublication', {
-          index: state.feed.publications.findIndex(p2 => p2.id === p),
-          enabled: pubs[p],
-        })));
+        .then(pubs => store.commit('feed/setDisabledPublications', Object.keys(pubs)));
       const pr3 = contentService.fetchUserTags()
-        .then(tags => store.commit('feed/setTags', mergeEnabledArray(state.feed.tags, tags.map(t => ({
-          name: t,
-          enabled: true,
-        })), false, 'name')));
+        .then(tags => store.commit('feed/setEnabledTags', tags));
       await Promise.all([pr1, pr2, pr3]);
     } finally {
       syncing = false;

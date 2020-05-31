@@ -118,9 +118,12 @@
 <script>
 import 'lazysizes';
 import { mapState, mapActions, mapGetters } from 'vuex';
+import { NetworkStatus } from 'apollo-client';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import { contentService } from '../common/services';
 import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
+import { SOURCES_QUERY } from '../graphql/sidebar';
+import { POPULAR_TAGS_QUERY, SEARCH_TAGS_QUERY } from '../graphql/tags';
 
 export default {
   name: 'DaSidebar',
@@ -136,6 +139,36 @@ export default {
     },
   },
 
+  apollo: {
+    rawPublications: {
+      query: SOURCES_QUERY,
+      fetchPolicy: 'cache-and-network',
+      update: data => data.sources.edges.map(e => e.node),
+      result(args) {
+        return this.dataLoaded(args);
+      },
+    },
+    rawTags: {
+      query: POPULAR_TAGS_QUERY,
+      fetchPolicy: 'cache-and-network',
+      update: data => data.popularTags,
+      result(args) {
+        return this.dataLoaded(args);
+      },
+    },
+    searchedTags: {
+      query: SEARCH_TAGS_QUERY,
+      fetchPolicy: 'no-cache',
+      variables() {
+        return { query: this.query };
+      },
+      skip() {
+        return !this.query.length && !this.filterChecked;
+      },
+      update: data => data.searchTags.hits,
+    },
+  },
+
   data() {
     return {
       opened: false,
@@ -147,11 +180,14 @@ export default {
       searchedTags: [],
       searchFocused: false,
       query: '',
+      rawPublications: [],
+      rawTags: [],
+      loaded: false,
     };
   },
 
   computed: {
-    ...mapState('feed', ['publications', 'tags']),
+    ...mapState('feed', ['tags']),
     ...mapGetters('user', ['isLoggedIn']),
     enabledPubs() {
       return this.filteredPublications.filter(x => x.enabled);
@@ -178,6 +214,24 @@ export default {
     searchPlaceholder() {
       return `Search ${this.filterChecked ? 'Tags' : 'Sources'}`;
     },
+    tags() {
+      if (!this.rawTags) {
+        return [];
+      }
+      return this.rawTags.map(t => ({
+        ...t,
+        enabled: !!this.$store.state.feed.enabledTags[t.name],
+      }));
+    },
+    publications() {
+      if (!this.rawPublications) {
+        return [];
+      }
+      return this.rawPublications.map(p => ({
+        ...p,
+        enabled: !this.$store.state.feed.disabledPublications[p.id],
+      }));
+    },
     filteredPublications() {
       if (!this.query.length) {
         return this.publications;
@@ -188,7 +242,13 @@ export default {
       );
     },
   },
-
+  watch: {
+    loaded(val) {
+      if (val) {
+        this.$emit('loaded');
+      }
+    },
+  },
   methods: {
     open() {
       if (this.opened || this.disabled) {
@@ -218,11 +278,8 @@ export default {
     },
     setEnablePublication(pub, enabled) {
       ga('send', 'event', 'Publications', 'Toggle', enabled ? 'Check' : 'Uncheck');
-      const index = this.publications.findIndex(p => p.id === pub.id);
-      this.$store.dispatch('feed/setEnablePublication', { index, enabled })
       // TODO: handle error
-      // eslint-disable-next-line
-                .catch(console.error);
+      this.$store.dispatch('feed/setEnablePublication', { id: pub.id, enabled });
     },
     // eslint-disable-next-line no-unused-vars
     viewPublication(pub) {
@@ -267,10 +324,8 @@ export default {
     },
     setEnableTag(tag, enabled) {
       ga('send', 'event', 'Tags', 'Toggle', enabled ? 'Check' : 'Uncheck');
-      this.$store.dispatch('feed/setEnableTag', { tag, enabled })
       // TODO: handle error
-      // eslint-disable-next-line
-                .catch(console.error);
+      this.$store.dispatch('feed/setEnableTag', { tag: tag.name, enabled });
     },
     viewTag(tag) {
       ga('send', 'event', 'Tags', 'Single');
@@ -288,21 +343,17 @@ export default {
       this.query = query;
       if (!query.length) {
         this.searchedTags = [];
-      } else {
-        try {
-          const res = await contentService.searchTags(query);
-          this.searchedTags = res.hits;
-        } catch (err) {
-          // TODO: handle error
-          // eslint-disable-next-line
-                    console.error(err);
-        }
       }
     },
     setOpened(opened) {
       setTimeout(() => {
         this.opened = opened;
       });
+    },
+    dataLoaded({ networkStatus, loading }) {
+      if (networkStatus === NetworkStatus.ready && !loading && !this.loaded) {
+        this.loaded = this.rawPublications.length > 0 && this.rawTags.length > 0;
+      }
     },
 
     ...mapActions({
@@ -315,12 +366,12 @@ export default {
   },
 
   mounted() {
-        import('@daily/components/icons/link');
-        import('@daily/components/icons/hashtag');
-        import('@daily/components/icons/plus');
-        import('@daily/components/icons/x');
-        import('@daily/components/icons/v');
-        import('@daily/components/icons/magnifying');
+    import('@daily/components/icons/link');
+    import('@daily/components/icons/hashtag');
+    import('@daily/components/icons/plus');
+    import('@daily/components/icons/x');
+    import('@daily/components/icons/v');
+    import('@daily/components/icons/magnifying');
   },
 };
 </script>

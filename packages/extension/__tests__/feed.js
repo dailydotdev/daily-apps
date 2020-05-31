@@ -10,7 +10,7 @@ import {
   TAG_FEED_QUERY,
   BOOKMARKS_FEED_QUERY,
   SEARCH_POSTS_QUERY,
-} from '../src/common/graphql';
+} from '../src/graphql/feed';
 
 jest.mock('../src/apollo');
 
@@ -82,48 +82,46 @@ it('should commit set show bookmarks and refresh feed', async () => {
   );
 });
 
-it('should set publications in state', () => {
-  const state = {};
-  module.mutations.setPublications(state, []);
-  expect(state.publications).toEqual([]);
+it('should remove publication from disabledPublications', () => {
+  const state = { disabledPublications: { angular: true, vue: true } };
+  module.mutations.enablePublication(state, { id: 'angular', enabled: true });
+  expect(state.disabledPublications).toEqual({ vue: true });
 });
 
-it('should set enabled of specific publication in state', () => {
-  const state = {
-    publications: [{
-      name: 'angular',
-      enabled: true,
-    }, {
-      name: 'vue',
-      enabled: false,
-    }],
-  };
-  module.mutations.setEnablePublication(state, { index: 1, enabled: true });
-  expect(state.publications).toEqual([{
-    name: 'angular',
-    enabled: true,
-  }, {
-    name: 'vue',
-    enabled: true,
-  }]);
+it('should add publication to disabledPublications', () => {
+  const state = { disabledPublications: { angular: true } };
+  module.mutations.enablePublication(state, { id: 'vue', enabled: false });
+  expect(state.disabledPublications).toEqual({ angular: true, vue: true });
 });
 
 it('should set enabled publication and refresh feed', async () => {
-  const pubs = { index: 0, enabled: true };
+  const pubs = { id: 'vue', enabled: true };
   const state = {};
   await testAction(module.actions.setEnablePublication, pubs, state,
-    [{ type: 'setEnablePublication', payload: pubs }],
+    [{ type: 'enablePublication', payload: pubs }],
     [{ type: 'refreshFeed' }], { user: { profile: null } });
 });
 
 it('should set enabled publication, refresh feed and update user', async () => {
-  const pubs = { index: 0, enabled: true };
-  const state = { publications: [{ id: 'angular' }] };
+  const pubs = { id: 'angular', enabled: true };
+  const state = { disabledPublications: { angular: true } };
   await testAction(module.actions.setEnablePublication, pubs, state,
-    [{ type: 'setEnablePublication', payload: pubs }],
+    [{ type: 'enablePublication', payload: pubs }],
     [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
   expect(contentService.updateFeedPublications)
     .toBeCalledWith([{ publicationId: 'angular', enabled: true }]);
+});
+
+it('should set disabled publications', () => {
+  const state = {};
+  module.mutations.setDisabledPublications(state, ['angular', 'vue']);
+  expect(state.disabledPublications).toEqual({ angular: true, vue: true });
+});
+
+it('should set enabled tags', () => {
+  const state = {};
+  module.mutations.setEnabledTags(state, ['angular', 'vue']);
+  expect(state.enabledTags).toEqual({ angular: true, vue: true });
 });
 
 it('should set filter in state', () => {
@@ -133,64 +131,40 @@ it('should set filter in state', () => {
   expect(state.filter).toEqual(filter);
 });
 
-it('should fetch publications and update state', async () => {
-  const pubs = [{ name: 'angular', enabled: true }];
-  contentService.fetchPublications.mockReturnValue(pubs);
-  const state = { publications: [] };
-  await testAction(module.actions.fetchPublications, undefined, state, [
-    { type: 'setPublications', payload: pubs },
-  ]);
-  expect(contentService.fetchPublications).toBeCalledTimes(1);
+it('should remove tag from enabled tags', () => {
+  const state = { enabledTags: { angular: true, vue: true } };
+  module.mutations.enableTag(state, { tag: 'angular', enabled: false });
+  expect(state.enabledTags).toEqual({ vue: true });
 });
 
-it('should set tags in state', () => {
-  const state = { tags: [] };
-  module.mutations.setTags(state, [{ name: 'java' }]);
-  expect(state.tags).toEqual([{ name: 'java' }]);
-});
-
-it('should set enabled of specific tag in state', () => {
-  const state = {
-    tags: [{
-      name: 'angular',
-      enabled: true,
-    }, {
-      name: 'vue',
-      enabled: false,
-    }],
-  };
-  module.mutations.setEnableTag(state, { tag: state.tags[1], enabled: true });
-  expect(state.tags).toEqual([{
-    name: 'angular',
-    enabled: true,
-  }, {
-    name: 'vue',
-    enabled: true,
-  }]);
+it('should add tag to enabled tags', () => {
+  const state = { enabledTags: { vue: true } };
+  module.mutations.enableTag(state, { tag: 'angular', enabled: true });
+  expect(state.enabledTags).toEqual({ angular: true, vue: true });
 });
 
 it('should set enabled tag and refresh feed', async () => {
-  const tags = { index: 0, enabled: true };
+  const tags = { tag: 'vue', enabled: true };
   const state = {};
   await testAction(module.actions.setEnableTag, tags, state,
-    [{ type: 'setEnableTag', payload: tags }],
+    [{ type: 'enableTag', payload: tags }],
     [{ type: 'refreshFeed' }], { user: { profile: null } });
 });
 
 it('should set enabled tag, refresh feed and add user tag', async () => {
-  const state = { tags: [{ name: 'angular' }] };
-  const tags = { tag: state.tags[0], enabled: true };
+  const state = { enabledTags: {} };
+  const tags = { tag: 'angular', enabled: true };
   await testAction(module.actions.setEnableTag, tags, state,
-    [{ type: 'setEnableTag', payload: tags }],
+    [{ type: 'enableTag', payload: tags }],
     [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
   expect(contentService.addUserTags).toBeCalledWith(['angular']);
 });
 
 it('should set enabled tag, refresh feed and delete user tag', async () => {
-  const state = { tags: [{ name: 'angular' }] };
-  const tags = { tag: state.tags[0], enabled: false };
+  const state = { enabledTags: {} };
+  const tags = { tag: 'angular', enabled: false };
   await testAction(module.actions.setEnableTag, tags, state,
-    [{ type: 'setEnableTag', payload: tags }],
+    [{ type: 'enableTag', payload: tags }],
     [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
   expect(contentService.deleteUserTag).toBeCalledWith('angular');
 });
@@ -256,16 +230,6 @@ it('should set a post as not bookmarked and remove it from bookmarks', () => {
   }]);
 });
 
-it('should fetch tags and update state', async () => {
-  const tags = [{ name: 'javascript' }];
-  contentService.fetchPopularTags.mockReturnValue(tags);
-  const state = { tags: [] };
-  await testAction(module.actions.fetchTags, undefined, state, [
-    { type: 'setTags', payload: tags },
-  ]);
-  expect(contentService.fetchPopularTags).toBeCalledTimes(1);
-});
-
 it('should return hasFilter false when no filter', () => {
   const state = {
     filter: null,
@@ -274,15 +238,9 @@ it('should return hasFilter false when no filter', () => {
   expect(result).toEqual(false);
 });
 
-it('should return hasFilter true when publication exists and enabled', () => {
+it('should return hasFilter true when publication is enabled', () => {
   const state = {
-    publications: [{
-      id: 'angular',
-      enabled: true,
-    }, {
-      id: 'vue',
-      enabled: false,
-    }],
+    disabledPublications: { vue: true },
     filter: {
       type: 'publication',
       info: {
@@ -294,15 +252,9 @@ it('should return hasFilter true when publication exists and enabled', () => {
   expect(result).toEqual(true);
 });
 
-it('should return hasFilter false when publication exists and disabled', () => {
+it('should return hasFilter false when publication is disabled', () => {
   const state = {
-    publications: [{
-      id: 'angular',
-      enabled: true,
-    }, {
-      id: 'vue',
-      enabled: false,
-    }],
+    disabledPublications: { vue: true },
     filter: {
       type: 'publication',
       info: {
@@ -314,15 +266,9 @@ it('should return hasFilter false when publication exists and disabled', () => {
   expect(result).toEqual(false);
 });
 
-it('should return hasFilter true when tag exists and enabled', () => {
+it('should return hasFilter true when tag is enabled', () => {
   const state = {
-    tags: [{
-      name: 'angular',
-      enabled: true,
-    }, {
-      name: 'vue',
-      enabled: false,
-    }],
+    enabledTags: { angular: true },
     filter: {
       type: 'tag',
       info: {
@@ -334,15 +280,9 @@ it('should return hasFilter true when tag exists and enabled', () => {
   expect(result).toEqual(true);
 });
 
-it('should return hasFilter false when tag exists and disabled', () => {
+it('should return hasFilter false when tag is disabled', () => {
   const state = {
-    tags: [{
-      name: 'angular',
-      enabled: true,
-    }, {
-      name: 'vue',
-      enabled: false,
-    }],
+    enabledTags: { angular: true },
     filter: {
       type: 'tag',
       info: {
@@ -372,13 +312,7 @@ it('should reset feed', () => {
 
 it('should enable publication from filter', async () => {
   const state = {
-    publications: [{
-      id: 'angular',
-      enabled: true,
-    }, {
-      id: 'vue',
-      enabled: false,
-    }],
+    disabledPublications: { vue: true },
     filter: {
       type: 'publication',
       info: {
@@ -386,20 +320,15 @@ it('should enable publication from filter', async () => {
       },
     },
   };
-  await testAction(module.actions.addFilterToFeed, undefined, state, [
-    { type: 'setEnablePublication', payload: { index: 1, enabled: true } },
-  ]);
+  await testAction(module.actions.addFilterToFeed, undefined, state,
+    [],
+    [{ type: 'setEnablePublication', payload: { id: 'vue', enabled: true } }],
+  );
 });
 
 it('should enable tag from filter', async () => {
   const state = {
-    tags: [{
-      name: 'angular',
-      enabled: true,
-    }, {
-      name: 'vue',
-      enabled: false,
-    }],
+    enabledTags: { angular: true },
     filter: {
       type: 'tag',
       info: {
@@ -410,26 +339,14 @@ it('should enable tag from filter', async () => {
   };
   await testAction(module.actions.addFilterToFeed, undefined, state,
     [],
-    [{ type: 'setEnableTag', payload: { tag: state.tags[1], enabled: true } }]);
+    [{ type: 'setEnableTag', payload: { tag: 'vue', enabled: true } }]);
 });
 
 it('should reset personalization', () => {
   const state = {
     filter: { type: 'tag' },
-    tags: [{
-      name: 'angular',
-      enabled: true,
-    }, {
-      name: 'vue',
-      enabled: false,
-    }],
-    publications: [{
-      id: 'angular',
-      enabled: true,
-    }, {
-      id: 'vue',
-      enabled: false,
-    }],
+    enabledTags: { angular: true },
+    disabledPublications: { vue: true },
     showBookmarks: true,
     bookmarks: [{
       id: '1',
@@ -441,20 +358,8 @@ it('should reset personalization', () => {
   };
   module.mutations.resetPersonalization(state);
   expect(state.filter).toEqual(null);
-  expect(state.tags).toEqual([{
-    name: 'angular',
-    enabled: false,
-  }, {
-    name: 'vue',
-    enabled: false,
-  }]);
-  expect(state.publications).toEqual([{
-    id: 'angular',
-    enabled: true,
-  }, {
-    id: 'vue',
-    enabled: true,
-  }]);
+  expect(state.enabledTags).toEqual({});
+  expect(state.disabledPublications).toEqual({});
   expect(state.showBookmarks).toEqual(false);
   expect(state.bookmarks).toEqual([]);
 });
@@ -663,7 +568,7 @@ it('should fetch anonymous feed', async () => {
     },  
   });
 
-  const state = { bookmarks: [{ id: '2' }], publications: [], tags: [], latest: now, sortBy: 'popularity' };
+  const state = { bookmarks: [{ id: '2' }], disabledPublications: [], enabledTags: [], latest: now, sortBy: 'popularity' };
   const res = await testAction(
     module.actions.fetchNextFeedPage,
     undefined,
@@ -705,7 +610,7 @@ it('should fetch next anonymous feed page', async () => {
     },  
   });
 
-  const state = { pageInfo: { hasNextPage: true, endCursor: 'cursor' }, bookmarks: [], posts: [], publications: [], tags: [], latest: now, sortBy: 'popularity' };
+  const state = { pageInfo: { hasNextPage: true, endCursor: 'cursor' }, bookmarks: [], posts: [], disabledPublications: [], enabledTags: [], latest: now, sortBy: 'popularity' };
   const res = await testAction(
     module.actions.fetchNextFeedPage,
     undefined,
@@ -736,7 +641,7 @@ it('should apply local filters for anonymous feed', async () => {
   MockDate.set(now);
   anonymousHandler.mockResolvedValueOnce(emptyFeed);
 
-  const state = { bookmarks: [], publications: [{id: 'a', enabled: true}, {id: 'b', enabled: false}], tags: [{name: 'webdev', enabled: false}, {name: 'javascript', enabled: true}], latest: now, sortBy: 'popularity' };
+  const state = { bookmarks: [], disabledPublications: { b: true }, enabledTags: { javascript: true }, latest: now, sortBy: 'popularity' };
   const res = await runAction(
     module.actions.fetchNextFeedPage,
     undefined,

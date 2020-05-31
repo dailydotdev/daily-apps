@@ -22,10 +22,6 @@ export default new Vuex.Store({
         });
       }
 
-      if (state.user.profile) {
-        contentService.setIsLoggedIn(true);
-      }
-
       state.initialized = true;
     },
   },

@@ -7,7 +7,6 @@ import sync from './plugins/sync';
 import ui from './modules/ui';
 import feed from './modules/feed';
 import user from './modules/user';
-import { contentService } from '../common/services';
 
 Vue.use(Vuex);
 
@@ -44,13 +43,26 @@ export default new Vuex.Store({
           state.feed.posts = (cached.feed.posts || []).map(cache2Post);
           state.feed.bookmarks = (cached.feed.bookmarks || []).map(cache2Post);
           state.feed.conflictBookmarks = (cached.feed.conflictBookmarks || []).map(cache2Post);
+          if (cached.feed.publications) {
+            delete state.feed.publications;
+            state.feed.disabledPublications = cached.feed.publications.reduce((acc, val) => {
+              if (!val.enabled) {
+                return { ...acc, [val.id]: true };
+              }
+              return acc;
+            }, {});
+          }
+          if (cached.feed.tags) {
+            delete state.feed.tags;
+            state.feed.enabledTags = cached.feed.tags.reduce((acc, val) => {
+              if (!val.enabled) {
+                return { ...acc, [val.name]: true };
+              }
+              return acc;
+            }, {});
+          }
         }
       }
-
-      if (state.user.profile) {
-        contentService.setIsLoggedIn(true);
-      }
-
       state.initialized = true;
     },
   },

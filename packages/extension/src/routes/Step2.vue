@@ -45,21 +45,46 @@
 import { mapState, mapMutations } from 'vuex';
 import '@daily/components/icons/x';
 import '@daily/components/icons/magnifying';
-import { contentService } from '../common/services';
+import { SEARCH_TAGS_QUERY, POPULAR_TAGS_QUERY } from '../graphql/tags';
 
 export default {
   name: 'Step2',
+
+  apollo: {
+    rawTags: {
+      query() {
+        if (this.query.length) {
+          return SEARCH_TAGS_QUERY;
+        }
+        return POPULAR_TAGS_QUERY;
+      },
+      fetchPolicy: 'network-only',
+      variables() {
+        if (this.query.length) {
+          return { query: this.query };
+        }
+        return undefined;
+      },
+      update: (data) => {
+        if (data.popularTags) {
+          return data.popularTags;
+        }
+        return data.searchTags.hits;
+      },
+    },
+  },
 
   data() {
     return {
       rawTags: [],
       focus: false,
+      query: '',
     };
   },
 
   computed: {
     ...mapState({
-      selectedTags: state => state.feed.tags.filter(t => t.enabled),
+      selectedTags: state => Object.keys(state.feed.enabledTags),
     }),
 
     activeCounter() {
@@ -72,8 +97,7 @@ export default {
 
     tags() {
       return this.rawTags.map((t) => {
-        const found = this.selectedTags.find(t2 => t2.name === t.name);
-        const enabled = !!(found && found.enabled);
+        const enabled = !!this.selectedTags.find(t2 => t2 === t.name);
         return { name: t.name, enabled };
       });
     },
@@ -81,26 +105,12 @@ export default {
 
   methods: {
     async searchTags(event) {
-      const query = event.target.value;
-      if (!query.length) {
-        this.rawTags = await contentService.fetchPopularTags();
-      } else {
-        try {
-          const res = await contentService.searchTags(query);
-          this.rawTags = res.hits;
-        } catch (err) {
-          // TODO: handle error
-          // eslint-disable-next-line
-          console.error(err);
-        }
-      }
+      this.query = event.target.value;
     },
 
     toggleTag(tag) {
-      this.$store.dispatch('feed/setEnableTag', { tag, enabled: !tag.enabled })
       // TODO: handle error
-      // eslint-disable-next-line
-        .catch(console.error);
+      this.$store.dispatch('feed/setEnableTag', { tag: tag.name, enabled: !tag.enabled });
     },
 
     clearQuery() {
@@ -114,10 +124,6 @@ export default {
     },
 
     ...mapMutations('ui', ['doneOnboarding']),
-  },
-
-  async mounted() {
-    this.rawTags = await contentService.fetchPopularTags();
   },
 };
 </script>

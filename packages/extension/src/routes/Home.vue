@@ -6,10 +6,10 @@
     <da-header @go="onGoClicked" @login="onLogin('Header')"
                @profile="onProfile" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
-    <da-sidebar ref="sidebar" :disabled="showBookmarks"
-                @requested-source="showRequestModal = true"
+    <da-sidebar ref="sidebar" v-if="fetchStage > 1" :disabled="showBookmarks"
+                @requested-source="showRequestModal = true" @loaded="fetchStage += 1"
                 @login="onLogin('Sidebar')"></da-sidebar>
-    <div class="line-numbers" @mouseenter="$refs.sidebar.open()">
+    <div class="line-numbers" @mouseenter="$refs.sidebar && $refs.sidebar.open()">
       <svgicon name="hamburger" class="line-numbers_icon"/>
       <div class="line-numbers__lines" ref="lineNumbers">
         <pre v-for="n in lineNumbers" class="micro2" :key="n">{{ n }}</pre>
@@ -98,7 +98,7 @@
         </div>
       </template>
       <da-feed v-else-if="showFeed" ref='feed'/>
-      <DaSpinner v-if="this.$store.state.feed.loading" class="feed-spinner"/>
+      <DaSpinner v-if="loading" class="feed-spinner"/>
     </main>
     <div id="anchor" ref="anchor"></div>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
@@ -156,10 +156,8 @@ import {
 } from 'vuex';
 import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
-import { BANNER_QUERY, LATEST_NOTIFICATIONS_QUERY } from '../common/graphql';
+import { BANNER_QUERY, LATEST_NOTIFICATIONS_QUERY } from '../graphql/home';
 import DaHeader from '../components/DaHeader.vue';
-import DaSidebar from '../components/DaSidebar.vue';
-import DaDndMessage from '../components/DaDndMessage.vue';
 import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
@@ -174,6 +172,7 @@ export default {
   apollo: {
     banner: {
       query: BANNER_QUERY,
+      fetchPolicy: 'cache-only',
       variables() {
         return { lastSeen: this.lastBannerSeen };
       },
@@ -183,6 +182,7 @@ export default {
     },
     notifications: {
       query: LATEST_NOTIFICATIONS_QUERY,
+      fetchPolicy: 'cache-only',
       manual: true,
       async result({ data, networkStatus, loading }) {
         if (networkStatus === NetworkStatus.ready && !loading && data.latestNotifications) {
@@ -199,11 +199,11 @@ export default {
 
   components: {
     DaSpinner,
-    DaSidebar,
-    DaDndMessage,
     DaHeader,
     DaSvg,
     DaFeed,
+    DaSidebar: () => import('../components/DaSidebar.vue'),
+    DaDndMessage: () => import('../components/DaDndMessage.vue'),
     DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
     DaSearch: () => import('@daily/components/src/components/DaSearch.vue'),
@@ -231,7 +231,7 @@ export default {
       lineNumbers: 1,
       showSearch: false,
       searchSuggestions: [],
-      lastPriorityData: false,
+      fetchStage: null,
       banner: null,
     };
   },
@@ -331,24 +331,16 @@ export default {
       }
     },
 
-    async initHome() {
-      this.generateChallenge();
+    criticalFetch() {
+      const loadFeed = this.fetchNextFeedPage()
+        .then(() => requestIdleCallback(() => this.contentObserver.observe(this.$refs.anchor)));
+      const loadAuth = this.validateAuth();
+      return Promise.all([loadFeed, loadAuth]);
+    },
 
-      getCache(TERMS_CONSENT_KEY)
-        .then((consent) => {
-          this.showNewTerms = !consent;
-        });
-
-      Promise.all([
-        this.fetchPublications(),
-        this.fetchTags(),
-      ]).then(() => this.fetchNextFeedPage())
-        .then(() => this.contentObserver.observe(this.$refs.anchor))
-        // TODO: handle error
-        // eslint-disable-next-line no-console
-        .catch(console.error);
-
-      this.lastPriorityData = true;
+    engagementFetch() {
+      this.$apollo.queries.banner.setOptions({ fetchPolicy: 'cache-and-network' });
+      this.$apollo.queries.notifications.setOptions({ fetchPolicy: 'cache-and-network' });
     },
 
     trackPageView() {
@@ -412,8 +404,6 @@ export default {
 
     ...mapActions({
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
-      fetchTags: 'feed/fetchTags',
-      fetchPublications: 'feed/fetchPublications',
       addFilterToFeed: 'feed/addFilterToFeed',
       search: 'feed/search',
       mergeBookmarksConflicts: 'feed/mergeBookmarksConflicts',
@@ -498,10 +488,13 @@ export default {
   },
 
   watch: {
-    lastPriorityData(val) {
-      if (val) {
-        this.$apollo.queries.banner.setOptions({ fetchPolicy: 'cache-and-network' });
-        this.$apollo.queries.notifications.setOptions({ fetchPolicy: 'cache-and-network' });
+    async fetchStage(val) {
+      if (val === 1) { // Critical data fetch (feed, auth, etc)
+        await this.criticalFetch();
+        await this.$nextTick();
+        this.fetchStage += 1;
+      } else if (val === 3) { // Engagement data fetch (notifications, banner, etc)
+        this.engagementFetch();
       }
     },
     posts() {
@@ -548,14 +541,17 @@ export default {
     this.updateLines();
 
     requestIdleCallback(async () => {
-      await this.initHome();
-      await this.validateAuth();
+      this.generateChallenge();
+
+      const consent = await getCache(TERMS_CONSENT_KEY);
+      this.showNewTerms = !consent;
     });
 
     this.setDaFeedReference(() => this.$refs.feed);
 
     this.$nextTick(() => {
       enableKeyBindings();
+      this.fetchStage = 1;
     });
   },
 
