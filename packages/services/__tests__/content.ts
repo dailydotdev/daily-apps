@@ -3,33 +3,20 @@ import axios from 'axios';
 import httpAdapter from 'axios/lib/adapters/http';
 // @ts-ignore
 import nock from 'nock';
-import {ContentServiceImpl, FeedPublication, Publication, Tag, PubRequest, PubRequestEdit} from '../src';
-import {expected as latestExpected, response as latestResponse} from './fixtures/latest';
-import {expected as bookExpected, response as bookResponse} from './fixtures/bookmarks';
+import {ContentServiceImpl, Publication, Tag, PubRequest, PubRequestEdit} from '../src';
 import {expected as feedPubsExpected, response as feedPubsResponse} from './fixtures/feedPubs';
 
 axios.defaults.adapter = httpAdapter;
 
 const baseURL = 'http://localhost:3000';
-const service = new ContentServiceImpl(baseURL, 5);
+const service = new ContentServiceImpl(baseURL);
 
-const postFields = 'id,title,url,publishedAt,createdAt,image,ratio,placeholder,views,readTime,publication { id, name, image },tags';
-const fetchLatestQuery = `query fetchLatest($params: QueryPostInput) { latest(params: $params) { ${postFields} } }`;
-const fetchPersonalLatestQuery = `query fetchLatest($params: QueryPostInput) { latest(params: $params) { ${postFields},bookmarked,read } }`;
-const fetchPostsByPublicationQuery = `query fetchPostsByPublication($params: PostByPublicationInput) { postsByPublication(params: $params) { ${postFields} } }`;
-const fetchPostsByTagQuery = `query fetchPostsByTag($params: PostByTagInput) { postsByTag(params: $params) { ${postFields} } }`;
-const fetchBookmarksQuery = `query fetchBookmarks($params: QueryPostInput) { bookmarks(params: $params) { ${postFields},bookmarked,read } }`;
-const searchPostsQuery = `query postsSearch($params: PostSearchInput) { search(params: $params) { query, hits { ${postFields} } } }`;
 const searchSuggestionsQuery = 'query postsSearchSuggestions($params: PostSearchSuggestionInput) { searchSuggestion(params: $params) { query, hits { title } } }';
 
 // See https://github.com/axios/axios/blob/master/lib/helpers/buildURL.js
 function encode(val: string) {
     return encodeURIComponent(val).replace(/%40/gi, '@').replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',').replace(/%20/g, '+').replace(/%5B/gi, '[').replace(/%5D/gi, ']');
 }
-
-beforeEach(() => {
-    service.setIsLoggedIn(false);
-});
 
 it('should fetch publications from server', async () => {
     const expected: Publication[] = require('./fixtures/pubs.json');
@@ -118,123 +105,6 @@ it('should publish an existing pub request', async () => {
     await service.publishPubRequest('1');
 });
 
-it('should fetch latest posts from server', async () => {
-    const inputParams = {
-        latest: '2018-11-28T08:27:45.612Z',
-        page: 0,
-        pageSize: 5,
-        pubs: 'airbnb,alligator,angular',
-        tags: 'angular,vue,webdev',
-        sortBy: 'popularity',
-    };
-
-    const query = `${encode(fetchLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
-
-    nock(baseURL)
-        .get(`/graphql?query=${query}`)
-        .reply(200, {data: {latest: latestResponse}});
-
-    const actual = await service.fetchLatestPosts(
-        new Date('2018-11-28T08:27:45.612Z'),
-        0,
-        ['airbnb', 'alligator', 'angular'],
-        ['angular', 'vue', 'webdev'],
-    );
-
-    expect(actual).toEqual(latestExpected);
-});
-
-it('should fetch personal latest posts from server', async () => {
-    const inputParams = {
-        latest: '2018-11-28T08:27:45.612Z',
-        page: 0,
-        pageSize: 5,
-        sortBy: 'popularity',
-    };
-
-    const query = `${encode(fetchPersonalLatestQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
-
-    nock(baseURL)
-        .get(`/graphql?query=${query}`)
-        .reply(200, {data: {latest: latestResponse}});
-
-    service.setIsLoggedIn(true);
-    const actual = await service.fetchLatestPosts(
-        new Date('2018-11-28T08:27:45.612Z'),
-        0,
-    );
-
-    expect(actual).toEqual(latestExpected);
-});
-
-it('should fetch posts by publication from server', async () => {
-    const inputParams = {
-        latest: '2018-11-28T08:27:45.612Z',
-        page: 0,
-        pageSize: 5,
-        pub: 'airbnb',
-    };
-
-    const query = `${encode(fetchPostsByPublicationQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
-
-    nock(baseURL)
-        .get(`/graphql?query=${query}`)
-        .reply(200, {data: {postsByPublication: latestResponse}});
-
-    const actual = await service.fetchPostsByPublication(
-        new Date('2018-11-28T08:27:45.612Z'),
-        0,
-        'airbnb',
-    );
-
-    expect(actual).toEqual(latestExpected);
-});
-
-it('should fetch posts by tag from server', async () => {
-    const inputParams = {
-        latest: '2018-11-28T09:27:45.612Z',
-        page: 0,
-        pageSize: 5,
-        tag: 'webdev',
-    };
-
-    const query = `${encode(fetchPostsByTagQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
-
-    nock(baseURL)
-        .get(`/graphql?query=${query}`)
-        .reply(200, {data: {postsByTag: latestResponse}});
-
-    const actual = await service.fetchPostsByTag(
-        new Date('2018-11-28T09:27:45.612Z'),
-        0,
-        'webdev',
-    );
-
-    expect(actual).toEqual(latestExpected);
-});
-
-it('should fetch bookmarks from server', async () => {
-    const inputParams = {
-        latest: '2018-11-28T08:27:45.612Z',
-        page: 0,
-        pageSize: 5,
-    };
-
-    const query = `${encode(fetchBookmarksQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
-
-    nock(baseURL)
-        .get(`/graphql?query=${query}`)
-        .reply(200, {data: {bookmarks: bookResponse}});
-
-    service.setIsLoggedIn(true);
-    const actual = await service.fetchBookmarks(
-        new Date('2018-11-28T08:27:45.612Z'),
-        0,
-    );
-
-    expect(actual).toEqual(bookExpected);
-});
-
 it('should fetch feed pubs from server', async () => {
     nock(baseURL)
         .get('/v1/feeds/publications')
@@ -243,20 +113,6 @@ it('should fetch feed pubs from server', async () => {
     const actual = await service.fetchFeedPublications();
 
     expect(actual).toEqual(feedPubsExpected);
-});
-
-it('should update feed pubs', async () => {
-    const body: FeedPublication[] = [{
-        publicationId: 'angular',
-        enabled: false,
-    }];
-
-    nock(baseURL)
-        .post('/v1/feeds/publications', body)
-        .reply(204);
-
-    service.setIsLoggedIn(true);
-    await service.updateFeedPublications(body);
 });
 
 it('should fetch user tags from server', async () => {
@@ -332,29 +188,6 @@ it('should send search tags request to server', async () => {
     const actual = await service.searchTags('dev');
 
     expect(actual).toEqual(expected);
-});
-
-it('should send search posts request to server', async () => {
-    const inputParams = {
-        latest: '2018-11-28T08:27:45.612Z',
-        page: 0,
-        pageSize: 5,
-        query: 'hello',
-    };
-
-    const query = `${encode(searchPostsQuery)}&variables=${encode(JSON.stringify({params: inputParams}))}`;
-
-    nock(baseURL)
-        .get(`/graphql?query=${query}`)
-        .reply(200, {data: {search: {query: 'hello', hits: latestResponse}}});
-
-    const actual = await service.searchPosts(
-        new Date('2018-11-28T08:27:45.612Z'),
-        0,
-        'hello',
-    );
-
-    expect(actual).toEqual({query: 'hello', hits: latestExpected});
 });
 
 it('should send search suggestions request to server', async () => {
