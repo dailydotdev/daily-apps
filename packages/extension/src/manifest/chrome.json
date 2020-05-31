@@ -6,6 +6,8 @@
   "offline_enabled": true,
   "permissions": [
     "https://daily.dev/",
-    "https://dailynow.co/"
+    "https://*.daily.dev/",
+    "https://dailynow.co/",
+    "https://*.dailynow.co/"
   ]
 }
