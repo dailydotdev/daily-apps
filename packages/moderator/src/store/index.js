@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { contentService } from '../common/services';
 
 import user from './modules/user';
 import requests from './modules/requests';

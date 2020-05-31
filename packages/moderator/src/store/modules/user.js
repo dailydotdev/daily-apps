@@ -1,4 +1,4 @@
-import { authService, contentService } from '../../common/services';
+import { authService } from '../../common/services';
 
 const initialState = () => ({
   profile: null,
