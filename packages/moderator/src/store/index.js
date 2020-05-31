@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { contentService } from '../common/services';
 
 import user from './modules/user';
 import requests from './modules/requests';
@@ -20,10 +19,6 @@ export default new Vuex.Store({
         Object.keys(cached).forEach((key) => {
           state[key] = { ...state[key], ...cached[key] };
         });
-      }
-
-      if (state.user.profile) {
-        contentService.setIsLoggedIn(true);
       }
 
       state.initialized = true;

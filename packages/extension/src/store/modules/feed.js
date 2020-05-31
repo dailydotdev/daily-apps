@@ -8,7 +8,7 @@ import {
   TAG_FEED_QUERY,
   BOOKMARKS_FEED_QUERY,
   SEARCH_POSTS_QUERY,
-} from '../../common/graphql';
+} from '../../graphql/feed';
 import { mapPost } from '../../common/post';
 
 const setPostBookmark = (state, key, id, value) => {
@@ -21,8 +21,8 @@ const setPostBookmark = (state, key, id, value) => {
 };
 
 const initialState = () => ({
-  tags: [],
-  publications: [],
+  enabledTags: [],
+  disabledPublications: {},
   showBookmarks: false,
   pageInfo: null,
   loading: false,
@@ -121,8 +121,8 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
     });
   }
 
-  const pubs = state.publications.filter(p => !p.enabled).map(p => p.id);
-  const tags = state.tags.filter(t => t.enabled).map(t => t.name);
+  const pubs = Object.keys(state.disabledPublications);
+  const tags = Object.keys(state.enabledTags);
   return apolloClient.query({
     query: ANONYMOUS_FEED_QUERY,
     variables: {
@@ -174,12 +174,9 @@ export default {
       }
 
       if (state.filter.type === 'publication') {
-        const pub = state.publications.find(p => p.id === state.filter.info.id);
-        return pub && pub.enabled;
+        return !state.disabledPublications[state.filter.info.id];
       }
-
-      const tag = state.tags.find(t => t.name === state.filter.info.name);
-      return tag && tag.enabled;
+      return !!state.enabledTags[state.filter.info.name];
     },
     hasConflicts: state => state.conflictBookmarks && state.conflictBookmarks.length > 0,
   },
@@ -193,22 +190,24 @@ export default {
     setShowBookmarks(state, value) {
       state.showBookmarks = value;
     },
-    setPublications(state, pubs) {
-      state.publications = pubs;
+    setDisabledPublications(state, ids) {
+      state.disabledPublications = ids.reduce((acc, val) => ({ ...acc, [val]: true }), {});
     },
-    setEnablePublication(state, { index, enabled }) {
-      Vue.set(state.publications, index, { ...state.publications[index], enabled });
-    },
-    setTags(state, tags) {
-      state.tags = tags;
-    },
-    setEnableTag(state, { tag, enabled }) {
-      const index = state.tags.findIndex(t => t.name === tag.name);
-      if (index > -1) {
-        Vue.set(state.tags, index,
-          Object.assign({}, state.tags[index], { enabled }));
+    enablePublication(state, { id, enabled }) {
+      if (enabled) {
+        Vue.delete(state.disabledPublications, id);
       } else {
-        state.tags.push({ ...tag, enabled });
+        Vue.set(state.disabledPublications, id, true);
+      }
+    },
+    setEnabledTags(state, names) {
+      state.enabledTags = names.reduce((acc, val) => ({ ...acc, [val]: true }), {});
+    },
+    enableTag(state, { tag, enabled }) {
+      if (enabled) {
+        Vue.set(state.enabledTags, tag, true);
+      } else {
+        Vue.delete(state.enabledTags, tag);
       }
     },
     clearAd(state) {
@@ -216,6 +215,7 @@ export default {
     },
     setAd(state, { ad, type }) {
       const feed = state[type];
+      state.ad = ad;
       for (let i = feed.length - 1; i >= 0; i -= 1) {
         if (feed[i].type === 'ad') {
           if (feed[i].loading) {
@@ -225,7 +225,6 @@ export default {
           break;
         }
       }
-      state.ad = ad;
     },
     setPosts(state, { posts, type }) {
       state[type] = posts;
@@ -270,8 +269,8 @@ export default {
       state.filter = null;
       state.customPosts = [];
       state.bookmarks = [];
-      state.publications = state.publications.map(p => ({ ...p, enabled: true }));
-      state.tags = state.tags.map(t => ({ ...t, enabled: false }));
+      state.disabledPublications = {};
+      state.enabledTags = {};
       state.showBookmarks = false;
     },
     setSortBy(state, sortBy) {
@@ -297,33 +296,6 @@ export default {
     },
   },
   actions: {
-    async fetchPublications({ commit, state }) {
-      const pubs = await contentService.fetchPublications();
-      commit('setPublications', pubs.map((p) => {
-        const index = state.publications.findIndex(p2 => p.id === p2.id);
-        if (index < 0) {
-          return p;
-        }
-
-        return { ...p, enabled: p.enabled && state.publications[index].enabled };
-      }));
-    },
-
-    async fetchTags({ commit, state }) {
-      const tags = await contentService.fetchPopularTags();
-      const mergedTags = tags.reduce((acc, t) => {
-        const index = acc.findIndex(t2 => t.name === t2.name);
-        if (index < 0) {
-          acc.push(t);
-        } else {
-          // eslint-disable-next-line no-param-reassign
-          acc[index] = { ...t, enabled: t.enabled || state.tags[index].enabled };
-        }
-        return acc;
-      }, state.tags);
-      commit('setTags', mergedTags);
-    },
-
     async fetchNextFeedPage({
       dispatch, commit, state, rootState,
     }) {
@@ -376,20 +348,20 @@ export default {
       return dispatch('setFilter', null);
     },
 
-    addFilterToFeed({ commit, dispatch, state }) {
+    addFilterToFeed({ dispatch, state }) {
       if (!state.filter) {
         return Promise.resolve();
       }
 
       if (state.filter.type === 'publication') {
-        return Promise.resolve(commit('setEnablePublication', {
-          index: state.publications.findIndex(p => p.id === state.filter.info.id),
+        return dispatch('setEnablePublication', {
+          id: state.filter.info.id,
           enabled: true,
-        }));
+        });
       }
 
       return dispatch('setEnableTag', {
-        tag: state.filter.info,
+        tag: state.filter.info.name,
         enabled: true,
       });
     },
@@ -409,14 +381,14 @@ export default {
     },
 
     async setEnablePublication({
-      commit, dispatch, state, rootState,
+      commit, dispatch, rootState,
     }, payload) {
-      commit('setEnablePublication', payload);
+      commit('enablePublication', payload);
 
       if (isLoggedIn(rootState)) {
         // TODO: handle error
         await contentService.updateFeedPublications([{
-          publicationId: state.publications[payload.index].id,
+          publicationId: payload.id,
           enabled: payload.enabled,
         }]);
       }
@@ -425,15 +397,15 @@ export default {
     },
 
     async setEnableTag({ commit, dispatch, rootState }, payload) {
-      commit('setEnableTag', payload);
+      commit('enableTag', payload);
 
       if (isLoggedIn(rootState)) {
         if (payload.enabled) {
           // TODO: handle error
-          await contentService.addUserTags([payload.tag.name]);
+          await contentService.addUserTags([payload.tag]);
         } else {
           // TODO: handle error
-          await contentService.deleteUserTag(payload.tag.name);
+          await contentService.deleteUserTag(payload.tag);
         }
       }
 

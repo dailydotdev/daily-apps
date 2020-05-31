@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SEARCH: Publications should display all the publications if the input value is empty 1`] = `
+Array [
+  Object {
+    "enabled": true,
+    "id": "airbnb",
+    "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/airbnb",
+    "name": "Airbnb Engineering",
+  },
+  Object {
+    "enabled": false,
+    "id": "alligator",
+    "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/alligator",
+    "name": "Alligator",
+  },
+  Object {
+    "enabled": false,
+    "id": "angular",
+    "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/angular",
+    "name": "Angular",
+  },
+  Object {
+    "enabled": true,
+    "id": "aws",
+    "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/aws",
+    "name": "AWS",
+  },
+]
+`;

@@ -16,7 +16,6 @@ const apolloProvider = new VueApollo({
   defaultClient: apolloClient,
   defaultOptions: {
     $query: {
-      fetchPolicy: 'cache-only',
       notifyOnNetworkStatusChange: false,
     },
   },

@@ -54,7 +54,6 @@ it('should authenticate user and check for bookmarks conflicts', async () => {
     [{ type: 'login', payload: profile }],
   );
   expect(authService.authenticate).toBeCalledWith('12345', 'verifier');
-  // expect(contentService.setIsLoggedIn).toBeCalledWith(true);
 });
 
 it('should authenticate user without checking for conflicts', async () => {
@@ -97,7 +96,6 @@ it('should logout and reset all preferences', async () => {
     [{ type: 'ui/reset', payload: null }, { type: 'feed/reset', payload: null }],
   );
   expect(setCache).toBeCalledWith(ANALYTICS_ID_KEY, '1');
-  expect(contentService.setIsLoggedIn).toBeCalledWith(false);
 });
 
 it('should set code challenge in state', () => {
@@ -179,5 +177,4 @@ it('should mark user as logged-in', async () => {
     state,
     [{ type: 'setProfile', payload: profile }],
   );
-  expect(contentService.setIsLoggedIn).toBeCalledWith(true);
 });

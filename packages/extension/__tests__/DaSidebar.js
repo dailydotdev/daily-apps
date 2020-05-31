@@ -1,25 +1,29 @@
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import VueApollo from 'vue-apollo';
 import icons from '@daily/components/src/icons';
 import tooltip from '@daily/components/src/directives/tooltip';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
 import { contentService } from '../src/common/services';
+import { apolloClient } from '../src/apollo';
+import { SEARCH_TAGS_QUERY, POPULAR_TAGS_QUERY } from '../src/graphql/tags';
+import { SOURCES_QUERY } from '../src/graphql/sidebar';
 
 jest.mock('../src/apollo');
 
 jest.mock('../src/common/services', () => ({
   contentService: {
-    searchTags: jest.fn(),
     requestPublication: jest.fn(),
   },
 }));
 
 const REQUEST_URL = 'https://dailynow.co';
 
-const localVue = createLocalVue();
+let localVue = createLocalVue();
 
 localVue.use(Vuex);
+localVue.use(VueApollo);
 localVue.use(icons);
 localVue.directive('tooltip', tooltip(localVue));
 localVue.component('da-mode-switch', DaModeSwitch);
@@ -28,55 +32,40 @@ let feed;
 let user;
 let store;
 
+const pubs = [{
+  'id': 'airbnb',
+  'name': 'Airbnb Engineering',
+  'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/airbnb',
+}, {
+  'id': 'alligator',
+  'name': 'Alligator',
+  'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/alligator',
+}, {
+  'id': 'angular',
+  'name': 'Angular',
+  'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/angular',
+}, {
+  'id': 'aws',
+  'name': 'AWS',
+  'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/aws',
+}];
+
+const tags = [
+  { 'name': 'javascript' }, 
+  { 'name': 'linux' }, 
+  { 'name': 'startup' }, 
+  { 'name': 'product' },
+];
+
 beforeEach(() => {
   window.ga = () => {
   };
-
+  
   feed = {
     namespaced: true,
     state: {
-      publications: [{
-        'id': 'airbnb',
-        'name': 'Airbnb Engineering',
-        'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/airbnb',
-        'enabled': true,
-        'twitter': 'AirbnbEng'
-      }, {
-        'id': 'alligator',
-        'name': 'Alligator',
-        'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/alligator',
-        'enabled': false,
-        'twitter': 'alligatorio'
-      }, {
-        'id': 'angular',
-        'name': 'Angular',
-        'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/angular',
-        'enabled': false,
-        'twitter': 'angular'
-      }, {
-        'id': 'aws',
-        'name': 'AWS',
-        'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/aws',
-        'enabled': true,
-        'twitter': 'awscloud'
-      }],
-      tags: [{
-        'name': 'javascript',
-        'enabled': true,
-      }, {
-        'name': 'linux',
-        'enabled': true,
-      }, {
-        'name': 'startup',
-        'enabled': false,
-      }, {
-        'name': 'product',
-        'enabled': false,
-      }],
-    },
-    mutations: {
-      setPublications: jest.fn(),
-      setTags: jest.fn(),
+      disabledPublications: { alligator: true, angular: true },
+      enabledTags: { javascript: true, linux: true },
     },
     actions: {
       setFilter: jest.fn(),
@@ -100,68 +89,64 @@ beforeEach(() => {
   });
 });
 
-it('should set enabledPubs according to state', () => {
+it('should set enabledPubs and disabledPubs according to state', () => {
   const wrapper = shallowMount(DaSidebar, { store, localVue });
+  wrapper.setData({ rawPublications: pubs, rawTags: tags });
   expect(wrapper.vm.enabledPubs).toEqual([{
     'id': 'airbnb',
     'name': 'Airbnb Engineering',
     'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/airbnb',
     'enabled': true,
-    'twitter': 'AirbnbEng'
   }, {
     'id': 'aws',
     'name': 'AWS',
     'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/aws',
     'enabled': true,
-    'twitter': 'awscloud'
   }]);
-});
-
-it('should set disabledPubs according to state', () => {
-  const wrapper = shallowMount(DaSidebar, { store, localVue });
   expect(wrapper.vm.disabledPubs).toEqual([{
     'id': 'alligator',
     'name': 'Alligator',
     'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/alligator',
     'enabled': false,
-    'twitter': 'alligatorio'
   }, {
     'id': 'angular',
     'name': 'Angular',
     'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/angular',
     'enabled': false,
-    'twitter': 'angular'
   }]);
 });
 
 it('should commit "setEnablePublication" when removing publication', (done) => {
   const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.setData({ rawPublications: pubs, rawTags: tags });
   wrapper.vm.filterChecked = false;
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__sources .sidebar__enabled')
       .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnablePublication)
-      .toBeCalledWith(expect.anything(), { index: 0, enabled: false });
+      .toBeCalledWith(expect.anything(), { id: pubs[0].id, enabled: false });
     done();
   });
 });
 
 it('should commit "setEnablePublication" when adding publication', (done) => {
   const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.setData({ rawPublications: pubs, rawTags: tags });
   wrapper.vm.filterChecked = false;
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__sources .sidebar__disabled')
       .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnablePublication)
-      .toBeCalledWith(expect.anything(), { index: 1, enabled: true });
+      .toBeCalledWith(expect.anything(), { id: pubs[1].id, enabled: true });
     done();
   });
 });
 
-it('should set enabledTags according to state', () => {
+it('should set enabledTags and disabledTags according to state', () => {
   const wrapper = shallowMount(DaSidebar, { store, localVue });
+  wrapper.setData({ rawPublications: pubs, rawTags: tags });
   expect(wrapper.vm.enabledTags).toEqual([{
     'name': 'javascript',
     'enabled': true,
@@ -169,10 +154,6 @@ it('should set enabledTags according to state', () => {
     'name': 'linux',
     'enabled': true,
   }]);
-});
-
-it('should set disabledTags according to state', () => {
-  const wrapper = shallowMount(DaSidebar, { store, localVue });
   expect(wrapper.vm.disabledTags).toEqual([{
     'name': 'startup',
     'enabled': false,
@@ -184,26 +165,28 @@ it('should set disabledTags according to state', () => {
 
 it('should dispatch "setEnableTag" when removing tag', (done) => {
   const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.setData({ rawPublications: pubs, rawTags: tags });
   wrapper.vm.filterChecked = true;
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__tags .sidebar__enabled')
       .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnableTag)
-      .toBeCalledWith(expect.anything(), { tag: feed.state.tags[0], enabled: false });
+      .toBeCalledWith(expect.anything(), { tag: tags[0].name, enabled: false });
     done();
   });
 });
 
 it('should commit "setEnableTag" when adding tag', (done) => {
   const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.setData({ rawPublications: pubs, rawTags: tags });
   wrapper.vm.filterChecked = true;
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__tags .sidebar__disabled')
       .find('.sidebar__element__button-hidden').trigger('click');
     expect(feed.actions.setEnableTag)
-      .toBeCalledWith(expect.anything(), { tag: feed.state.tags[2], enabled: true });
+      .toBeCalledWith(expect.anything(), { tag: tags[2].name, enabled: true });
     done();
   });
 });
@@ -257,6 +240,7 @@ describe('SUBMIT REQUEST', () => {
 
 it('should dispatch "setFilter" with publication filter', (done) => {
   const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.setData({ rawPublications: pubs, rawTags: tags });
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__sources .sidebar__disabled')
@@ -264,7 +248,7 @@ it('should dispatch "setFilter" with publication filter', (done) => {
     expect(feed.actions.setFilter)
       .toBeCalledWith(expect.anything(), {
         type: 'publication',
-        info: feed.state.publications[1],
+        info: { ...pubs[1], enabled: false },
       });
     done();
   });
@@ -272,6 +256,7 @@ it('should dispatch "setFilter" with publication filter', (done) => {
 
 it('should dispatch "setFilter" with tag filter', (done) => {
   const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.setData({ rawPublications: pubs, rawTags: tags });
   wrapper.vm.filterChecked = true;
   wrapper.vm.$nextTick(() => {
     wrapper
@@ -280,32 +265,32 @@ it('should dispatch "setFilter" with tag filter', (done) => {
     expect(feed.actions.setFilter)
       .toBeCalledWith(expect.anything(), {
         type: 'tag',
-        info: feed.state.tags[2],
+        info: { ...tags[2], enabled: false },
       });
     done();
   });
 });
 
-it('should search for tags and update the tag list', (done) => {
-  const wrapper = mount(DaSidebar, { store, localVue });
+it('should search for tags', async () => {
+  const handler = jest.fn();
+  apolloClient.setRequestHandler(SEARCH_TAGS_QUERY, handler);
+  handler.mockResolvedValue({ data: { searchTags: {
+    query: 'java',
+    hits: [{ name: 'javascript' }, { name: 'java' }],
+  }}});
+  const wrapper = mount(DaSidebar, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
+  wrapper.vm.$apollo.queries.rawPublications.skip = true;
+  wrapper.vm.$apollo.queries.rawTags.skip = true;
+  wrapper.setData({ rawPublications: pubs, rawTags: tags });
   wrapper.vm.filterChecked = true;
-  wrapper.vm.$nextTick(() => {
-    contentService.searchTags.mockReturnValue({
-      query: 'java',
-      hits: [{ name: 'javascript' }, { name: 'java' }],
-    });
-    wrapper.vm.$refs.search.value = 'java';
-    wrapper.find('.sidebar__search .sidebar__input').trigger('input');
-    wrapper.vm.$nextTick(() => {
-      expect(contentService.searchTags).toBeCalledTimes(1);
-      expect(contentService.searchTags).toBeCalledWith('java');
-      expect(wrapper.vm.activeTags).toEqual([
-        { name: 'javascript', enabled: true },
-        { name: 'java', enabled: false },
-      ]);
-      done();
-    });
-  });
+  wrapper.vm.$refs.search.value = 'java';
+  wrapper.find('.sidebar__search .sidebar__input').trigger('input');
+  expect(handler).toBeCalledWith({ query: 'java' });
+  await wrapper.vm.$nextTick();
+  expect(wrapper.vm.activeTags).toEqual([
+    { name: 'javascript', enabled: true },
+    { name: 'java', enabled: false },
+  ]);
 });
 
 it('should get the right placeholder name for the search input', async () => {
@@ -326,9 +311,10 @@ it('should get the right placeholder name for the search input', async () => {
 describe('SEARCH: Publications', () => {
   it('should filter publications depending on input value', async () => {
     const wrapper = mount(DaSidebar, { store, localVue });
+    wrapper.setData({ rawPublications: pubs, rawTags: tags });
     const disabledPublicationsSelector = '.sidebar__sources .sidebar__disabled .sidebar__element.btn';
     const enabledPublicationsSelector = '.sidebar__sources .sidebar__enabled .sidebar__element.btn';
-    const expected = feed.state.publications[1];
+    const expected = pubs[1];
     wrapper.vm.query = 'all';
 
     await wrapper.vm.$nextTick();
@@ -349,12 +335,12 @@ describe('SEARCH: Publications', () => {
 
   it('should display all the publications if the input value is empty', async () => {
     const wrapper = mount(DaSidebar, { store, localVue });
-    const expected = feed.state.publications;
+    wrapper.setData({ rawPublications: pubs, rawTags: tags });
     wrapper.vm.query = '';
 
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.vm.filteredPublications).toBe(expected);
+    expect(wrapper.vm.filteredPublications).toMatchSnapshot();
   });
 
   it('should display no publications if the input value does not match at all', async () => {
@@ -365,4 +351,12 @@ describe('SEARCH: Publications', () => {
 
     expect(wrapper.vm.filteredPublications.length).toBe(0);
   });
+});
+
+it('should emit loaded event when data was fetched', async () => {
+  apolloClient.setRequestHandler(SOURCES_QUERY, () => Promise.resolve({data: {sources: {edges: [{node: {id: 'vue', image: 'image', name: 'Vue'}}]}}}));
+  apolloClient.setRequestHandler(POPULAR_TAGS_QUERY, () => Promise.resolve({data: { popularTags: [{name: 'webdev'}]}}));
+  const wrapper = mount(DaSidebar, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
+  await wrapper.vm.$nextTick();
+  expect(wrapper.emitted().loaded).toBeTruthy();
 });

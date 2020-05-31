@@ -1,4 +1,4 @@
-import { authService, contentService } from '../../common/services';
+import { authService } from '../../common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../../common/cache';
 
 const updateAnalyticsUser = (id) => {
@@ -32,7 +32,6 @@ export default {
   },
   actions: {
     async login({ commit, state }, profile) {
-      contentService.setIsLoggedIn(true);
       if (!state.profile || state.profile.id !== profile.id) {
         await updateAnalyticsUser(profile.id);
       }
@@ -56,7 +55,6 @@ export default {
 
     async logout({ commit, dispatch }) {
       // TODO: handle error
-      contentService.setIsLoggedIn(false);
       commit('setProfile', null);
       await authService.logout();
       await Promise.all([
@@ -73,10 +71,10 @@ export default {
 
     async validateAuth({ dispatch, state }) {
       const profile = await authService.getUserProfile();
-      if (profile.providers) {
+      if (profile.providers && (!state.profile || state.profile.id !== profile.id)) {
         // Keep newUser true according multiple sessions until confirmed
         await dispatch('login', Object.assign({}, profile, { newUser: state.profile && state.profile.newUser }));
-      } else if (state.profile) {
+      } else if (!profile.providers && state.profile) {
         await dispatch('logout');
       }
     },
