@@ -6,10 +6,11 @@
     <da-header @go="onGoClicked" @login="onLogin('Header')"
                @profile="onProfile" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
-    <da-sidebar ref="sidebar" v-if="fetchStage > 1" :disabled="showBookmarks"
+    <da-sidebar ref="sidebar" v-if="fetchStage >= 2"
                 @requested-source="showRequestModal = true" @loaded="fetchStage += 1"
                 @login="onLogin('Sidebar')"></da-sidebar>
-    <div class="line-numbers" @mouseenter="$refs.sidebar && $refs.sidebar.open()">
+    <div class="line-numbers" @mouseenter="$refs.sidebar && $refs.sidebar.open()"
+          v-show="!showBookmarks">
       <svgicon name="hamburger" class="line-numbers_icon"/>
       <div class="line-numbers__lines" ref="lineNumbers">
         <pre v-for="n in lineNumbers" class="micro2" :key="n">{{ n }}</pre>
@@ -26,6 +27,7 @@
       </svg>
     </div>
     <da-settings v-if="showSettings"/>
+    <da-bookmark-list v-if="showBookmarks"/>
     <main class="content">
       <div class="content__header">
         <template v-if="showFilterHeader">
@@ -97,7 +99,7 @@
           </p>
         </div>
       </template>
-      <da-feed v-else-if="showFeed" ref='feed'/>
+      <da-feed v-else-if="showFeed" ref='feed' :bookmark-lists="bookmarkLists"/>
       <DaSpinner v-if="loading" class="feed-spinner"/>
     </main>
     <div id="anchor" ref="anchor"></div>
@@ -157,6 +159,7 @@ import {
 import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import { BANNER_QUERY, LATEST_NOTIFICATIONS_QUERY } from '../graphql/home';
+import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 import DaHeader from '../components/DaHeader.vue';
 import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
@@ -165,6 +168,10 @@ import { trackPageView } from '../common/analytics';
 import { contentService } from '../common/services';
 import { TERMS_CONSENT_KEY, getCache, setCache } from '../common/cache';
 import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
+
+const CRITICAL_FETCH_STAGE = 1;
+const OPERATIONAL_FETCH_STAGE = 2;
+const ENGAGEMENT_FETCH_STAGE = 4;
 
 export default {
   name: 'Home',
@@ -195,6 +202,19 @@ export default {
         }
       },
     },
+    bookmarkLists: {
+      query: BOOKMARK_LISTS_QUERY,
+      fetchPolicy: 'cache-only',
+      result({ networkStatus, loading }) {
+        if (networkStatus === NetworkStatus.ready && !loading
+            && this.fetchStage >= OPERATIONAL_FETCH_STAGE) {
+          this.fetchStage += 1;
+        }
+      },
+      skip() {
+        return !this.isPremium;
+      },
+    },
   },
 
   components: {
@@ -218,6 +238,7 @@ export default {
     DaConsent: () => import('../components/DaConsent'),
     DaBanner: () => import('../components/DaBanner'),
     DaConfirmAccount: () => import('../components/DaConfirmAccount'),
+    DaBookmarkList: () => import('../components/DaBookmarkList'),
   },
 
   data() {
@@ -338,9 +359,20 @@ export default {
       return Promise.all([loadFeed, loadAuth]);
     },
 
+    operationalFetch() {
+      if (this.$apollo.queries.bookmarkLists) {
+        this.$apollo.queries.bookmarkLists.setOptions({ fetchPolicy: 'cache-and-network' });
+      }
+      if (!this.isPremium) {
+        this.fetchStage += 1;
+      }
+    },
+
     engagementFetch() {
-      this.$apollo.queries.banner.setOptions({ fetchPolicy: 'cache-and-network' });
-      this.$apollo.queries.notifications.setOptions({ fetchPolicy: 'cache-and-network' });
+      if (this.$apollo.queries.banner) {
+        this.$apollo.queries.banner.setOptions({ fetchPolicy: 'cache-and-network' });
+        this.$apollo.queries.notifications.setOptions({ fetchPolicy: 'cache-and-network' });
+      }
     },
 
     trackPageView() {
@@ -358,7 +390,6 @@ export default {
     },
 
     enableSearch() {
-      disableKeyBindings();
       this.showSearch = true;
       setTimeout(() => this.$refs.search && this.$refs.search.focus(), 100);
     },
@@ -381,7 +412,6 @@ export default {
     },
 
     onSearchBlur() {
-      enableKeyBindings();
       if (!this.$refs.search.query().length) {
         this.showSearch = false;
       }
@@ -430,7 +460,7 @@ export default {
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
-    ...mapGetters('user', ['isLoggedIn']),
+    ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
       title(state) {
         let res = '';
@@ -438,10 +468,6 @@ export default {
           res += 'your personal bookmarks';
         } else {
           res += 'news for you';
-        }
-
-        if (state.ui.insaneMode) {
-          res += ' - insane mode';
         }
 
         return res;
@@ -453,6 +479,7 @@ export default {
           [state.ui.spaciness]: true,
           [state.ui.insaneMode ? 'insane-mode' : 'card-mode']: true,
           'show-banner': this.showBanner,
+          'show-bookmarks': this.showBookmarks,
         };
       },
 
@@ -489,11 +516,13 @@ export default {
 
   watch: {
     async fetchStage(val) {
-      if (val === 1) { // Critical data fetch (feed, auth, etc)
+      if (val === CRITICAL_FETCH_STAGE) {
         await this.criticalFetch();
         await this.$nextTick();
-        this.fetchStage += 1;
-      } else if (val === 3) { // Engagement data fetch (notifications, banner, etc)
+        this.fetchStage = OPERATIONAL_FETCH_STAGE;
+      } else if (val === OPERATIONAL_FETCH_STAGE) {
+        this.operationalFetch();
+      } else if (val === ENGAGEMENT_FETCH_STAGE) {
         this.engagementFetch();
       }
     },
@@ -551,7 +580,7 @@ export default {
 
     this.$nextTick(() => {
       enableKeyBindings();
-      this.fetchStage = 1;
+      this.fetchStage = CRITICAL_FETCH_STAGE;
     });
   },
 
@@ -561,6 +590,58 @@ export default {
 };
 </script>
 <style>
+@define-mixin cards-xs {
+  --num-cards: 3;
+
+  &.cozy {
+    --num-cards: 2;
+  }
+}
+
+@define-mixin cards-s {
+  --num-cards: 4;
+
+  &.roomy {
+    --num-cards: 3;
+  }
+
+  &.cozy {
+    --num-cards: 3;
+  }
+}
+
+@define-mixin cards-m {
+  --num-cards: 5;
+
+  &.roomy {
+    --num-cards: 4;
+  }
+}
+
+@define-mixin cards-l {
+  --num-cards: 6;
+
+  &.roomy {
+    --num-cards: 5;
+  }
+
+  &.cozy {
+    --num-cards: 4;
+  }
+}
+
+@define-mixin cards-xl {
+  --num-cards: 7;
+
+  &.roomy {
+    --num-cards: 6;
+  }
+
+  &.cozy {
+    --num-cards: 5;
+  }
+}
+
 .home.page {
   padding-top: 48px;
   padding-left: 36px;
@@ -582,54 +663,51 @@ export default {
   }
 
   @media (min-width: 1062px) {
-    --num-cards: 3;
-
-    &.cozy {
-      --num-cards: 2;
-    }
+    @mixin cards-xs;
   }
 
   @media (min-width: 1316px) {
-    --num-cards: 4;
-
-    &.roomy {
-      --num-cards: 3;
-    }
-
-    &.cozy {
-      --num-cards: 3;
-    }
+    @mixin cards-s;
   }
 
   @media (min-width: 1618px) {
-    --num-cards: 5;
-
-    &.roomy {
-      --num-cards: 4;
-    }
+    @mixin cards-m;
   }
 
   @media (min-width: 1920px) {
-    --num-cards: 6;
-
-    &.roomy {
-      --num-cards: 5;
-    }
-
-    &.cozy {
-      --num-cards: 4;
-    }
+    @mixin cards-l;
   }
 
   @media (min-width: 2222px) {
-    --num-cards: 7;
+    @mixin cards-xl;
+  }
 
-    &.roomy {
-      --num-cards: 6;
+  &.show-bookmarks {
+    --num-cards: 1;
+    padding-left: 256px;
+
+    @media (min-width: 984px) {
+      --num-cards: 2;
     }
 
-    &.cozy {
-      --num-cards: 5;
+    @media (min-width: 1278px) {
+      @mixin cards-xs;
+    }
+
+    @media (min-width: 1532px) {
+      @mixin cards-s;
+    }
+
+    @media (min-width: 1834px) {
+      @mixin cards-m;
+    }
+
+    @media (min-width: 2136px) {
+      @mixin cards-l;
+    }
+
+    @media (min-width: 2438px) {
+      @mixin cards-xl;
     }
   }
 
@@ -954,5 +1032,76 @@ export default {
 
 .feed-spinner {
   margin: 16px auto auto;
+}
+
+.bookmark-list {
+  position: fixed;
+  left: 0;
+  top: 48px;
+  bottom: 0;
+  width: 256px;
+}
+
+.bookmark-modal .modal__container {
+  width: 450px;
+  padding: 40px 40px 32px;
+
+  & h3 {
+    text-transform: uppercase;
+  }
+
+  & p {
+    max-width: 340px;
+    margin: 8px 0;
+    color: var(--theme-secondary);
+    @mixin micro2;
+
+    & strong {
+      color: var(--theme-primary);
+      font-style: normal;
+    }
+  }
+
+  & .text-field {
+    width: 100%;
+    margin: 10px 0 32px;
+  }
+
+  & h3 + form .text-field {
+    margin-top: 24px;
+  }
+
+  & form {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.bookmark-modal__close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+}
+
+.bookmark-modal__confirm, .bookmark-modal__cancel {
+  justify-content: center;
+}
+
+.bookmark-modal__cancel {
+  width: 138px;
+}
+
+.bookmark-modal__cancel + .bookmark-modal__confirm {
+  width: 216px;
+}
+
+.bookmark-modal__buttons {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>

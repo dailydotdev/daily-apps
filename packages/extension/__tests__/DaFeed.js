@@ -71,14 +71,16 @@ beforeEach(() => {
         'size': 'small',
       }],
       ads: [],
+      lastUsedBookmarkList: null,
     },
     mutations: {
       removePost: jest.fn(),
-      toggleBookmarks: jest.fn(),
     },
     actions: {
       setFilter: jest.fn(),
       fetchAds: jest.fn(),
+      toggleBookmarks: jest.fn(),
+      addBookmarkToList: jest.fn(),
     },
     getters: {
       feed: state => state['posts'],
@@ -101,6 +103,7 @@ beforeEach(() => {
     },
     getters: {
       isLoggedIn: state => !!state.profile,
+      isPremium: state => !!state.profile && !!state.profile.premium,
     },
   };
 
@@ -193,6 +196,120 @@ it('should bookmark post', () => {
     post: feed.state.posts[0],
     bookmarked: true,
   });
-  expect(feed.mutations.toggleBookmarks)
+  expect(feed.actions.toggleBookmarks)
     .toBeCalledWith(expect.anything(), { id: feed.state.posts[0].id, bookmarked: true });
 });
+
+it('should add bookmark to default list', () => {
+  user.state.profile = { premium: true };
+  const wrapper = mount(DaFeed, { store, localVue });
+  wrapper.vm.$refs.posts[0].$emit('bookmark', {
+    post: feed.state.posts[0],
+    bookmarked: true,
+    event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
+  });
+  expect(feed.actions.addBookmarkToList)
+    .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: null });
+});
+
+it('should add bookmark to last used list', () => {
+  user.state.profile = { premium: true };
+  feed.state.lastUsedBookmarkList = { id: 'list' };
+  const wrapper = mount(DaFeed, { store, localVue });
+  wrapper.vm.$refs.posts[0].$emit('bookmark', {
+    post: feed.state.posts[0],
+    bookmarked: true,
+    event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
+  });
+  expect(feed.actions.addBookmarkToList)
+    .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: { id: 'list' } });
+});
+
+it('should add bookmark to default list from menu', (done) => {
+  user.state.profile = { premium: true };
+  feed.state.lastUsedBookmarkList = { id: 'list' };
+  const wrapper = mount(DaFeed, { store, localVue });
+  wrapper.vm.$refs.posts[0].$emit('bookmark', {
+    post: feed.state.posts[0],
+    bookmarked: true,
+    event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
+  });
+  setTimeout(() => {
+    wrapper.findAll('.feed__bookmark-context .btn').at(1).trigger('click');
+    expect(feed.actions.addBookmarkToList)
+      .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: null });
+    done();
+  }, 10);
+});
+
+it('should add bookmark to default list from menu', (done) => {
+  user.state.profile = { premium: true };
+  const wrapper = mount(DaFeed, { store, localVue, propsData: {bookmarkLists: [{id: 'list', name: 'List'}]} });
+  wrapper.vm.$refs.posts[0].$emit('bookmark', {
+    post: feed.state.posts[0],
+    bookmarked: true,
+    event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
+  });
+  setTimeout(() => {
+    wrapper.findAll('.feed__bookmark-context .btn').at(2).trigger('click');
+    expect(feed.actions.addBookmarkToList)
+      .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: {id: 'list', name: 'List'} });
+    done();
+  }, 10);
+});
+
+it('should remove bookmark when selecting the same list', (done) => {
+  user.state.profile = { premium: true };
+  feed.state.posts[0].bookmarkList = null;
+  feed.state.posts[0].bookmarked = true;
+  const wrapper = mount(DaFeed, { store, localVue });
+  wrapper.vm.$refs.posts[0].$emit('bookmark', {
+    post: feed.state.posts[0],
+    bookmarked: false,
+    event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
+  });
+  setTimeout(() => {
+    wrapper.findAll('.feed__bookmark-context .btn').at(1).trigger('click');
+    expect(feed.actions.toggleBookmarks)
+      .toBeCalledWith(expect.anything(), { id: feed.state.posts[0].id, bookmarked: false });
+    done();
+  }, 10);
+});
+
+it('should open create bookmark list modal', (done) => {
+  user.state.profile = { premium: true };
+  const wrapper = mount(DaFeed, { store, localVue, propsData: {bookmarkLists: [{id: 'list', name: 'List'}]} });
+  expect(wrapper.find('.create-list').element).toBeFalsy();
+  wrapper.vm.$refs.posts[0].$emit('bookmark', {
+    post: feed.state.posts[0],
+    bookmarked: true,
+    event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
+  });
+  setTimeout(async () => {
+    wrapper.findAll('.feed__bookmark-context .btn').at(0).trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.create-list').element).toBeTruthy();
+    done();
+  }, 10);
+});
+
+it('should set bookmark to the new list', (done) => {
+  user.state.profile = { premium: true };
+  const wrapper = mount(DaFeed, { store, localVue, propsData: {bookmarkLists: [{id: 'list', name: 'List'}]} });
+  expect(wrapper.find('.create-list').element).toBeFalsy();
+  wrapper.vm.$refs.posts[0].$emit('bookmark', {
+    post: feed.state.posts[0],
+    bookmarked: true,
+    event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
+  });
+  setTimeout(async () => {
+    wrapper.findAll('.feed__bookmark-context .btn').at(0).trigger('click');
+    await wrapper.vm.$nextTick();
+    wrapper.find('.create-list').vm.$emit('complete', {id: 'list2', name: 'List 2'});
+    expect(feed.actions.addBookmarkToList)
+      .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: {id: 'list2', name: 'List 2'} });
+    done();
+  }, 10);
+});
+
+

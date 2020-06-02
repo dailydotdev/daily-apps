@@ -19,6 +19,7 @@
           :placeholder="inputPlaceholder"
           :aria-label="label"
           :disabled="disabled"
+          :autofocus="autofocus"
           @focus="onFocus"
           @blur="onBlurOverride"
           @input="onInputOverride"
@@ -53,6 +54,7 @@ export default {
     hint: String,
     maxlength: Number,
     value: String,
+    autofocus: Boolean,
   },
 
   data() {

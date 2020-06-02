@@ -25,7 +25,7 @@
       <div class="insane__reveal reveal">
         <button class="btn-icon insane__reveal__bookmark"
                 v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
-                @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
+                @click="$emit('bookmark', { event: $event, post, bookmarked: !post.bookmarked })">
           <svgicon name="bookmark"/>
         </button>
         <button class="btn-icon insane__reveal__menu" v-tooltip="'More'"
@@ -40,6 +40,8 @@
       </transition>
     </div>
     <svgicon name="menu" class="insane__reveal__menu--duplicate" slot="other" v-if="menuOpened"/>
+    <svgicon name="bookmark" class="insane__reveal__bookmark--duplicate" slot="other"
+            v-if="bookmarksMenuOpened"/>
   </div>
 </template>
 
@@ -64,7 +66,7 @@ export default {
       return {
         bookmarked: this.post.bookmarked,
         read: this.post.read,
-        'menu-opened': this.menuOpened,
+        'menu-opened': this.menuOpened || this.bookmarksMenuOpened,
         'hide-menu': !this.showMenu,
         hover: this.selected,
       };
@@ -72,8 +74,8 @@ export default {
   },
 
   mounted() {
-        import('../../icons/bookmark');
-        import('../../icons/menu');
+    import('../../icons/bookmark');
+    import('../../icons/menu');
   },
 };
 </script>
@@ -192,14 +194,23 @@ export default {
   z-index: 10;
 }
 
-.insane__wrapper .insane__reveal__menu--duplicate {
+.insane__wrapper .insane__reveal__menu--duplicate,
+.insane__wrapper .insane__reveal__bookmark--duplicate {
   position: absolute;
-  opacity: 0;
-  right: 13px;
-  bottom: 25px;
   width: 24px;
   height: 24px;
+}
+
+.insane__wrapper .insane__reveal__menu--duplicate {
+  right: 13px;
+  bottom: 25px;
   color: var(--theme-primary);
+}
+
+.insane__wrapper .insane__reveal__bookmark--duplicate {
+  right: 47px;
+  bottom: 29px;
+  color: var(--color-burger-60);
 }
 
 .bookmarked .insane__reveal__bookmark .svg-icon {

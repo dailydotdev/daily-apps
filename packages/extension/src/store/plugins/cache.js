@@ -21,6 +21,7 @@ const stateToCache = (state) => {
     posts: [{ type: 'ad', loading: true }, ...state.feed.posts.slice(1, contentService.pageSize).map(post2Cache)],
     bookmarks: state.feed.bookmarks.map(post2Cache),
     latest: time2Cache(state.feed.latest),
+    lastUsedBookmarkList: state.feed.lastUsedBookmarkList,
   };
   if (state.feed.conflictBookmarks) {
     toCache.feed.conflictBookmarks = state.feed.conflictBookmarks.map(post2Cache);

@@ -27,6 +27,7 @@ export default {
     this.keyup = (event) => {
       if (event.key === 'Escape') {
         event.preventDefault();
+        event.stopPropagation();
         if (this.closeOnClick) {
           this.close();
         }
@@ -146,6 +147,7 @@ dialog.fixed {
 }
 
 .modal__container {
+  position: relative;
   padding: 40px;
   background: var(--theme-background-highlight);
   border-radius: 16px;

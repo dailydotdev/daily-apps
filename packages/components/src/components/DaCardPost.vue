@@ -19,8 +19,8 @@
             v-if="post.createdAt">{{post.createdAt | mdyDate}}</span>
       <button class="btn-icon btn-small card__footer__bookmark"
               v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
-              @click="$emit('bookmark', { post, bookmarked: !post.bookmarked })">
-        <svgicon name="bookmark"/>
+              @click="$emit('bookmark', { event: $event, post, bookmarked: !post.bookmarked })">
+        <svgicon name="bookmark" ref="bookmarkOrig"/>
       </button>
       <button class="btn-icon btn-small card__footer__menu" v-tooltip="'More'"
               @click="$emit('menu', { post, event: $event })" v-if="showMenu">
@@ -34,6 +34,8 @@
     </template>
     <svgicon name="menu" class="card__menu--duplicate" ref="dup"
              slot="other" v-if="menuOpened"/>
+    <svgicon name="bookmark" class="card__bookmark--duplicate" ref="bookmarkDup"
+             slot="other" v-if="bookmarksMenuOpened"/>
   </da-card>
 </template>
 
@@ -49,8 +51,11 @@ export default {
   components: { DaCard, DaLineClamp },
 
   watch: {
-    menuOpened() {
-      this.positionDuplicate();
+    menuOpened(val) {
+      this.positionDuplicate('orig', 'dup', val);
+    },
+    bookmarksMenuOpened(val) {
+      this.positionDuplicate('bookmarkOrig', 'bookmarkDup', val);
     },
   },
 
@@ -58,9 +63,9 @@ export default {
     cls() {
       return {
         read: this.post.read,
-        'menu-opened': this.menuOpened,
+        'menu-opened': this.menuOpened || this.bookmarksMenuOpened,
         bookmarked: this.post.bookmarked,
-        hover: this.menuOpened || this.selected,
+        hover: this.menuOpened || this.selected || this.bookmarksMenuOpened,
       };
     },
     tagsStr() {
@@ -75,23 +80,24 @@ export default {
   },
 
   mounted() {
-        import('../../icons/bookmark');
-        import('../../icons/menu');
+    import('../../icons/bookmark');
+    import('../../icons/menu');
 
-        this.positionDuplicate();
+    this.positionDuplicate('orig', 'dup', this.menuOpened);
+    this.positionDuplicate('bookmarkOrig', 'bookmarkDup', this.bookmarksMenuOpened);
   },
 
   methods: {
-    positionDuplicate() {
-      if (this.menuOpened) {
+    positionDuplicate(source, target, condition) {
+      if (condition) {
         this.$nextTick(() => {
           const parentRect = this.$el.getBoundingClientRect();
-          const childRect = this.$refs.orig.$el.getBoundingClientRect();
+          const childRect = this.$refs[source].$el.getBoundingClientRect();
 
-          this.$refs.dup.$el.style.top = `${childRect.top - parentRect.top}px`;
-          this.$refs.dup.$el.style.left = `${childRect.left - parentRect.left}px`;
-          this.$refs.dup.$el.style.width = `${childRect.width}px`;
-          this.$refs.dup.$el.style.height = `${childRect.height}px`;
+          this.$refs[target].$el.style.top = `${childRect.top - parentRect.top}px`;
+          this.$refs[target].$el.style.left = `${childRect.left - parentRect.left}px`;
+          this.$refs[target].$el.style.width = `${childRect.width}px`;
+          this.$refs[target].$el.style.height = `${childRect.height}px`;
         });
       }
     },
@@ -143,6 +149,11 @@ export default {
 .card--post .card__menu--duplicate {
   position: absolute;
   color: var(--theme-primary);
+}
+
+.card--post .card__bookmark--duplicate {
+  position: absolute;
+  color: var(--color-burger-60);
 }
 
 .menu-opened.card--post {

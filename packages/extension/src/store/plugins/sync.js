@@ -1,4 +1,8 @@
 import { defaultTheme, applyTheme } from '@daily/services';
+import { apolloClient } from '../../apollo';
+import {
+  ADD_BOOKMARKS_MUTATION,
+} from '../../graphql/bookmarks';
 import { profileService, contentService } from '../../common/services';
 
 const isLoggedIn = state => !!state.user.profile;
@@ -20,9 +24,8 @@ const syncSettings = (state) => {
 
 const syncPublications = (state) => {
   if (isLoggedIn(state)) {
-    const pubs = state.feed.publications
-      .filter(p => !p.enabled)
-      .map(p => ({ publicationId: p.id, enabled: p.enabled }));
+    const pubs = Object.keys(state.feed.disabledPublications)
+      .map(p => ({ publicationId: p, enabled: false }));
     if (pubs.length > 0) {
       return contentService.updateFeedPublications(pubs);
     }
@@ -33,7 +36,7 @@ const syncPublications = (state) => {
 
 const syncTags = (state) => {
   if (isLoggedIn(state)) {
-    const tags = state.feed.tags.filter(t => t.enabled).map(t => t.name);
+    const tags = Object.keys(state.feed.enabledTags);
     if (tags.length > 0) {
       return contentService.addUserTags(tags);
     }
@@ -44,7 +47,10 @@ const syncTags = (state) => {
 
 const syncBookmarks = (state) => {
   if (isLoggedIn(state) && state.feed.bookmarks.length > 0) {
-    return contentService.addBookmarks(state.feed.bookmarks.map(b => b.id));
+    return apolloClient.mutate({
+      mutation: ADD_BOOKMARKS_MUTATION,
+      variables: { data: { postIds: state.feed.bookmarks.map(b => b.id) } },
+    });
   }
 
   return Promise.resolve();
@@ -113,18 +119,6 @@ const plugin = (store) => {
         } else {
           // TODO: handle error
           await fetchPersonalization(state);
-        }
-      }
-      break;
-    case 'feed/toggleBookmarks':
-      if (isLoggedIn(state)) {
-        const { id, bookmarked } = mutation.payload;
-        if (bookmarked) {
-          // TODO: handle error
-          await contentService.addBookmarks([id]);
-        } else {
-          // TODO: handle error
-          await contentService.removeBookmark(id);
         }
       }
       break;
