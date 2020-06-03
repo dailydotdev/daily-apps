@@ -31,6 +31,7 @@ const stateToCache = (state) => {
   delete ui.showDndMenu;
   delete ui.showSettings;
   delete ui.notifications;
+  delete ui.showPremium;
   toCache.ui = {
     ...ui,
     lastNotificationTime: time2Cache(state.ui.lastNotificationTime),

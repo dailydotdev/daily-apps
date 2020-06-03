@@ -1,6 +1,6 @@
 <template>
   <da-modal class="bookmark-modal rename-list" @close="$emit('close')">
-    <button class="btn-icon bookmark-modal__close" @click="$emit('close')">
+    <button class="btn-icon modal__close-btn" @click="$emit('close')">
       <svgicon name="x"/>
     </button>
     <h3>Rename <span>"{{list.name}}"</span></h3>

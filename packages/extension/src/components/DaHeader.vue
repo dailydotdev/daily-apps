@@ -19,11 +19,11 @@
       </a>
       <div class="separator"></div>
     </template>
-    <a class="btn-icon" href="https://github.com/dailydotdev/daily" target="_blank"
+    <a class="btn-icon" href="https://github.com/dailydotdev/daily"
        v-tooltip.bottom="'Check out our repository'">
       <svgicon name="github"/>
     </a>
-    <a class="btn-icon" href="https://www.producthunt.com/posts/daily-2-0" target="_blank"
+    <a class="btn-icon" href="https://www.producthunt.com/posts/daily-2-0"
        v-tooltip.bottom="'Our Product Hunt page'">
       <svgicon name="ph"/>
     </a>

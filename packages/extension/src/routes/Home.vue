@@ -48,7 +48,7 @@
                        :suggestions="searchSuggestions"
                        @submit="onSearchSubmit" @input="fetchSearchSuggestions"
                        @blur="onSearchBlur">
-              <a href="https://www.algolia.com/" target="_blank" class="search__algolia-credit"
+              <a href="https://www.algolia.com/" class="search__algolia-credit"
                  slot="autocomplete" @click="onAlgoliaClick" @mousedown.prevent="">
                 <img src="/graphics/algolia.svg"/>
               </a>
@@ -71,7 +71,7 @@
                   </button>
                 </template>
               </template>
-              <a class="header__cta shadow1 " :href="cta.link" target="_blank"
+              <a class="header__cta shadow1 " :href="cta.link"
                  @mouseup="ctaClick" :style="cta.style">
                 <span class="header__cta__text">// {{cta.text}}</span>
                 <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>
@@ -82,7 +82,23 @@
         </template>
       </div>
       <template v-if="emptyFeed && showFeed">
-        <div class="content__empty" v-if="showBookmarks">
+        <div class="content__empty" v-if="bookmarkList === 'unread' && !isLoggedIn">
+          <h1 class="content__empty__title">Unread articles</h1>
+          <p class="content__empty__text">
+            Sign in to keep track of your unread bookmarks.
+          </p>
+          <button class="btn btn-water-cheese content__empty__button"
+                  @click="onLogin('Unread')">
+            Sign in now
+          </button>
+        </div>
+        <div class="content__empty" v-else-if="bookmarkList === 'unread'">
+          <h1 class="content__empty__title">No unread articles</h1>
+          <p class="content__empty__text">
+            Go back to the main feed and look for awesome content.
+          </p>
+        </div>
+        <div class="content__empty" v-else-if="showBookmarks">
           <da-svg :src="`/graphics/bookmark${theme === 'bright' ? '_bright' : ''}.svg`"
                   class="bookmarks-placeholder"/>
           <h1 class="content__empty__title">Nothing here, yet</h1>
@@ -113,6 +129,7 @@
     <da-merge v-if="hasConflicts" @confirm="mergeBookmarksConflicts"
               @cancel="clearBookmarksConflicts"/>
     <da-consent v-if="showNewTerms" @confirm="agreeToTerms"/>
+    <da-premium v-if="showPremium" @close="setShowPremium(false)" />
     <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
       <template slot="title">Terminal</template>
       <template slot="content">
@@ -239,6 +256,7 @@ export default {
     DaBanner: () => import('../components/DaBanner'),
     DaConfirmAccount: () => import('../components/DaConfirmAccount'),
     DaBookmarkList: () => import('../components/DaBookmarkList'),
+    DaPremium: () => import('../components/DaPremium'),
   },
 
   data() {
@@ -451,14 +469,15 @@ export default {
       setShowDndMenu: 'ui/setShowDndMenu',
       setLastBannerSeen: 'ui/setLastBannerSeen',
       updateNotificationBadge: 'ui/updateNotificationBadge',
+      setShowPremium: 'ui/setShowPremium',
       confirmNewUser: 'user/confirmNewUser',
     }),
   },
 
   computed: {
-    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen']),
+    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
@@ -825,9 +844,11 @@ export default {
 
 .content__empty {
   display: flex;
+  max-width: 600px;
   margin-top: 120px;
   flex-direction: column;
   align-items: center;
+  align-self: center;
 
   & img {
     height: 185px;
@@ -843,10 +864,16 @@ export default {
 .content__empty__text {
   margin: 8px 0;
   color: var(--theme-secondary);
+  text-align: center;
 
   & {
     @mixin jr;
   }
+}
+
+.content__empty__button {
+  height: 48px;
+  margin-top: 16px;
 }
 
 #anchor {
@@ -1079,7 +1106,7 @@ export default {
   }
 }
 
-.bookmark-modal__close {
+.modal__close-btn {
   position: absolute;
   right: 16px;
   top: 16px;

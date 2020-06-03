@@ -16,6 +16,7 @@ const initialState = () => ({
   instructionsStep: 0,
   showOnlyNotReadPosts: false,
   lastBannerSeen: new Date(0),
+  showPremium: false,
 });
 
 export default {
@@ -97,6 +98,10 @@ export default {
 
     setLastBannerSeen(state, value) {
       state.lastBannerSeen = value;
+    },
+
+    setShowPremium(state, value) {
+      state.showPremium = value;
     },
   },
   getters: {

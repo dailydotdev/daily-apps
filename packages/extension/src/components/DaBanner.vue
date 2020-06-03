@@ -2,7 +2,7 @@
   <div class="banner" :class="theme">
     <span class="lil2 title">{{title}}</span>
     <span class="micro1">{{subtitle}}</span>
-    <a class="btn cta" :href="url" target="_blank" @click="ctaClick">{{cta}}</a>
+    <a class="btn cta" :href="url" @click="ctaClick">{{cta}}</a>
     <button class="btn-icon btn-small" @click="closeClick">
       <svgicon name="x"/>
     </button>

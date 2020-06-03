@@ -15,7 +15,7 @@
         </button>
       </div>
     </div>
-    <div class="bookmark-list__container" v-if="isPremium">
+    <div class="bookmark-list__container">
       <div class="bookmark-list__header nuggets">
         <span>My lists</span>
         <button class="btn-icon btn-small" @click="openCreateList('Full')"
@@ -113,8 +113,12 @@ export default {
       return this.$store.dispatch('feed/setBookmarkList', id);
     },
     openCreateList(mode) {
-      ga('send', 'event', 'Bookmark List', 'Create', mode);
-      this.showCreateList = true;
+      if (this.isPremium) {
+        ga('send', 'event', 'Bookmark List', 'Create', mode);
+        this.showCreateList = true;
+      } else {
+        this.$store.commit('ui/setShowPremium', true);
+      }
     },
     openMenu(event, list) {
       ga('send', 'event', 'Bookmark List', 'Context', 'Open');

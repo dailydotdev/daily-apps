@@ -1,9 +1,9 @@
 <template>
   <da-modal class="consent-modal" ref="modal" :close-on-click="false">
     <p>
-      We have updated our <a href="https://daily.dev/terms" target="_blank">Terms</a>,
-      <a href="https://daily.dev/privacy" target="_blank">Privacy</a> and
-      <a href="https://daily.dev/cookie" target="_blank">Cookie Policy</a>.
+      We have updated our <a href="https://daily.dev/terms">Terms</a>,
+      <a href="https://daily.dev/privacy">Privacy</a> and
+      <a href="https://daily.dev/cookie">Cookie Policy</a>.
       Take a minute to read them before you proceed.
     </p>
     <div class="consent__buttons">

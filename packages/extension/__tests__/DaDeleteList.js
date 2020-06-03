@@ -27,7 +27,7 @@ beforeEach(() => {
 
 it('should emit close on close button click', () => {
   const wrapper = mount(DaDeleteList, { localVue, propsData });
-  wrapper.find('.bookmark-modal__close').trigger('click');
+  wrapper.find('.modal__close-btn').trigger('click');
   expect(wrapper.emitted().close[0]).toBeTruthy();
 });
 
