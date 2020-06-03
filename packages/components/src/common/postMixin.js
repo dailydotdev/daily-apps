@@ -14,6 +14,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    bookmarksMenuOpened: {
+      type: Boolean,
+      default: false,
+    },
     selected: {
       type: Boolean,
       default: false,

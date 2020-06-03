@@ -107,10 +107,6 @@ export interface ContentService {
 
     deleteUserTag(tag: string): Promise<void>;
 
-    addBookmarks(ids: string[]): Promise<void>;
-
-    removeBookmark(id: string): Promise<void>;
-
     fetchPopularTags(): Promise<Tag[]>;
 
     searchTags(query: string): Promise<TagsSearchResult>;
@@ -211,14 +207,6 @@ export class ContentServiceImpl implements ContentService {
 
     async deleteUserTag(tag: string): Promise<void> {
         await this.request.delete('/v1/feeds/tags', {data: {tag}});
-    }
-
-    async addBookmarks(ids: string[]): Promise<void> {
-        await this.request.post<void>('/v1/posts/bookmarks', ids);
-    }
-
-    async removeBookmark(id: string): Promise<void> {
-        await this.request.delete(`/v1/posts/${id}/bookmark`);
     }
 
     async fetchPopularTags(): Promise<Tag[]> {

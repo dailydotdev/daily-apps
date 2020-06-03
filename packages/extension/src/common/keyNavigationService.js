@@ -71,7 +71,10 @@ function navigate(keyCode, posts, search, backToMainFeed, { current, insaneMode 
   return selectedPost;
 }
 
-function navigateDaily({ keyCode }) {
+function navigateDaily({ keyCode, target }) {
+  if (target instanceof HTMLInputElement) {
+    return;
+  }
   const { daFeedRef, hoveredPost } = store.state.feed;
   const parent = daFeedRef().$parent;
   const search = { enable: parent.enableSearch };

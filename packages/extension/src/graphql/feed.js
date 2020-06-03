@@ -7,7 +7,7 @@ fragment FeedPost on Post {
 
 export const USER_POST_FRAGMENT = gql`
 fragment UserPost on Post {
-  bookmarked,read
+  bookmarked,read,bookmarkList { id }
 }`;
 
 export const FEED_POST_CONNECTION_FRAGMENT = gql`

@@ -9,19 +9,24 @@ import {
   BOOKMARKS_FEED_QUERY,
   SEARCH_POSTS_QUERY,
 } from '../../graphql/feed';
+import {
+  ADD_BOOKMARKS_MUTATION,
+  REMOVE_BOOKMARK_MUTATION,
+  ADD_BOOKMARK_TO_LIST_MUTATION,
+} from '../../graphql/bookmarks';
 import { mapPost } from '../../common/post';
 
-const setPostBookmark = (state, key, id, value) => {
+const setPostBookmark = (state, key, id, value, list) => {
   const index = state[key].findIndex(post => post.id === id);
   if (index < 0) {
     return null;
   }
-  Vue.set(state[key], index, { ...state[key][index], bookmarked: value });
+  Vue.set(state[key], index, { ...state[key][index], bookmarked: value, bookmarkList: list });
   return state[key][index];
 };
 
 const initialState = () => ({
-  enabledTags: [],
+  enabledTags: {},
   disabledPublications: {},
   showBookmarks: false,
   pageInfo: null,
@@ -37,6 +42,8 @@ const initialState = () => ({
   daFeedRef: null,
   hoveredPost: null,
   ad: null,
+  bookmarkList: null,
+  lastUsedBookmarkList: null,
 });
 
 const isLoggedIn = state => !!state.user.profile;
@@ -61,10 +68,19 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
 
   if (state.showBookmarks) {
     if (loggedIn) {
+      const variables = {};
+      if (state.bookmarkList) {
+        if (state.bookmarkList === 'unread') {
+          variables.unreadOnly = true;
+        } else {
+          variables.listId = state.bookmarkList;
+        }
+      }
       return apolloClient.query({
         query: BOOKMARKS_FEED_QUERY,
         variables: {
           ...base,
+          ...variables,
         },
         fetchPolicy: 'no-cache',
       });
@@ -153,11 +169,11 @@ const getFeed = (state) => {
   return 'posts';
 };
 
-const setBookmarkInFeed = (state, id, bookmarked) => {
+const setBookmarkInFeed = (state, id, bookmarked, list) => {
   const feed = getFeed(state);
-  const post = setPostBookmark(state, feed, id, bookmarked);
+  const post = setPostBookmark(state, feed, id, bookmarked, list);
   if (feed !== 'posts') {
-    setPostBookmark(state, 'posts', id, bookmarked);
+    setPostBookmark(state, 'posts', id, bookmarked, list);
   }
   return post;
 };
@@ -189,6 +205,7 @@ export default {
     },
     setShowBookmarks(state, value) {
       state.showBookmarks = value;
+      state.bookmarkList = null;
     },
     setDisabledPublications(state, ids) {
       state.disabledPublications = ids.reduce((acc, val) => ({ ...acc, [val]: true }), {});
@@ -248,14 +265,22 @@ export default {
     setLoading(state, loading) {
       state.loading = loading;
     },
-    toggleBookmarks(state, { id, bookmarked }) {
-      const post = setBookmarkInFeed(state, id, bookmarked);
+    toggleBookmarks(state, { id, bookmarked, list = null }) {
+      if (bookmarked) {
+        state.lastUsedBookmarkList = list;
+      }
 
-      if (!bookmarked) {
-        const index = state.bookmarks.findIndex(bookmark => bookmark.id === id);
+      const post = setBookmarkInFeed(state, id, bookmarked, list);
+
+      const index = state.bookmarks.findIndex(bookmark => bookmark.id === id);
+      if (!bookmarked || (state.bookmarkList && (!list || list.id !== state.bookmarkList))) {
         state.bookmarks.splice(index, 1);
-      } else {
-        state.bookmarks.unshift(post);
+      } else if (bookmarked) {
+        if (index < 0) {
+          state.bookmarks.unshift(post);
+        } else {
+          Vue.set(state.bookmarks, index, post);
+        }
       }
     },
     setFilter(state, filter) {
@@ -272,6 +297,7 @@ export default {
       state.disabledPublications = {};
       state.enabledTags = {};
       state.showBookmarks = false;
+      state.bookmarkList = null;
     },
     setSortBy(state, sortBy) {
       state.sortBy = sortBy;
@@ -293,6 +319,9 @@ export default {
     mergeBookmarksConflicts(state) {
       state.conflictBookmarks.map(p => setBookmarkInFeed(state, p.id, true));
       state.conflictBookmarks = null;
+    },
+    setBookmarkList(state, id) {
+      state.bookmarkList = id;
     },
   },
   actions: {
@@ -418,8 +447,16 @@ export default {
     },
 
     setShowBookmarks({ commit, dispatch, rootState }, value) {
-      // TODO: add tests
       commit('setShowBookmarks', value);
+      if (rootState.user.profile) {
+        return dispatch('refreshFeed');
+      }
+
+      return Promise.resolve();
+    },
+
+    setBookmarkList({ commit, dispatch, rootState }, id) {
+      commit('setBookmarkList', id);
       if (rootState.user.profile) {
         return dispatch('refreshFeed');
       }
@@ -447,14 +484,50 @@ export default {
         }
       } catch (err) {
         // TODO: handle error
-        // eslint-disable-next-line no-console
-        console.error(err);
       }
     },
 
     async mergeBookmarksConflicts({ commit, state }) {
-      await contentService.addBookmarks(state.conflictBookmarks.map(b => b.id));
+      await apolloClient.mutate({
+        mutation: ADD_BOOKMARKS_MUTATION,
+        variables: { data: { postIds: state.conflictBookmarks.map(b => b.id) } },
+      });
       commit('mergeBookmarksConflicts');
+    },
+
+    async toggleBookmarks({ commit, rootState }, { id, bookmarked }) {
+      commit('toggleBookmarks', { id, bookmarked });
+      if (isLoggedIn(rootState)) {
+        try {
+          if (bookmarked) {
+            apolloClient.mutate({
+              mutation: ADD_BOOKMARKS_MUTATION,
+              variables: { data: { postIds: [id] } },
+            });
+          } else {
+            apolloClient.mutate({
+              mutation: REMOVE_BOOKMARK_MUTATION,
+              variables: { id },
+            });
+          }
+        } catch (err) {
+          commit('toggleBookmarks', { id, bookmarked: !bookmarked });
+        }
+      }
+    },
+
+    async addBookmarkToList({ commit }, { post, list }) {
+      commit('toggleBookmarks', { id: post.id, bookmarked: true, list });
+      try {
+        apolloClient.mutate({
+          mutation: ADD_BOOKMARK_TO_LIST_MUTATION,
+          variables: { id: post.id, listId: list ? list.id : null },
+        });
+        return true;
+      } catch (err) {
+        commit('toggleBookmarks', { id: post.id, bookmarked: post.bookmarked, list: post.bookmarkList });
+        return false;
+      }
     },
   },
 };

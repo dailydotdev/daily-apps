@@ -29,6 +29,9 @@ export default {
     isLoggedIn(state) {
       return !!state.profile;
     },
+    isPremium(state) {
+      return !!state.profile && !!state.profile.premium;
+    },
   },
   actions: {
     async login({ commit, state }, profile) {
@@ -69,12 +72,16 @@ export default {
       commit('setChallenge', challenge);
     },
 
-    async validateAuth({ dispatch, state }) {
+    async validateAuth({ commit, dispatch, state }) {
       const profile = await authService.getUserProfile();
-      if (profile.providers && (!state.profile || state.profile.id !== profile.id)) {
-        // Keep newUser true according multiple sessions until confirmed
-        await dispatch('login', Object.assign({}, profile, { newUser: state.profile && state.profile.newUser }));
-      } else if (!profile.providers && state.profile) {
+      if (profile.providers) {
+        if (state.profile && state.profile.id === profile.id) {
+          // Keep newUser true according multiple sessions until confirmed
+          commit('setProfile', Object.assign({}, profile, { newUser: state.profile && state.profile.newUser }));
+        } else {
+          await dispatch('login', profile);
+        }
+      } else if (state.profile) {
         await dispatch('logout');
       }
     },

@@ -141,26 +141,6 @@ it('should delete user tags', async () => {
     await service.deleteUserTag('javascript');
 });
 
-it('should add bookmarks', async () => {
-    const body: string[] = ['id'];
-
-    nock(baseURL)
-        .post('/v1/posts/bookmarks', body)
-        .reply(204);
-
-    await service.addBookmarks(body);
-});
-
-it('should remove bookmark', async () => {
-    const id = 'id';
-
-    nock(baseURL)
-        .delete(`/v1/posts/${id}/bookmark`)
-        .reply(204);
-
-    await service.removeBookmark(id);
-});
-
 it('should fetch popular tags from server', async () => {
     const expected: Tag[] = require('./fixtures/tags.json');
 

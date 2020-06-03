@@ -63,3 +63,27 @@ html.theme * {
 img.lazyload {
     opacity: 0;
 }
+
+.scrollbar {
+    &::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: var(--theme-disabled);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-secondary);
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background: var(--theme-primary);
+  }
+}

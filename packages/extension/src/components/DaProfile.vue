@@ -30,7 +30,7 @@
       </button>
       <ul class="profile__links">
         <li class="profile__link" v-for="link in links" :key="link.text">
-          <a :href="link.link" target="_blank" class="micro1">{{link.text}}</a>
+          <a :href="link.link" class="micro1">{{link.text}}</a>
         </li>
         <li class=profile__link>
           <button class="micro1" @click="onLogout">Logout</button>

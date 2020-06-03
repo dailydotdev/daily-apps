@@ -19,7 +19,7 @@ it('should emit bookmark event on click', () => {
   const post = posts[0];
   const wrapper = shallowMount(DaCardPost, { localVue, propsData: { post } });
   wrapper.find('.card__footer__bookmark').trigger('click');
-  expect(wrapper.emitted().bookmark[0]).toEqual([{ post, bookmarked: true }]);
+  expect(wrapper.emitted().bookmark[0]).toEqual([{ post, bookmarked: true, event: expect.anything() }]);
 });
 
 it('should emit menu event on click', () => {

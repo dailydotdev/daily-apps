@@ -143,13 +143,12 @@ it('should update profile if still logged in', async () => {
 
 it('should keep newUser set when validating auth', async () => {
   const state = { profile: { id: '1', providers: ['github'], newUser: true } };
-  authService.getUserProfile.mockReturnValue(Promise.resolve({ id: '2', providers: ['github'] }));
+  authService.getUserProfile.mockReturnValue(Promise.resolve({ id: '1', providers: ['github'] }));
   await testAction(
     module.actions.validateAuth,
     null,
     state,
-    [],
-    [{ type: 'login', payload: { id: '2', providers: ['github'], newUser: true } }],
+    [{ type: 'setProfile', payload: { id: '1', providers: ['github'], newUser: true } }],
   );
 });
 
@@ -177,4 +176,16 @@ it('should mark user as logged-in', async () => {
     state,
     [{ type: 'setProfile', payload: profile }],
   );
+});
+
+it('should mark user as premium', () => {
+  const state = { profile: { premium: true } };
+  const actual = module.getters.isPremium(state);
+  expect(actual).toEqual(true);
+});
+
+it('should mark user as not premium', () => {
+  const state = { profile: { } };
+  const actual = module.getters.isPremium(state);
+  expect(actual).toEqual(false);
 });

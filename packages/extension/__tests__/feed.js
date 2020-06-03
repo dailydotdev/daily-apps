@@ -11,6 +11,11 @@ import {
   BOOKMARKS_FEED_QUERY,
   SEARCH_POSTS_QUERY,
 } from '../src/graphql/feed';
+import {
+  ADD_BOOKMARKS_MUTATION,
+  REMOVE_BOOKMARK_MUTATION,
+  ADD_BOOKMARK_TO_LIST_MUTATION,
+} from '../src/graphql/bookmarks';
 
 jest.mock('../src/apollo');
 
@@ -21,7 +26,6 @@ jest.mock('../src/common/services', () => ({
     updateFeedPublications: jest.fn(),
     addUserTags: jest.fn(),
     deleteUserTag: jest.fn(),
-    addBookmarks: jest.fn(),
   },
   monetizationService: {
     fetchAd: jest.fn(),
@@ -43,12 +47,18 @@ const bookmarksHandler = jest.fn();
 const sourceFeedHandler = jest.fn();
 const tagFeedHandler = jest.fn();
 const searchPostHandler = jest.fn();
+const addBookmarksHandler = jest.fn();
+const removeBookmarkHandler = jest.fn();
+const addBookmarkToListHandler = jest.fn();
 apolloClient.setRequestHandler(ANONYMOUS_FEED_QUERY, anonymousHandler);
 apolloClient.setRequestHandler(FEED_QUERY, feedHandler);
 apolloClient.setRequestHandler(BOOKMARKS_FEED_QUERY, bookmarksHandler);
 apolloClient.setRequestHandler(SOURCE_FEED_QUERY, sourceFeedHandler);
 apolloClient.setRequestHandler(TAG_FEED_QUERY, tagFeedHandler);
 apolloClient.setRequestHandler(SEARCH_POSTS_QUERY, searchPostHandler);
+apolloClient.setRequestHandler(ADD_BOOKMARKS_MUTATION, addBookmarksHandler);
+apolloClient.setRequestHandler(REMOVE_BOOKMARK_MUTATION, removeBookmarkHandler);
+apolloClient.setRequestHandler(ADD_BOOKMARK_TO_LIST_MUTATION, addBookmarkToListHandler);
 
 beforeEach(() => {
   anonymousHandler.mockReset();
@@ -57,12 +67,19 @@ beforeEach(() => {
   sourceFeedHandler.mockReset();
   tagFeedHandler.mockReset();
   searchPostHandler.mockReset();
+  addBookmarksHandler.mockReset();
+  addBookmarksHandler.mockResolvedValue({ data: { addBookmarks: { _: true }}});
+  removeBookmarkHandler.mockReset();
+  removeBookmarkHandler.mockResolvedValue({ data: { removeBookmark: { _: true }}});
+  addBookmarkToListHandler.mockReset();
+  addBookmarkToListHandler.mockResolvedValue({ data: { addBookmarkToList: { _: true }}});
 });
 
 it('should set show bookmarks in state', () => {
   const state = {};
   module.mutations.setShowBookmarks(state, true);
   expect(state.showBookmarks).toEqual(true);
+  expect(state.bookmarkList).toEqual(null);
 });
 
 it('should commit set show bookmarks', async () => {
@@ -186,12 +203,14 @@ it('should set a post as bookmarked and add it to bookmarks', () => {
   }, {
     id: '2',
     bookmarked: true,
+    bookmarkList: null,
   }, {
     id: '3',
   }]);
   expect(state.bookmarks).toEqual([{
     id: '2',
     bookmarked: true,
+    bookmarkList: null,
   }]);
 });
 
@@ -223,11 +242,95 @@ it('should set a post as not bookmarked and remove it from bookmarks', () => {
   }, {
     id: '3',
     bookmarked: false,
+    bookmarkList: null,
   }]);
   expect(state.bookmarks).toEqual([{
     id: '1',
     bookmarked: true,
   }]);
+});
+
+it('should set a post as bookmarked and add set its list', () => {
+  const state = {
+    posts: [{
+      id: '1',
+    }, {
+      id: '2',
+    }, {
+      id: '3',
+    }],
+    bookmarks: [],
+  };
+  module.mutations.toggleBookmarks(state, { id: '2', bookmarked: true, list: { id: 'list' } });
+  expect(state.posts).toEqual([{
+    id: '1',
+  }, {
+    id: '2',
+    bookmarked: true,
+    bookmarkList: { id: 'list' },
+  }, {
+    id: '3',
+  }]);
+  expect(state.bookmarks).toEqual([{
+    id: '2',
+    bookmarked: true,
+    bookmarkList: { id: 'list' },
+  }]);
+});
+
+it('should update the bookmark list', () => {
+  const state = {
+    posts: [{
+      id: '1',
+    }, {
+      id: '2',
+      bookmarked: true,
+    }, {
+      id: '3',
+    }],
+    bookmarks: [ { id: '2', bookmarked: true } ],
+  };
+  module.mutations.toggleBookmarks(state, { id: '2', bookmarked: true, list: { id: 'list' } });
+  expect(state.posts).toEqual([{
+    id: '1',
+  }, {
+    id: '2',
+    bookmarked: true,
+    bookmarkList: { id: 'list' },
+  }, {
+    id: '3',
+  }]);
+  expect(state.bookmarks).toEqual([{
+    id: '2',
+    bookmarked: true,
+    bookmarkList: { id: 'list' },
+  }]);
+});
+
+it('should remove from bookmarks when changing to other list', () => {
+  const state = {
+    posts: [{
+      id: '1',
+    }, {
+      id: '2',
+      bookmarked: true,
+    }, {
+      id: '3',
+    }],
+    bookmarks: [ { id: '2', bookmarked: true } ],
+    bookmarkList: 'list',
+  };
+  module.mutations.toggleBookmarks(state, { id: '2', bookmarked: true, list: { id: 'list2' } });
+  expect(state.posts).toEqual([{
+    id: '1',
+  }, {
+    id: '2',
+    bookmarked: true,
+    bookmarkList: { id: 'list2' },
+  }, {
+    id: '3',
+  }]);
+  expect(state.bookmarks).toEqual([]);
 });
 
 it('should return hasFilter false when no filter', () => {
@@ -362,6 +465,7 @@ it('should reset personalization', () => {
   expect(state.disabledPublications).toEqual({});
   expect(state.showBookmarks).toEqual(false);
   expect(state.bookmarks).toEqual([]);
+  expect(state.bookmarkList).toEqual(null);
 });
 
 it('should reset everything', async () => {
@@ -503,8 +607,7 @@ it('should merge bookmarks conflicts', () => {
   });
 });
 
-it('should fetch ads', async () => {
-  contentService.addBookmarks.mockReturnValue(Promise.resolve());
+it('should merge bookmarks conflicts and set update to server', async () => {
   const state = {
     posts: [{ id: '1' }, { id: '2' }, { id: '3' }],
     conflictBookmarks: [{ id: '1' }, { id: '3' }],
@@ -515,8 +618,8 @@ it('should fetch ads', async () => {
     state,
     [{ type: 'mergeBookmarksConflicts' }],
   );
-  expect(contentService.addBookmarks)
-    .toBeCalledWith(['1', '3']);
+  expect(addBookmarksHandler)
+    .toBeCalledWith({ data: { postIds: ['1', '3'] }});
 });
 
 it('should set posts by type', () => {
@@ -768,4 +871,81 @@ it('should search posts', async () => {
   expect(res).toEqual(true);
   expect(searchPostHandler).toBeCalledWith({ loggedIn: true, now, after: undefined, query: 'node' });
   MockDate.reset();
+});
+
+it('should set bookmark list in state', () => {
+  const state = {};
+  module.mutations.setBookmarkList(state, 'id');
+  expect(state.bookmarkList).toEqual('id');
+});
+
+it('should commit set bookmark list', async () => {
+  const state = {};
+  await testAction(module.actions.setBookmarkList, 'id', state,
+    [{ type: 'setBookmarkList', payload: 'id' }],
+    [], { user: { profile: null } },
+  );
+});
+
+it('should commit set show bookmarks and refresh feed', async () => {
+  const state = {};
+  await testAction(module.actions.setBookmarkList, 'id', state,
+    [{ type: 'setBookmarkList', payload: 'id' }],
+    [{ type: 'refreshFeed' }],
+    { user: { profile: { name: 'John' } } },
+  );
+});
+
+it('should commit toggle bookmark', async () => {
+  const state = {};
+  const payload = { id: '1', bookmarked: true };
+  await testAction(module.actions.toggleBookmarks, payload, state,
+    [{ type: 'toggleBookmarks', payload }],
+    [],
+    { user: { profile: null } },
+  );
+});
+
+it('should send add bookmark request', async () => {
+  const state = {};
+  const payload = { id: '1', bookmarked: true };
+  await testAction(module.actions.toggleBookmarks, payload, state,
+    [{ type: 'toggleBookmarks', payload }],
+    [],
+    { user: { profile: { name: 'John' } } },
+  );
+  expect(addBookmarksHandler).toBeCalledWith({ data: { postIds: ['1'] }});
+});
+
+it('should send remove bookmark request', async () => {
+  const state = {};
+  const payload = { id: '1', bookmarked: false };
+  await testAction(module.actions.toggleBookmarks, payload, state,
+    [{ type: 'toggleBookmarks', payload }],
+    [],
+    { user: { profile: { name: 'John' } } },
+  );
+  expect(removeBookmarkHandler).toBeCalledWith({ id: '1' });
+});
+
+it('should add bookmark to list', async () => {
+  const state = {};
+  const payload = { post: { id: '1' }, list: { id: 'list' } };
+  await testAction(module.actions.addBookmarkToList, payload, state,
+    [{ type: 'toggleBookmarks', payload: { id: '1', bookmarked: true, list: { id: 'list' }}}],
+    [],
+    { user: { profile: { name: 'John' } } },
+  );
+  expect(addBookmarkToListHandler).toBeCalledWith({ id: '1', listId: 'list' });
+});
+
+it('should add bookmark to default list', async () => {
+  const state = {};
+  const payload = { post: { id: '1' }, list: null };
+  await testAction(module.actions.addBookmarkToList, payload, state,
+    [{ type: 'toggleBookmarks', payload: { id: '1', bookmarked: true, list: null }}],
+    [],
+    { user: { profile: { name: 'John' } } },
+  );
+  expect(addBookmarkToListHandler).toBeCalledWith({ id: '1', listId: null });
 });

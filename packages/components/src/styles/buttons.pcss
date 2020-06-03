@@ -85,6 +85,7 @@ button:focus, button:active {
     flex-direction: row;
     align-items: center;
     padding: 0 12px;
+    cursor: pointer;
 
     & {
         @mixin lil2;
@@ -180,7 +181,7 @@ button:focus, button:active {
 
 .btn-icon, .btn.btn-menu, .btn.btn-hollow, .btn.btn-nav {
     &:not(.selected) {
-        &:hover {
+        &:hover, &.hover {
             --button-color: var(--theme-primary);
         }
 
@@ -198,7 +199,7 @@ button:focus, button:active {
     }
 
     &:not(.selected) {
-        &:hover {
+        &:hover, &.hover {
             --button-background: var(--theme-hover);
             --button-background-opacity: var(--theme-hover-opacity);
         }
@@ -232,6 +233,6 @@ button:focus, button:active {
     }
 }
 
-.btn-menu:hover {
+.btn-menu:hover, .btn-menu.hover {
     --button-color: var(--theme-primary);
 }

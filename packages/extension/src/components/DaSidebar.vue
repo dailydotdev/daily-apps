@@ -1,7 +1,7 @@
 <template>
   <aside class="sidebar" :class="{opened}"
          @mouseleave="close">
-    <div class="sidebar__wrapper">
+    <div class="sidebar__wrapper scrollbar">
       <div class="sidebar__filter">
         <da-mode-switch class="sidebar__filter_switch"
                         first-icon="link" second-icon="hashtag"
@@ -422,28 +422,6 @@ export default {
     height: 100%;
     background: var(--theme-background-highlight);
     z-index: -1;
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background: var(--theme-disabled);
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-secondary);
-  }
-
-  &::-webkit-scrollbar-thumb:active {
-    background: var(--theme-primary);
   }
 }
 

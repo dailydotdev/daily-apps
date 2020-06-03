@@ -21,6 +21,7 @@ const stateToCache = (state) => {
     posts: [{ type: 'ad', loading: true }, ...state.feed.posts.slice(1, contentService.pageSize).map(post2Cache)],
     bookmarks: state.feed.bookmarks.map(post2Cache),
     latest: time2Cache(state.feed.latest),
+    lastUsedBookmarkList: state.feed.lastUsedBookmarkList,
   };
   if (state.feed.conflictBookmarks) {
     toCache.feed.conflictBookmarks = state.feed.conflictBookmarks.map(post2Cache);
@@ -30,6 +31,7 @@ const stateToCache = (state) => {
   delete ui.showDndMenu;
   delete ui.showSettings;
   delete ui.notifications;
+  delete ui.showPremium;
   toCache.ui = {
     ...ui,
     lastNotificationTime: time2Cache(state.ui.lastNotificationTime),

@@ -14,6 +14,7 @@ import { LATEST_NOTIFICATIONS_QUERY } from '../src/graphql/home';
 import { SOURCES_QUERY } from '../src/graphql/sidebar';
 import { apolloClient } from '../src/apollo';
 import { POPULAR_TAGS_QUERY } from '../src/graphql/tags';
+import { BOOKMARK_LISTS_QUERY } from '../src/graphql/bookmarkList';
 
 jest.mock('../src/apollo');
 
@@ -93,6 +94,7 @@ beforeEach(() => {
     },
     getters: {
       isLoggedIn: state => !!state.profile,
+      isPremium: state => !!state.profile && !!state.profile.premium,
     },
     actions: {
       validateAuth: jest.fn(),
@@ -183,6 +185,7 @@ it('should fetch notifications and update badge', (done) => {
   apolloClient.setRequestHandler(
     LATEST_NOTIFICATIONS_QUERY,
     () => Promise.resolve({ data: { latestNotifications: [{html: 'hello world', timestamp: now.toISOString()}] } }));
+  apolloClient.setRequestHandler(BOOKMARK_LISTS_QUERY, () => Promise.resolve({data: {bookmarkLists: {}}}));
   const wrapper = mount(DaHome, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
   wrapper.vm.$apollo.queries.notifications.setOptions({ fetchPolicy: 'network-only' });
   setTimeout(() => {
