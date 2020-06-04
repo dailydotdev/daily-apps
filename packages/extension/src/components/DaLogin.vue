@@ -138,9 +138,16 @@ export default {
 }
 
 .login__background {
-  position: absolute;
-  min-width: 100%;
-  min-height: 100%;
-  margin: auto;
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  & svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>
