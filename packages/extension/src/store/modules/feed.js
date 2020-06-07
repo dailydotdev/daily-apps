@@ -401,9 +401,9 @@ export default {
     },
 
     async refreshFeed({
-      commit, dispatch, state, rootState,
+      commit, dispatch, state, rootGetters,
     }) {
-      if (!state.showBookmarks || rootState.user.profile) {
+      if (!state.showBookmarks || rootGetters['user/isLoggedIn']) {
         commit('setShowFeed', false);
         commit('resetFeed');
         const res = await dispatch('fetchNextFeedPage');
@@ -415,11 +415,11 @@ export default {
     },
 
     async setEnablePublication({
-      commit, dispatch, rootState,
+      commit, dispatch, rootGetters,
     }, payload) {
       commit('enablePublication', payload);
 
-      if (isLoggedIn(rootState)) {
+      if (rootGetters['user/isLoggedIn']) {
         // TODO: handle error
         await contentService.updateFeedPublications([{
           publicationId: payload.id,
@@ -430,10 +430,10 @@ export default {
       return dispatch('refreshFeed');
     },
 
-    async setEnableTag({ commit, dispatch, rootState }, payload) {
+    async setEnableTag({ commit, dispatch, rootGetters }, payload) {
       commit('enableTag', payload);
 
-      if (isLoggedIn(rootState)) {
+      if (rootGetters['user/isLoggedIn']) {
         if (payload.enabled) {
           // TODO: handle error
           await contentService.addUserTags([payload.tag]);
@@ -451,18 +451,18 @@ export default {
       return dispatch('refreshFeed');
     },
 
-    setShowBookmarks({ commit, dispatch, rootState }, value) {
+    setShowBookmarks({ commit, dispatch, rootGetters }, value) {
       commit('setShowBookmarks', value);
-      if (rootState.user.profile) {
+      if (rootGetters['user/isLoggedIn']) {
         return dispatch('refreshFeed');
       }
 
       return Promise.resolve();
     },
 
-    setBookmarkList({ commit, dispatch, rootState }, id) {
+    setBookmarkList({ commit, dispatch, rootGetters }, id) {
       commit('setBookmarkList', id);
-      if (rootState.user.profile) {
+      if (rootGetters['user/isLoggedIn']) {
         return dispatch('refreshFeed');
       }
 

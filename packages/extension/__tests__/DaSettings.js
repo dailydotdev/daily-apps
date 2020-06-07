@@ -14,6 +14,7 @@ localVue.directive('tooltip', tooltip(localVue));
 localVue.component('da-icon-toggle', DaIconToggle);
 localVue.component('da-switch', DaSwitch);
 
+let feed;
 let ui;
 let store;
 
@@ -29,6 +30,7 @@ beforeEach(() => {
       showTopSites: false,
       enabledCardAnimation: false,
       showOnlyNotReadPosts: false,
+      spaciness: 'eco',
     },
     actions: {
       setTheme: jest.fn(),
@@ -41,9 +43,17 @@ beforeEach(() => {
       setShowOnlyNotReadPosts: jest.fn(),
     },
   };
+  
+  feed = {
+    namespaced: true,
+    state: {},
+    actions: {
+      refreshFeed: jest.fn(),
+    },
+  };
 
   store = new Vuex.Store({
-    modules: { ui },
+    modules: { ui, feed },
   });
 });
 

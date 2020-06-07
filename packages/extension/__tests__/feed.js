@@ -96,6 +96,7 @@ it('should commit set show bookmarks and refresh feed', async () => {
     [{ type: 'setShowBookmarks', payload: true }],
     [{ type: 'refreshFeed' }],
     { user: { profile: { name: 'John' } } },
+    { 'user/isLoggedIn': true },
   );
 });
 
@@ -116,7 +117,7 @@ it('should set enabled publication and refresh feed', async () => {
   const state = {};
   await testAction(module.actions.setEnablePublication, pubs, state,
     [{ type: 'enablePublication', payload: pubs }],
-    [{ type: 'refreshFeed' }], { user: { profile: null } });
+    [{ type: 'refreshFeed' }], { }, { 'user/isLoggedIn': false });
 });
 
 it('should set enabled publication, refresh feed and update user', async () => {
@@ -124,7 +125,7 @@ it('should set enabled publication, refresh feed and update user', async () => {
   const state = { disabledPublications: { angular: true } };
   await testAction(module.actions.setEnablePublication, pubs, state,
     [{ type: 'enablePublication', payload: pubs }],
-    [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
+    [{ type: 'refreshFeed' }], { }, { 'user/isLoggedIn': true });
   expect(contentService.updateFeedPublications)
     .toBeCalledWith([{ publicationId: 'angular', enabled: true }]);
 });
@@ -165,7 +166,7 @@ it('should set enabled tag and refresh feed', async () => {
   const state = {};
   await testAction(module.actions.setEnableTag, tags, state,
     [{ type: 'enableTag', payload: tags }],
-    [{ type: 'refreshFeed' }], { user: { profile: null } });
+    [{ type: 'refreshFeed' }], { }, { 'user/isLoggedIn': false });
 });
 
 it('should set enabled tag, refresh feed and add user tag', async () => {
@@ -173,7 +174,7 @@ it('should set enabled tag, refresh feed and add user tag', async () => {
   const tags = { tag: 'angular', enabled: true };
   await testAction(module.actions.setEnableTag, tags, state,
     [{ type: 'enableTag', payload: tags }],
-    [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
+    [{ type: 'refreshFeed' }], { }, { 'user/isLoggedIn': true });
   expect(contentService.addUserTags).toBeCalledWith(['angular']);
 });
 
@@ -182,7 +183,7 @@ it('should set enabled tag, refresh feed and delete user tag', async () => {
   const tags = { tag: 'angular', enabled: false };
   await testAction(module.actions.setEnableTag, tags, state,
     [{ type: 'enableTag', payload: tags }],
-    [{ type: 'refreshFeed' }], { user: { profile: { name: 'john' } } });
+    [{ type: 'refreshFeed' }], { }, { 'user/isLoggedIn': true });
   expect(contentService.deleteUserTag).toBeCalledWith('angular');
 });
 
@@ -691,7 +692,8 @@ it('should fetch anonymous feed', async () => {
     [
       { type: 'fetchAds', payload: 'posts' },
     ],
-    {user: { profile: null }, ui: {} },
+    {user: { }, ui: {} },
+    { 'user/isLoggedIn': false },
   );
   expect(res).toEqual(true);
   expect(anonymousHandler).toBeCalledWith({ loggedIn: false, now, ranking: 'POPULARITY', filters: {excludeSources: undefined, includeTags: undefined}, after: undefined });
@@ -732,7 +734,8 @@ it('should fetch next anonymous feed page', async () => {
     [
       { type: 'fetchAds', payload: 'posts' },
     ],
-    {user: { profile: null }, ui: {} },
+    {user: { }, ui: {} },
+    { 'user/isLoggedIn': false },
   );
   expect(res).toEqual(true);
   expect(anonymousHandler).toBeCalledWith({ loggedIn: false, now, ranking: 'POPULARITY', filters: {excludeSources: undefined, includeTags: undefined}, after: 'cursor' });
@@ -749,7 +752,8 @@ it('should apply local filters for anonymous feed', async () => {
     module.actions.fetchNextFeedPage,
     undefined,
     state,
-    {user: { profile: null }, ui: {} },
+    {user: { }, ui: {} },
+    { 'user/isLoggedIn': false },
   );
   expect(res).toEqual(true);
   expect(anonymousHandler).toBeCalledWith({ loggedIn: false, now, ranking: 'POPULARITY', filters: {excludeSources: ['b'], includeTags: ['javascript']}, after: undefined });
@@ -766,7 +770,8 @@ it('should fetch user feed', async () => {
     module.actions.fetchNextFeedPage,
     undefined,
     state,
-    {user: { profile: { id: 'u' } }, ui: {} },
+    {user: { }, ui: {} },
+    { 'user/isLoggedIn': true },
   );
   expect(res).toEqual(true);
   expect(feedHandler).toBeCalledWith({ loggedIn: true, now, ranking: 'TIME', after: undefined });
@@ -783,7 +788,8 @@ it('should fetch user feed with only unread posts', async () => {
     module.actions.fetchNextFeedPage,
     undefined,
     state,
-    {user: { profile: { id: 'u' } }, ui: { showOnlyNotReadPosts: true } },
+    {user: { }, ui: { showOnlyNotReadPosts: true } },
+    { 'user/isLoggedIn': true },
   );
   expect(res).toEqual(true);
   expect(feedHandler).toBeCalledWith({ loggedIn: true, now, ranking: 'TIME', after: undefined, unreadOnly: true });
@@ -800,7 +806,8 @@ it('should fetch user bookmarks', async () => {
     module.actions.fetchNextFeedPage,
     undefined,
     state,
-    {user: { profile: { id: 'u' } }, ui: {} },
+    {user: { }, ui: {} },
+    { 'user/isLoggedIn': true },
   );
   expect(res).toEqual(true);
   expect(bookmarksHandler).toBeCalledWith({ loggedIn: true, now, after: undefined });
@@ -817,6 +824,7 @@ it('should not fetch anything for anonymous bookmarks', async () => {
     undefined,
     state,
     { user: { profile: null, ui: {} } },
+    { 'user/isLoggedIn': false },
   );
   expect(res).toEqual(false);
   MockDate.reset();
@@ -832,7 +840,8 @@ it('should fetch source feed', async () => {
     module.actions.fetchNextFeedPage,
     undefined,
     state,
-    {user: { profile: { id: 'u' } }, ui: {} },
+    {user: { }, ui: {} },
+    { 'user/isLoggedIn': true },
   );
   expect(res).toEqual(true);
   expect(sourceFeedHandler).toBeCalledWith({ loggedIn: true, now, after: undefined, ranking: 'TIME', source: 'a' });
@@ -849,7 +858,8 @@ it('should fetch tag feed', async () => {
     module.actions.fetchNextFeedPage,
     undefined,
     state,
-    {user: { profile: { id: 'u' } }, ui: {} },
+    {user: { }, ui: {} },
+    { 'user/isLoggedIn': true },
   );
   expect(res).toEqual(true);
   expect(tagFeedHandler).toBeCalledWith({ loggedIn: true, now, after: undefined, ranking: 'TIME', tag: 'webdev' });
@@ -866,7 +876,8 @@ it('should search posts', async () => {
     module.actions.fetchNextFeedPage,
     undefined,
     state,
-    {user: { profile: { id: 'u' } }, ui: {} },
+    {user: { }, ui: {} },
+    { 'user/isLoggedIn': true },
   );
   expect(res).toEqual(true);
   expect(searchPostHandler).toBeCalledWith({ loggedIn: true, now, after: undefined, query: 'node' });
@@ -892,7 +903,8 @@ it('should commit set show bookmarks and refresh feed', async () => {
   await testAction(module.actions.setBookmarkList, 'id', state,
     [{ type: 'setBookmarkList', payload: 'id' }],
     [{ type: 'refreshFeed' }],
-    { user: { profile: { name: 'John' } } },
+    { user: { } },
+    { 'user/isLoggedIn': true },
   );
 });
 
@@ -902,7 +914,8 @@ it('should commit toggle bookmark', async () => {
   await testAction(module.actions.toggleBookmarks, payload, state,
     [{ type: 'toggleBookmarks', payload }],
     [],
-    { user: { profile: null } },
+    { user: { } },
+    { 'user/isLoggedIn': false },
   );
 });
 
@@ -913,6 +926,7 @@ it('should send add bookmark request', async () => {
     [{ type: 'toggleBookmarks', payload }],
     [],
     { user: { profile: { name: 'John' } } },
+    { 'user/isLoggedIn': true },
   );
   expect(addBookmarksHandler).toBeCalledWith({ data: { postIds: ['1'] }});
 });
@@ -924,6 +938,7 @@ it('should send remove bookmark request', async () => {
     [{ type: 'toggleBookmarks', payload }],
     [],
     { user: { profile: { name: 'John' } } },
+    { 'user/isLoggedIn': true },
   );
   expect(removeBookmarkHandler).toBeCalledWith({ id: '1' });
 });
@@ -935,6 +950,7 @@ it('should add bookmark to list', async () => {
     [{ type: 'toggleBookmarks', payload: { id: '1', bookmarked: true, list: { id: 'list' }}}],
     [],
     { user: { profile: { name: 'John' } } },
+    { 'user/isLoggedIn': true },
   );
   expect(addBookmarkToListHandler).toBeCalledWith({ id: '1', listId: 'list' });
 });

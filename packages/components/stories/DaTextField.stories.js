@@ -37,5 +37,9 @@ storiesOf('DaTextField', module)
   .add('hide label', () => ({
     components: { DaTextField },
     template: '<da-text-field placeholder="Type your query..." label="Search" hide-label/>',
+  }))
+  .add('right slot', () => ({
+    components: { DaTextField },
+    template: '<da-text-field placeholder="Type your query..." label="Search"><template v-slot:right><svgicon class="text-field__right-slot" name="v" /></template></da-text-field>',
   }));
 

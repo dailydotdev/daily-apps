@@ -28,6 +28,7 @@
       <span class="text-field__count lil1" v-if="maxlength">
         {{remainingChars}}
       </span>
+      <slot name="right" />
     </div>
     <div class="text-field__hint micro2" :aria-live="invalid ? 'assertive' : false">
       {{hint}}
@@ -213,8 +214,11 @@ export default {
   }
 }
 
+.text-field__count, .text-field__right-slot {
+  margin-right: 12px;
+}
+
 .text-field__count {
   color: var(--theme-secondary);
-  margin-right: 12px;
 }
 </style>

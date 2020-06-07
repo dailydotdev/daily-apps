@@ -89,8 +89,8 @@ export default {
     }),
   },
   mounted() {
-        import('@daily/components/icons/card');
-        import('@daily/components/icons/line');
+    import('@daily/components/icons/card');
+    import('@daily/components/icons/line');
   },
 };
 </script>

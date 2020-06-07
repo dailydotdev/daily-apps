@@ -1,4 +1,4 @@
-export const testAction = (action, payload, state, expectedMutations = [], expectedActions = [], rootState = {}) =>
+export const testAction = (action, payload, state, expectedMutations = [], expectedActions = [], rootState = {}, rootGetters = {}) =>
   new Promise((resolve, reject) => {
     let commitCount = 0;
     let dispatchCount = 0;
@@ -35,7 +35,7 @@ export const testAction = (action, payload, state, expectedMutations = [], expec
 
     // call the action with mocked store and arguments
     Promise.resolve()
-      .then(() => action({ commit, dispatch, state, rootState }, payload))
+      .then(() => action({ commit, dispatch, state, rootState, rootGetters }, payload))
       .then((res) => {
         expect(commitCount).toEqual(expectedMutations.length);
         expect(dispatchCount).toEqual(expectedActions.length);
@@ -44,12 +44,12 @@ export const testAction = (action, payload, state, expectedMutations = [], expec
       .catch(reject);
   });
 
-  export const runAction = (action, payload, state, rootState = {}) =>
+  export const runAction = (action, payload, state, rootState = {}, rootGetters = {}) =>
   new Promise((resolve, reject) => {
     const commit = jest.fn();
     const dispatch = jest.fn();
     Promise.resolve()
-      .then(() => action({ commit, dispatch, state, rootState }, payload))
+      .then(() => action({ commit, dispatch, state, rootState, rootGetters }, payload))
       .then(resolve)
       .catch(reject);
   });
