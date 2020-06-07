@@ -326,13 +326,14 @@ export default {
   },
   actions: {
     async fetchNextFeedPage({
-      dispatch, commit, state, rootState,
+      dispatch, commit, state, rootState, rootGetters,
     }) {
       if (state.loading || (state.pageInfo && !state.pageInfo.hasNextPage)) {
         return false;
       }
 
-      const loggedIn = !!rootState.user.profile;
+      const loggedIn = rootGetters['user/isLoggedIn'];
+      const premium = rootGetters['user/isPremium'];
       const type = getFeed(state);
       if (type === 'bookmarks' && !loggedIn) {
         return false;
@@ -344,15 +345,19 @@ export default {
 
       commit('setLoading', true);
       commit('clearAd');
-      dispatch('fetchAds', type);
+      if (!premium) {
+        dispatch('fetchAds', type);
+      }
 
       const { showOnlyNotReadPosts } = rootState.ui;
       const res = await fetchPosts(state, loggedIn, showOnlyNotReadPosts);
       let posts = addBookmarked(state, res.data.feed.edges.map(e => mapPost(e.node)), loggedIn);
-      if (state.ad) {
-        posts = [{ ...state.ad, type: 'ad' }].concat(posts);
-      } else {
-        posts = [{ loading: true, type: 'ad' }].concat(posts);
+      if (!premium) {
+        if (state.ad) {
+          posts = [{ ...state.ad, type: 'ad' }].concat(posts);
+        } else {
+          posts = [{ loading: true, type: 'ad' }].concat(posts);
+        }
       }
 
       if (!state.pageInfo) {

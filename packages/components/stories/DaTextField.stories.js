@@ -33,5 +33,9 @@ storiesOf('DaTextField', module)
         default: boolean('disabled', false),
       },
     }
+  }))
+  .add('hide label', () => ({
+    components: { DaTextField },
+    template: '<da-text-field placeholder="Type your query..." label="Search" hide-label/>',
   }));
 

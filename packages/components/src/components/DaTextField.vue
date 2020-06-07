@@ -65,7 +65,7 @@ export default {
 
   computed: {
     showLabel() {
-      return this.focused || this.hasInput;
+      return (this.focused || this.hasInput) && !this.hideLabel;
     },
     showHint() {
       return this.saveHintSpace || (this.hint && this.hint.length);

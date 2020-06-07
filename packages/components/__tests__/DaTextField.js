@@ -17,6 +17,13 @@ it('should set by default placeholder as label', () => {
     .toEqual(propsData.label);
 });
 
+it('should hide label', () => {
+  const props = { ...propsData, hideLabel: true };
+  const wrapper = mount(DaTextField, { localVue, propsData: props });
+  expect(wrapper.find('input').element.placeholder)
+    .toEqual(propsData.placeholder);
+});
+
 it('should set placeholder when focused and show label', () => {
   const wrapper = mount(DaTextField, { localVue, propsData });
   const input = wrapper.find('input');

@@ -3,6 +3,7 @@ export default {
     placeholder: String,
     label: String,
     disabled: Boolean,
+    hideLabel: Boolean,
   },
 
   data() {
@@ -14,7 +15,7 @@ export default {
 
   computed: {
     inputPlaceholder() {
-      if (this.focused) {
+      if (this.focused || this.hideLabel) {
         if (this.placeholder) {
           return this.placeholder;
         }
