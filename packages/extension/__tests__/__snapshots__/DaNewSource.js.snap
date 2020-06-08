@@ -1,0 +1,512 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should add private source 1`] = `
+<div
+  class="new-source__header"
+>
+  <h3>
+    Source added 🎉
+  </h3>
+   
+  <p>
+    
+      From now on new articles from this source will be added to your feed. Enjoy
+    
+  </p>
+</div>
+`;
+
+exports[`should list scraped rss feeds 1`] = `
+<div
+  class="new-source__status"
+>
+  <span>
+    
+        2 RSS feeds found
+      
+  </span>
+</div>
+`;
+
+exports[`should list scraped rss feeds 2`] = `
+<div
+  class="new-source__footer"
+>
+  <ul>
+    <li>
+      <label
+        class="switch small new-source__rss-switch"
+      >
+        <span
+          class="switch__container"
+        >
+          <input
+            type="checkbox"
+          />
+           
+          <span
+            class="switch__slider"
+          />
+           
+          <span
+            class="switch__handle"
+          >
+            <!---->
+          </span>
+        </span>
+         
+        <span
+          class="switch__label lil1"
+        >
+          A
+        </span>
+      </label>
+       
+      <a
+        class="btn-icon btn-small"
+        href="https://a.com/feed"
+        target="_blank"
+      >
+        <svg
+          class="svg-icon svg-fill"
+          version="1.1"
+          viewBox="0 0 24 24"
+        >
+          <path
+            _fill="#FFF"
+            d="M3 19V9a2 2 0 012-2h3a1 1 0 110 2H6a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1v-2a1 1 0 012 0v2.993a2.003 2.003 0 01-2 2.001L5 21A1.999 1.999 0 013 19zM19.5 3A1.5 1.5 0 0121 4.5v7a1.5 1.5 0 01-3 0V8.12l-5.218 5.219a1.5 1.5 0 01-2.12-2.121L15.877 6H12.5a1.5 1.5 0 010-3h7z"
+            fill-rule="evenodd"
+            pid="0"
+          />
+        </svg>
+      </a>
+    </li>
+    <li>
+      <label
+        class="switch small new-source__rss-switch"
+      >
+        <span
+          class="switch__container"
+        >
+          <input
+            type="checkbox"
+          />
+           
+          <span
+            class="switch__slider"
+          />
+           
+          <span
+            class="switch__handle"
+          >
+            <!---->
+          </span>
+        </span>
+         
+        <span
+          class="switch__label lil1"
+        >
+          B
+        </span>
+      </label>
+       
+      <a
+        class="btn-icon btn-small"
+        href="https://b.com/feed"
+        target="_blank"
+      >
+        <svg
+          class="svg-icon svg-fill"
+          version="1.1"
+          viewBox="0 0 24 24"
+        >
+          <path
+            _fill="#FFF"
+            d="M3 19V9a2 2 0 012-2h3a1 1 0 110 2H6a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1v-2a1 1 0 012 0v2.993a2.003 2.003 0 01-2 2.001L5 21A1.999 1.999 0 013 19zM19.5 3A1.5 1.5 0 0121 4.5v7a1.5 1.5 0 01-3 0V8.12l-5.218 5.219a1.5 1.5 0 01-2.12-2.121L15.877 6H12.5a1.5 1.5 0 010-3h7z"
+            fill-rule="evenodd"
+            pid="0"
+          />
+        </svg>
+      </a>
+    </li>
+  </ul>
+   
+  <button
+    class="btn btn-big btn-invert new-source__confirm"
+    disabled="disabled"
+  >
+    Continue
+  </button>
+</div>
+`;
+
+exports[`should proceed directly to source info when one rss is available 1`] = `
+<div
+  class="new-source__status"
+>
+  <span>
+    
+        Please confirm the details below
+      
+  </span>
+</div>
+`;
+
+exports[`should proceed directly to source info when one rss is available 2`] = `
+<div
+  class="new-source__footer"
+>
+  <div
+    class="new-source__name"
+  >
+    <img
+      alt="Source logo"
+      src="https://example.com/logo.png"
+    />
+     
+    <div
+      class="text-field"
+    >
+      <div
+        class="text-field__box field active"
+      >
+        <!---->
+         
+        <div
+          class="text-field__input-container"
+        >
+          <label
+            class="text-field__label micro2"
+            style="display: none;"
+          >
+            Source name
+          </label>
+           
+          <input
+            aria-label="Source name"
+            autofocus="autofocus"
+            class="text-field__input"
+            maxlength="50"
+            placeholder="Source name"
+            required="required"
+            type="text"
+          />
+        </div>
+         
+        <span
+          class="text-field__count lil1"
+        >
+          
+      43
+    
+        </span>
+         
+      </div>
+       
+      <div
+        class="text-field__hint micro2"
+      >
+        
+    
+  
+      </div>
+    </div>
+  </div>
+   
+  <div
+    class="new-source__submit"
+  >
+    <div>
+      <div
+        class="new-source__submit__info"
+      >
+        <h3>
+          Public
+        </h3>
+         
+        <p>
+          
+            We will review your request to make sure it qualifies the standards.
+          <br />
+          <br />
+          
+            If the source is approved, it will be added to the public sources list.
+            We will update you by email.
+          <br />
+          <br />
+          
+            Read the 
+          <a
+            href="#"
+            target="_blank"
+          >
+            content guidelines
+          </a>
+        </p>
+      </div>
+       
+      <button
+        class="btn btn-big btn-hollow"
+      >
+        
+          Request
+        
+      </button>
+    </div>
+     
+    <div>
+      <div
+        class="new-source__submit__info"
+      >
+        <h3>
+          Private
+        </h3>
+         
+        <p>
+          
+            Personalize your feed with  custom private sources of your choice.
+          <br />
+          <br />
+          
+            This source will be added to your feed 
+          <strong>
+            immediately
+          </strong>
+          .
+          
+        </p>
+      </div>
+       
+      <button
+        class="btn btn-big"
+      >
+        
+          Add now
+        
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`should proceed to source info after selecting rss 1`] = `
+<div
+  class="new-source__status"
+>
+  <span>
+    
+        Please confirm the details below
+      
+  </span>
+</div>
+`;
+
+exports[`should proceed to source info after selecting rss 2`] = `
+<div
+  class="new-source__footer"
+>
+  <div
+    class="new-source__name"
+  >
+    <img
+      alt="Source logo"
+      src="https://example.com/logo.png"
+    />
+     
+    <div
+      class="text-field"
+    >
+      <div
+        class="text-field__box field active"
+      >
+        <!---->
+         
+        <div
+          class="text-field__input-container"
+        >
+          <label
+            class="text-field__label micro2"
+            style="display: none;"
+          >
+            Source name
+          </label>
+           
+          <input
+            aria-label="Source name"
+            autofocus="autofocus"
+            class="text-field__input"
+            maxlength="50"
+            placeholder="Source name"
+            required="required"
+            type="text"
+          />
+        </div>
+         
+        <span
+          class="text-field__count lil1"
+        >
+          
+      43
+    
+        </span>
+         
+      </div>
+       
+      <div
+        class="text-field__hint micro2"
+      >
+        
+    
+  
+      </div>
+    </div>
+  </div>
+   
+  <div
+    class="new-source__submit"
+  >
+    <div>
+      <div
+        class="new-source__submit__info"
+      >
+        <h3>
+          Public
+        </h3>
+         
+        <p>
+          
+            We will review your request to make sure it qualifies the standards.
+          <br />
+          <br />
+          
+            If the source is approved, it will be added to the public sources list.
+            We will update you by email.
+          <br />
+          <br />
+          
+            Read the 
+          <a
+            href="#"
+            target="_blank"
+          >
+            content guidelines
+          </a>
+        </p>
+      </div>
+       
+      <button
+        class="btn btn-big btn-hollow"
+      >
+        
+          Request
+        
+      </button>
+    </div>
+     
+    <div>
+      <div
+        class="new-source__submit__info"
+      >
+        <h3>
+          Private
+        </h3>
+         
+        <p>
+          
+            Personalize your feed with  custom private sources of your choice.
+          <br />
+          <br />
+          
+            This source will be added to your feed 
+          <strong>
+            immediately
+          </strong>
+          .
+          
+        </p>
+      </div>
+       
+      <button
+        class="btn btn-big"
+      >
+        
+          Add now
+        
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`should show error when cannot find rss 1`] = `
+<div
+  class="new-source__status"
+>
+  <div
+    class="new-source__contact error"
+  >
+    <span>
+      Could not find RSS feed
+    </span>
+     
+    <a
+      class="btn btn-hollow"
+      href="mailto:hi@daily.dev?subject=Failed to add new source"
+      target="_blank"
+    >
+      Contact
+    </a>
+  </div>
+</div>
+`;
+
+exports[`should show error when cannot scrape website 1`] = `
+<div
+  class="new-source__status"
+>
+  <div
+    class="new-source__contact error"
+  >
+    <span>
+      Failed to fetch information
+    </span>
+     
+    <a
+      class="btn btn-hollow"
+      href="mailto:hi@daily.dev?subject=Failed to add new source"
+      target="_blank"
+    >
+      Contact
+    </a>
+  </div>
+</div>
+`;
+
+exports[`should show source exists message 1`] = `
+<div
+  class="new-source__status"
+>
+  <div
+    class="new-source__exists"
+  >
+    <img
+      alt="Source logo"
+      src="https://source.com/logo.png"
+    />
+     
+    <span
+      class="micro1"
+    >
+      Source
+    </span>
+     
+    <span
+      class="micro2"
+    >
+      Already exists
+    </span>
+  </div>
+</div>
+`;
+
+exports[`should show source exists message 2`] = `undefined`;

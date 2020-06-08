@@ -30,6 +30,7 @@ localVue.component('da-mode-switch', DaModeSwitch);
 
 let feed;
 let user;
+let ui;
 let store;
 
 const pubs = [{
@@ -84,8 +85,16 @@ beforeEach(() => {
     },
   };
 
+  ui = {
+    namespaced: true,
+    state: {},
+    mutations: {
+      setShowNewSource: jest.fn(),
+    },
+  },
+
   store = new Vuex.Store({
-    modules: { feed, user },
+    modules: { feed, user, ui },
   });
 });
 
@@ -191,51 +200,12 @@ it('should commit "setEnableTag" when adding tag', (done) => {
   });
 });
 
-it('should activate request source form', (done) => {
+it('should activate request source form', async () => {
   user.state.profile = { name: 'John' };
   const wrapper = mount(DaSidebar, { store, localVue });
-  wrapper.vm.$nextTick(() => {
-    expect(wrapper.vm.requestActive).toEqual(false);
-    wrapper
-      .find('.sidebar__sources__act-req').trigger('click');
-    expect(wrapper.vm.requestActive).toEqual(true);
-    done();
-  });
-});
-
-describe('SUBMIT REQUEST', () => {
-  let wrapper;
-  beforeEach(() => {
-    user.state.profile = { name: 'John' };
-    wrapper = mount(DaSidebar, { store, localVue });
-    wrapper.vm.requestActive = true;
-  });
-
-  it('should enable submit when input is a valid url', (done) => {
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.disableSubmit).toEqual(true);
-      wrapper.vm.$refs.request.value = REQUEST_URL;
-      wrapper.find('.sidebar__sources .sidebar__input').trigger('input');
-      expect(wrapper.vm.disableSubmit).toEqual(false);
-      done();
-    });
-  });
-
-  it('should disable request input while the request is processed', (done) => {
-    // Simulate delay
-    contentService.requestPublication.mockReturnValue(new Promise(
-      (resolve) => setTimeout(() => resolve(), 3000))
-    );
-    wrapper.vm.$nextTick(() => {
-      wrapper.vm.$refs.request.value = REQUEST_URL;
-      const sideBarSources = wrapper.find('.sidebar__sources');
-      const sideBarSourcesInput = sideBarSources.find('.sidebar__input');
-      sideBarSourcesInput.trigger('input');
-      sideBarSources.find('.sidebar__sources__submit').trigger('click');
-      expect(sideBarSourcesInput.attributes('disabled')).toBeTruthy();
-      done();
-    });
-  });
+  await wrapper.vm.$nextTick();
+  wrapper.find('.sidebar__sources__act-req').trigger('click');
+  expect(ui.mutations.setShowNewSource).toBeCalledWith(expect.anything(), true);
 });
 
 it('should dispatch "setFilter" with publication filter', (done) => {

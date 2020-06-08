@@ -29,15 +29,6 @@ it('should fetch publications from server', async () => {
     expect(actual).toEqual(expected);
 });
 
-it('should send publication request', async () => {
-    const body = {source: 'https://www.dailynow.co'};
-    nock(baseURL)
-        .post('/v1/publications/requests', body)
-        .reply(204);
-
-    await service.requestPublication(body.source);
-});
-
 it('should report post', async () => {
     const reason = 'nsfw';
     const postId = '12345';

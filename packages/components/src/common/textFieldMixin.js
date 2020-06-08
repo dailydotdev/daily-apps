@@ -34,6 +34,7 @@ export default {
   methods: {
     onInput() {
       this.currentValue = this.$refs.input.value;
+      this.$emit('input', this.currentValue);
     },
     onFocus() {
       this.focused = true;

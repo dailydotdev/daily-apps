@@ -91,6 +91,7 @@ export default {
     }
     if (this.value) {
       this.updateValue(this.value);
+      this.updateInvalid(!this.$refs.input.checkValidity());
     }
   },
 

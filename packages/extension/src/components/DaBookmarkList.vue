@@ -11,7 +11,7 @@
         </button>
         <button class="btn btn-menu" :class="{active: bookmarkList === 'unread'}"
                 @click="setBookmarkList('unread')">
-          <svgicon name="hamburger"/><span>Unread</span>
+          <svgicon name="unread"/><span>Unread</span>
         </button>
       </div>
     </div>
@@ -19,7 +19,7 @@
       <div class="bookmark-list__header nuggets">
         <span>My lists</span>
         <button class="btn-icon btn-small" @click="openCreateList('Full')"
-                v-tooltip="'Create new list'">
+                v-tooltip="'Create new list'" v-if="bookmarkLists && bookmarkLists.length">
           <svgicon name="plus"/>
         </button>
       </div>
@@ -145,7 +145,7 @@ export default {
 
   mounted() {
     import('@daily/components/icons/bookmark');
-    import('@daily/components/icons/hamburger');
+    import('@daily/components/icons/unread');
     import('@daily/components/icons/plus');
     import('@daily/components/icons/menu');
   },

@@ -17,6 +17,7 @@ const initialState = () => ({
   showOnlyNotReadPosts: false,
   lastBannerSeen: new Date(0),
   showPremium: false,
+  showNewSource: false,
 });
 
 export default {
@@ -102,6 +103,10 @@ export default {
 
     setShowPremium(state, value) {
       state.showPremium = value;
+    },
+
+    setShowNewSource(state, value) {
+      state.showNewSource = value;
     },
   },
   getters: {

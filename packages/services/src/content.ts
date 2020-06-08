@@ -79,8 +79,6 @@ export interface SearchSuggestionResults {
 export interface ContentService {
     fetchPublications(): Promise<Publication[]>;
 
-    requestPublication(source: string): Promise<void>;
-
     fetchOpenPubRequests(): Promise<PubRequest[]>;
 
     editPubRequest(id: String, obj: PubRequestEdit): Promise<void>;
@@ -130,11 +128,7 @@ export class ContentServiceImpl implements ContentService {
         const res = await this.request.get('/v1/publications');
         return res.data.map((x: any) => reviveJSON(x, dateReviver));
     }
-
-    async requestPublication(source: string): Promise<void> {
-        await this.request.post('/v1/publications/requests', {source});
-    }
-
+    
     async fetchOpenPubRequests(): Promise<PubRequest[]> {
         const res = await this.request.get('/v1/publications/requests/open');
         return res.data.map((x: any) => reviveJSON(x, dateReviver));

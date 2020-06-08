@@ -54,28 +54,10 @@
         <div class="sidebar__enabled">
           <div class="sidebar__header">My sources</div>
           <button class="sidebar__element sidebar__sources__act-req btn btn-menu"
-                  @click.prevent="activateRequest" v-if="!requestActive">
+                  @click.prevent="activateRequest">
             <svgicon name="plus" class="sidebar__element__image"/>
             <span>Request source</span>
           </button>
-          <form class="sidebar__element btn btn-menu selected" v-else
-                @click.prevent="$refs.request.focus()" ref="form">
-            <button type="button" class="btn-icon btn-small" @click="cancelRequest">
-              <svgicon name="x" class="sidebar__element__image"/>
-            </button>
-            <input class="sidebar__input" type="url" placeholder="Paste URL" required
-                   :disabled="disableRequest"
-                   ref="request" @input="updateFormValidity">
-            <button type="submit" class="sidebar__sources__submit btn btn-invert"
-                    :disabled="disableSubmit" @click.prevent="submitRequest">
-              <svgicon name="v" class="invert"/>
-            </button>
-            <transition name="bouncy-flip">
-              <div class="sidebar__sources__error nuggets" v-if="submitError">
-                Something went wrong, try again later
-              </div>
-            </transition>
-          </form>
           <div class="sidebar__element btn btn-menu" v-for="item in enabledPubs"
                :key="item.id">
             <button class="sidebar__element__button"
@@ -117,11 +99,11 @@
 
 <script>
 import 'lazysizes';
-import { mapState, mapActions, mapGetters } from 'vuex';
+import {
+  mapState, mapActions, mapGetters, mapMutations,
+} from 'vuex';
 import { NetworkStatus } from 'apollo-client';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
-import { contentService } from '../common/services';
-import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
 import { SOURCES_QUERY } from '../graphql/sidebar';
 import { POPULAR_TAGS_QUERY, SEARCH_TAGS_QUERY } from '../graphql/tags';
 
@@ -173,10 +155,6 @@ export default {
     return {
       opened: false,
       filterChecked: false,
-      requestActive: false,
-      disableSubmit: true,
-      disableRequest: false,
-      submitError: false,
       searchedTags: [],
       searchFocused: false,
       query: '',
@@ -257,7 +235,6 @@ export default {
 
       ga('send', 'event', 'Sidebar', 'Toggle', 'Open');
       this.setOpened(true);
-      disableKeyBindings();
     },
     close() {
       if (!this.opened) {
@@ -265,9 +242,7 @@ export default {
       }
 
       ga('send', 'event', 'Sidebar', 'Toggle', 'Close');
-      this.resetRequest();
       this.setOpened(false);
-      enableKeyBindings();
     },
     toggleFilter(checked) {
       ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');
@@ -289,37 +264,9 @@ export default {
     activateRequest() {
       if (this.isLoggedIn) {
         ga('send', 'event', 'Request Source', 'Activate');
-        this.requestActive = true;
-        this.$nextTick(() => {
-          this.$refs.request.focus();
-        });
+        this.setShowNewSource(true);
       } else {
         this.$emit('login');
-      }
-    },
-    cancelRequest() {
-      ga('send', 'event', 'Request Source', 'Cancel');
-      this.resetRequest();
-    },
-    resetRequest() {
-      if (this.requestActive) {
-        this.requestActive = false;
-        this.$refs.request.value = '';
-        this.submitError = false;
-      }
-    },
-    async submitRequest() {
-      ga('send', 'event', 'Request Source', 'Submit');
-      try {
-        this.submitError = false;
-        this.disableRequest = true;
-        await contentService.requestPublication(this.$refs.request.value);
-        this.resetRequest();
-        this.$emit('requested-source');
-      } catch {
-        this.submitError = true;
-      } finally {
-        this.disableRequest = false;
       }
     },
     setEnableTag(tag, enabled) {
@@ -330,10 +277,6 @@ export default {
     viewTag(tag) {
       ga('send', 'event', 'Tags', 'Single');
       this.setFilter({ type: 'tag', info: tag });
-    },
-    updateFormValidity() {
-      this.disableSubmit = !this.$refs.form.checkValidity();
-      this.submitError = false;
     },
     async searchTags(event) {
       if (!this.query.length) {
@@ -355,6 +298,10 @@ export default {
         this.loaded = this.rawPublications.length > 0 && this.rawTags.length > 0;
       }
     },
+
+    ...mapMutations({
+      setShowNewSource: 'ui/setShowNewSource',
+    }),
 
     ...mapActions({
       setFilter: 'feed/setFilter',
@@ -529,40 +476,6 @@ form.sidebar__element {
   & .sidebar__element__image {
     margin-right: 0;
   }
-
-  & .sidebar__sources__submit {
-    width: 30px;
-    height: 30px;
-    padding: 3px;
-    border-radius: 8px;
-
-    &:before {
-      transition: background-color 0.1s linear;
-    }
-
-    & .svg-icon:first-child {
-      margin: 0;
-    }
-  }
-}
-
-.sidebar__sources__error {
-  position: absolute;
-  display: flex;
-  left: 0;
-  right: 0;
-  top: 100%;
-  width: 198px;
-  height: 48px;
-  align-items: center;
-  justify-content: center;
-  margin: -4px auto 0;
-  padding: 0 12px;
-  border-radius: 4px;
-  color: var(--theme-primary);
-  background: var(--color-ketchup-80);
-  box-shadow: 0 var(--theme-shadow-offset) 16px 4px rgba(0, 0, 0, 0.32);
-  will-change: transform;
 }
 
 .sidebar__header {
