@@ -32,6 +32,7 @@ const stateToCache = (state) => {
   delete ui.showSettings;
   delete ui.notifications;
   delete ui.showPremium;
+  delete ui.showNewSource;
   toCache.ui = {
     ...ui,
     lastNotificationTime: time2Cache(state.ui.lastNotificationTime),

@@ -7,7 +7,7 @@
                @profile="onProfile" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
     <da-sidebar ref="sidebar" v-if="fetchStage >= 2"
-                @requested-source="showRequestModal = true" @loaded="fetchStage += 1"
+                @loaded="fetchStage += 1"
                 @login="onLogin('Sidebar')"></da-sidebar>
     <div class="line-numbers" @mouseenter="$refs.sidebar && $refs.sidebar.open()"
           v-show="!showBookmarks">
@@ -130,6 +130,8 @@
               @cancel="clearBookmarksConflicts"/>
     <da-consent v-if="showNewTerms" @confirm="agreeToTerms"/>
     <da-premium v-if="showPremium" @close="setShowPremium(false)" />
+    <da-new-source v-if="showNewSource" @close="setShowNewSource(false)"
+                  @requested-source="showRequestModal = true" />
     <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
       <template slot="title">Terminal</template>
       <template slot="content">
@@ -257,6 +259,7 @@ export default {
     DaConfirmAccount: () => import('../components/DaConfirmAccount'),
     DaBookmarkList: () => import('../components/DaBookmarkList'),
     DaPremium: () => import('../components/DaPremium'),
+    DaNewSource: () => import('../components/DaNewSource'),
   },
 
   data() {
@@ -470,12 +473,13 @@ export default {
       setLastBannerSeen: 'ui/setLastBannerSeen',
       updateNotificationBadge: 'ui/updateNotificationBadge',
       setShowPremium: 'ui/setShowPremium',
+      setShowNewSource: 'ui/setShowNewSource',
       confirmNewUser: 'user/confirmNewUser',
     }),
   },
 
   computed: {
-    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium']),
+    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
