@@ -4,6 +4,7 @@ export default {
     label: String,
     disabled: Boolean,
     hideLabel: Boolean,
+    readonly: Boolean,
   },
 
   data() {
