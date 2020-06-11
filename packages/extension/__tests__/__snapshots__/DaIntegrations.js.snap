@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should populate rss feeds in dropdown 1`] = `
+Array [
+  Object {
+    "text": "News feed",
+    "value": "https://daily.dev/rss/news",
+  },
+  Object {
+    "text": "Bookmarks",
+    "value": "https://daily.dev/rss/bookmarks",
+  },
+]
+`;
+
+exports[`should show popular integrations 1`] = `
+<div
+  class="integration__list"
+>
+  <a
+    class="integration__list-item"
+    href="https://a.com"
+    target="_blank"
+  >
+    <img
+      src="https://a.com/logo"
+    />
+     
+    <div>
+      <span
+        class="lil2"
+      >
+        A
+      </span>
+       
+      <span
+        class="micro2"
+      >
+        a
+      </span>
+    </div>
+  </a>
+  <a
+    class="integration__list-item"
+    href="https://b.com"
+    target="_blank"
+  >
+    <img
+      src="https://b.com/logo"
+    />
+     
+    <div>
+      <span
+        class="lil2"
+      >
+        B
+      </span>
+       
+      <span
+        class="micro2"
+      >
+        b
+      </span>
+    </div>
+  </a>
+</div>
+`;
