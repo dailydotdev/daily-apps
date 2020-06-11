@@ -194,3 +194,12 @@ it('should fetch notifications and update badge', (done) => {
     done();
   });
 });
+
+
+it('should open integrations popup', async () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.integrations').element).toBeFalsy();
+  wrapper.find('.integration-btn').trigger('click');
+  await wrapper.vm.$nextTick();
+  expect(wrapper.find('.integrations').element).toBeTruthy();
+});

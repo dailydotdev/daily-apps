@@ -61,6 +61,11 @@
                   <svgicon name="magnifying"/>
                 </button>
                 <template v-if="showMainFeed">
+                  <button class="btn-icon integration-btn" @click="openIntegrations"
+                        v-tooltip="'Integrations'">
+                  <div class="premium-badge" />
+                  <svgicon name="integration"/>
+                </button>
                   <button class="btn btn-menu sort-by"
                           :class="{'not-selected': sortBy !== 'popularity'}"
                           @click="setSortBy('popularity')">Popular
@@ -132,6 +137,7 @@
     <da-premium v-if="showPremium" @close="setShowPremium(false)" />
     <da-new-source v-if="showNewSource" @close="setShowNewSource(false)"
                   @requested-source="showRequestModal = true" />
+    <da-integrations v-if="showIntegrations" @close="showIntegrations = false"/>
     <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
       <template slot="title">Terminal</template>
       <template slot="content">
@@ -260,6 +266,7 @@ export default {
     DaBookmarkList: () => import('../components/DaBookmarkList'),
     DaPremium: () => import('../components/DaPremium'),
     DaNewSource: () => import('../components/DaNewSource'),
+    DaIntegrations: () => import('../components/DaIntegrations'),
   },
 
   data() {
@@ -270,6 +277,7 @@ export default {
       showLoginModal: false,
       showProfileModal: false,
       showNewTerms: false,
+      showIntegrations: false,
       lineNumbers: 1,
       showSearch: false,
       searchSuggestions: [],
@@ -442,6 +450,11 @@ export default {
       ga('send', 'event', 'Search', 'Algolia');
     },
 
+    openIntegrations() {
+      ga('send', 'event', 'Home', 'Integrations');
+      this.showIntegrations = true;
+    },
+
     async agreeToTerms() {
       await setCache(TERMS_CONSENT_KEY, true);
       this.showNewTerms = false;
@@ -585,6 +598,7 @@ export default {
     import('@daily/components/icons/plus');
     import('@daily/components/icons/hamburger');
     import('@daily/components/icons/magnifying');
+    import('@daily/components/icons/integration');
 
     if (this.cta.icon) {
       import(`@daily/components/icons/${this.cta.icon}`);
@@ -1022,7 +1036,7 @@ export default {
   }
 }
 
-.search-btn {
+.search-btn, .integration-btn {
   margin-left: 8px;
 }
 
@@ -1134,5 +1148,19 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+}
+
+.premium-badge {
+  position: absolute;
+  top: 5px;
+  right: 3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 100%;
+  background: var(--color-bacon-40);
+
+  .bright & {
+    background: var(--color-bacon-60);
+  }
 }
 </style>

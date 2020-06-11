@@ -2,7 +2,7 @@
   <div class="text-field" :class="{invalid, 'show-hint': showHint}">
     <div
       class="text-field__box field"
-      :class="{focused, disabled, active}"
+      :class="{focused, disabled, active, readonly}"
       @click="focusInput"
     >
       <svgicon :name="icon" class="field__icon" v-if="icon" />
@@ -19,6 +19,7 @@
           :placeholder="inputPlaceholder"
           :aria-label="label"
           :disabled="disabled"
+          :readonly="readonly"
           :autofocus="autofocus"
           @focus="onFocus"
           @blur="onBlurOverride"
@@ -79,7 +80,7 @@ export default {
     },
   },
 
-  watches: {
+  watch: {
     value(val) {
       this.updateValue(val);
     },
@@ -140,7 +141,7 @@ export default {
 .text-field__box {
   height: 54px;
 
-  &.focused {
+  &.focused:not(.readonly) {
     box-shadow: inset 2px 0 0 0 var(--theme-primary);
 
     & .text-field__label {
@@ -148,7 +149,7 @@ export default {
     }
 
     & .text-field__input {
-      &, &::placeholder {
+      &::placeholder {
         color: var(--theme-disabled);
       }
     }

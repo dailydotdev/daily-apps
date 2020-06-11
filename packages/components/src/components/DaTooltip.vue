@@ -28,7 +28,7 @@ export default {
 <style>
 .tooltip {
   display: inline-block;
-  position: relative;
+  position: absolute;
   z-index: 10000;
   font-size: 12px;
   padding: 4px;

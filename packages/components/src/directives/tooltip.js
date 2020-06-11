@@ -6,6 +6,7 @@ export default function (Vue) {
   let vnode = null;
   let appendedTo = null;
   let targetElement = null;
+  let scrollableParent = null;
   let overTimeout = null;
   let outTimeout = null;
 
@@ -20,6 +21,8 @@ export default function (Vue) {
         return element.ownerDocument.body;
       case '#document':
         return element.body;
+      case 'DIALOG':
+        return element;
       default: {
         const getStyleComputedProp = getComputedStyle(element);
         const { overflow, overflowX, overflowY } = getStyleComputedProp;
@@ -54,13 +57,20 @@ export default function (Vue) {
     }
   };
 
+  const repositionTooltipToElement = () => {
+    const scrollY = scrollableParent === document.body
+      ? window.scrollY : scrollableParent.scrollTop;
+    positionTooltip(targetElement, vnode.$el, vnode.placement, scrollY);
+  };
+
   const createTooltip = () => {
     vnode = new DaTooltipClass();
     vnode.$mount();
   };
 
-  const showTooltip = (el, value, modifiers) => {
+  const showTooltip = async (el, value, modifiers) => {
     const appendTo = getScrollParent(el.parentNode);
+    scrollableParent = appendTo;
     if (appendedTo !== appendTo) {
       appendTo.appendChild(vnode.$el);
       appendedTo = appendTo;
@@ -71,8 +81,8 @@ export default function (Vue) {
     vnode.content = value;
     vnode.placement = getPlacement(modifiers);
     vnode.show = true;
-    const scrollY = appendTo === document.body ? window.scrollY : appendTo.scrollTop;
-    setTimeout(() => positionTooltip(el, vnode.$el, vnode.placement, scrollY), 10);
+    await vnode.$nextTick();
+    repositionTooltipToElement();
   };
 
   const hideTooltip = (el) => {
@@ -83,11 +93,13 @@ export default function (Vue) {
     appendedTo = false;
   };
 
-  const removeEvents = (el) => {
+  const removeEvents = (el, modifiers) => {
     if (el._tooltip.overHandler) {
       el.removeEventListener('mouseover', el._tooltip.overHandler, false);
       el.removeEventListener('mouseout', el._tooltip.outHandler, false);
-      el.removeEventListener('click', el._tooltip.outHandler, false);
+      if (!modifiers.ignoreClick) {
+        el.removeEventListener('click', el._tooltip.outHandler, false);
+      }
       el._tooltip.overHandler = null;
       el._tooltip.outHandler = null;
     }
@@ -121,7 +133,9 @@ export default function (Vue) {
     };
     el.addEventListener('mouseover', el._tooltip.overHandler, false);
     el.addEventListener('mouseout', el._tooltip.outHandler, false);
-    el.addEventListener('click', el._tooltip.outHandler, false);
+    if (!modifiers.ignoreClick) {
+      el.addEventListener('click', el._tooltip.outHandler, false);
+    }
   };
 
   const directive = {
@@ -135,11 +149,17 @@ export default function (Vue) {
       el._tooltip = {};
       registerEvents(el, value, modifiers, directive.options);
     },
-    update(el, { value, modifiers }) {
-      removeEvents(el);
-      registerEvents(el, value, modifiers, directive.options);
+    async update(el, { value, modifiers }) {
+      if (targetElement === el && modifiers.ignoreClick) {
+        vnode.content = value;
+        await vnode.$nextTick();
+        repositionTooltipToElement();
+      } else {
+        removeEvents(el, modifiers);
+        registerEvents(el, value, modifiers, directive.options);
+      }
     },
-    unbind(el) {
+    unbind(el, { modifiers }) {
       if (overTimeout) {
         clearTimeout(overTimeout);
         overTimeout = null;
@@ -147,7 +167,7 @@ export default function (Vue) {
       if (targetElement === el) {
         hideTooltip(el);
       }
-      removeEvents(el);
+      removeEvents(el, modifiers);
     },
   };
 

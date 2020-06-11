@@ -5,7 +5,6 @@ import icons from '@daily/components/src/icons';
 import tooltip from '@daily/components/src/directives/tooltip';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
-import { contentService } from '../src/common/services';
 import { apolloClient } from '../src/apollo';
 import { SEARCH_TAGS_QUERY, POPULAR_TAGS_QUERY } from '../src/graphql/tags';
 import { SOURCES_QUERY } from '../src/graphql/sidebar';
@@ -17,8 +16,6 @@ jest.mock('../src/common/services', () => ({
     requestPublication: jest.fn(),
   },
 }));
-
-const REQUEST_URL = 'https://dailynow.co';
 
 let localVue = createLocalVue();
 
