@@ -382,6 +382,11 @@ export default {
   margin: 26px auto;
 }
 
+.sidebar__sources .text-overflow {
+  flex: 1;
+  text-align: start;
+}
+
 .sidebar__sources .sidebar__element,
 .sidebar__element.sidebar__search {
   height: 44px;
