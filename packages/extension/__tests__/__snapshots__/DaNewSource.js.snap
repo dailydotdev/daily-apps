@@ -16,6 +16,22 @@ exports[`should add private source 1`] = `
 </div>
 `;
 
+exports[`should add private source wit manually typed name 1`] = `
+<div
+  class="new-source__header"
+>
+  <h3>
+    Source added 🎉
+  </h3>
+   
+  <p>
+    
+      From now on new articles from this source will be added to your feed. Enjoy
+    
+  </p>
+</div>
+`;
+
 exports[`should list scraped rss feeds 1`] = `
 <div
   class="new-source__status"

@@ -253,7 +253,7 @@ export default {
             mutation: ADD_PRIVATE_SOURCE_MUTATION,
             variables: {
               data: {
-                name: this.source.name,
+                name: this.$refs.name.currentValue,
                 image: this.source.logo,
                 rss: this.source.rss.map(rss => rss.url),
               },

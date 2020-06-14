@@ -227,3 +227,18 @@ it('should add private source', async () => {
   await wrapper.vm.$nextTick();
   expect(wrapper.find('.new-source__header').element).toMatchSnapshot();
 });
+
+it('should add private source wit manually typed name', async () => {
+  const wrapper = mount(DaNewSource, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
+  wrapper.setData({ source: { type: 'website', name: 'Example', logo: 'https://example.com/logo.png', rss: [{title: 'A', url: 'https://a.com/feed'}, {title: 'B', url: 'https://b.com/feed'}] }});
+  wrapper.setData({ scraped: true, validName: true, hasSelectedRSS: true });
+  await wrapper.vm.$nextTick();
+  const input = wrapper.find('.new-source__name input');
+  input.element.value = 'My Source';
+  input.trigger('input');
+  wrapper.findAll('.new-source__submit button').at(1).trigger('click');
+  await wrapper.vm.$nextTick();
+  expect(addPrivateSourceHandler).toBeCalledWith({data: {name: 'My Source', image: 'https://example.com/logo.png', rss: ['https://a.com/feed', 'https://b.com/feed']}});
+  await wrapper.vm.$nextTick();
+  expect(wrapper.find('.new-source__header').element).toMatchSnapshot();
+});
