@@ -18,7 +18,7 @@ const stateToCache = (state) => {
   toCache.feed = {
     disabledPublications: state.feed.disabledPublications,
     enabledTags: state.feed.enabledTags,
-    posts: [{ type: 'ad', loading: true }, ...state.feed.posts.slice(1, contentService.pageSize).map(post2Cache)],
+    posts: state.feed.posts.slice(0, contentService.pageSize).map(post2Cache),
     bookmarks: state.feed.bookmarks.map(post2Cache),
     latest: time2Cache(state.feed.latest),
     lastUsedBookmarkList: state.feed.lastUsedBookmarkList,
