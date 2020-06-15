@@ -9,7 +9,7 @@ import { apolloClient } from '../src/apollo';
 import { fetchTimeout } from '../src/common/fetch';
 import { contentService } from '../src/common/services';
 import DaNewSource from '../src/components/DaNewSource.vue';
-import { SOURCE_BY_FEEDS_QUERY, ADD_PRIVATE_SOURCE_MUTATION } from '../src/graphql/newSource';
+import { SOURCE_BY_FEED_QUERY, ADD_PRIVATE_SOURCE_MUTATION } from '../src/graphql/newSource';
 
 jest.mock('../src/apollo');
 jest.mock('../src/common/fetch', () => ({
@@ -30,9 +30,9 @@ localVue.component('da-modal', DaModal);
 localVue.component('da-text-field', DaTextField);
 localVue.component('da-spinner', DaSpinner);
 
-const sourceByFeedsHandler = jest.fn();
+const sourceByFeedHandler = jest.fn();
 const addPrivateSourceHandler = jest.fn();
-apolloClient.setRequestHandler(SOURCE_BY_FEEDS_QUERY, sourceByFeedsHandler);
+apolloClient.setRequestHandler(SOURCE_BY_FEED_QUERY, sourceByFeedHandler);
 apolloClient.setRequestHandler(ADD_PRIVATE_SOURCE_MUTATION, addPrivateSourceHandler);
 
 let user;
@@ -43,8 +43,8 @@ beforeEach(() => {
   window.ga = () => {
   };
 
-  sourceByFeedsHandler.mockReset();
-  sourceByFeedsHandler.mockResolvedValue({data: { sourceByFeeds: null } });
+  sourceByFeedHandler.mockReset();
+  sourceByFeedHandler.mockResolvedValue({data: { sourceByFeed: null } });
   addPrivateSourceHandler.mockReset();
   addPrivateSourceHandler.mockResolvedValue({data: { addPrivateSource: { id: 'id', name: 'Name', image: 'https://image.com', public: false } } });
 
@@ -158,31 +158,17 @@ it('should show source exists message', async () => {
   expect(wrapper.find('.new-source__footer').element).toMatchSnapshot();
 });
 
-it('should disable continue button when no rss was selected', async () => {
-  const wrapper = mount(DaNewSource, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
-  wrapper.setData({ source: { type: 'website', name: 'Example', logo: 'https://example.com/logo.png', rss: [{title: 'A', url: 'https://a.com/feed'}, {title: 'B', url: 'https://b.com/feed'}] }});
-  wrapper.setData({ scraped: true });
-  await wrapper.vm.$nextTick();
-  expect(wrapper.find('.new-source__confirm').element.disabled).toEqual(true);
-});
-
-it('should enable continue button when at one rss was selected', async () => {
-  const wrapper = mount(DaNewSource, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
-  wrapper.setData({ source: { type: 'website', name: 'Example', logo: 'https://example.com/logo.png', rss: [{title: 'A', url: 'https://a.com/feed'}, {title: 'B', url: 'https://b.com/feed'}] }});
-  wrapper.setData({ scraped: true });
-  await wrapper.vm.$nextTick();
-  wrapper.find('.new-source__rss-switch').vm.$emit('toggle', true);
-  expect(wrapper.find('.new-source__confirm').element.disabled).toEqual(false);
-});
-
-it('should proceed to source info after selecting rss', async () => {
+it('should proceed to source info after selecting rss', async (done) => {
   const wrapper = mount(DaNewSource, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
   wrapper.setData({ source: { type: 'website', name: 'Example', logo: 'https://example.com/logo.png', rss: [{title: 'A', url: 'https://a.com/feed', enabled: true}, {title: 'B', url: 'https://b.com/feed'}] }});
   wrapper.setData({ scraped: true });
   await wrapper.vm.$nextTick();
   wrapper.find('.new-source__confirm').trigger('click');
-  expect(wrapper.find('.new-source__status').element).toMatchSnapshot();
-  expect(wrapper.find('.new-source__footer').element).toMatchSnapshot();
+  setTimeout(() => {
+    expect(wrapper.find('.new-source__status').element).toMatchSnapshot();
+    expect(wrapper.find('.new-source__footer').element).toMatchSnapshot();
+    done();
+  });
 });
 
 it('should request source', async (done) => {
@@ -223,7 +209,7 @@ it('should add private source', async () => {
   await wrapper.vm.$nextTick();
   wrapper.findAll('.new-source__submit button').at(1).trigger('click');
   await wrapper.vm.$nextTick();
-  expect(addPrivateSourceHandler).toBeCalledWith({data: {name: 'Example', image: 'https://example.com/logo.png', rss: ['https://a.com/feed', 'https://b.com/feed']}});
+  expect(addPrivateSourceHandler).toBeCalledWith({data: {name: 'Example', image: 'https://example.com/logo.png', rss: 'https://a.com/feed'}});
   await wrapper.vm.$nextTick();
   expect(wrapper.find('.new-source__header').element).toMatchSnapshot();
 });
@@ -238,7 +224,7 @@ it('should add private source wit manually typed name', async () => {
   input.trigger('input');
   wrapper.findAll('.new-source__submit button').at(1).trigger('click');
   await wrapper.vm.$nextTick();
-  expect(addPrivateSourceHandler).toBeCalledWith({data: {name: 'My Source', image: 'https://example.com/logo.png', rss: ['https://a.com/feed', 'https://b.com/feed']}});
+  expect(addPrivateSourceHandler).toBeCalledWith({data: {name: 'My Source', image: 'https://example.com/logo.png', rss: 'https://a.com/feed'}});
   await wrapper.vm.$nextTick();
   expect(wrapper.find('.new-source__header').element).toMatchSnapshot();
 });

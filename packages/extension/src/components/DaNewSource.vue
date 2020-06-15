@@ -30,27 +30,27 @@
         </da-text-field>
       </form>
       <div class="new-source__status">
-        <span v-if="hasSelectedRSS && source.rss.length === 1">
+        <div v-if="existsSource" class="new-source__exists">
+          <img :src="existsSource.image" alt="Source logo" />
+          <span class="micro1">{{ existsSource.name }}</span>
+          <span class="micro2">Already exists</span>
+        </div>
+        <span v-else-if="hasSelectedRSS && source.rss.length === 1">
           Please confirm the details below
         </span>
         <span v-else-if="hasSelectedRSS">
           {{ source.rss.length }} RSS feeds selected
         </span>
+        <span v-else-if="scraped && source.rss.length > 1">
+          {{ source.rss.length }} RSS feeds found
+        </span>
         <da-spinner v-else-if="loading"/>
-        <div v-else-if="existsSource" class="new-source__exists">
-          <img :src="existsSource.image" alt="Source logo" />
-          <span class="micro1">{{ existsSource.name }}</span>
-          <span class="micro2">Already exists</span>
-        </div>
         <div v-else-if="failed === true" class="new-source__contact error">
           <span>{{ error }}</span>
           <a href="mailto:hi@daily.dev?subject=Failed to add new source"
             class="btn btn-hollow" target="_blank">Contact</a>
         </div>
         <span v-else-if="valid === false" class="error">Url is not valid</span>
-        <span v-else-if="scraped && source.rss.length > 1">
-          {{ source.rss.length }} RSS feeds found
-        </span>
       </div>
     </div>
     <div class="new-source__footer" v-if="added">
@@ -69,7 +69,7 @@
         Ok, got it
       </button>
     </div>
-    <div class="new-source__footer" v-else-if="hasSelectedRSS">
+    <div class="new-source__footer" v-else-if="hasSelectedRSS && !existsSource">
       <div class="new-source__name">
         <img :src="source.logo" alt="Source logo" @error="replaceImage" />
         <da-text-field ref="name" placeholder="Source name" label="Source name"
@@ -107,17 +107,11 @@
         </div>
       </div>
     </div>
-    <div class="new-source__footer" v-else-if="scraped && source.rss.length > 1">
-      <ul>
-        <li v-for="(item, index) in source.rss" :key="item.url">
-          <da-switch class="small new-source__rss-switch" :label="item.title"
-                    :checked="item.enabled" @toggle="toggleRSS(index, $event)" />
-          <a :href="item.url" class="btn-icon btn-small"
-            target="_blank"><svgicon name="open_link" /></a>
-        </li>
-      </ul>
+    <div class="new-source__footer no-padding" v-else-if="scraped && source.rss.length > 1">
+      <da-radio name="rss" :options="rssOpts" :value="selectedRSS"
+                @toggle="selectedRSS = $event" />
       <button class="btn btn-big btn-invert new-source__confirm"
-              :disabled="!hasEnabledRSS" @click="selectRSS">Continue</button>
+              @click="selectRSS" :disabled="loading">Continue</button>
     </div>
   </da-modal>
 </template>
@@ -130,7 +124,7 @@ import DaTextField from '@daily/components/src/components/DaTextField.vue';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import '@daily/components/icons/x';
 import '@daily/components/icons/v';
-import { SOURCE_BY_FEEDS_QUERY, ADD_PRIVATE_SOURCE_MUTATION } from '../graphql/newSource';
+import { SOURCE_BY_FEED_QUERY, ADD_PRIVATE_SOURCE_MUTATION } from '../graphql/newSource';
 import { contentService } from '../common/services';
 import { fetchTimeout } from '../common/fetch';
 
@@ -141,7 +135,7 @@ export default {
     DaModal,
     DaTextField,
     DaSpinner,
-    DaSwitch: () => import('@daily/components/src/components/DaSwitch.vue'),
+    DaRadio: () => import('@daily/components/src/components/DaRadio.vue'),
   },
 
   data() {
@@ -157,20 +151,32 @@ export default {
       validName: null,
       existsSource: null,
       added: false,
+      selectedRSS: '0',
     };
   },
 
   computed: {
-    hasEnabledRSS() {
+    rssOpts() {
       if (this.source) {
-        return this.source.rss.findIndex(rss => rss.enabled) > -1;
+        return this.source.rss.reduce((acc, rss, i) => ({ ...acc, [i]: rss.title }), {});
       }
-      return false;
+      return null;
     },
     ...mapGetters('user', ['isPremium']),
   },
 
   methods: {
+    async checkIfSourceExists(url) {
+      const exists = await this.$apollo.query({
+        query: SOURCE_BY_FEED_QUERY,
+        variables: { data: url },
+        fetchPolicy: 'no-cache',
+      });
+      if (exists.data.sourceByFeed) {
+        this.existsSource = exists.data.sourceByFeed;
+      }
+    },
+
     async scrapeUrl(url) {
       try {
         this.loading = true;
@@ -178,6 +184,7 @@ export default {
         this.scraped = false;
         this.source = null;
         this.existsSource = null;
+        this.selectedRSS = '0';
         const res = await fetchTimeout(`${process.env.VUE_APP_API_URL}/scrape/source?url=${url}`, 20000, { credentials: 'same-origin' });
         const data = await res.json();
         if (data.type === 'website') {
@@ -186,19 +193,11 @@ export default {
             this.failed = true;
           } else {
             this.source = data;
-            const exists = await this.$apollo.query({
-              query: SOURCE_BY_FEEDS_QUERY,
-              variables: { data: data.rss.map(rss => rss.url) },
-              fetchPolicy: 'no-cache',
-            });
-            if (exists.data.sourceByFeeds) {
-              this.existsSource = exists.data.sourceByFeeds;
-            } else {
-              if (data.rss.length === 1) {
-                this.hasSelectedRSS = true;
-              }
-              this.scraped = true;
+            if (data.rss.length === 1) {
+              this.hasSelectedRSS = true;
+              await this.checkIfSourceExists(data.rss[0].url);
             }
+            this.scraped = true;
           }
         } else {
           this.failed = true;
@@ -220,9 +219,15 @@ export default {
       Vue.set(this.source.rss, index, { ...this.source.rss[index], enabled });
     },
 
-    selectRSS() {
-      this.source.rss = this.source.rss.filter(rss => rss.enabled);
-      this.hasSelectedRSS = true;
+    async selectRSS() {
+      this.loading = true;
+      try {
+        await this.checkIfSourceExists(this.source.rss[this.selectedRSS].url);
+        this.source.rss = [this.source.rss[this.selectedRSS]];
+        this.hasSelectedRSS = true;
+      } finally {
+        this.loading = false;
+      }
     },
 
     async requestSource() {
@@ -255,7 +260,7 @@ export default {
               data: {
                 name: this.$refs.name.currentValue,
                 image: this.source.logo,
-                rss: this.source.rss.map(rss => rss.url),
+                rss: this.source.rss[0].url,
               },
             },
           });
@@ -403,18 +408,20 @@ export default {
   background: var(--theme-background-secondary);
   border-top: solid 1px var(--theme-shine);
 
-  & ul {
-    list-style: none;
-    align-self: stretch;
-    padding: 8px 0;
+  &.no-padding {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  & .radio {
+    width: 100%;
+    margin: 0;
+    padding: 8px 32px;
     border-bottom: solid 1px var(--theme-shine);
 
-    & li {
-      display: flex;
-      height: 44px;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
+    & .radio-item {
+      height: 40px;
+      margin: 0;
     }
   }
 }

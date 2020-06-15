@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
-export const SOURCE_BY_FEEDS_QUERY = gql`
-query SourceByFeeds($data: [String!]!) {
-  sourceByFeeds(feeds: $data) {
+export const SOURCE_BY_FEED_QUERY = gql`
+query SourceByFeed($data: String!) {
+  sourceByFeed(feed: $data) {
     id
     name
     image

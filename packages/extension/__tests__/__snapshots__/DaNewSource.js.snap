@@ -46,110 +46,51 @@ exports[`should list scraped rss feeds 1`] = `
 
 exports[`should list scraped rss feeds 2`] = `
 <div
-  class="new-source__footer"
+  class="new-source__footer no-padding"
 >
-  <ul>
-    <li>
-      <label
-        class="switch small new-source__rss-switch"
-      >
-        <span
-          class="switch__container"
-        >
-          <input
-            type="checkbox"
-          />
-           
-          <span
-            class="switch__slider"
-          />
-           
-          <span
-            class="switch__handle"
-          >
-            <!---->
-          </span>
-        </span>
-         
-        <span
-          class="switch__label lil1"
-        >
-          A
-        </span>
-      </label>
+  <div
+    class="radio"
+  >
+    <label
+      class="radio-item checked"
+    >
+      <input
+        name="rss"
+        type="radio"
+      />
        
-      <a
-        class="btn-icon btn-small"
-        href="https://a.com/feed"
-        target="_blank"
-      >
-        <svg
-          class="svg-icon svg-fill"
-          version="1.1"
-          viewBox="0 0 24 24"
-        >
-          <path
-            _fill="#FFF"
-            d="M3 19V9a2 2 0 012-2h3a1 1 0 110 2H6a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1v-2a1 1 0 012 0v2.993a2.003 2.003 0 01-2 2.001L5 21A1.999 1.999 0 013 19zM19.5 3A1.5 1.5 0 0121 4.5v7a1.5 1.5 0 01-3 0V8.12l-5.218 5.219a1.5 1.5 0 01-2.12-2.121L15.877 6H12.5a1.5 1.5 0 010-3h7z"
-            fill-rule="evenodd"
-            pid="0"
-          />
-        </svg>
-      </a>
-    </li>
-    <li>
-      <label
-        class="switch small new-source__rss-switch"
+      <span
+        class="radio-item__checkmark"
       >
         <span
-          class="switch__container"
-        >
-          <input
-            type="checkbox"
-          />
-           
-          <span
-            class="switch__slider"
-          />
-           
-          <span
-            class="switch__handle"
-          >
-            <!---->
-          </span>
-        </span>
-         
-        <span
-          class="switch__label lil1"
-        >
-          B
-        </span>
-      </label>
+          class="radio-item__checkmark__focus"
+        />
+      </span>
+       A
+  
+    </label>
+    <label
+      class="radio-item"
+    >
+      <input
+        name="rss"
+        type="radio"
+      />
        
-      <a
-        class="btn-icon btn-small"
-        href="https://b.com/feed"
-        target="_blank"
+      <span
+        class="radio-item__checkmark"
       >
-        <svg
-          class="svg-icon svg-fill"
-          version="1.1"
-          viewBox="0 0 24 24"
-        >
-          <path
-            _fill="#FFF"
-            d="M3 19V9a2 2 0 012-2h3a1 1 0 110 2H6a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1v-2a1 1 0 012 0v2.993a2.003 2.003 0 01-2 2.001L5 21A1.999 1.999 0 013 19zM19.5 3A1.5 1.5 0 0121 4.5v7a1.5 1.5 0 01-3 0V8.12l-5.218 5.219a1.5 1.5 0 01-2.12-2.121L15.877 6H12.5a1.5 1.5 0 010-3h7z"
-            fill-rule="evenodd"
-            pid="0"
-          />
-        </svg>
-      </a>
-    </li>
-  </ul>
+        <span
+          class="radio-item__checkmark__focus"
+        />
+      </span>
+       B
+  
+    </label>
+  </div>
    
   <button
     class="btn btn-big btn-invert new-source__confirm"
-    disabled="disabled"
   >
     Continue
   </button>
