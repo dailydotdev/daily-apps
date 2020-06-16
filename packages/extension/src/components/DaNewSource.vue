@@ -94,7 +94,7 @@
         </div>
         <div>
           <div class="new-source__submit__info">
-            <h3>Private</h3>
+            <h3>Private <da-svg src="/graphics/premium.svg" class="premium-badge"/></h3>
             <p>
               Personalize your feed with  custom private sources of your choice.<br/><br/>
               This source will be added to your feed <strong>immediately</strong>.
@@ -124,6 +124,7 @@ import DaTextField from '@daily/components/src/components/DaTextField.vue';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import '@daily/components/icons/x';
 import '@daily/components/icons/v';
+import DaSvg from './DaSvg.vue';
 import { SOURCE_BY_FEED_QUERY, ADD_PRIVATE_SOURCE_MUTATION } from '../graphql/newSource';
 import { contentService } from '../common/services';
 import { fetchTimeout } from '../common/fetch';
@@ -135,6 +136,7 @@ export default {
     DaModal,
     DaTextField,
     DaSpinner,
+    DaSvg,
     DaRadio: () => import('@daily/components/src/components/DaRadio.vue'),
   },
 
@@ -488,7 +490,7 @@ export default {
           width: 100%;
           height: 100%;
           border-radius: 8px;
-          background: var(--color-bacon-40);
+          background: var(--theme-premium);
           opacity: var(--theme-active-opacity);
         }
 
@@ -500,7 +502,6 @@ export default {
 
         .bright & {
           &:before {
-            background: var(--color-bacon-60);
             opacity: var(--theme-focus-opacity);
           }
 
@@ -512,11 +513,7 @@ export default {
 
       & .btn {
         --button-color: var(--color-salt-10);
-        --button-background: var(--color-bacon-40);
-
-        .bright & {
-          --button-background: var(--color-bacon-60);
-        }
+        --button-background: var(--theme-premium);
       }
     }
   }
@@ -539,6 +536,14 @@ export default {
 
     & a {
       color: var(--color-water-40);
+    }
+
+    & .premium-badge {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto 0;
     }
   }
 

@@ -28,6 +28,7 @@
                 v-if="!bookmarkLists || !bookmarkLists.length"
                 @click="openCreateList('Empty')">
           <svgicon name="plus"/><span>Create new list</span>
+          <da-svg src="/graphics/glitter.svg" class="glitter-mark"/>
         </button>
         <div v-for="item in bookmarkLists" :key="item.id" class="btn btn-menu"
             :class="{active: bookmarkList === item.id, hover: selectedListId === item.id}"
@@ -58,11 +59,13 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import DaSvg from './DaSvg.vue';
 import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 
 export default {
   name: 'DaBookmarkList',
   components: {
+    DaSvg,
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
     DaCreateList: () => import('./DaCreateList.vue'),
     DaRenameList: () => import('./DaRenameList.vue'),
@@ -210,5 +213,12 @@ export default {
 
 .bookmark-list__menu-btn {
   visibility: hidden;
+}
+
+.bookmark-list__create-btn {
+  & .glitter-mark {
+    top: 10px;
+    left: 29px;
+  }
 }
 </style>

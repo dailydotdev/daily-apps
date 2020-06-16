@@ -20,8 +20,11 @@ export default {
 
   methods: {
     async reload() {
-      const res = await fetch(this.src);
-      this.$el.innerHTML = await res.text();
+      // fetch is not defined during tests
+      if (this.fetch) {
+        const res = await fetch(this.src);
+        this.$el.innerHTML = await res.text();
+      }
     },
   },
 

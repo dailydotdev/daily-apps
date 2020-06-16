@@ -58,6 +58,7 @@ beforeEach(() => {
     },
     getters: {
       isLoggedIn: state => !!state.profile,
+      isPremium: state => !!state.profile && !!state.profile.premium,
     },
   };
 

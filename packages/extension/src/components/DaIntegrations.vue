@@ -8,6 +8,7 @@
       <p>Choose the feed you want to use for integration</p>
       <da-dropdown v-if="feeds.length" :items="feeds" :selected-index="selectedFeed"
         @selected="selectedFeed = $event" />
+      <da-svg src="/graphics/premium.svg" class="premium-badge"/>
     </div>
     <div class="integrations__footer">
       <da-text-field v-if="isPremium" ref="url" class="integration__url-box" label="Feed URL"
@@ -47,6 +48,7 @@ import DaDropdown from '@daily/components/src/components/DaDropdown.vue';
 import DaTextField from '@daily/components/src/components/DaTextField.vue';
 import '@daily/components/icons/x';
 import '@daily/components/icons/copy';
+import DaSvg from './DaSvg.vue';
 import { POPULAR_INTEGRATIONS_QUERY, RSS_FEEDS_QUERY } from '../graphql/integrations';
 
 export default {
@@ -56,6 +58,7 @@ export default {
     DaModal,
     DaDropdown,
     DaTextField,
+    DaSvg,
   },
 
   apollo: {
@@ -142,9 +145,18 @@ export default {
     width: 360px;
     margin-top: 8px;
   }
+
+  & .premium-badge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -9px;
+    margin: 0 auto;
+  }
 }
 
 .integrations__header {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;

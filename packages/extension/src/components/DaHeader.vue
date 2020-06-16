@@ -42,6 +42,7 @@
     </button>
     <button class="header__profile" v-if="isLoggedIn" @click="$emit('profile')">
       <img :src="profileImage" alt="Profile image"/>
+      <da-svg v-if="isPremium" src="/graphics/glitter_border.svg" class="glitter-mark"/>
     </button>
     <button class="btn btn-water-cheese header__sign-in" v-else
             @click="$emit('login')">
@@ -85,11 +86,13 @@
 import {
   mapState, mapMutations, mapGetters, mapActions,
 } from 'vuex';
+import DaSvg from './DaSvg.vue';
 
 export default {
   name: 'DaHeader',
 
   components: {
+    DaSvg,
     DaSwitch: () => import('@daily/components/src/components/DaSwitch.vue'),
   },
 
@@ -105,7 +108,7 @@ export default {
     ]),
     ...mapState('feed', ['showBookmarks']),
     ...mapGetters('ui', ['topSitesInstructions']),
-    ...mapGetters('user', ['isLoggedIn']),
+    ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
       notificationsOpened: state => state.ui.showNotifications,
       profileImage(state) {
@@ -293,12 +296,11 @@ export default {
   }
 
   & .header__profile {
+    position: relative;
     width: 30px;
     height: 30px;
     padding: 0;
     margin: 0 8px 0 14px;
-    border-radius: 4px;
-    overflow: hidden;
     background: none;
     border: none;
     cursor: pointer;
@@ -306,6 +308,23 @@ export default {
     & img {
       width: 100%;
       height: 100%;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    & .glitter-mark {
+      top: -5px;
+      right: -5px;
+      width: 10px;
+      height: 10px;
+
+      & #border {
+        fill: var(--theme-background-highlight);;
+      }
+
+      & #shape {
+        fill: var(--theme-premium);
+      }
     }
   }
 

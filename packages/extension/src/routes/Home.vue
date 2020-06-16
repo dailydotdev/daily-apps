@@ -63,7 +63,7 @@
                 <template v-if="showMainFeed">
                   <button class="btn-icon integration-btn" @click="openIntegrations"
                         v-tooltip="'Integrations'">
-                  <div class="premium-badge" />
+                  <da-svg src="/graphics/glitter.svg" class="glitter-mark"/>
                   <svgicon name="integration"/>
                 </button>
                   <button class="btn btn-menu sort-by"
@@ -1040,6 +1040,11 @@ export default {
   margin-left: 8px;
 }
 
+.integration-btn .glitter-mark {
+  top: 5px;
+  right: 3px;
+}
+
 .content__header__wrapper {
   position: absolute;
   left: 0;
@@ -1150,17 +1155,24 @@ export default {
   justify-content: space-between;
 }
 
-.premium-badge {
+.glitter-mark {
   position: absolute;
-  top: 5px;
-  right: 3px;
+  z-index: 1;
   width: 6px;
   height: 6px;
-  border-radius: 100%;
-  background: var(--color-bacon-40);
 
-  .bright & {
-    background: var(--color-bacon-60);
+  & svg {
+    display: block;
+    fill: var(--theme-premium);
+  }
+}
+
+.premium-badge {
+  width: 80px;
+  height: 18px;
+
+  & #bg {
+    fill: var(--theme-premium);
   }
 }
 </style>

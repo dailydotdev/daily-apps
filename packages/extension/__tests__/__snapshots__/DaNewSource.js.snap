@@ -216,7 +216,10 @@ exports[`should proceed directly to source info when one rss is available 2`] = 
         class="new-source__submit__info"
       >
         <h3>
-          Private
+          Private 
+          <div
+            class="svg premium-badge"
+          />
         </h3>
          
         <p>
@@ -365,7 +368,10 @@ exports[`should proceed to source info after selecting rss 2`] = `
         class="new-source__submit__info"
       >
         <h3>
-          Private
+          Private 
+          <div
+            class="svg premium-badge"
+          />
         </h3>
          
         <p>
