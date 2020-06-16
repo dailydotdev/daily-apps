@@ -44,4 +44,13 @@ export default {
       return truncateTags(this.post.tags, ...args);
     },
   },
+
+  computed: {
+    privateSource() {
+      if (this.post && this.post.publication) {
+        return this.post.publication.public === false;
+      }
+      return false;
+    },
+  },
 };

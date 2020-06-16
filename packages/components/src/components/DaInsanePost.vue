@@ -33,6 +33,7 @@
           <svgicon name="menu" class="menu__icon"/>
         </button>
       </div>
+      <div v-if="privateSource" class="insane__private-mark"></div>
       <transition name="insane-notification">
         <div class="insane__notification nuggets" v-if="notifying">
           {{ notification }}
@@ -223,5 +224,17 @@ export default {
 
 .insane-notification-enter, .insane-notification-leave-to {
   transform: translateX(100%);
+}
+
+.insane__private-mark {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  height: 12px;
+  margin: auto 0;
+  background: var(--theme-premium);
+  border-radius: 2px;
 }
 </style>

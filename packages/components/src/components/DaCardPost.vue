@@ -26,6 +26,7 @@
               @click="$emit('menu', { post, event: $event })" v-if="showMenu">
         <svgicon name="menu" ref="orig"/>
       </button>
+      <div v-if="privateSource" class="card__private-mark"></div>
       <transition name="post-notification">
         <div class="card__footer__notification nuggets" v-if="notifying">
           {{ notification }}
@@ -234,5 +235,17 @@ export default {
 {
   opacity: 0;
   transform: translateY(100%);
+}
+
+.card__private-mark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  height: 12px;
+  margin: auto 0;
+  background: var(--theme-premium);
+  border-radius: 2px;
 }
 </style>
