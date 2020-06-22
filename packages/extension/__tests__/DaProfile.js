@@ -27,6 +27,7 @@ beforeEach(() => {
     },
     getters: {
       isLoggedIn: () => true,
+      isPremium: state => !!state.profile && !!state.profile.premium,
     },
     actions: {
       updateProfile: jest.fn(),
@@ -65,7 +66,7 @@ it('should show email hint when email is invalid', () => {
 it('should logout on button click', () => {
   store.state.user.profile = { email: 'ido@acme.com', company: 'ACME', image: 'https://image.com/', providers: ['github'] };
   const wrapper = mount(DaProfile, { store, localVue });
-  wrapper.find('.profile__nav .profile__link button').trigger('click');
+  wrapper.findAll('.profile__nav .profile__link button').at(1).trigger('click');
   expect(user.actions.logout).toBeCalledTimes(1);
 });
 

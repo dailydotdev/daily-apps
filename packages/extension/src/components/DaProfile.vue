@@ -54,12 +54,12 @@
 
 <script>
 import 'lazysizes';
-import {mapGetters, mapMutations} from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import DaModal from '@daily/components/src/components/DaModal.vue';
 import DaTextField from '@daily/components/src/components/DaTextField.vue';
 import '@daily/components/icons/x';
 import DaSvg from './DaSvg.vue';
-import {version} from '../common/config';
+import { version } from '../common/config';
 import updateProfileMixin from '../common/updateProfileMixin';
 
 export default {
@@ -76,18 +76,18 @@ export default {
     return {
       version,
       links: [
-        {text: 'FAQ', link: 'https://github.com/dailydotdev/daily/blob/master/FAQs.md'},
+        { text: 'FAQ', link: 'https://github.com/dailydotdev/daily/blob/master/FAQs.md' },
         {
           text: 'Request a feature',
-          link: 'https://github.com/dailydotdev/daily/issues/new?assignees=&labels=Type%3A+Feature&template=---feature-request.md&title=%F0%9F%A7%A9+FEATURE+REQUEST%3A+'
+          link: 'https://github.com/dailydotdev/daily/issues/new?assignees=&labels=Type%3A+Feature&template=---feature-request.md&title=%F0%9F%A7%A9+FEATURE+REQUEST%3A+',
         },
         {
           text: 'Report an issue',
-          link: 'https://github.com/dailydotdev/daily/issues/new?assignees=&labels=Type%3A+Bug&template=---bug-report.md&title=%F0%9F%90%9B+BUG%3A+'
+          link: 'https://github.com/dailydotdev/daily/issues/new?assignees=&labels=Type%3A+Bug&template=---bug-report.md&title=%F0%9F%90%9B+BUG%3A+',
         },
-        {text: 'Privacy policy', link: 'https://daily.dev/privacy'},
-        {text: 'Cookie policy', link: 'https://daily.dev/cookie'},
-        {text: 'Terms of Service', link: 'https://daily.dev/terms'},
+        { text: 'Privacy policy', link: 'https://daily.dev/privacy' },
+        { text: 'Cookie policy', link: 'https://daily.dev/cookie' },
+        { text: 'Terms of Service', link: 'https://daily.dev/terms' },
       ],
     };
   },

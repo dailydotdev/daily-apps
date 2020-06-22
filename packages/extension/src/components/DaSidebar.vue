@@ -214,7 +214,7 @@ export default {
       if (!this.rawTags) {
         return [];
       }
-      const ret = this.rawTags.map(t => ({...t, enabled: false}));
+      const ret = this.rawTags.map(t => ({ ...t, enabled: false }));
       Object.keys(this.$store.state.feed.enabledTags).forEach((t) => {
         const i = ret.findIndex(t2 => t2.name === t);
         if (i > -1) {
