@@ -52,12 +52,27 @@
 
       <div class="sidebar__sources" v-else>
         <div class="sidebar__enabled">
-          <div class="sidebar__header">My sources</div>
           <button class="sidebar__element sidebar__sources__act-req btn btn-menu"
                   @click.prevent="activateRequest">
             <svgicon name="plus" class="sidebar__element__image"/>
-            <span>Request source</span>
+            <span>Add new source</span>
           </button>
+          <div v-if="enabledPrivatePubs.length" class="sidebar__header">My private sources</div>
+          <div class="sidebar__element btn btn-menu" v-for="item in enabledPrivatePubs"
+               :key="item.id">
+            <button class="sidebar__element__button"
+                    v-tooltip="'View source'" @click.prevent="viewPublication(item)">
+              <img :data-src="item.image" :alt="item.name"
+                   class="sidebar__element__image lazyload"/>
+              <span class="text-overflow">{{item.name}}</span>
+            </button>
+            <button class="sidebar__element__button-hidden btn-icon"
+                    v-tooltip="'Remove source from feed'"
+                    @click.prevent.stop="setEnablePublication(item, false)">
+              <svgicon name="x"/>
+            </button>
+          </div>
+          <div class="sidebar__header">My public sources</div>
           <div class="sidebar__element btn btn-menu" v-for="item in enabledPubs"
                :key="item.id">
             <button class="sidebar__element__button"
@@ -167,8 +182,11 @@ export default {
   computed: {
     ...mapState('feed', ['tags']),
     ...mapGetters('user', ['isLoggedIn']),
+    enabledPrivatePubs() {
+      return this.filteredPublications.filter(x => x.enabled && !x.public);
+    },
     enabledPubs() {
-      return this.filteredPublications.filter(x => x.enabled);
+      return this.filteredPublications.filter(x => x.enabled && x.public);
     },
     disabledPubs() {
       return this.filteredPublications.filter(x => !x.enabled);
@@ -379,7 +397,7 @@ export default {
 }
 
 .sidebar__filter_switch {
-  margin: 26px auto;
+  margin: 24px auto;
 }
 
 .sidebar__sources .text-overflow {
@@ -390,6 +408,10 @@ export default {
 .sidebar__sources .sidebar__element,
 .sidebar__element.sidebar__search {
   height: 44px;
+}
+
+.sidebar__sources .sidebar__enabled .sidebar__header {
+  margin-top: 16px;
 }
 
 .sidebar__tags .sidebar__element {

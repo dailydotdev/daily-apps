@@ -194,7 +194,7 @@ exports[`should proceed directly to source info when one rss is available 2`] = 
           
             Read the 
           <a
-            href="#"
+            href="https://daily.dev/content-guidelines"
             target="_blank"
           >
             content guidelines
@@ -346,7 +346,7 @@ exports[`should proceed to source info after selecting rss 2`] = `
           
             Read the 
           <a
-            href="#"
+            href="https://daily.dev/content-guidelines"
             target="_blank"
           >
             content guidelines

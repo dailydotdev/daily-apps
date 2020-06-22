@@ -34,31 +34,35 @@ const pubs = [{
   'id': 'airbnb',
   'name': 'Airbnb Engineering',
   'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/airbnb',
+  'public': true,
 }, {
   'id': 'alligator',
   'name': 'Alligator',
   'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/alligator',
+  'public': true,
 }, {
   'id': 'angular',
   'name': 'Angular',
   'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/angular',
+  'public': true,
 }, {
   'id': 'aws',
   'name': 'AWS',
   'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/aws',
+  'public': true,
 }];
 
 const tags = [
-  { 'name': 'javascript' }, 
-  { 'name': 'linux' }, 
-  { 'name': 'startup' }, 
+  { 'name': 'javascript' },
+  { 'name': 'linux' },
+  { 'name': 'startup' },
   { 'name': 'product' },
 ];
 
 beforeEach(() => {
   window.ga = () => {
   };
-  
+
   feed = {
     namespaced: true,
     state: {
@@ -79,6 +83,7 @@ beforeEach(() => {
     },
     getters: {
       isLoggedIn: state => !!state.profile,
+      isPremium: state => !!state.profile && !!state.profile.premium,
     },
   };
 
@@ -103,22 +108,26 @@ it('should set enabledPubs and disabledPubs according to state', () => {
     'name': 'Airbnb Engineering',
     'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/airbnb',
     'enabled': true,
+    'public': true,
   }, {
     'id': 'aws',
     'name': 'AWS',
     'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/aws',
     'enabled': true,
+    'public': true,
   }]);
   expect(wrapper.vm.disabledPubs).toEqual([{
     'id': 'alligator',
     'name': 'Alligator',
     'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/alligator',
     'enabled': false,
+    'public': true,
   }, {
     'id': 'angular',
     'name': 'Angular',
     'image': 'https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/angular',
     'enabled': false,
+    'public': true,
   }]);
 });
 
@@ -321,7 +330,7 @@ describe('SEARCH: Publications', () => {
 });
 
 it('should emit loaded event when data was fetched', async () => {
-  apolloClient.setRequestHandler(SOURCES_QUERY, () => Promise.resolve({data: {sources: {edges: [{node: {id: 'vue', image: 'image', name: 'Vue'}}]}}}));
+  apolloClient.setRequestHandler(SOURCES_QUERY, () => Promise.resolve({data: {sources: {edges: [{node: {id: 'vue', image: 'image', name: 'Vue', public: true}}]}}}));
   apolloClient.setRequestHandler(POPULAR_TAGS_QUERY, () => Promise.resolve({data: { popularTags: [{name: 'webdev'}]}}));
   const wrapper = mount(DaSidebar, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
   await wrapper.vm.$nextTick();

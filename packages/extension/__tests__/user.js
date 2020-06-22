@@ -23,6 +23,9 @@ jest.mock('../src/common/cache', () => ({
 beforeEach(() => {
   window.ga = () => {
   };
+
+  window.location.reload = () => {
+  };
 });
 
 it('should set profile in state', () => {

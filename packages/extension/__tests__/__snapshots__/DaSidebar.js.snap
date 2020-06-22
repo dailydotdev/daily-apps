@@ -7,24 +7,28 @@ Array [
     "id": "airbnb",
     "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/airbnb",
     "name": "Airbnb Engineering",
+    "public": true,
   },
   Object {
     "enabled": false,
     "id": "alligator",
     "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/alligator",
     "name": "Alligator",
+    "public": true,
   },
   Object {
     "enabled": false,
     "id": "angular",
     "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/angular",
     "name": "Angular",
+    "public": true,
   },
   Object {
     "enabled": true,
     "id": "aws",
     "image": "https://res.cloudinary.com/daily-now/image/upload/t_logo,f_auto/v1/logos/aws",
     "name": "AWS",
+    "public": true,
   },
 ]
 `;

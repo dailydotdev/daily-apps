@@ -21,7 +21,7 @@ export default {
   methods: {
     async reload() {
       // fetch is not defined during tests
-      if (this.fetch) {
+      if ('fetch' in window) {
         const res = await fetch(this.src);
         this.$el.innerHTML = await res.text();
       }

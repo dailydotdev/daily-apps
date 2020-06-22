@@ -1,11 +1,11 @@
 <template>
   <div class="insane insane--ad hide-menu" :class="cls">
-    <a :href="ad.link" target="_blank" class="insane__link post__link" @click="$emit('click', ad)">
+    <a :href="ad.link" class="insane__link post__link" @click="$emit('click', ad)">
       <h5 class="insane__title">
         <da-line-clamp :text="ad.description" :lines="3"/>
       </h5>
     </a>
-    <a class="insane__promoted micro2 reveal" target="_blank"
+    <a class="insane__promoted micro2 reveal"
        :href="ad.referralLink" v-if="ad && ad.referralLink">{{ promoted }}</a>
     <span class="insane__promoted micro2" v-else>{{ promoted }}</span>
     <img v-for="(item, index) in pixel" :key="index" :src="item" class="insane__pixel"/>

@@ -65,6 +65,9 @@ export default {
         dispatch('feed/reset', null, { root: true }),
         authService.getUserProfile().then(profile => updateAnalyticsUser(profile.id)),
       ]);
+      if ('reload' in window.location) {
+        window.location.reload();
+      }
     },
 
     async generateChallenge({ commit }) {

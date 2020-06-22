@@ -1,22 +1,22 @@
 import gql from 'graphql-tag';
 
 export const ADD_BOOKMARKS_MUTATION = gql`
-mutation AddBookmarks($data: AddBookmarkInput!) {
+  mutation AddBookmarks($data: AddBookmarkInput!) {
     addBookmarks(data: $data) {
-        _
+      _
     }
-}`;
+  }`;
 
 export const ADD_BOOKMARK_TO_LIST_MUTATION = gql`
-mutation AddBookmarkToList($id: ID!, $listId: ID) {
+  mutation AddBookmarkToList($id: ID!, $listId: ID) {
     addBookmarkToList(id: $id, listId: $listId) {
-        _
+      _
     }
-}`;
+  }`;
 
 export const REMOVE_BOOKMARK_MUTATION = gql`
-mutation RemoveBookmark($id: ID!) {
+  mutation RemoveBookmark($id: ID!) {
     removeBookmark(id: $id) {
-        _
+      _
     }
-}`;
+  }`;

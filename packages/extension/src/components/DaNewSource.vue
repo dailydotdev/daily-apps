@@ -84,7 +84,7 @@
               We will review your request to make sure it qualifies the standards.<br/><br/>
               If the source is approved, it will be added to the public sources list.
               We will update you by email.<br/><br/>
-              Read the <a href="#" target="_blank">content guidelines</a>
+              Read the <a href="https://daily.dev/content-guidelines" target="_blank">content guidelines</a>
             </p>
           </div>
           <button class="btn btn-big btn-hollow"
