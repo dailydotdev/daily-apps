@@ -214,10 +214,16 @@ export default {
       if (!this.rawTags) {
         return [];
       }
-      return this.rawTags.map(t => ({
-        ...t,
-        enabled: !!this.$store.state.feed.enabledTags[t.name],
-      }));
+      const ret = this.rawTags.map(t => ({...t, enabled: false}));
+      Object.keys(this.$store.state.feed.enabledTags).forEach((t) => {
+        const i = ret.findIndex(t2 => t2.name === t);
+        if (i > -1) {
+          ret[i].enabled = true;
+        } else {
+          ret.push({ name: t, enabled: true });
+        }
+      });
+      return ret;
     },
     publications() {
       if (!this.rawPublications) {

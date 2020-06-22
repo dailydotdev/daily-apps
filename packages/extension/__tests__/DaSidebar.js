@@ -67,7 +67,7 @@ beforeEach(() => {
     namespaced: true,
     state: {
       disabledPublications: { alligator: true, angular: true },
-      enabledTags: { javascript: true, linux: true },
+      enabledTags: { javascript: true, linux: true, webdev: true },
     },
     actions: {
       setFilter: jest.fn(),
@@ -167,6 +167,9 @@ it('should set enabledTags and disabledTags according to state', () => {
     'enabled': true,
   }, {
     'name': 'linux',
+    'enabled': true,
+  }, {
+    'name': 'webdev',
     'enabled': true,
   }]);
   expect(wrapper.vm.disabledTags).toEqual([{

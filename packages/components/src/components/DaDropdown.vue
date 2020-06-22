@@ -309,7 +309,7 @@ export default {
   color: var(--theme-primary);
   list-style: none;
   box-shadow: 0 16px 16px 0 rgba(0, 0, 0, 0.24);
-  z-index: 1;
+  z-index: 10;
   outline: 0;
   overflow-y: auto;
 

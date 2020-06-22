@@ -69,13 +69,19 @@ export default {
     rssFeeds: {
       query: RSS_FEEDS_QUERY,
       fetchPolicy: 'cache-and-network',
+      skip() {
+        return !this.isPremium;
+      },
     },
   },
 
   data() {
     return {
       copyTooltip: 'Copy',
-      rssFeeds: [],
+      rssFeeds: [
+        { url: 'https://placeholder.com', name: 'News feed' },
+        { url: 'https://placeholder2.com', name: 'Bookmarks' },
+      ],
       selectedFeed: 0,
     };
   },
