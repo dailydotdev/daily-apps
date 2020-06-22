@@ -62,10 +62,10 @@
                 </button>
                 <template v-if="showMainFeed">
                   <button class="btn-icon integration-btn" @click="openIntegrations"
-                        v-tooltip="'Integrations'">
-                  <da-svg src="/graphics/glitter.svg" class="glitter-mark"/>
-                  <svgicon name="integration"/>
-                </button>
+                          v-tooltip="'Integrations'">
+                    <da-svg src="/graphics/glitter.svg" class="glitter-mark"/>
+                    <svgicon name="integration"/>
+                  </button>
                   <button class="btn btn-menu sort-by"
                           :class="{'not-selected': sortBy !== 'popularity'}"
                           @click="setSortBy('popularity')">Popular
