@@ -1,7 +1,9 @@
 <template>
   <da-modal class="profile-modal invert" @close="$emit('close')">
     <form class="profile__form" ref="form">
-      <h3 class="profile__title">Your Profile</h3>
+      <h3 class="profile__title">Your Profile
+        <da-svg v-if="isPremium" src="/graphics/premium.svg" class="premium-badge"/>
+      </h3>
       <div class="profile__subtitle micro2">Edit your profile details</div>
       <div class="profile__provider micro2">
         <svgicon :name="provider"></svgicon>
@@ -10,17 +12,17 @@
       <div class="profile__field multiple">
         <img :src="profileImage" class="profile__image" alt="Your profile image"/>
         <da-text-field class="profile__name" name="name" label="Name" required
-          :maxlength="50" :value="name" @validity="updateFormValidity"/>
+                       :maxlength="50" :value="name" @validity="updateFormValidity"/>
       </div>
       <da-text-field class="profile__field profile__email" name="email" label="Email"
-        type="email" required :value="email" :hint="emailHint" ref="email"
-        save-hint-space @validity="updateEmailValidity"/>
+                     type="email" required :value="email" :hint="emailHint" ref="email"
+                     save-hint-space @validity="updateEmailValidity"/>
       <da-text-field class="profile__field" name="company" label="Company"
-        :value="company" @validity="updateFormValidity"/>
+                     :value="company" @validity="updateFormValidity"/>
       <da-text-field class="profile__field" name="title" label="Job title"
-        :value="title" @validity="updateFormValidity"/>
+                     :value="title" @validity="updateFormValidity"/>
       <button type="submit" class="profile__submit btn btn-invert btn-big"
-        :disabled="disableSubmit" @click.prevent="submitForm" autofocus>
+              :disabled="disableSubmit" @click.prevent="submitForm" autofocus>
         Save Changes
       </button>
     </form>
@@ -29,8 +31,15 @@
         <svgicon name="x"/>
       </button>
       <ul class="profile__links">
+        <li class="profile__link profile__get-premium" v-if="!isPremium">
+          <button class="lil2" @click="showPremium">Get premium</button>
+        </li>
         <li class="profile__link" v-for="link in links" :key="link.text">
           <a :href="link.link" class="micro1">{{link.text}}</a>
+        </li>
+        <li class="profile__link" v-if="isPremium">
+          <a href="mailto:support@daily.dev?subject=Cancel my premium subscription" target="_blank"
+             class="micro1">Cancel subscription</a>
         </li>
         <li class=profile__link>
           <button class="micro1" @click="onLogout">Logout</button>
@@ -45,9 +54,11 @@
 
 <script>
 import 'lazysizes';
+import { mapGetters, mapMutations } from 'vuex';
 import DaModal from '@daily/components/src/components/DaModal.vue';
 import DaTextField from '@daily/components/src/components/DaTextField.vue';
 import '@daily/components/icons/x';
+import DaSvg from './DaSvg.vue';
 import { version } from '../common/config';
 import updateProfileMixin from '../common/updateProfileMixin';
 
@@ -58,6 +69,7 @@ export default {
   components: {
     DaModal,
     DaTextField,
+    DaSvg,
   },
 
   data() {
@@ -65,13 +77,36 @@ export default {
       version,
       links: [
         { text: 'FAQ', link: 'https://github.com/dailydotdev/daily/blob/master/FAQs.md' },
-        { text: 'Request a feature', link: 'https://github.com/dailydotdev/daily/issues/new?assignees=&labels=Type%3A+Feature&template=---feature-request.md&title=%F0%9F%A7%A9+FEATURE+REQUEST%3A+' },
-        { text: 'Report an issue', link: 'https://github.com/dailydotdev/daily/issues/new?assignees=&labels=Type%3A+Bug&template=---bug-report.md&title=%F0%9F%90%9B+BUG%3A+' },
+        {
+          text: 'Request a feature',
+          link: 'https://github.com/dailydotdev/daily/issues/new?assignees=&labels=Type%3A+Feature&template=---feature-request.md&title=%F0%9F%A7%A9+FEATURE+REQUEST%3A+',
+        },
+        {
+          text: 'Report an issue',
+          link: 'https://github.com/dailydotdev/daily/issues/new?assignees=&labels=Type%3A+Bug&template=---bug-report.md&title=%F0%9F%90%9B+BUG%3A+',
+        },
         { text: 'Privacy policy', link: 'https://daily.dev/privacy' },
         { text: 'Cookie policy', link: 'https://daily.dev/cookie' },
         { text: 'Terms of Service', link: 'https://daily.dev/terms' },
       ],
     };
+  },
+
+  computed: {
+    ...mapGetters('user', ['isPremium']),
+  },
+
+  methods: {
+    showPremium() {
+      this.$emit('close');
+      setTimeout(() => {
+        this.setShowPremium(true);
+      }, 50);
+    },
+
+    ...mapMutations({
+      setShowPremium: 'ui/setShowPremium',
+    }),
   },
 
   mounted() {
@@ -149,6 +184,15 @@ export default {
     color: var(--theme-secondary);
   }
 
+  &.profile__get-premium {
+    & button {
+      background: var(--theme-premium);
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: var(--color-salt-10);
+    }
+  }
+
   & button {
     border: none;
     padding: 0;
@@ -163,8 +207,14 @@ export default {
 }
 
 .profile__title {
+  display: flex;
+  align-items: center;
   color: var(--theme-primary);
   text-transform: uppercase;
+
+  & .premium-badge {
+    margin-left: 8px;
+  }
 }
 
 .profile__subtitle {
@@ -172,6 +222,7 @@ export default {
 }
 
 .profile__provider {
+  display: flex;
   margin: 24px 0 2px;
   align-self: flex-end;
 
