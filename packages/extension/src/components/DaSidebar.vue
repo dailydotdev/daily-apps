@@ -63,7 +63,7 @@
             <button class="sidebar__element__button"
                     v-tooltip="'View source'" @click.prevent="viewPublication(item)">
               <img :data-src="item.image" :alt="item.name"
-                   class="sidebar__element__image lazyload"/>
+                   class="sidebar__element__image sidebar__element__image-private lazyload"/>
               <span class="text-overflow">{{item.name}}</span>
             </button>
             <button class="sidebar__element__button-hidden btn-icon"
@@ -477,6 +477,10 @@ export default {
     width: 24px;
     height: 24px;
     border-radius: 4px;
+
+    &.sidebar__element__image-private {
+      background: var(--color-salt-10);
+    }
   }
 
   & > .sidebar__element__image:first-child,
