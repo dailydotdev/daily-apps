@@ -15,7 +15,7 @@ const initialState = () => ({
   onboarding: false,
   instructionsStep: 0,
   showOnlyNotReadPosts: false,
-  lastBannerSeen: new Date(0),
+  lastBannerSeen: new Date(),
   showPremium: false,
   showNewSource: false,
 });

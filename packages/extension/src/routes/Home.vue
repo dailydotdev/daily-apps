@@ -134,7 +134,7 @@
     <da-merge v-if="hasConflicts" @confirm="mergeBookmarksConflicts"
               @cancel="clearBookmarksConflicts"/>
     <da-consent v-if="showNewTerms" @confirm="agreeToTerms"/>
-    <da-premium v-if="showPremium" @close="setShowPremium(false)" />
+    <da-premium v-if="showPremium" @close="setShowPremium(false)" @login="onLogin('Premium')" />
     <da-new-source v-if="showNewSource" @close="setShowNewSource(false)"
                   @requested-source="showRequestModal = true" />
     <da-integrations v-if="showIntegrations" @close="showIntegrations = false"/>
@@ -1170,9 +1170,21 @@ export default {
 .premium-badge {
   width: 80px;
   height: 18px;
+}
 
+.premium-badge,
+.premium-glitter-badge {
   & #bg {
     fill: var(--theme-premium);
+  }
+}
+
+.premium-glitter-badge {
+  width: 210px;
+  height: 54px;
+
+  & #text {
+    fill: var(--color-salt-10);
   }
 }
 </style>
