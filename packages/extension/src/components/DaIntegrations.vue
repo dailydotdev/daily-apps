@@ -4,15 +4,15 @@
       <svgicon name="x"/>
     </button>
     <div class="integrations__header">
-      <h3>Integrate Daily with +100 apps</h3>
+      <h3>Integrate Daily with powerful apps</h3>
       <p>Choose the feed you want to use for integration</p>
       <da-dropdown v-if="feeds.length" :items="feeds" :selected-index="selectedFeed"
-        @selected="selectedFeed = $event" />
+                   @selected="selectedFeed = $event"/>
       <da-svg src="/graphics/premium.svg" class="premium-badge"/>
     </div>
     <div class="integrations__footer">
       <da-text-field v-if="isPremium" ref="url" class="integration__url-box" label="Feed URL"
-                  hide-label :value="selectedFeedUrl" autofocus readonly>
+                     hide-label :value="selectedFeedUrl" autofocus readonly>
         <template v-slot:right>
           <button class="btn-icon" v-tooltip.top.ignoreClick="copyTooltip"
                   @click="copyFeed" @mouseenter="copyTooltip = 'Copy'">
@@ -29,8 +29,8 @@
       </p>
       <div class="integration__list">
         <a v-for="item in popularIntegrations" :key="item.title"
-            class="integration__list-item" :href="item.url" target="_blank">
-          <img :src="item.logo" />
+           class="integration__list-item" :href="item.url" target="_blank">
+          <img :src="item.logo"/>
           <div>
             <span class="lil2">{{ item.title }}</span>
             <span class="micro2">{{ item.subtitle }}</span>

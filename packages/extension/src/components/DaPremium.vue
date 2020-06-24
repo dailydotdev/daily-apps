@@ -17,7 +17,7 @@
       <li class="premium-modal__perk">
         <svgicon name="v"/>
         <span class="micro1">
-          Integrate Daily with +100 apps like Slack, MS Teams, Pocket, Twitter and more!
+          Integrate Daily with apps like Slack, Twitter, Pocket, Evernote and more!
         </span>
       </li>
       <li class="premium-modal__perk">
@@ -57,7 +57,8 @@
       <a :href="selectedPricing.url" class="premium-modal__btn btn btn-big"
          autofocus @click="onClick" v-if="isLoggedIn">Upgrade now</a>
       <button class="premium-modal__btn btn btn-big"
-         autofocus @click="onLoginClick" v-else>Upgrade now</button>
+              autofocus @click="onLoginClick" v-else>Upgrade now
+      </button>
     </div>
     <div class="premium-modal__note nuggets" v-if="!isLoggedIn">
       Make sure to sign up before upgrading
