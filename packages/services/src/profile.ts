@@ -1,53 +1,55 @@
-import axios, {AxiosInstance} from 'axios';
+// @ts-ignore
+import axios, {AxiosInstance} from 'redaxios';
 import {dateReviver, reviveJSON} from './utils';
 
 export interface Settings {
-    appInsaneMode: boolean;
-    enableCardAnimations: boolean;
-    insaneMode: boolean;
-    showTopSites: boolean;
-    theme: string;
-    spaciness: string;
-    showOnlyNotReadPosts: boolean;
+  appInsaneMode: boolean;
+  enableCardAnimations: boolean;
+  insaneMode: boolean;
+  showTopSites: boolean;
+  theme: string;
+  spaciness: string;
+  showOnlyNotReadPosts: boolean;
 }
 
 export interface Notification {
-    html: string;
-    timestamp: Date;
+  html: string;
+  timestamp: Date;
 }
 
 export interface ProfileService {
-    fetchSettings(): Promise<Settings>;
+  fetchSettings(): Promise<Settings>;
 
-    updateSettings(settings: Settings): Promise<void>;
+  updateSettings(settings: Settings): Promise<void>;
 
-    fetchNotifications(since: Date): Promise<Notification[]>;
+  fetchNotifications(since: Date): Promise<Notification[]>;
 }
 
 export class ProfileServiceImpl implements ProfileService {
-    private readonly request: AxiosInstance;
+  private readonly request: AxiosInstance;
+  private readonly baseURL: string;
 
-    constructor(baseURL: string, app: string | null = null) {
-        this.request = axios.create({
-            baseURL,
-            withCredentials: true,
-            timeout: 10000,
-            headers: app ? {app} : {},
-        });
-    }
+  constructor(baseURL: string, app: string | null = null) {
+    this.baseURL = baseURL;
+    this.request = axios.create({
+      withCredentials: true,
+      timeout: 10000,
+      headers: app ? {app} : {},
+    });
+  }
 
-    async fetchSettings(): Promise<Settings> {
-        const res = await this.request.get('/v1/settings');
-        return res.data;
-    }
+  async fetchSettings(): Promise<Settings> {
+    const res = await this.request.get(`${this.baseURL}/v1/settings`);
+    return JSON.parse(res.data);
+  }
 
-    async updateSettings(settings: Settings): Promise<void> {
-        await this.request.post<void>('/v1/settings', settings);
-    }
+  async updateSettings(settings: Settings): Promise<void> {
+    await this.request.post(`${this.baseURL}/v1/settings`, settings);
+  }
 
-    async fetchNotifications(since: Date): Promise<Notification[]> {
-        const res = await this.request.get(`/v1/notifications${since ? `?since=${since.toISOString()}` : ''}`);
-        return res.data.map((x: any) => reviveJSON(x, dateReviver));
-    }
+  async fetchNotifications(since: Date): Promise<Notification[]> {
+    const res = await this.request.get(`${this.baseURL}/v1/notifications${since ? `?since=${since.toISOString()}` : ''}`);
+    return JSON.parse(res.data).map((x: any) => reviveJSON(x, dateReviver));
+  }
 
 }

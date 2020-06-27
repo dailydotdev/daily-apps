@@ -5,5 +5,5 @@ const hidePostMutation = `
 `;
 
 export default {
-    hidePostMutation,
+  hidePostMutation,
 };

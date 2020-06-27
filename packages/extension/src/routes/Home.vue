@@ -190,7 +190,6 @@ import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
-import { contentService } from '../common/services';
 import { TERMS_CONSENT_KEY, getCache, setCache } from '../common/cache';
 import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
 
@@ -429,6 +428,7 @@ export default {
       }
       this.suggestionTimeout = setTimeout(async () => {
         if (query.length) {
+          const { contentService } = await import('../common/services');
           const res = await contentService.searchSuggestion(query);
           if (res.query === this.$refs.search.query()
             && res.query !== this.$store.state.feed.search) {
