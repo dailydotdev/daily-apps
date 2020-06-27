@@ -238,9 +238,7 @@ export default {
       try {
         await contentService.requestPublication(this.source.rss[0].url);
         this.$emit('close');
-        setTimeout(() => {
-          this.$emit('requested-source');
-        }, 50);
+        this.$emit('requested-source');
       } finally {
         this.loading = false;
       }
