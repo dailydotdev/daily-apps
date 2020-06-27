@@ -25,7 +25,7 @@
         Show me the link
       </button>
       <p>
-        Copy the link above and use it to integrate with +100 awesome apps!
+        Copy the link above and use it to integrate with awesome apps!
       </p>
       <div class="integration__list">
         <a v-for="item in popularIntegrations" :key="item.title"
