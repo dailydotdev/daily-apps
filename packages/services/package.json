@@ -18,7 +18,8 @@
     "test": "jest",
     "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/services/junit.xml jest --ci --reporters=jest-junit",
     "build": "rollup -c",
-    "watch": "rollup -cw"
+    "watch": "rollup -cw",
+    "postinstall": "cd node_modules/redaxios && npx microbundle && cd ../../"
   },
   "devDependencies": {
     "@types/jest": "^23.3.8",

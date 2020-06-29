@@ -1,5 +1,5 @@
 // @ts-ignore
-import axios, {AxiosInstance} from 'redaxios/src';
+import axios, {AxiosInstance} from 'redaxios';
 import {dateReviver, reviveJSON} from './utils';
 
 export interface Publication {
