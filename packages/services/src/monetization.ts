@@ -1,5 +1,5 @@
 // @ts-ignore
-import axios, {AxiosInstance} from 'redaxios';
+import axios, {AxiosInstance} from 'redaxios/src';
 import {ratioToSize} from './utils';
 
 export interface Ad {
