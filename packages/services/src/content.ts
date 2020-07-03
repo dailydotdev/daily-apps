@@ -171,7 +171,6 @@ export class ContentServiceImpl implements ContentService {
     const res: any = await this.request.post(
       `${this.baseURL}/graphql`,
       formData,
-      {headers: {'Content-Type': 'multipart/form-data'}},
     );
     return JSON.parse(res.data).data.uploadSourceRequestLogo.sourceImage;
   }
