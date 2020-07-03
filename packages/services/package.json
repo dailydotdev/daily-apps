@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@types/es6-promise": "^3.3.0",
-    "redaxios": "developit/redaxios#ab8b393566a1ca8a20bda84c56db010cea83fd71"
+    "redaxios": "idoshamun/redaxios#patch-1"
   },
   "jest": {
     "moduleFileExtensions": [
