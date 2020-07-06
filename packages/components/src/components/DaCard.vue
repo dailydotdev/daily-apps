@@ -28,7 +28,6 @@
 import 'lazysizes/plugins/blur-up/ls.blur-up';
 import 'lazysizes';
 import DaLineClamp from './DaLineClamp.vue';
-import CardDefaultImage from '../../images/card_default.jpg';
 
 export default {
   name: 'DaCard',
@@ -84,7 +83,7 @@ export default {
       return text[0];
     },
     useDefaultImage(e) {
-      e.target.src = CardDefaultImage;
+      e.target.src = 'https://res.cloudinary.com/daily-now/image/upload/f_auto/v1/placeholders/1';
     },
   },
 };
@@ -241,7 +240,7 @@ export default {
   }
 
   & .card.hover,
-    .card:hover {
+  .card:hover {
     transform: translateY(-4px);
 
     &:after {
