@@ -133,7 +133,6 @@
     <da-confirm-account v-if="showConfirmAccountModal"/>
     <da-merge v-if="hasConflicts" @confirm="mergeBookmarksConflicts"
               @cancel="clearBookmarksConflicts"/>
-    <da-consent v-if="showNewTerms" @confirm="agreeToTerms"/>
     <da-premium v-if="showPremium" @close="setShowPremium(false)" @login="onLogin('Premium')" />
     <da-new-source v-if="showNewSource" @close="setShowNewSource(false)"
                   @requested-source="showRequestModal = true" />
@@ -190,7 +189,6 @@ import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
-import { TERMS_CONSENT_KEY, getCache, setCache } from '../common/cache';
 import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
 
 const CRITICAL_FETCH_STAGE = 1;
@@ -259,7 +257,6 @@ export default {
     DaRequest: () => import('../components/DaRequest.vue'),
     DaSettings: () => import('../components/DaSettings.vue'),
     DaMerge: () => import('../components/DaMerge.vue'),
-    DaConsent: () => import('../components/DaConsent'),
     DaBanner: () => import('../components/DaBanner'),
     DaConfirmAccount: () => import('../components/DaConfirmAccount'),
     DaBookmarkList: () => import('../components/DaBookmarkList'),
@@ -275,7 +272,6 @@ export default {
       showRequestModal: false,
       showLoginModal: false,
       showProfileModal: false,
-      showNewTerms: false,
       showIntegrations: false,
       lineNumbers: 1,
       showSearch: false,
@@ -455,11 +451,6 @@ export default {
       this.showIntegrations = true;
     },
 
-    async agreeToTerms() {
-      await setCache(TERMS_CONSENT_KEY, true);
-      this.showNewTerms = false;
-    },
-
     closeBanner() {
       this.$apollo.queries.banner.skip = true;
       this.setLastBannerSeen(new Date(this.banner.timestamp));
@@ -608,9 +599,6 @@ export default {
 
     requestIdleCallback(async () => {
       this.generateChallenge();
-
-      const consent = await getCache(TERMS_CONSENT_KEY);
-      this.showNewTerms = !consent;
     });
 
     this.setDaFeedReference(() => this.$refs.feed);
