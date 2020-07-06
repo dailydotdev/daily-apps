@@ -28,7 +28,7 @@
 import 'lazysizes/plugins/blur-up/ls.blur-up';
 import 'lazysizes';
 import DaLineClamp from './DaLineClamp.vue';
-import CardDefaultSVG from '../../svg/card_default.svg';
+import CardDefaultImage from '../../images/card_default.jpg';
 
 export default {
   name: 'DaCard',
@@ -84,7 +84,7 @@ export default {
       return text[0];
     },
     useDefaultImage(e) {
-      e.target.src = CardDefaultSVG;
+      e.target.src = CardDefaultImage;
     },
   },
 };
