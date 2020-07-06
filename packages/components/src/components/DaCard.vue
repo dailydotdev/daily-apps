@@ -7,6 +7,7 @@
           :data-lowsrc="placeholder"
           :data-src="image"
           :key="image"
+          @error="useDefaultImage"
         />
       </div>
       <div class="card__content card__hover">
@@ -27,6 +28,7 @@
 import 'lazysizes/plugins/blur-up/ls.blur-up';
 import 'lazysizes';
 import DaLineClamp from './DaLineClamp.vue';
+import CardDefaultSVG from '../../svg/card_default.svg';
 
 export default {
   name: 'DaCard',
@@ -80,6 +82,9 @@ export default {
   methods: {
     truncateTitle(text) {
       return text[0];
+    },
+    useDefaultImage(e) {
+      e.target.src = CardDefaultSVG;
     },
   },
 };
