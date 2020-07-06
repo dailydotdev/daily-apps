@@ -7,7 +7,6 @@ import mdyDateFilter from '@daily/components/src/common/mdyDateFilter';
 import App from './App.vue';
 import store from '../store';
 import { getCache, STATE_KEY } from '../common/cache';
-import { debug } from '../common/config';
 import { browserName } from '../common/browser';
 import { apolloClient, persistor } from '../apollo';
 
@@ -70,36 +69,15 @@ const router = new VueRouter({
       component: () => import(/* webpackChunkName: "login" */ '../routes/Login.vue'),
       props: route => ({ ...route.query }),
     },
-    {
-      path: '/onboarding',
-      redirect: '/onboarding/1',
-      component: () => import(/* webpackChunkName: "onboarding" */ '../routes/Onboarding.vue'),
-      children: [
-        {
-          path: '1',
-          component: () => import(/* webpackChunkName: "onboarding" */ '../routes/Step1.vue'),
-        },
-        {
-          path: '2',
-          component: () => import(/* webpackChunkName: "onboarding" */ '../routes/Step2.vue'),
-        },
-        {
-          path: '3',
-          component: () => import(/* webpackChunkName: "onboarding" */ '../routes/Step3.vue'),
-        },
-      ],
-    },
   ],
 });
 
-// Redirect to login or onboarding if necessary
+// Redirect to login if necessary
 router.beforeEach(async (to, from, next) => {
   await bootPromise;
 
   if (to.path === '/' && to.query.provider && to.query.code) {
     next({ path: '/login', query: to.query });
-  } else if (to.path === '/' && !store.state.ui.onboarding && !debug) {
-    next({ path: '/onboarding' });
   } else {
     next();
   }
