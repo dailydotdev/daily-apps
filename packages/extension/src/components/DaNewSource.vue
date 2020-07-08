@@ -117,7 +117,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import { mapMutations, mapGetters } from 'vuex';
 import DaModal from '@daily/components/src/components/DaModal.vue';
 import DaTextField from '@daily/components/src/components/DaTextField.vue';
@@ -128,6 +127,7 @@ import DaSvg from './DaSvg.vue';
 import { SOURCE_BY_FEED_QUERY, ADD_PRIVATE_SOURCE_MUTATION } from '../graphql/newSource';
 import { contentService } from '../common/services';
 import { fetchTimeout } from '../common/fetch';
+import { SOURCES_QUERY } from '../graphql/sidebar';
 
 export default {
   name: 'DaNewSource',
@@ -217,10 +217,6 @@ export default {
       await this.scrapeUrl(this.$refs.field.currentValue);
     },
 
-    toggleRSS(index, enabled) {
-      Vue.set(this.source.rss, index, { ...this.source.rss[index], enabled });
-    },
-
     async selectRSS() {
       this.loading = true;
       try {
@@ -261,7 +257,17 @@ export default {
                 name: this.$refs.name.currentValue,
                 image: this.source.logo,
                 rss: this.source.rss[0].url,
+                website: this.source.website,
               },
+            },
+            update: (store, { data: { addPrivateSource } }) => {
+              try {
+                const data = store.readQuery({ query: SOURCES_QUERY });
+                data.sources.edges.push({ node: addPrivateSource, __typename: 'SourceEdge' });
+                store.writeQuery({ query: SOURCES_QUERY, data });
+              } catch (err) {
+
+              }
             },
           });
           this.added = true;
