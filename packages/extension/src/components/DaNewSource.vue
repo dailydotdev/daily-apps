@@ -266,7 +266,7 @@ export default {
                 data.sources.edges.push({ node: addPrivateSource, __typename: 'SourceEdge' });
                 store.writeQuery({ query: SOURCES_QUERY, data });
               } catch (err) {
-
+                // TODO: handle error
               }
             },
           });
