@@ -3,10 +3,7 @@ import gql from 'graphql-tag';
 export const SOURCE_BY_FEED_QUERY = gql`
   query SourceByFeed($data: String!) {
     sourceByFeed(feed: $data) {
-      id
-      name
-      image
-      public
+      id, name, image, public
     }
   }`;
 
