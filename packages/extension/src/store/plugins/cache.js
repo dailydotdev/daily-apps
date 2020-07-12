@@ -15,10 +15,18 @@ const stateToCache = (state) => {
   // TODO: add tests
   const toCache = Object.assign({}, state);
   delete toCache.initialized;
+  let { posts } = state.feed;
+  if (posts.length) {
+    if (posts[0].type === 'ad') {
+      posts = [{ type: 'ad', loading: true }, ...posts.slice(1, contentService.pageSize)];
+    } else {
+      posts = posts.slice(0, contentService.pageSize);
+    }
+  }
   toCache.feed = {
     disabledPublications: state.feed.disabledPublications,
     enabledTags: state.feed.enabledTags,
-    posts: state.feed.posts.slice(0, contentService.pageSize).map(post2Cache),
+    posts: posts.map(post2Cache),
     bookmarks: state.feed.bookmarks.map(post2Cache),
     latest: time2Cache(state.feed.latest),
     lastUsedBookmarkList: state.feed.lastUsedBookmarkList,

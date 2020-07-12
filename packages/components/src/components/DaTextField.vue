@@ -24,6 +24,7 @@
           @focus="onFocus"
           @blur="onBlurOverride"
           @input="onInputOverride"
+          @keydown="onKeyDown"
         />
       </div>
       <span class="text-field__count lil1" v-if="maxlength">
@@ -131,6 +132,12 @@ export default {
           this.idleTimeout = null;
           this.updateInvalid(true);
         }, 1500);
+      }
+    },
+    onKeyDown(e) {
+      if (e.keyCode === 13) {
+        e.preventDefault();
+        this.$emit('enter');
       }
     },
   },

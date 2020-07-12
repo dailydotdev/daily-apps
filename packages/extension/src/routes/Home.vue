@@ -10,7 +10,7 @@
                 @loaded="fetchStage += 1"
                 @login="onLogin('Sidebar')"></da-sidebar>
     <div class="line-numbers" @mouseenter="$refs.sidebar && $refs.sidebar.open()"
-          v-show="!showBookmarks">
+         v-show="!showBookmarks">
       <svgicon name="hamburger" class="line-numbers_icon"/>
       <div class="line-numbers__lines" ref="lineNumbers">
         <pre v-for="n in lineNumbers" class="micro2" :key="n">{{ n }}</pre>
@@ -76,12 +76,11 @@
                   </button>
                 </template>
               </template>
-              <a class="header__cta shadow1 " :href="cta.link"
-                 @mouseup="ctaClick" :style="cta.style">
-                <span class="header__cta__text">// {{cta.text}}</span>
+              <button class="header__cta shadow1" @click="ctaClick" :style="cta.style">
+                <span class="header__cta__text">{{cta.text}}</span>
                 <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>
                 <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
-              </a>
+              </button>
             </div>
           </transition>
         </template>
@@ -133,9 +132,9 @@
     <da-confirm-account v-if="showConfirmAccountModal"/>
     <da-merge v-if="hasConflicts" @confirm="mergeBookmarksConflicts"
               @cancel="clearBookmarksConflicts"/>
-    <da-premium v-if="showPremium" @close="setShowPremium(false)" @login="onLogin('Premium')" />
+    <da-premium v-if="showPremium" @close="setShowPremium(false)" @login="onLogin('Premium')"/>
     <da-new-source v-if="showNewSource" @close="setShowNewSource(false)"
-                  @requested-source="showRequestModal = true" />
+                   @requested-source="showRequestModal = true"/>
     <da-integrations v-if="showIntegrations" @close="showIntegrations = false"/>
     <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
       <template slot="title">Terminal</template>
@@ -150,6 +149,7 @@
         </div>
       </template>
     </da-terminal>
+    <da-referral v-if="showReferral" @close="showReferral = false"/>
     <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened"
                 @close="setShowDndMenu(false)">
       <template v-if="!dndMode">
@@ -229,7 +229,7 @@ export default {
       fetchPolicy: 'cache-only',
       result({ networkStatus, loading }) {
         if (networkStatus === NetworkStatus.ready && !loading
-            && this.fetchStage >= OPERATIONAL_FETCH_STAGE) {
+          && this.fetchStage >= OPERATIONAL_FETCH_STAGE) {
           this.fetchStage += 1;
         }
       },
@@ -263,6 +263,7 @@ export default {
     DaPremium: () => import('../components/DaPremium'),
     DaNewSource: () => import('../components/DaNewSource'),
     DaIntegrations: () => import('../components/DaIntegrations'),
+    DaReferral: () => import('../components/DaReferral'),
   },
 
   data() {
@@ -273,6 +274,7 @@ export default {
       showLoginModal: false,
       showProfileModal: false,
       showIntegrations: false,
+      showReferral: false,
       lineNumbers: 1,
       showSearch: false,
       searchSuggestions: [],
@@ -283,7 +285,8 @@ export default {
 
   methods: {
     ctaClick() {
-      ga('send', 'event', this.cta.name, 'Click');
+      ga('send', 'event', 'CTA', 'Click', this.cta.text);
+      this.showReferral = true;
     },
 
     updateLines() {
@@ -606,6 +609,7 @@ export default {
     this.$nextTick(() => {
       enableKeyBindings();
       this.fetchStage = CRITICAL_FETCH_STAGE;
+      ga('send', 'event', 'CTA', 'Impression', this.cta.text, { nonInteraction: true });
     });
   },
 
@@ -767,16 +771,16 @@ export default {
   height: 44px;
   flex-direction: row;
   align-items: center;
-  margin: 32px 0;
+  margin: 28px 0;
 
   .roomy & {
-    margin-top: 40px;
-    margin-bottom: 40px;
+    margin-top: 36px;
+    margin-bottom: 36px;
   }
 
   .cozy & {
-    margin-top: 48px;
-    margin-bottom: 48px;
+    margin-top: 44px;
+    margin-bottom: 44px;
   }
 
   & h4 {
@@ -826,25 +830,27 @@ export default {
 
 .header__cta {
   display: flex;
-  height: 32px;
+  height: 40px;
+  padding: 6px 6px 6px 16px;
   flex-direction: row;
   align-items: center;
   margin-left: auto;
   border-radius: 8px;
+  border: none;
+  cursor: pointer;
 }
 
 .header__cta__text {
-  margin: 0 8px 0 16px;
+  margin-right: 10px;
 
   & {
-    @mixin micro2;
+    @mixin lil2;
   }
 }
 
 .header__cta__image {
-  width: 20px;
-  height: 20px;
-  margin: 0 8px;
+  width: 28px;
+  height: 28px;
   color: var(--color-salt-10);
 }
 

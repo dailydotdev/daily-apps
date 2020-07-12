@@ -169,7 +169,7 @@ export default {
     },
 
     onAdImpression(ad) {
-      ga('send', 'event', 'Ad', 'Impression', ad.source);
+      ga('send', 'event', 'Ad', 'Impression', ad.source, { nonInteraction: true });
     },
 
     async onBookmark({ event, post, bookmarked }) {
