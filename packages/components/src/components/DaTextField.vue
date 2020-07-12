@@ -178,10 +178,10 @@ export default {
     }
   }
 
-  .invalid & {
+  .invalid &:not(.readonly):not(.disabled) {
     box-shadow: inset 2px 0 0 0 var(--color-ketchup-30);
 
-    &.active .text-field__label {
+    & .text-field__label {
       color: var(--color-ketchup-30);
     }
   }
