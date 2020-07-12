@@ -1,4 +1,4 @@
-import {authService} from './common/services';
+import { authService } from './common/services';
 import {
   setCache,
   getCache,
@@ -24,13 +24,13 @@ const migrateVersion1 = async () => {
   return {
     feed: {
       bookmarks,
-      publications: Object.keys(pubs).map(id => ({id, enabled: pubs[id]})),
+      publications: Object.keys(pubs).map(id => ({ id, enabled: pubs[id] })),
     },
     ui: {
       lastNotificationTime: notificationTime,
       ...settings,
     },
-    user: {profile},
+    user: { profile },
   };
 };
 
@@ -45,10 +45,10 @@ const migrateCache = async () => {
 
 browser.browserAction.onClicked.addListener(() => {
   const url = browser.extension.getURL('index.html?source=button');
-  browser.tabs.create({url, active: true});
+  browser.tabs.create({ url, active: true });
 });
 
-browser.alarms.create('cacheUserId', {periodInMinutes: 60});
+browser.alarms.create('cacheUserId', { periodInMinutes: 60 });
 
 browser.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === 'cacheUserId') {
