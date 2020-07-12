@@ -31,7 +31,7 @@ export default {
     },
   },
   mounted() {
-    ga('send', 'event', 'Banner', 'Impression');
+    ga('send', 'event', 'Banner', 'Impression', { nonInteraction: true });
   },
 };
 </script>
