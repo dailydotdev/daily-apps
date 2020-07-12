@@ -58,8 +58,8 @@ export default {
 
     async logout({ commit, dispatch }) {
       // TODO: handle error
-      commit('setProfile', null);
       await authService.logout();
+      commit('setProfile', null);
       await Promise.all([
         dispatch('ui/reset', null, { root: true }),
         dispatch('feed/reset', null, { root: true }),
