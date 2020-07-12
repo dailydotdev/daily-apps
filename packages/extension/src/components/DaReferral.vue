@@ -82,7 +82,9 @@ export default {
 
   computed: {
     tweet() {
-      return `https://twitter.com/intent/tweet?text=I%20love%20@dailydotdev%20it%27s%20the%20best%20extension&url=${encodeURIComponent(this.link)}`;
+      const text = 'Daily makes it extremely easy to stay updated with the latest dev news.\n'
+        + 'It’s a 100% open-source browser extension, free (forever), and doesn’t even require a signup. A must-have tool for every busy developer. @dailydotdev\n';
+      return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(this.link)}`;
     },
 
     ...mapGetters('user', ['isLoggedIn']),
