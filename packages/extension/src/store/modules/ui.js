@@ -18,6 +18,7 @@ const initialState = () => ({
   lastBannerSeen: new Date(),
   showPremium: false,
   showNewSource: false,
+  openNewTab: false,
 });
 
 export default {
@@ -43,7 +44,9 @@ export default {
     setShowOnlyNotReadPosts(state, value) {
       state.showOnlyNotReadPosts = value;
     },
-
+    setOpenNewTab(state, value) {
+      state.openNewTab = value;
+    },
     setSpaciness(state, value) {
       state.spaciness = value;
     },
@@ -91,6 +94,7 @@ export default {
       state.showTopSites = def.showTopSites;
       state.enableCardAnimations = def.enableCardAnimations;
       state.showOnlyNotReadPosts = def.showOnlyNotReadPosts;
+      state.openNewTab = def.openNewTab;
     },
 
     doneOnboarding(state) {
@@ -128,6 +132,9 @@ export default {
 
     dndModeTime(state) {
       return state.dndModeTime;
+    },
+    openNewTab(state) {
+      return state.openNewTab;
     },
   },
   actions: {

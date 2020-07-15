@@ -1,6 +1,8 @@
 <template>
   <div class="card" :class="cls">
-    <a :href="url" class="card__link post__link" @click="$emit('click')">
+    <a :href="url" class="card__link post__link"
+      :target="tabbedOpen.openTab ? '_blank' : false"
+      @click="$emit('click');">
       <div class="card__background" :style="imgStyle">
         <img
           class="card__background__image lazyload"
@@ -74,6 +76,12 @@ export default {
     cls() {
       return {
         [this.size]: true,
+      };
+    },
+
+    tabbedOpen() {
+      return {
+        openTab: this.$store.getters['ui/openNewTab'],
       };
     },
   },

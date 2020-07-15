@@ -58,6 +58,12 @@ it('should set show only not read posts in state', () => {
   expect(state.showOnlyNotReadPosts).toEqual(true);
 });
 
+it('should set open links as tabs in state', () => {
+  const state = {};
+  module.mutations.setOpenNewTab(state, true);
+  expect(state.openNewTab).toEqual(true);
+});
+
 it('should set spaciness in state', () => {
   const state = {};
   module.mutations.setSpaciness(state, 'roomy');
@@ -91,14 +97,14 @@ it('should show notification badge when never seen notification', () => {
 
 it('should show notification badge when timestamp is newer than last seen', () => {
   const now = new Date();
-  const state = {lastNotificationTime: new Date(now.getTime() - 1000)};
+  const state = { lastNotificationTime: new Date(now.getTime() - 1000) };
   module.mutations.updateNotificationBadge(state, now);
   expect(state.showNotificationBadge).toEqual(true);
 });
 
 it('should not show notification badge when timestamp is older than last seen', () => {
   const now = new Date();
-  const state = {lastNotificationTime: now};
+  const state = { lastNotificationTime: now };
   module.mutations.updateNotificationBadge(state, new Date(now.getTime() - 1000));
   expect(state.showNotificationBadge).toEqual(false);
 });

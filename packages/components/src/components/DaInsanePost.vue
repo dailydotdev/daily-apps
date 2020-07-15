@@ -2,7 +2,8 @@
   <div class="insane__wrapper">
     <div class="insane insane--post" :class="cls">
       <a :href="post.url" class="insane__link post__link"
-          @click="$emit('click', post)">
+          :target="tabbedOpen.openTab ? '_blank' : false"
+          @click="$emit('click', post);">
         <h5 class="insane__title">
           <da-line-clamp :text="post.title" :lines="3"/>
         </h5>
@@ -72,8 +73,13 @@ export default {
         hover: this.selected,
       };
     },
-  },
 
+    tabbedOpen() {
+      return {
+        openTab: this.$store.getters['ui/openNewTab'],
+      };
+    },
+  },
   mounted() {
     import('../../icons/bookmark');
     import('../../icons/menu');

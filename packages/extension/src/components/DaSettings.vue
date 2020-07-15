@@ -23,6 +23,8 @@
                  :checked="enableCardAnimations" @toggle="toggleCardAnimations"/>
       <da-switch label="Hide read posts" class="small settings__hide-read-posts"
                  :checked="showOnlyNotReadPosts" @toggle="toggleShowOnlyNotReadPosts"/>
+      <da-switch label="Open Links in New Tab" class="small settings__toggle-open-tab"
+                 :checked="openNewTab" @toggle="toggleOpenInTab"/>
     </div>
   </div>
 </template>
@@ -50,7 +52,7 @@ export default {
   },
   computed: {
     ...mapState('ui', [
-      'showTopSites', 'insaneMode', 'spaciness', 'enableCardAnimations', 'showOnlyNotReadPosts',
+      'showTopSites', 'insaneMode', 'spaciness', 'enableCardAnimations', 'showOnlyNotReadPosts', 'openNewTab',
     ]),
     ...mapState({
       theme: state => themes.indexOf(state.ui.theme),
@@ -74,6 +76,10 @@ export default {
       ga('send', 'event', 'Settings', 'Click', 'Hide Read Posts');
       this.$store.commit('ui/setShowOnlyNotReadPosts', val);
       this.refreshFeed();
+    },
+    async toggleOpenInTab(val) {
+      ga('send', 'event', 'Settings', 'Click', 'Open New Tab');
+      this.$store.commit('ui/setOpenNewTab', val);
     },
     toggleCardAnimations(val) {
       ga('send', 'event', 'Settings', 'Click', 'Card Animations');

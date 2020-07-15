@@ -16,6 +16,7 @@ const syncSettings = (state) => {
       insaneMode: state.ui.insaneMode,
       spaciness: state.ui.spaciness,
       showOnlyNotReadPosts: state.ui.showOnlyNotReadPosts,
+      openNewTab: state.ui.openNewTab,
     });
   }
 
@@ -68,6 +69,7 @@ const plugin = (store) => {
       store.commit('ui/setEnableCardAnimations', settings.enableCardAnimations);
       store.commit('ui/setSpaciness', settings.spaciness);
       store.commit('ui/setShowOnlyNotReadPosts', settings.showOnlyNotReadPosts);
+      store.commit('ui/setOpenNewTab', settings.openNewTab);
       const pr1 = store.dispatch('ui/setTheme', settings.theme);
       const pr2 = contentService.fetchFeedPublications()
         .then(pubs => store.commit('feed/setDisabledPublications', Object.keys(pubs)));
@@ -103,6 +105,10 @@ const plugin = (store) => {
     case 'ui/setEnableCardAnimations':
     case 'ui/setSpaciness':
     case 'ui/setShowOnlyNotReadPosts':
+      // TODO: handle error
+      await syncSettings(state);
+      break;
+    case 'ui/setOpenNewTab':
       // TODO: handle error
       await syncSettings(state);
       break;
