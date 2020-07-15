@@ -140,7 +140,7 @@ export default {
       });
       this.sending = false;
       this.$refs.email.updateValue('');
-      this.$refs.email.updateInvalid(true);
+      this.$refs.email.updateInvalid(null);
       this.sent = true;
       setTimeout(() => {
         this.sent = false;
@@ -286,7 +286,7 @@ export default {
 .referral__cover__link {
   position: absolute;
   left: 12px;
-  bottom: 17px;
+  bottom: 12px;
   display: flex;
   flex-direction: row;
   align-items: center;
