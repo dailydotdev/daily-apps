@@ -6,7 +6,7 @@ const redirectLink = post => `${process.env.VUE_APP_API_URL}/r/${post.id}`;
 export const mapPost = (post) => {
   const newPost = {
     ...ratioToSize(reviveJSON(post, dateReviver)),
-    url: redirectLink(post),
+    url: post.permalink || redirectLink(post),
     publication: post.source,
   };
   delete newPost.source;
