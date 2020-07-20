@@ -3342,9 +3342,9 @@ read-pkg@^5.2.0:
     parse-json "^5.0.0"
     type-fest "^0.6.0"
 
-redaxios@idoshamun/redaxios#patch-1:
+redaxios@developit/redaxios#4841822f4e9e9fd7d666e649e31a056aa34fd5d3:
   version "0.2.0"
-  resolved "https://codeload.github.com/idoshamun/redaxios/tar.gz/86fef6cb9e276606e3c9ec1b22d7fbbbdc95023a"
+  resolved "https://codeload.github.com/developit/redaxios/tar.gz/4841822f4e9e9fd7d666e649e31a056aa34fd5d3"
 
 regex-cache@^0.4.2:
   version "0.4.4"
