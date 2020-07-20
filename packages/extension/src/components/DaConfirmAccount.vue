@@ -53,7 +53,7 @@ export default {
   width: 400px;
   padding: 0;
   color: var(--theme-secondary);
-  background: var(--theme-background-primary);
+  background: var(--theme-background-highlight);
 }
 
 .confirm-acc__form {

@@ -979,7 +979,7 @@ export default {
   height: 100%;
   flex-direction: column;
   padding: 68px 0 0 0;
-  background: var(--theme-background-highlight);
+  background: var(--theme-background-primary);
   border-right: 1px solid var(--theme-separator);
 
   & > * {

@@ -219,7 +219,7 @@ export default {
   flex-direction: row;
   align-items: center;
   padding: 0 8px;
-  background: var(--theme-background-highlight);
+  background: var(--theme-background-primary);
   border-bottom: 1px solid var(--theme-separator);
   z-index: 30;
   contain: layout size;
