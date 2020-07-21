@@ -73,7 +73,7 @@ export default {
       copied: false,
       sent: false,
       sending: false,
-      link: 'https://app.dailynow.co/get?r=share',
+      link: `${process.env.VUE_APP_API_URL}/get?r=share`,
       cover: null,
       validEmail: false,
       emailHint: '',
