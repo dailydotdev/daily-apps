@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 export const FEED_POST_FRAGMENT = gql`
   fragment FeedPost on Post {
-    id,title,url,publishedAt,createdAt,image,ratio,placeholder,readTime,source { id, name, image, public },tags
+    id,title,url,publishedAt,createdAt,image,ratio,placeholder,readTime,source { id, name, image, public },tags,permalink
   }`;
 
 export const USER_POST_FRAGMENT = gql`
