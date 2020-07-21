@@ -124,7 +124,7 @@ export default {
   flex-direction: row;
   align-items: stretch;
   color: var(--theme-secondary);
-  background: var(--theme-background-primary);
+  background: var(--theme-background-highlight);
 }
 
 .profile__form {

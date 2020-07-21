@@ -70,6 +70,7 @@ button:focus, button:active {
 
     &[disabled], &.disabled {
         --button-background: none;
+        --button-background-opacity: none;
     }
 }
 
@@ -137,8 +138,6 @@ button:focus, button:active {
     &.btn-invert {
         --button-color: var(--theme-primary-invert);
         --button-background: var(--theme-primary);
-
-        @mixin shadow1;
     }
 
     &.btn-nav {
@@ -229,7 +228,8 @@ button:focus, button:active {
         pointer-events: none;
         --button-border: none;
         --button-color: var(--theme-disabled);
-        --button-background: var(--theme-background-highlight);
+        --button-background: var(--theme-hover);
+        --button-background-opacity: var(--theme-hover-opacity);
     }
 }
 

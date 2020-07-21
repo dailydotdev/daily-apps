@@ -138,6 +138,7 @@ export default {
   padding: 0;
   width: 500px;
   align-items: stretch;
+  color: var(--theme-primary);
 
   & .integrations__header p {
     max-width: none;
@@ -167,7 +168,6 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 40px 40px 32px;
-  background: var(--theme-background-secondary);
 }
 
 .integrations__footer {
@@ -176,6 +176,7 @@ export default {
   align-items: center;
   padding: 32px;
   border-top: solid 1px var(--theme-shine);
+  background: var(--theme-background-secondary);
 }
 
 .integration__list {

@@ -66,6 +66,7 @@ export default {
     &:checked {
       & ~ .switch__slider {
         background: var(--da-switch-checked-background);
+        opacity: 1;
       }
 
       & ~ .switch__handle {
@@ -82,7 +83,7 @@ export default {
   & .svg-icon {
     width: calc(var(--da-switch-height) - 4px);
     height: calc(var(--da-switch-height) - 4px);
-    color: var(--da-switch-color);
+    color: var(--da-switch-icon-color);
     transition: color 0.2s linear;
   }
 
@@ -124,6 +125,7 @@ export default {
   margin: auto 0;
   border-radius: 4px;
   background: var(--da-switch-color);
+  opacity: var(--da-switch-opacity);
   will-change: background-color, opacity;
   transition: background-color 0.1s linear, opacity 0.2s linear;
 }
