@@ -1,7 +1,7 @@
 <template>
   <da-modal class="referral" @close="$emit('close')">
     <div class="referral__inst">
-      <h3>Invite people</h3>
+      <h3>Enjoying daily.dev?</h3>
       <div class="referral__desc micro2">Share your 💌 for daily.dev with your developer friends and
         help us grow.
       </div>
@@ -29,7 +29,7 @@
         or
         <template v-if="!isLoggedIn"> share via</template>
       </div>
-      <a class="referral__twitter" target="_blank" :href="tweet"
+      <a class="referral__twitter" target="_blank" rel="noopener noreferrer" :href="tweet"
          @click="onTwitter" v-if="!isLoggedIn">
         <img src="/logos/twitter.svg"/>
         <span>Twitter</span>
@@ -43,7 +43,8 @@
     </div>
     <div class="referral__cover">
       <img :src="cover" v-if="cover"/>
-      <a class="referral__cover__link" target="_blank" href="https://twitter.com/dailydotdev">
+      <a class="referral__cover__link" target="_blank" rel="noopener noreferrer"
+         href="https://twitter.com/dailydotdev">
         <svgicon name="twitter"/>
         <span>@dailydotdev</span>
       </a>
@@ -164,6 +165,7 @@ export default {
 <style>
 .referral.modal .modal__container {
   width: 720px;
+  height: 438px;
   padding: 0;
   flex-direction: row;
   align-items: stretch;

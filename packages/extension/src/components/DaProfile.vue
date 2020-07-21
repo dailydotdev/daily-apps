@@ -39,7 +39,7 @@
         </li>
         <li class="profile__link" v-if="isPremium">
           <a href="mailto:support@daily.dev?subject=Cancel my premium subscription" target="_blank"
-             class="micro1">Cancel subscription</a>
+             rel="noopener noreferrer" class="micro1">Cancel subscription</a>
         </li>
         <li class=profile__link>
           <button class="micro1" @click="onLogout">Logout</button>

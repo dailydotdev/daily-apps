@@ -29,7 +29,8 @@
       </p>
       <div class="integration__list">
         <a v-for="item in popularIntegrations" :key="item.title"
-           class="integration__list-item" :href="item.url" target="_blank">
+           class="integration__list-item" :href="item.url"
+           target="_blank" rel="noopener noreferrer">
           <img :src="item.logo"/>
           <div>
             <span class="lil2">{{ item.title }}</span>

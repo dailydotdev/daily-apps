@@ -14,6 +14,10 @@ jest.mock('@daily/services', () => ({
   applyTheme: jest.fn(),
 }));
 
+beforeEach(() => {
+  window.ga = jest.fn();
+});
+
 it('should set onboarding to true in state', () => {
   const state = { onboarding: false };
   module.mutations.doneOnboarding(state);
@@ -184,4 +188,56 @@ it('should set lastBannerSeen', () => {
   const state = { lastBannerSeen: new Date(0) };
   module.mutations.setLastBannerSeen(state, now);
   expect(state.lastBannerSeen).toEqual(now);
+});
+
+it('should set show referral in state', () => {
+  const state = {};
+  module.mutations.setShowReferral(state, true);
+  expect(state.showReferral).toEqual(true);
+});
+
+it('should set triggered referral in state', () => {
+  const state = {};
+  module.mutations.setTriggeredReferral(state, true);
+  expect(state.triggeredReferral).toEqual(true);
+  expect(state.showReferral).toEqual(true);
+});
+
+it('should increase post clicks in state', async () => {
+  const state = { postClicks: 0 };
+  await testAction(module.actions.trackEngagementWin, {action: 'POST_CLICK'}, state, []);
+  expect(state).toEqual({ postClicks: 1 });
+});
+
+it('should trigger referral due to post click', async () => {
+  const state = { postClicks: 9 };
+  await testAction(module.actions.trackEngagementWin, {action: 'POST_CLICK'}, state, [
+    { type: 'setTriggeredReferral', payload: true },
+  ]);
+});
+
+it('should increase bookmarks in state', async () => {
+  const state = { bookmarks: 0 };
+  await testAction(module.actions.trackEngagementWin, {action: 'BOOKMARK'}, state, []);
+  expect(state).toEqual({ bookmarks: 1 });
+});
+
+it('should trigger referral due to bookmark', async () => {
+  const state = { bookmarks: 9 };
+  await testAction(module.actions.trackEngagementWin, {action: 'BOOKMARK'}, state, [
+    { type: 'setTriggeredReferral', payload: true },
+  ]);
+});
+
+it('should increase scrolls in state', async () => {
+  const state = { scrolls: 0 };
+  await testAction(module.actions.trackEngagementWin, {action: 'SCROLL'}, state, []);
+  expect(state).toEqual({ scrolls: 1 });
+});
+
+it('should trigger referral due to scroll', async () => {
+  const state = { scrolls: 29 };
+  await testAction(module.actions.trackEngagementWin, {action: 'SCROLL'}, state, [
+    { type: 'setTriggeredReferral', payload: true },
+  ]);
 });

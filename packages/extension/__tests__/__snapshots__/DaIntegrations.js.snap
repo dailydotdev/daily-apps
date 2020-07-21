@@ -20,6 +20,7 @@ exports[`should show popular integrations 1`] = `
   <a
     class="integration__list-item"
     href="https://a.com"
+    rel="noopener noreferrer"
     target="_blank"
   >
     <img
@@ -43,6 +44,7 @@ exports[`should show popular integrations 1`] = `
   <a
     class="integration__list-item"
     href="https://b.com"
+    rel="noopener noreferrer"
     target="_blank"
   >
     <img
