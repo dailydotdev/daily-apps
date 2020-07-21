@@ -2,7 +2,7 @@
   <div class="insane__wrapper">
     <div class="insane insane--post" :class="cls">
       <a :href="post.url" class="insane__link post__link"
-          @click="$emit('click', post)">
+          @click="$emit('click', post)" target="_blank" rel="noopener noreferrer">
         <h5 class="insane__title">
           <da-line-clamp :text="post.title" :lines="3"/>
         </h5>

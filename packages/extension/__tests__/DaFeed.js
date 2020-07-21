@@ -94,6 +94,9 @@ beforeEach(() => {
     state: {
       insaneMode: false,
     },
+    actions: {
+      trackEngagementWin: jest.fn(),
+    }
   };
 
   user = {
@@ -198,6 +201,7 @@ it('should bookmark post', () => {
   });
   expect(feed.actions.toggleBookmarks)
     .toBeCalledWith(expect.anything(), { id: feed.state.posts[0].id, bookmarked: true });
+  expect(ui.actions.trackEngagementWin).toBeCalledTimes(1);
 });
 
 it('should add bookmark to default list', () => {

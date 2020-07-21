@@ -1,4 +1,5 @@
 import { applyTheme } from '@daily/services';
+import { FIRST_INSTALL_KEY, getCache } from '../../common/cache';
 
 const initialState = () => ({
   theme: null,
@@ -18,6 +19,12 @@ const initialState = () => ({
   lastBannerSeen: new Date(),
   showPremium: false,
   showNewSource: false,
+  showReferral: false,
+  // Win moments tracking
+  triggeredReferral: false,
+  postClicks: 0,
+  bookmarks: 0,
+  scrolls: 0,
 });
 
 export default {
@@ -108,6 +115,17 @@ export default {
     setShowNewSource(state, value) {
       state.showNewSource = value;
     },
+
+    setShowReferral(state, value) {
+      state.showReferral = value;
+    },
+
+    setTriggeredReferral(state, value) {
+      state.triggeredReferral = value;
+      if (value) {
+        state.showReferral = true;
+      }
+    },
   },
   getters: {
     topSitesInstructions(state) {
@@ -151,6 +169,50 @@ export default {
       }
 
       commit('setShowTopSites', value);
+    },
+
+    async checkVisitWin({ commit, state }) {
+      if (!state.triggeredReferral) {
+        const firstVisit = await getCache(FIRST_INSTALL_KEY, null);
+        // Three weeks since first visit
+        if (firstVisit) {
+          const dt = ((new Date()).getTime() - (new Date(firstVisit)).getTime()) / 1000;
+          if (dt >= 1814400) {
+            ga('send', 'event', 'Trigger', 'Activate', '3 Weeks');
+            commit('setTriggeredReferral', true);
+          }
+        }
+      }
+    },
+
+    trackEngagementWin({ commit, state }, { action }) {
+      if (!state.triggeredReferral) {
+        switch (action) {
+        case 'POST_CLICK':
+          state.postClicks += 1;
+          if (state.postClicks >= 10) {
+            ga('send', 'event', 'Trigger', 'Activate', '10 Post Clicks');
+            commit('setTriggeredReferral', true);
+          }
+          break;
+        case 'BOOKMARK':
+          state.bookmarks += 1;
+          if (state.bookmarks >= 3) {
+            ga('send', 'event', 'Trigger', 'Activate', '3 Bookmarks');
+            commit('setTriggeredReferral', true);
+          }
+          break;
+        case 'SCROLL':
+          state.scrolls += 1;
+          if (state.scrolls >= 30) {
+            ga('send', 'event', 'Trigger', 'Activate', '30 Scrolls');
+            commit('setTriggeredReferral', true);
+          }
+          break;
+        default:
+          // Nothing here
+        }
+      }
     },
   },
 };

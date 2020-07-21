@@ -149,7 +149,7 @@
         </div>
       </template>
     </da-terminal>
-    <da-referral v-if="showReferral" @close="showReferral = false"/>
+    <da-referral v-if="showReferral" @close="setShowReferral(false)"/>
     <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened"
                 @close="setShowDndMenu(false)">
       <template v-if="!dndMode">
@@ -274,7 +274,6 @@ export default {
       showLoginModal: false,
       showProfileModal: false,
       showIntegrations: false,
-      showReferral: false,
       lineNumbers: 1,
       showSearch: false,
       searchSuggestions: [],
@@ -286,7 +285,7 @@ export default {
   methods: {
     ctaClick() {
       ga('send', 'event', 'CTA', 'Click', this.cta.text);
-      this.showReferral = true;
+      this.setShowReferral(true);
     },
 
     updateLines() {
@@ -467,6 +466,8 @@ export default {
       mergeBookmarksConflicts: 'feed/mergeBookmarksConflicts',
       generateChallenge: 'user/generateChallenge',
       validateAuth: 'user/validateAuth',
+      checkVisitWin: 'ui/checkVisitWin',
+      trackEngagementWin: 'ui/trackEngagementWin',
     }),
 
     ...mapMutations({
@@ -481,12 +482,13 @@ export default {
       updateNotificationBadge: 'ui/updateNotificationBadge',
       setShowPremium: 'ui/setShowPremium',
       setShowNewSource: 'ui/setShowNewSource',
+      setShowReferral: 'ui/setShowReferral',
       confirmNewUser: 'user/confirmNewUser',
     }),
   },
 
   computed: {
-    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource']),
+    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
@@ -582,6 +584,7 @@ export default {
       if (entries[0].isIntersecting) {
         if (await this.fetchNextFeedPage()) {
           ga('send', 'event', 'Feed', 'Scroll', 'Next Page');
+          this.trackEngagementWin({ action: 'SCROLL' });
         }
       }
     }, { root: null, rootMargin: '5px', threshold: 1 });
@@ -609,6 +612,7 @@ export default {
     this.$nextTick(() => {
       enableKeyBindings();
       this.fetchStage = CRITICAL_FETCH_STAGE;
+      this.checkVisitWin();
       ga('send', 'event', 'CTA', 'Impression', this.cta.text, { nonInteraction: true });
     });
   },

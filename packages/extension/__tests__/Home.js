@@ -85,6 +85,9 @@ beforeEach(() => {
       dndMode: jest.fn(),
       dndModeTime: jest.fn(),
     },
+    actions: {
+      checkVisitWin: jest.fn(),
+    }
   };
 
   user = {
@@ -195,11 +198,18 @@ it('should fetch notifications and update badge', (done) => {
   });
 });
 
-
 it('should open integrations popup', async () => {
   const wrapper = mount(DaHome, { store, localVue });
   expect(wrapper.find('.integrations').element).toBeFalsy();
   wrapper.find('.integration-btn').trigger('click');
   await wrapper.vm.$nextTick();
   expect(wrapper.find('.integrations').element).toBeTruthy();
+});
+
+it('should check visit win', (done) => {
+  mount(DaHome, { store, localVue });
+  setTimeout(() => {
+    expect(ui.actions.checkVisitWin).toBeCalledTimes(1);
+    done();
+  });
 });

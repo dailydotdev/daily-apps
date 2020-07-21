@@ -6,7 +6,15 @@ import {
   DATA_VERSION_KEY,
   CURRENT_DATA_VERSION,
   STATE_KEY,
+  FIRST_INSTALL_KEY,
 } from './common/cache';
+
+const saveFirstInstall = async () => {
+  const existing = await getCache(FIRST_INSTALL_KEY, null);
+  if (!existing) {
+    setCache(FIRST_INSTALL_KEY, (new Date()).toISOString());
+  }
+};
 
 const cacheUserId = async () => {
   const profile = await authService.getUserProfile();
@@ -61,6 +69,7 @@ browser.runtime.onInstalled.addListener(async () => {
   await Promise.all([
     cacheUserId(),
     migrateCache(),
+    saveFirstInstall(),
     browser.runtime.setUninstallURL('https://daily.dev/uninstall'),
   ]);
 });

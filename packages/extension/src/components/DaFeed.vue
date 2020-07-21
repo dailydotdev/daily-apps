@@ -174,6 +174,9 @@ export default {
 
     async onBookmark({ event, post, bookmarked }) {
       ga('send', 'event', 'Post', 'Bookmark', bookmarked ? 'Add' : 'Remove');
+      if (bookmarked) {
+        this.trackEngagementWin({ action: 'BOOKMARK' });
+      }
       if (this.isPremium) {
         this.$refs.bookmarkContext.open(event, post);
         if (bookmarked) {
@@ -241,6 +244,7 @@ export default {
     onPostClick(post) {
       // eslint-disable-next-line no-param-reassign
       post.read = true;
+      this.trackEngagementWin({ action: 'POST_CLICK' });
       ga('send', 'event', 'Post', 'Click', post.source);
     },
 
@@ -288,6 +292,7 @@ export default {
       setFilter: 'feed/setFilter',
       toggleBookmarks: 'feed/toggleBookmarks',
       addBookmarkToList: 'feed/addBookmarkToList',
+      trackEngagementWin: 'ui/trackEngagementWin',
     }),
 
     ...mapMutations({

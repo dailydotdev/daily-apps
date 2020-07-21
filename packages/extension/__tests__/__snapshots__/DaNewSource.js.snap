@@ -195,6 +195,7 @@ exports[`should proceed directly to source info when one rss is available 2`] = 
             Read the 
           <a
             href="https://daily.dev/content-guidelines"
+            rel="noopener noreferrer"
             target="_blank"
           >
             content guidelines
@@ -347,6 +348,7 @@ exports[`should proceed to source info after selecting rss 2`] = `
             Read the 
           <a
             href="https://daily.dev/content-guidelines"
+            rel="noopener noreferrer"
             target="_blank"
           >
             content guidelines
@@ -415,6 +417,7 @@ exports[`should show error when cannot find rss 1`] = `
     <a
       class="btn btn-hollow"
       href="mailto:hi@daily.dev?subject=Failed to add new source"
+      rel="noopener noreferrer"
       target="_blank"
     >
       Contact
@@ -437,6 +440,7 @@ exports[`should show error when cannot scrape website 1`] = `
     <a
       class="btn btn-hollow"
       href="mailto:hi@daily.dev?subject=Failed to add new source"
+      rel="noopener noreferrer"
       target="_blank"
     >
       Contact

@@ -48,7 +48,8 @@
         <div v-else-if="failed === true" class="new-source__contact error">
           <span>{{ error }}</span>
           <a href="mailto:hi@daily.dev?subject=Failed to add new source"
-            class="btn btn-hollow" target="_blank">Contact</a>
+            class="btn btn-hollow" target="_blank"
+            rel="noopener noreferrer">Contact</a>
         </div>
         <span v-else-if="valid === false" class="error">Url is not valid</span>
       </div>
@@ -84,7 +85,8 @@
               We will review your request to make sure it qualifies the standards.<br/><br/>
               If the source is approved, it will be added to the public sources list.
               We will update you by email.<br/><br/>
-              Read the <a href="https://daily.dev/content-guidelines" target="_blank">content guidelines</a>
+              Read the <a href="https://daily.dev/content-guidelines" target="_blank"
+                          rel="noopener noreferrer">content guidelines</a>
             </p>
           </div>
           <button class="btn btn-big btn-hollow"
