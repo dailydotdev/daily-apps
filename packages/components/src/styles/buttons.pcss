@@ -87,6 +87,7 @@ button:focus, button:active {
     align-items: center;
     padding: 0 12px;
     cursor: pointer;
+    text-decoration: none;
 
     & {
         @mixin lil2;
@@ -200,12 +201,12 @@ button:focus, button:active {
     &:not(.selected) {
         &:hover, &.hover {
             --button-background: var(--theme-hover);
-            --button-background-opacity: var(--theme-hover-opacity);
+            --button-background-opacity: 1;
         }
 
         &:active, &.active {
             --button-background: var(--theme-focus);
-            --button-background-opacity: var(--theme-focus-opacity);
+            --button-background-opacity: 1;
         }
     }
 }
@@ -229,7 +230,7 @@ button:focus, button:active {
         --button-border: none;
         --button-color: var(--theme-disabled);
         --button-background: var(--theme-hover);
-        --button-background-opacity: var(--theme-hover-opacity);
+        --button-background-opacity: 1;
     }
 }
 

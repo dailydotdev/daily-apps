@@ -32,6 +32,10 @@ export default {
       }
       return '';
     },
+
+    onClick() {
+      this.$emit('click', this.ad);
+    },
   },
 
   mounted() {

@@ -1,16 +1,16 @@
 <template>
-  <div class="card-ph">
-    <div class="card-ph__link">
-      <div class="card-ph__image"></div>
-      <div class="card-ph__content">
-        <div class="card-ph__wrapper">
-          <div class="ph-text"></div>
-          <div class="ph-text"></div>
-        </div>
-      </div>
+  <div class="card card-ph">
+    <div class="card__header card__hmargin card__vmargin">
+      <div class="card__rounded-image placeholder"/>
     </div>
-    <div class="card-ph__footer">
-      <div class="ph-text"></div>
+    <div class="card-ph__container card__hmargin">
+      <div class="card__vmargin card-ph__text placeholder"></div>
+      <div class="card__vmargin card-ph__text placeholder"></div>
+      <div
+        class="card__vmargin card-ph__text card-ph__text-medium placeholder"></div>
+    </div>
+    <div class="card__image placeholder"></div>
+    <div class="card__vmargin card__hmargin card-ph__text card-ph__text-small placeholder">
     </div>
   </div>
 </template>
@@ -22,85 +22,38 @@ export default {
 </script>
 
 <style>
-.card-ph {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border-radius: 8px;
-  contain: layout paint;
-
-  & .ph-text {
-    height: 14px;
-    border-radius: 4px;
-  }
-}
-
-.card-ph__link {
-  position: relative;
-  flex: 1;
-
-  &:before {
-    content: '';
-    display: block;
-    padding-top: 89.36%;
-  }
-}
-
-.card-ph__image, .card-ph__content {
-  position: absolute;
-  left: 0;
-  width: 100%;
-}
-
-.card-ph__image {
-  top: 0;
-  height: 57.14%;
-  background: linear-gradient(180deg, var(--theme-background-secondary) 0%,
-  var(--theme-background-primary) 100%);
-}
-
-.card-ph__content {
-  bottom: 0;
-  border-radius: 8px 8px 0 0;
-  z-index: 1;
-
-  &:before {
-    content: '';
-    display: block;
-    padding-top: 44%;
-  }
-
-  & .ph-text {
-    &:last-child {
-      margin: 14px 16px;
-    }
-  }
-}
-
-.card-ph__wrapper {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  padding: 24px;
-  justify-content: stretch;
-}
-
-.card-ph__footer {
-  display: flex;
-  height: 48px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-
-  & .ph-text {
-    width: 72px;
-    margin-bottom: 14px;
-  }
-}
-
-.card-ph__content, .card-ph__footer {
+.card.card-ph {
   background: var(--theme-background-secondary);
+  border: none;
+  box-shadow: none;
+
+  &:hover, &.hover {
+    box-shadow: none;
+  }
+
+  & .card__image {
+    margin-top: 24px;
+    margin-bottom: 4px;
+  }
+}
+
+.card-ph__text {
+  width: 100%;
+  height: 12px;
+  border-radius: 12px;
+
+  &.card-ph__text-medium {
+    width: 80%;
+  }
+
+  &.card-ph__text-small {
+    width: 32%;
+    height: 16px;
+  }
+}
+
+.card-ph__container {
+  display: flex;
+  flex-direction: column;
 }
 </style>

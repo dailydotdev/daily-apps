@@ -239,7 +239,7 @@ export default {
 
   & .focus-visible li.btn[aria-selected] {
     --button-background: var(--theme-focus);
-    --button-background-opacity: var(--theme-focus-opacity);
+    --button-background-opacity: 1;
   }
 }
 
@@ -273,23 +273,23 @@ export default {
 .btn.dropdown__trigger {
   --button-color: var(--theme-disabled);
   --button-background: var(--theme-hover);
-  --button-background-opacity: var(--theme-hover-opacity);
+  --button-background-opacity: 1;
 
   &:hover, &.hover {
     --button-background: var(--theme-focus);
-    --button-background-opacity: var(--theme-focus-opacity);
+    --button-background-opacity: 1;
     --button-color: var(--theme-primary);
   }
 
   &:active, &.active {
     --button-background: var(--theme-active);
-    --button-background-opacity: var(--theme-active-opacity);
+    --button-background-opacity: 1;
     --button-color: var(--theme-primary);
   }
 
   &[disabled] {
     --button-background: var(--theme-hover);
-    --button-background-opacity: var(--theme-hover-opacity);
+    --button-background-opacity: 1;
   }
 
   & .svg-icon {
@@ -332,12 +332,12 @@ export default {
 
     &:hover, &.hover {
       --button-background: var(--theme-hover);
-      --button-background-opacity: var(--theme-hover-opacity);
+      --button-background-opacity: 1;
     }
 
     &:active, &.active {
       --button-background: var(--theme-active);
-      --button-background-opacity: var(--theme-active-opacity);
+      --button-background-opacity: 1;
     }
 
     &[aria-selected] {

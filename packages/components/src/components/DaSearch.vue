@@ -197,7 +197,7 @@ export default {
       right: 0;
       bottom: 0;
       background: var(--theme-hover);
-      opacity: var(--theme-hover-opacity);
+      opacity: 1;
     }
   }
 
