@@ -48,7 +48,7 @@ export default {
 
     &:active .radio-item__checkmark:before {
       background: var(--theme-focus);
-      opacity: var(--theme-focus-opacity);
+      opacity: 1;
     }
   }
 
@@ -62,7 +62,7 @@ export default {
 
     & .radio-item__checkmark:before {
       background: var(--theme-hover);
-      opacity: var(--theme-hover-opacity);
+      opacity: 1;
     }
   }
 

@@ -120,7 +120,7 @@ it('should dispatch "setFilter" with publication filter', (done) => {
   const expectedPublication = feed.state.posts[0].publication;
   wrapper.vm.$nextTick(() => {
     wrapper
-      .find('.card__footer__publication').trigger('click');
+      .find('.card__pub').trigger('click');
     expect(feed.actions.setFilter)
       .toBeCalledWith(expect.anything(), {
         type: 'publication',

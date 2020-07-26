@@ -1,251 +1,346 @@
 <template>
-  <da-card class="card--post" :class="cls" :title="post.title" :url="post.url" :image="post.image"
-           :placeholder="post.placeholder" :size="post.size" @click="$emit('click', post)">
-    <div slot="content">
-      <div class="card__tags nuggets" :title="tagsStr">
-        <da-line-clamp :text="tagsStr" :lines="1" :truncate="truncateTags"/>
-      </div>
-      <span class="card__read-time nuggets">{{readTimeStr}}</span>
-    </div>
-    <template slot="footer">
-      <button class="btn-icon btn-small card__footer__publication" v-if="post.publication.name"
-              @click="$emit('publication', { pub: post.publication })">
-        <img class="card__footer__icon lazyload"
-             :data-src="post.publication.image"
-             :alt="post.publication.name" v-tooltip="post.publication.name"
+  <div class="card card-post" :class="cls">
+    <div class="card__header card__hmargin card__vmargin">
+      <button class="btn-icon card__back" @click="onBackClick" v-if="showComment"
+              v-tooltip="'Back'">
+        <svgicon name="arrow"/>
+      </button>
+      <button class="card__pub card__rounded-image" @click="onPublicationClick"
+              v-show="!showComment">
+        <img class="lazyload" :data-src="post.publication.image" :alt="post.publication.name"
+             v-tooltip="post.publication.name"
              :key="post.publication.name"/>
       </button>
-      <span class="card__footer__views micro2"
-            v-if="post.createdAt">{{post.createdAt | mdyDate}}</span>
-      <button class="btn-icon btn-small card__footer__bookmark"
-              v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
-              @click="$emit('bookmark', { event: $event, post, bookmarked: !post.bookmarked })">
-        <svgicon name="bookmark" ref="bookmarkOrig"/>
+      <button class="card__rounded-image card__profile-image"
+              :class="{ selected: selectedComment === item }" v-for="item in comments"
+              :key="item.user.id"
+              @click="onFeaturedCommentClick(item)">
+        <img class="lazyload" :data-src="item.user.image" :alt="`${item.user.name}'s image`"
+             v-tooltip="`See ${item.user.name.split(' ')[0]}'s comment`"/>
       </button>
-      <button class="btn-icon btn-small card__footer__menu" v-tooltip="'More'"
-              @click="$emit('menu', { post, event: $event })" v-if="showMenu">
-        <svgicon name="menu" ref="orig"/>
+      <button class="btn-icon card__bookmark card__show-on-hover card__align-right"
+              :class="{ hover: bookmarksMenuOpened }" @click="onBookmarkClick"
+              v-tooltip="bookmarkTooltip" v-show="!showComment">
+        <svgicon name="bookmark"/>
       </button>
-      <div v-if="privateSource" class="card__private-mark"></div>
-      <transition name="post-notification">
-        <div class="card__footer__notification nuggets" v-if="notifying">
-          {{ notification }}
+      <button class="btn-icon card__show-on-hover card__menu" :class="{ hover: menuOpened }"
+              @click="onMenuClick"
+              v-tooltip="'More'" v-if="showMenu" v-show="!showComment">
+        <svgicon name="menu"/>
+      </button>
+    </div>
+    <a class="card__link" :href="post.url" target="_blank" rel="noopener noreferrer"
+       :title="post.title" @click="onLinkClick" v-show="!showComment">
+      <div
+        class="card__title card__hmargin card__vmargin lil1 multiline-text-overflow">
+        {{post.title}}
+      </div>
+      <div class="card__metadata card__hmargin">
+        <div>{{post.createdAt | mdyDate}}</div>
+        <template v-if="post.readTime">
+          <div class="card__metadata-separator"/>
+          <div>{{post.readTime}}m read time</div>
+        </template>
+      </div>
+      <div class="card__image">
+        <img class="lazyload" :data-src="post.image"
+             :data-lowsrc="post.placeholder" alt="Post image" :key="post.image"
+             @error="useDefaultImage"/>
+      </div>
+    </a>
+    <template v-if="showComment">
+      <div class="card__comment card__hmargin">
+        <div class="card__comment-name card__vmargin lil2 singleline-text-overflow">
+          {{selectedComment.user.name}}
         </div>
-      </transition>
+        <div class="card__comment-content card__vmargin lil1 multiline-text-overflow">
+          {{selectedComment.content}}
+        </div>
+      </div>
+      <div class="card__buttons full-width">
+        <div class="card__hseparator"></div>
+        <a class="btn btn-menu"
+           :href="selectedComment.permalink" target="_blank"
+           rel="noopener noreferrer" @click="onCommentClick">
+          <svgicon name="comment"/>
+          <span>Join Discussion</span>
+        </a>
+      </div>
     </template>
-    <svgicon name="menu" class="card__menu--duplicate" ref="dup"
-             slot="other" v-if="menuOpened"/>
-    <svgicon name="bookmark" class="card__bookmark--duplicate" ref="bookmarkDup"
-             slot="other" v-if="bookmarksMenuOpened"/>
-  </da-card>
+    <div class="card__buttons" v-show="!showComment">
+      <button class="btn btn-menu" :class="{ 'card__action-completed': post.upvoted}"
+              @click="onUpvoteClick">
+        <svgicon name="upvote"/>
+        <span>Upvote</span>
+      </button>
+      <template v-if="post.hasComments">
+        <div class="card__vseparator"></div>
+        <a class="btn btn-menu" :class="{ 'card__action-completed': post.commented}"
+           :href="post.commentsPermalink" target="_blank"
+           rel="noopener noreferrer" @click="onCommentClick">
+          <svgicon name="comment"/>
+          <span>Join</span>
+        </a>
+      </template>
+    </div>
+    <div class="card__comment-popup invert" v-if="showCommentPopup">
+      <div class="micro2 card__hmargin card__vmargin">Discussing this post with the community is
+        fun!
+      </div>
+      <textarea ref="comment" class="card__vmargin"
+                placeholder="Start a new discussion on this post" required
+                @input="onCommentInput"></textarea>
+      <div class="card__comment-popup__buttons">
+        <button class="btn btn-menu" :class="{ 'card__action-completed': post.upvoted}"
+                @click="onUpvoteClick">
+          <svgicon name="upvote"/>
+          <span>Upvote</span>
+        </button>
+        <button class="btn btn-invert"
+                @click="onPostCommentClick" :disabled="!enablePostComment">
+          <svgicon name="comment"/>
+          <span>Post</span>
+        </button>
+      </div>
+    </div>
+    <div class="card__report-popup invert nuggets" v-if="notifying">
+      {{notification}}
+    </div>
+  </div>
 </template>
 
 <script>
+import 'lazysizes/plugins/blur-up/ls.blur-up';
 import 'lazysizes';
 import postMixin from '../common/postMixin';
-import DaCard from './DaCard.vue';
-import DaLineClamp from './DaLineClamp.vue';
 
 export default {
   name: 'DaCardPost',
   mixins: [postMixin],
-  components: { DaCard, DaLineClamp },
-
-  watch: {
-    menuOpened(val) {
-      this.positionDuplicate('orig', 'dup', val);
-    },
-    bookmarksMenuOpened(val) {
-      this.positionDuplicate('bookmarkOrig', 'bookmarkDup', val);
-    },
-  },
-
-  computed: {
-    cls() {
-      return {
-        read: this.post.read,
-        'menu-opened': this.menuOpened || this.bookmarksMenuOpened,
-        bookmarked: this.post.bookmarked,
-        hover: this.menuOpened || this.selected || this.bookmarksMenuOpened,
-      };
-    },
-    tagsStr() {
-      return (this.post.tags || []).map(t => `#${t}`).join(',');
-    },
-    readTimeStr() {
-      if (this.post.readTime) {
-        return `${this.post.readTime} min read`;
-      }
-      return '';
-    },
-  },
-
-  mounted() {
-    import('../../icons/bookmark');
-    import('../../icons/menu');
-
-    this.positionDuplicate('orig', 'dup', this.menuOpened);
-    this.positionDuplicate('bookmarkOrig', 'bookmarkDup', this.bookmarksMenuOpened);
-  },
 
   methods: {
-    positionDuplicate(source, target, condition) {
-      if (condition) {
-        this.$nextTick(() => {
-          const parentRect = this.$el.getBoundingClientRect();
-          const childRect = this.$refs[source].$el.getBoundingClientRect();
-
-          this.$refs[target].$el.style.top = `${childRect.top - parentRect.top}px`;
-          this.$refs[target].$el.style.left = `${childRect.left - parentRect.left}px`;
-          this.$refs[target].$el.style.width = `${childRect.width}px`;
-          this.$refs[target].$el.style.height = `${childRect.height}px`;
-        });
-      }
+    useDefaultImage(e) {
+      e.target.src = 'https://res.cloudinary.com/daily-now/image/upload/f_auto/v1/placeholders/1';
     },
   },
 };
 </script>
-<style>
-.card--post {
-  position: relative;
 
-  & .card__footer {
-    position: relative;
+<style>
+.card.card-post {
+  padding-bottom: 0;
+
+  & .card__rounded-image {
+    padding: 0;
+    border: none;
     overflow: hidden;
+    cursor: pointer;
   }
 
-  &:hover,
-  &.hover {
-    & .card__read-time {
-      opacity: 0;
-    }
+  & .card__metadata {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: auto;
+    margin-bottom: 12px;
+  }
 
-    & .card__tags {
-      opacity: 1;
-    }
+  & .svg-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  & .btn-icon {
+    padding: 2px;
   }
 
   &.read {
-    & .card__background {
+    background: var(--theme-background-secondary);
+
+    & .card__link {
+      color: var(--theme-disabled);
+    }
+
+    & .card__image, & .card__rounded-image {
       opacity: 0.4;
     }
+  }
 
-    & .card__content,
-    & .card__footer {
-      background: var(--theme-background-secondary);
-    }
-
-    & .card__title {
-      color: var(--theme-secondary);
+  &.bookmarked {
+    & .btn-icon.card__bookmark {
+      --button-color: var(--color-burger-60);
     }
   }
 }
 
-.card--post .card__content {
-  border-bottom: 1px solid var(--theme-background-primary);
-
-  @mixin shadow1;
+.card__metadata-separator {
+  width: 2px;
+  height: 2px;
+  border-radius: 100%;
+  background: var(--theme-disabled);
+  margin: 0 6px;
 }
 
-.card--post .card__menu--duplicate {
-  position: absolute;
+.card__buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+
+  & .btn {
+    flex: 1;
+    max-width: 50%;
+    height: 44px;
+    justify-content: center;
+    --button-color: var(--theme-secondary);
+
+    @mixin nuggets;
+  }
+
+  &.full-width {
+    flex-direction: column;
+
+    & .btn {
+      max-width: unset;
+      flex: unset;
+      align-self: stretch;
+    }
+  }
+}
+
+.card__hseparator, .card__vseparator {
+  background: var(--theme-hover);
+}
+
+.card__hseparator {
+  width: 91%;
+  height: 1px;
+}
+
+.card__vseparator {
+  width: 1px;
+  height: 20px;
+}
+
+.card.card-post .btn.btn-menu.card__action-completed {
+  &, &:hover {
+    --button-color: var(--theme-avocado);
+  }
+}
+
+.card__show-on-hover {
+  display: none;
+}
+
+.card__back .svg-icon {
+  transform: rotate(-90deg);
+}
+
+.card__profile-image {
+  opacity: 0.64;
+
+  &.selected {
+    opacity: 1;
+  }
+}
+
+.card__comment {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.card__comment-name {
+  max-width: 100%;
   color: var(--theme-primary);
 }
 
-.card--post .card__bookmark--duplicate {
+.card__comment-content {
+  color: var(--theme-secondary);
+  height: 200px;
+  -webkit-line-clamp: 10;
+}
+
+.card__comment-popup, .card__report-popup {
   position: absolute;
-  color: var(--color-burger-60);
+  display: flex;
+  color: var(--theme-primary);
+  background: var(--theme-background-highlight);
+  z-index: 2;
 }
 
-.menu-opened.card--post {
-  pointer-events: none;
+.card__report-popup {
+  left: 8px;
+  right: 8px;
+  bottom: 10px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
 
-  & .card__link, & .card__footer {
-    opacity: 0.4;
+.card__comment-popup {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 246px;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  padding: 8px 16px;
+  border-radius: 16px;
+
+  & .card__hmargin {
+    margin-left: 8px;
+    margin-right: 8px;
   }
-}
 
-.read.card--post,
-.menu-opened.card--post {
-  &:hover,
-  &.hover {
-    &:after {
-      opacity: 0;
-      transition: none;
+  & textarea {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--theme-separator);
+    color: var(--theme-primary);
+    background: none;
+    font-size: 10px;
+    line-height: 16px;
+    letter-spacing: 0.4px;
+    resize: none;
+
+    &::placeholder {
+      color: var(--theme-secondary);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--theme-primary);
     }
   }
 }
 
-.card__tags,
-.card__read-time {
-  opacity: 0;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: 16px 24px;
-  color: var(--theme-disabled);
-  text-align: center;
-  word-break: break-all;
-  transition: opacity 0.1s linear;
-}
-
-.card__read-time {
-  opacity: 1;
-}
-
-.card__footer__icon {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-}
-
-.card__footer__views {
-  color: var(--theme-secondary);
-}
-
-.card__footer > .card__footer__bookmark {
-  margin-left: auto;
-}
-
-.card__footer__notification {
-  position: absolute;
+.card__comment-popup__buttons {
   display: flex;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  margin: 0;
-  color: var(--color-salt-10);
-  background: var(--color-water-60);
-  z-index: 10;
-}
+  justify-content: space-between;
+  margin: 4px 0;
 
-.bookmarked .card__footer__bookmark .svg-icon {
-  color: var(--color-burger-60);
-}
+  & .btn {
+    height: 32px;
+    justify-content: center;
 
-.post-notification-enter-active, .post-notification-leave-active {
-  transition: opacity 0.2s, transform 0.2s;
-}
+    @mixin nuggets;
+  }
 
-.post-notification-enter, .post-notification-leave-to /* .fade-leave-active below version 2.1.8 */
-{
-  opacity: 0;
-  transform: translateY(100%);
-}
+  & .btn.btn-menu {
+    width: 102px;
+    --button-color: var(--theme-secondary);
+  }
 
-.card__private-mark {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  height: 12px;
-  margin: auto 0;
-  background: var(--theme-premium);
-  border-radius: 2px;
+  & .btn.btn-invert {
+    width: 124px;
+    --button-border-radius: 12px;
+  }
 }
 </style>

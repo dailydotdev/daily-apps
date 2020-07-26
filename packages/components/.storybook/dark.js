@@ -5,7 +5,7 @@ export default create({
 
   // UI
   appBg: '#303237',
-  appContentBg: '#1C1E21',
+  appContentBg: '#151618',
   appBorderColor: '#4C5057',
   appBorderRadius: 4,
 

@@ -2,72 +2,73 @@
 @import "typography.pcss";
 @import "themes.pcss";
 @import "buttons.pcss";
+@import "cards.pcss";
 @import "insane.pcss";
 @import "placeholder.pcss";
 @import "fields.pcss";
 
 html {
-    --color-highlight: var(--color-water-50);
+  --color-highlight: var(--color-water-50);
 }
 
 html.theme,
 html.theme * {
-    transition: all 0.2s linear;
+  transition: all 0.2s linear;
 }
 
 * {
-    box-sizing: border-box;
-    flex-shrink: 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .svg-icon {
-    width: 24px;
-    height: 24px;
-    color: var(--theme-secondary);
+  width: 24px;
+  height: 24px;
+  color: var(--theme-secondary);
 }
 
 .svg-fill {
-    fill: currentColor;
-    stroke: none;
+  fill: currentColor;
+  stroke: none;
 }
 
 .switch {
-    --da-switch-color: var(--theme-active);
-    --da-switch-opacity: var(--theme-active-opacity);
-    --da-switch-icon-color: var(--theme-background-primary);
-    --da-switch-checked-background: var(--color-water-90);
-    --da-switch-checked-color: var(--color-water-60);
-    --da-switch-width: 48px;
-    --da-switch-height: 24px;
-    --da-switch-slider-height: 16px;
+  --da-switch-color: var(--theme-active);
+  --da-switch-opacity: 1;
+  --da-switch-icon-color: var(--theme-background-primary);
+  --da-switch-checked-background: var(--color-water-90);
+  --da-switch-checked-color: var(--color-water-60);
+  --da-switch-width: 48px;
+  --da-switch-height: 24px;
+  --da-switch-slider-height: 16px;
+
+  &:hover {
+    --da-switch-checked-color: var(--color-water-50);
+  }
+
+  .bright & {
+    --da-switch-checked-background: var(--color-water-30);
 
     &:hover {
-        --da-switch-checked-color: var(--color-water-50);
+      --da-switch-checked-color: var(--color-water-70);
     }
-
-    .bright & {
-        --da-switch-checked-background: var(--color-water-30);
-
-        &:hover {
-            --da-switch-checked-color: var(--color-water-70);
-        }
-    }
+  }
 }
 
 .shadow1 {
-    @mixin shadow1;
+  @mixin shadow1;
 }
 
 .shadow2 {
-    @mixin shadow2;
+  @mixin shadow2;
 }
 
 img.lazyload {
-    opacity: 0;
+  opacity: 0;
 }
 
 .scrollbar {
-    &::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     width: 8px;
     background-color: transparent;
   }
@@ -88,4 +89,19 @@ img.lazyload {
   &::-webkit-scrollbar-thumb:active {
     background: var(--theme-primary);
   }
+}
+
+.singleline-text-overflow {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multiline-text-overflow {
+  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

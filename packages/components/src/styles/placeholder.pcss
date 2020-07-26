@@ -1,20 +1,22 @@
-.ph-text {
-    animation-duration: 1.25s;
-    animation-fill-mode: forwards;
-    animation-iteration-count: infinite;
-    animation-name: phShimmer;
-    animation-timing-function: linear;
-    background: var(--theme-background-secondary);
-    background: linear-gradient(to right, var(--theme-background-primary) 8%, var(--theme-primary-invert) 18%, var(--theme-background-primary) 33%);
-    background-size: 800px 104px;
-    position: relative;
+.placeholder {
+  position: relative;
+  overflow: hidden;
+  background: var(--theme-background-highlight);
+
+  &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--theme-background-highlight), var(--theme-background-primary) 15%, var(--theme-background-highlight));
+    transform: translateX(-100%);
+    animation: placeholder-shimmer 1.25s infinite linear;
+    will-change: transform;
+  }
 }
 
-@keyframes phShimmer {
-    0% {
-        background-position: -468px 0
-    }
-    100% {
-        background-position: 468px 0
-    }
+@keyframes placeholder-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }

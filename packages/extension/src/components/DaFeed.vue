@@ -211,7 +211,7 @@ export default {
 
     onBookmarkMenuOpened(event, post) {
       const rect = event.target.getBoundingClientRect();
-      this.$refs.bookmarkContext.positionMenu({ bottom: rect.top - 4, right: rect.right });
+      this.$refs.bookmarkContext.positionMenu({ top: rect.bottom + 4, right: rect.right });
       this.bookmarkPost = post;
     },
 
@@ -255,7 +255,7 @@ export default {
 
     onPostMenuOpened(event, post) {
       const rect = event.target.getBoundingClientRect();
-      this.$refs.context.positionMenu({ bottom: rect.top - 8, right: rect.right });
+      this.$refs.context.positionMenu({ top: rect.bottom + 4, right: rect.right });
       this.selectedPostId = post.id;
     },
 

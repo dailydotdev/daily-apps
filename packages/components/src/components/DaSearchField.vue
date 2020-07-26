@@ -58,7 +58,7 @@ export default {
   &.active {
     &:before {
       background: var(--theme-active);
-      opacity: var(--theme-active-opacity);
+      opacity: 1;
     }
 
     & .search-field__input::placeholder {
@@ -89,7 +89,7 @@ export default {
 
     &:hover:before {
       background: var(--theme-hover);
-      opacity: var(--theme-hover-opacity);
+      opacity: 1;
     }
   }
 }

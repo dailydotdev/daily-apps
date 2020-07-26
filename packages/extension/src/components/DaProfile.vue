@@ -149,7 +149,7 @@ export default {
     width: 100%;
     height: 100%;
     background: var(--theme-hover);
-    opacity: var(--theme-hover-opacity);
+    opacity: 1;
     pointer-events: none;
   }
 }

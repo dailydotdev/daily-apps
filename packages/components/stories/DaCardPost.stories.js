@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
+import {storiesOf} from '@storybook/vue';
+import {action} from '@storybook/addon-actions';
 import {
   withKnobs,
   text,
@@ -18,7 +18,7 @@ Vue.filter('mdyDate', mdyDateFilter);
 storiesOf('DaCardPost', module)
   .addDecorator(withKnobs)
   .add('select post', () => ({
-    components: { DaCardPost },
+    components: {DaCardPost},
     template: '<da-card-post :post="post"/>',
     props: {
       index: {
@@ -31,45 +31,15 @@ storiesOf('DaCardPost', module)
       },
     },
   }))
-  .add('animate on hover', () => ({
-    components: { DaCardPost },
-    template: '<div class="animate-cards"><da-card-post :post="post"/></div>',
-    data() {
-      return {
-        post: posts[1],
-      };
-    },
-  }))
-  .add('actions', () => ({
-    components: { DaCardPost },
-    template: '<da-card-post :post="post" @click="click" @bookmark="bookmark" @menu="menu" @publication="publication"/>',
-    data() {
-      return {
-        post: posts[0],
-      };
-    },
-    methods: {
-      click: action('click'),
-      bookmark: action('bookmark'),
-      menu: action('menu'),
-      publication: action('publication'),
-    },
-  }))
   .add('fully customized', () => ({
-    components: { DaCardPost },
-    template: '<div :class="{\'animate-cards\': animateCards}"><da-card-post :post="post" :show-menu="showMenu" :menu-opened="menuOpened"/></div>',
+    components: {DaCardPost},
+    template: '<da-card-post :post="post" :show-menu="showMenu" :menu-opened="menuOpened" :bookmarks-menu-opened="bookmarksMenuOpened" :show-comment-popup="showCommentPopup"/>',
     props: {
       title: {
         default: text('title', posts[0].title),
       },
       image: {
         default: text('image', posts[0].image),
-      },
-      tags: {
-        default: array('tags', posts[0].tags),
-      },
-      size: {
-        default: select('size', ['large', 'medium', 'small'], posts[0].size),
       },
       bookmarked: {
         default: boolean('bookmarked', posts[0].bookmarked),
@@ -80,18 +50,32 @@ storiesOf('DaCardPost', module)
       menuOpened: {
         default: boolean('menu opened', false),
       },
-      animateCards: {
-        default: boolean('animate card on hover', false),
+      bookmarksMenuOpened: {
+        default: boolean('bookmarks menu opened', false),
       },
       read: {
         default: boolean('read', posts[0].read),
+      },
+      hasComments: {
+        default: boolean('hasComments', false),
+      },
+      upvoted: {
+        default: boolean('upvoted', false),
+      },
+      commented: {
+        default: boolean('commented', false),
+      },
+      showCommentPopup: {
+        default: boolean('show comment popup', false),
       },
     },
     computed: {
       post() {
         return {
-          ...posts[0], title: this.title, image: this.image, tags: this.tags, size: this.size,
+          ...posts[0], title: this.title, image: this.image,
           bookmarked: this.bookmarked, read: this.read,
+          hasComments: this.hasComments, upvoted: this.upvoted,
+          commented: this.commented,
         };
       },
     },
