@@ -374,6 +374,7 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
     min-width: 0;
+    max-width: 100%;
   }
 }
 

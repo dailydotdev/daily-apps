@@ -18,7 +18,8 @@
       <form>
         <da-text-field ref="field" placeholder="Paste blog / rss url" label="Source url"
                       autofocus type="url" required hide-label
-                      @validity="valid = $event" :class="{lock: hasSelectedRSS}">
+                      @validity="valid = $event" :class="{lock: hasSelectedRSS}"
+                      @enter="checkUrl">
             <template v-slot:right>
               <button v-if="!hasSelectedRSS" type="submit"
                   class="text-field__right-slot btn btn-invert"
@@ -302,6 +303,7 @@ export default {
 .new-source.bookmark-modal .modal__container {
   padding: 0;
   width: 500px;
+  color: var(--theme-primary);
 
   & .text-field__right-slot.btn {
     width: 30px;

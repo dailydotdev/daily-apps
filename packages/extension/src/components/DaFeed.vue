@@ -16,8 +16,7 @@
                       :selected="focusedPost === item" />
       </template>
     </div>
-    <masonry class="feed__cards" :cols="cols" :gutter="gutter"
-            :key="gutter.toString().concat(showBookmarks)" v-else>
+    <div class="feed__cards" v-else>
       <template v-for="(item, index) in posts">
         <template v-if="item.type === 'ad'">
           <da-card-placeholder v-if="item.loading" :key="index"/>
@@ -32,7 +31,7 @@
                     :bookmarks-menu-opened="bookmarkPostId === item.id"
                     :selected="focusedPost === item"/>
       </template>
-    </masonry>
+    </div>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
                 @close="selectedPostId = null">
       <button class="btn btn-menu" @click="reportPost('broken')">Broken link</button>
@@ -65,14 +64,10 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import {
   mapState, mapActions, mapMutations, mapGetters,
 } from 'vuex';
-import VueMasonry from 'vue-masonry-css';
 import { contentService } from '../common/services';
-
-Vue.use(VueMasonry);
 
 export default {
   name: 'DaFeed',
@@ -118,49 +113,6 @@ export default {
 
       const item = this.hoveredPost;
       return item.ad || item.post;
-    },
-    gutter() {
-      if (this.spaciness === 'roomy') {
-        return 48;
-      }
-      if (this.spaciness === 'cozy') {
-        return 56;
-      }
-      return 32;
-    },
-    cols() {
-      const delta = this.showBookmarks ? 216 : 0;
-      if (this.spaciness === 'cozy') {
-        return {
-          default: 5,
-          [2221 + delta]: 4,
-          [1919 + delta]: 3,
-          [1617 + delta]: 3,
-          [1315 + delta]: 2,
-          [1061 + delta]: 2,
-          ...(this.showBookmarks ? { [768 + delta]: 1 } : {}),
-        };
-      }
-      if (this.spaciness === 'roomy') {
-        return {
-          default: 6,
-          [2221 + delta]: 5,
-          [1919 + delta]: 4,
-          [1617 + delta]: 3,
-          [1315 + delta]: 3,
-          [1061 + delta]: 2,
-          ...(this.showBookmarks ? { [768 + delta]: 1 } : {}),
-        };
-      }
-      return {
-        default: 7,
-        [2221 + delta]: 6,
-        [1919 + delta]: 5,
-        [1617 + delta]: 4,
-        [1315 + delta]: 3,
-        [1061 + delta]: 2,
-        ...(this.showBookmarks ? { [768 + delta]: 1 } : {}),
-      };
     },
   },
   methods: {
@@ -313,20 +265,9 @@ export default {
 }
 
 .feed__cards {
-  --cards-margin: 32px;
-  margin: calc(var(--cards-margin) * -1) 0;
-
-  & .card, & .card-ph {
-    margin: var(--cards-margin) 0;
-  }
-
-  .roomy & {
-    --cards-margin: 48px;
-  }
-
-  .cozy & {
-    --cards-margin: 56px;
-  }
+  display: grid;
+  grid-template-columns: repeat(var(--num-cards), 1fr);
+  grid-gap: var(--cards-margin);
 }
 
 .feed__bookmark-context.context {
