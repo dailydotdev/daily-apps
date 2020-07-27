@@ -3,7 +3,6 @@
 // Time spans in milliseconds, used for comparing dates. Month and year variable, thus omitted.
 const oneMinute = 60000;
 const oneDay = 86400000;
-const oneWeek = 604800000;
 
 /**
  * Returns whether a given date is yesterday.
@@ -33,11 +32,6 @@ export default (value, now = new Date()) => {
   }
 
   if (isYesterday(date, now)) return 'Yesterday';
-
-  if (dt <= oneWeek) {
-    const numDays = Math.round(dt / oneDay);
-    return `${numDays} ${numDays === 1 ? 'day' : 'days'} ago`;
-  }
 
   return date.toLocaleString('en-US', {
     month: 'short',

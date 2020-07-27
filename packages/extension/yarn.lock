@@ -8519,10 +8519,10 @@ launch-editor@^2.2.1:
     chalk "^2.3.0"
     shell-quote "^1.6.1"
 
-lazysizes@^4.1.8:
-  version "4.1.8"
-  resolved "https://registry.yarnpkg.com/lazysizes/-/lazysizes-4.1.8.tgz#f1cb1e803f7a8441122ec1be6f7333bc8977f632"
-  integrity sha512-qxBMQZKdR3cwydyyBOoGVBtN2T1nyrozhnEstV2H3M6UE/mivSh7U+n7N7DtBV2L07Uw442QRwtwf0E2IntJZg==
+lazysizes@^5.2.2:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/lazysizes/-/lazysizes-5.2.2.tgz#800e5914725fef1863bd9a1e19e1bb423c536f8b"
+  integrity sha512-fYgOv1Y35M86/7qyAdPPqoOhuyZrjxEAPxqwToRY2bO/PoBJ4lSqZYuZoavNp6eyuLpIAdHodpsPfj2Lkt86FQ==
 
 lazystream@^1.0.0:
   version "1.0.0"
@@ -13418,11 +13418,6 @@ vue-loader@^15.7.0:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
-
-vue-masonry-css@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/vue-masonry-css/-/vue-masonry-css-1.0.3.tgz#a5e7bb248570eeedcd358637d3f1f4fc7f0c5f86"
-  integrity sha512-viecHQiHVLez7HlYUQsv1wJb2MT/RDSzkDp6m3In41vPrk6OsBmT2qRE8LZqYIA4daIwrnx/Xm8h4fjOpuE3hw==
 
 vue-router@^3.0.2:
   version "3.1.3"

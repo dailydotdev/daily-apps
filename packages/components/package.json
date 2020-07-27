@@ -17,7 +17,7 @@
     "debounce": "^1.2.0",
     "dialog-polyfill": "^0.4.10",
     "dompurify": "^2.0.7",
-    "lazysizes": "^4.1.4",
+    "lazysizes": "^5.2.2",
     "vue-context": "^3.4.0",
     "vue-svgicon": "^3.2.2"
   },

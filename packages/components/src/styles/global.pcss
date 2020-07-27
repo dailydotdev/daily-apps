@@ -63,7 +63,29 @@ html.theme * {
   @mixin shadow2;
 }
 
-img.lazyload {
+img.ls-blur-up-is-loading,
+img.lazyload:not([src]) {
+  visibility: hidden;
+}
+
+.ls-blur-up-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  font-family: "blur-up: auto", "object-fit: cover";
+  object-fit: cover;
+}
+
+.ls-blur-up-img {
+  opacity: 1;
+  transition: opacity 150ms;
+  will-change: opacity;
+}
+
+.ls-blur-up-img.ls-inview.ls-original-loaded {
   opacity: 0;
 }
 
