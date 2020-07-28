@@ -52,9 +52,9 @@ beforeEach(() => {
         id: 'id',
         name: 'Name',
         image: 'https://image.com',
-        public: false
-      }
-    }
+        public: false,
+      },
+    },
   });
 
   user = {
@@ -84,7 +84,7 @@ it('should emit close on close button click', () => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   wrapper.find('.modal__close-btn').trigger('click');
   expect(wrapper.emitted().close[0]).toBeTruthy();
@@ -94,7 +94,7 @@ it('should autofocus on input', () => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   expect(wrapper.find('input').element.autofocus).toEqual(true);
 });
@@ -103,7 +103,7 @@ it('should disable confirm button', () => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   expect(wrapper.find('button[type="submit"]').element.disabled).toEqual(true);
 });
@@ -112,7 +112,7 @@ it('should enable confirm button when input is valid', () => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   const input = wrapper.find('input');
   input.element.value = 'https://example.com';
@@ -126,13 +126,13 @@ it('should show error when cannot find rss', (done) => {
       type: 'website',
       name: 'Example',
       logo: 'https://example.com/logo.png',
-      rss: []
-    })
+      rss: [],
+    }),
   });
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   const input = wrapper.find('input');
   input.element.value = 'https://example.com';
@@ -149,7 +149,7 @@ it('should show error when cannot scrape website', (done) => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   const input = wrapper.find('input');
   input.element.value = 'https://example.com';
@@ -167,13 +167,13 @@ it('should list scraped rss feeds', (done) => {
       type: 'website',
       name: 'Example',
       logo: 'https://example.com/logo.png',
-      rss: [{title: 'A', url: 'https://a.com/feed'}, {title: 'B', url: 'https://b.com/feed'}]
-    })
+      rss: [{title: 'A', url: 'https://a.com/feed'}, {title: 'B', url: 'https://b.com/feed'}],
+    }),
   });
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   const input = wrapper.find('input');
   input.element.value = 'https://example.com';
@@ -192,13 +192,13 @@ it('should proceed directly to source info when one rss is available', (done) =>
       type: 'website',
       name: 'Example',
       logo: 'https://example.com/logo.png',
-      rss: [{title: 'A', url: 'https://a.com/feed'}]
-    })
+      rss: [{title: 'A', url: 'https://a.com/feed'}],
+    }),
   });
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   const input = wrapper.find('input');
   input.element.value = 'https://example.com';
@@ -217,21 +217,21 @@ it('should show source exists message', async () => {
       type: 'website',
       name: 'Example',
       logo: 'https://example.com/logo.png',
-      rss: [{title: 'A', url: 'https://a.com/feed'}]
-    })
+      rss: [{title: 'A', url: 'https://a.com/feed'}],
+    }),
   });
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   wrapper.setData({
     existsSource: {
       id: 'source',
       name: 'Source',
       image: 'https://source.com/logo.png',
-      public: true
-    }
+      public: true,
+    },
   });
   await wrapper.vm.$nextTick();
   expect(wrapper.find('.new-source__status').element).toMatchSnapshot();
@@ -242,7 +242,7 @@ it('should proceed to source info after selecting rss', async (done) => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   wrapper.setData({
     source: {
@@ -251,9 +251,9 @@ it('should proceed to source info after selecting rss', async (done) => {
       logo: 'https://example.com/logo.png',
       rss: [{title: 'A', url: 'https://a.com/feed', enabled: true}, {
         title: 'B',
-        url: 'https://b.com/feed'
-      }]
-    }
+        url: 'https://b.com/feed',
+      }],
+    },
   });
   wrapper.setData({scraped: true});
   await wrapper.vm.$nextTick();
@@ -270,7 +270,7 @@ it('should request source', async (done) => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   wrapper.setData({
     source: {
@@ -279,9 +279,9 @@ it('should request source', async (done) => {
       logo: 'https://example.com/logo.png',
       rss: [{title: 'A', url: 'https://a.com/feed', enabled: true}, {
         title: 'B',
-        url: 'https://b.com/feed'
-      }]
-    }
+        url: 'https://b.com/feed',
+      }],
+    },
   });
   wrapper.setData({scraped: true, validName: true, hasSelectedRSS: true});
   await wrapper.vm.$nextTick();
@@ -300,7 +300,7 @@ it('should show premium popup', async (done) => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   wrapper.setData({
     source: {
@@ -309,9 +309,9 @@ it('should show premium popup', async (done) => {
       logo: 'https://example.com/logo.png',
       rss: [{title: 'A', url: 'https://a.com/feed', enabled: true}, {
         title: 'B',
-        url: 'https://b.com/feed'
-      }]
-    }
+        url: 'https://b.com/feed',
+      }],
+    },
   });
   wrapper.setData({scraped: true, validName: true, hasSelectedRSS: true});
   await wrapper.vm.$nextTick();
@@ -328,7 +328,7 @@ it('should add private source', async () => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   wrapper.setData({
     source: {
@@ -336,8 +336,8 @@ it('should add private source', async () => {
       name: 'Example',
       website: 'https://daily.dev',
       logo: 'https://example.com/logo.png',
-      rss: [{title: 'A', url: 'https://a.com/feed'}, {title: 'B', url: 'https://b.com/feed'}]
-    }
+      rss: [{title: 'A', url: 'https://a.com/feed'}, {title: 'B', url: 'https://b.com/feed'}],
+    },
   });
   wrapper.setData({scraped: true, validName: true, hasSelectedRSS: true});
   await wrapper.vm.$nextTick();
@@ -348,8 +348,8 @@ it('should add private source', async () => {
       name: 'Example',
       website: 'https://daily.dev',
       image: 'https://example.com/logo.png',
-      rss: 'https://a.com/feed'
-    }
+      rss: 'https://a.com/feed',
+    },
   });
   await wrapper.vm.$nextTick();
   expect(wrapper.find('.new-source__header').element).toMatchSnapshot();
@@ -359,7 +359,7 @@ it('should add private source wit manually typed name', async () => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
-    apolloProvider: new VueApollo({defaultClient: apolloClient})
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
   });
   wrapper.setData({
     source: {
@@ -367,8 +367,8 @@ it('should add private source wit manually typed name', async () => {
       name: 'Example',
       website: 'https://daily.dev',
       logo: 'https://example.com/logo.png',
-      rss: [{title: 'A', url: 'https://a.com/feed'}, {title: 'B', url: 'https://b.com/feed'}]
-    }
+      rss: [{title: 'A', url: 'https://a.com/feed'}, {title: 'B', url: 'https://b.com/feed'}],
+    },
   });
   wrapper.setData({scraped: true, validName: true, hasSelectedRSS: true});
   await wrapper.vm.$nextTick();
@@ -382,8 +382,8 @@ it('should add private source wit manually typed name', async () => {
       name: 'My Source',
       website: 'https://daily.dev',
       image: 'https://example.com/logo.png',
-      rss: 'https://a.com/feed'
-    }
+      rss: 'https://a.com/feed',
+    },
   });
   await wrapper.vm.$nextTick();
   expect(wrapper.find('.new-source__header').element).toMatchSnapshot();

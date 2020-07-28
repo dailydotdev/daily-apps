@@ -1,19 +1,25 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import {mount, createLocalVue} from '@vue/test-utils';
 import Vuex from 'vuex';
+import VueApollo from 'vue-apollo';
 import icons from '@daily/components/src/icons';
 import tooltip from '@daily/components/src/directives/tooltip';
 import mdyDateFilter from '@daily/components/src/common/mdyDateFilter';
-import { createDummyEvent } from './fixtures/helpers';
-import { contentService } from '../src/common/services';
+import {createDummyEvent} from './fixtures/helpers';
+import {contentService} from '../src/common/services';
 import DaFeed from '../src/components/DaFeed.vue';
 import DaCardPost from '../../components/src/components/DaCardPost.vue';
 import DaInsanePost from '../../components/src/components/DaInsanePost.vue';
 import DaContext from '../../components/src/components/DaContext.vue';
 import DaCardPlaceholder from '../../components/src/components/DaCardPlaceholder.vue';
+import {apolloClient} from '../src/apollo';
+import {COMMENT_ON_POST_MUTATION} from '../src/graphql/feed';
+
+jest.mock('../src/apollo');
 
 const localVue = createLocalVue();
 
 localVue.use(Vuex);
+localVue.use(VueApollo);
 localVue.use(icons);
 localVue.directive('tooltip', tooltip(localVue));
 localVue.filter('mdyDate', mdyDateFilter);
@@ -21,6 +27,9 @@ localVue.component('da-card-post', DaCardPost);
 localVue.component('da-insane-post', DaInsanePost);
 localVue.component('da-context', DaContext);
 localVue.component('da-card-placeholder', DaCardPlaceholder);
+
+const commentOnPostHandler = jest.fn();
+apolloClient.setRequestHandler(COMMENT_ON_POST_MUTATION, commentOnPostHandler);
 
 let feed;
 let ui;
@@ -37,6 +46,10 @@ jest.mock('../src/common/services', () => ({
 beforeEach(() => {
   window.ga = () => {
   };
+  window.open = jest.fn();
+
+  commentOnPostHandler.mockReset();
+  commentOnPostHandler.mockResolvedValue({data: {commentOnPost: {permalink: 'https://daily.dev'}}});
 
   feed = {
     namespaced: true,
@@ -96,7 +109,7 @@ beforeEach(() => {
     },
     actions: {
       trackEngagementWin: jest.fn(),
-    }
+    },
   };
 
   user = {
@@ -111,12 +124,12 @@ beforeEach(() => {
   };
 
   store = new Vuex.Store({
-    modules: { feed, ui, user },
+    modules: {feed, ui, user},
   });
 });
 
 it('should dispatch "setFilter" with publication filter', (done) => {
-  const wrapper = mount(DaFeed, { store, localVue });
+  const wrapper = mount(DaFeed, {store, localVue});
   const expectedPublication = feed.state.posts[0].publication;
   wrapper.vm.$nextTick(() => {
     wrapper
@@ -131,7 +144,7 @@ it('should dispatch "setFilter" with publication filter', (done) => {
 });
 
 it('should dispatch "setFilter" with publication filter when in insane mode', () => {
-  const wrapper = mount(DaFeed, { store, localVue });
+  const wrapper = mount(DaFeed, {store, localVue});
   const expectedPublication = feed.state.posts[0].publication;
   store.state.ui.insaneMode = true;
   wrapper
@@ -144,13 +157,13 @@ it('should dispatch "setFilter" with publication filter when in insane mode', ()
 });
 
 it('should not show menu button when logged out', () => {
-  const wrapper = mount(DaFeed, { store, localVue });
+  const wrapper = mount(DaFeed, {store, localVue});
   expect(wrapper.vm.$refs.posts[0].showMenu).toEqual(false);
 });
 
 it('should open context menu on menu button click', (done) => {
-  const wrapper = mount(DaFeed, { store, localVue });
-  store.state.user.profile = { name: 'daily' };
+  const wrapper = mount(DaFeed, {store, localVue});
+  store.state.user.profile = {name: 'daily'};
   wrapper.vm.$refs.posts[0].$emit('menu', {
     post: feed.state.posts[0],
     event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
@@ -162,9 +175,9 @@ it('should open context menu on menu button click', (done) => {
 });
 
 it('should report post', (done) => {
-  const wrapper = mount(DaFeed, { store, localVue });
+  const wrapper = mount(DaFeed, {store, localVue});
   contentService.reportPost.mockReturnValue(Promise.resolve());
-  store.state.user.profile = { name: 'daily' };
+  store.state.user.profile = {name: 'daily'};
   wrapper.vm.$refs.posts[0].$emit('menu', {
     post: feed.state.posts[0],
     event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
@@ -177,9 +190,9 @@ it('should report post', (done) => {
 });
 
 it('should hide post', (done) => {
-  const wrapper = mount(DaFeed, { store, localVue });
+  const wrapper = mount(DaFeed, {store, localVue});
   contentService.hidePost.mockReturnValue(Promise.resolve());
-  store.state.user.profile = { name: 'daily' };
+  store.state.user.profile = {name: 'daily'};
   wrapper.vm.$refs.posts[0].$emit('menu', {
     post: feed.state.posts[0],
     event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
@@ -194,45 +207,45 @@ it('should hide post', (done) => {
 });
 
 it('should bookmark post', () => {
-  const wrapper = mount(DaFeed, { store, localVue });
+  const wrapper = mount(DaFeed, {store, localVue});
   wrapper.vm.$refs.posts[0].$emit('bookmark', {
     post: feed.state.posts[0],
     bookmarked: true,
   });
   expect(feed.actions.toggleBookmarks)
-    .toBeCalledWith(expect.anything(), { id: feed.state.posts[0].id, bookmarked: true });
+    .toBeCalledWith(expect.anything(), {id: feed.state.posts[0].id, bookmarked: true});
   expect(ui.actions.trackEngagementWin).toBeCalledTimes(1);
 });
 
 it('should add bookmark to default list', () => {
-  user.state.profile = { premium: true };
-  const wrapper = mount(DaFeed, { store, localVue });
+  user.state.profile = {premium: true};
+  const wrapper = mount(DaFeed, {store, localVue});
   wrapper.vm.$refs.posts[0].$emit('bookmark', {
     post: feed.state.posts[0],
     bookmarked: true,
     event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
   });
   expect(feed.actions.addBookmarkToList)
-    .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: null });
+    .toBeCalledWith(expect.anything(), {post: feed.state.posts[0], list: null});
 });
 
 it('should add bookmark to last used list', () => {
-  user.state.profile = { premium: true };
-  feed.state.lastUsedBookmarkList = { id: 'list' };
-  const wrapper = mount(DaFeed, { store, localVue });
+  user.state.profile = {premium: true};
+  feed.state.lastUsedBookmarkList = {id: 'list'};
+  const wrapper = mount(DaFeed, {store, localVue});
   wrapper.vm.$refs.posts[0].$emit('bookmark', {
     post: feed.state.posts[0],
     bookmarked: true,
     event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
   });
   expect(feed.actions.addBookmarkToList)
-    .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: { id: 'list' } });
+    .toBeCalledWith(expect.anything(), {post: feed.state.posts[0], list: {id: 'list'}});
 });
 
 it('should add bookmark to default list from menu', (done) => {
-  user.state.profile = { premium: true };
-  feed.state.lastUsedBookmarkList = { id: 'list' };
-  const wrapper = mount(DaFeed, { store, localVue });
+  user.state.profile = {premium: true};
+  feed.state.lastUsedBookmarkList = {id: 'list'};
+  const wrapper = mount(DaFeed, {store, localVue});
   wrapper.vm.$refs.posts[0].$emit('bookmark', {
     post: feed.state.posts[0],
     bookmarked: true,
@@ -241,14 +254,18 @@ it('should add bookmark to default list from menu', (done) => {
   setTimeout(() => {
     wrapper.findAll('.feed__bookmark-context .btn').at(1).trigger('click');
     expect(feed.actions.addBookmarkToList)
-      .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: null });
+      .toBeCalledWith(expect.anything(), {post: feed.state.posts[0], list: null});
     done();
   }, 10);
 });
 
 it('should add bookmark to default list from menu', (done) => {
-  user.state.profile = { premium: true };
-  const wrapper = mount(DaFeed, { store, localVue, propsData: {bookmarkLists: [{id: 'list', name: 'List'}]} });
+  user.state.profile = {premium: true};
+  const wrapper = mount(DaFeed, {
+    store,
+    localVue,
+    propsData: {bookmarkLists: [{id: 'list', name: 'List'}]},
+  });
   wrapper.vm.$refs.posts[0].$emit('bookmark', {
     post: feed.state.posts[0],
     bookmarked: true,
@@ -257,16 +274,19 @@ it('should add bookmark to default list from menu', (done) => {
   setTimeout(() => {
     wrapper.findAll('.feed__bookmark-context .btn').at(2).trigger('click');
     expect(feed.actions.addBookmarkToList)
-      .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: {id: 'list', name: 'List'} });
+      .toBeCalledWith(expect.anything(), {
+        post: feed.state.posts[0],
+        list: {id: 'list', name: 'List'},
+      });
     done();
   }, 10);
 });
 
 it('should remove bookmark when selecting the same list', (done) => {
-  user.state.profile = { premium: true };
+  user.state.profile = {premium: true};
   feed.state.posts[0].bookmarkList = null;
   feed.state.posts[0].bookmarked = true;
-  const wrapper = mount(DaFeed, { store, localVue });
+  const wrapper = mount(DaFeed, {store, localVue});
   wrapper.vm.$refs.posts[0].$emit('bookmark', {
     post: feed.state.posts[0],
     bookmarked: false,
@@ -275,14 +295,18 @@ it('should remove bookmark when selecting the same list', (done) => {
   setTimeout(() => {
     wrapper.findAll('.feed__bookmark-context .btn').at(1).trigger('click');
     expect(feed.actions.toggleBookmarks)
-      .toBeCalledWith(expect.anything(), { id: feed.state.posts[0].id, bookmarked: false });
+      .toBeCalledWith(expect.anything(), {id: feed.state.posts[0].id, bookmarked: false});
     done();
   }, 10);
 });
 
 it('should open create bookmark list modal', (done) => {
-  user.state.profile = { premium: true };
-  const wrapper = mount(DaFeed, { store, localVue, propsData: {bookmarkLists: [{id: 'list', name: 'List'}]} });
+  user.state.profile = {premium: true};
+  const wrapper = mount(DaFeed, {
+    store,
+    localVue,
+    propsData: {bookmarkLists: [{id: 'list', name: 'List'}]},
+  });
   expect(wrapper.find('.create-list').element).toBeFalsy();
   wrapper.vm.$refs.posts[0].$emit('bookmark', {
     post: feed.state.posts[0],
@@ -298,8 +322,12 @@ it('should open create bookmark list modal', (done) => {
 });
 
 it('should set bookmark to the new list', (done) => {
-  user.state.profile = { premium: true };
-  const wrapper = mount(DaFeed, { store, localVue, propsData: {bookmarkLists: [{id: 'list', name: 'List'}]} });
+  user.state.profile = {premium: true};
+  const wrapper = mount(DaFeed, {
+    store,
+    localVue,
+    propsData: {bookmarkLists: [{id: 'list', name: 'List'}]},
+  });
   expect(wrapper.find('.create-list').element).toBeFalsy();
   wrapper.vm.$refs.posts[0].$emit('bookmark', {
     post: feed.state.posts[0],
@@ -311,19 +339,78 @@ it('should set bookmark to the new list', (done) => {
     await wrapper.vm.$nextTick();
     wrapper.find('.create-list').vm.$emit('complete', {id: 'list2', name: 'List 2'});
     expect(feed.actions.addBookmarkToList)
-      .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: {id: 'list2', name: 'List 2'} });
+      .toBeCalledWith(expect.anything(), {
+        post: feed.state.posts[0],
+        list: {id: 'list2', name: 'List 2'},
+      });
     done();
   }, 10);
 });
 
 it('should upvote post', () => {
-  const wrapper = mount(DaFeed, { store, localVue });
+  const wrapper = mount(DaFeed, {store, localVue});
   wrapper.vm.$refs.posts[0].$emit('upvote', {
     post: feed.state.posts[0],
     upvoted: true,
   });
   expect(feed.actions.toggleUpvote)
-    .toBeCalledWith(expect.anything(), { id: feed.state.posts[0].id, upvoted: true });
+    .toBeCalledWith(expect.anything(), {id: feed.state.posts[0].id, upvoted: true});
 });
 
+it('should open comment popup on upvote', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  feed.state.posts[0].numComments = 0;
+  wrapper.vm.$refs.posts[0].$emit('upvote', {
+    post: feed.state.posts[0],
+    upvoted: true,
+  });
+  await wrapper.vm.$nextTick();
+  expect(wrapper.vm.commentPostId).toEqual(feed.state.posts[0].id);
+});
 
+it('should not open comment popup on upvote when there are comments', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  feed.state.posts[0].numComments = 1;
+  wrapper.vm.$refs.posts[0].$emit('upvote', {
+    post: feed.state.posts[0],
+    upvoted: true,
+  });
+  await wrapper.vm.$nextTick();
+  expect(wrapper.vm.commentPostId).toEqual(null);
+});
+
+it('should open comment popup on click', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  feed.state.posts[0].numComments = 0;
+  wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
+  await wrapper.vm.$nextTick();
+  expect(wrapper.vm.commentPostId).toEqual(feed.state.posts[0].id);
+});
+
+it('should not open comment popup on upvote when there are comments', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  feed.state.posts[0].numComments = 1;
+  wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
+  await wrapper.vm.$nextTick();
+  expect(wrapper.vm.commentPostId).toEqual(null);
+});
+
+it('should submit comment', (done) => {
+  const wrapper = mount(DaFeed, {
+    store,
+    localVue,
+    apolloProvider: new VueApollo({defaultClient: apolloClient}),
+  });
+  wrapper.vm.$refs.posts[0].$emit('comment', {post: feed.state.posts[0], comment: 'my comment'});
+  setTimeout(() => {
+    expect(commentOnPostHandler).toBeCalledWith({
+      postId: feed.state.posts[0].id,
+      content: 'my comment',
+    });
+    expect(wrapper.vm.commentPostId).toEqual(null);
+    expect(feed.state.posts[0].numComments).toEqual(1);
+    expect(feed.state.posts[0].commented).toEqual(true);
+    expect(window.open).toBeCalledWith('https://daily.dev', '_blank')
+    done();
+  });
+});

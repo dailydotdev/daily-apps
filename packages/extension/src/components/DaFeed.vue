@@ -11,10 +11,12 @@
         <da-insane-post v-else :key="item.id" :post="item" ref="posts"
                         @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                         @click="onPostClick" :show-menu="isLoggedIn"
-                        @upvote="onUpvote"
+                        @upvote="onUpvote" @comment="onComment"
                         :menu-opened="selectedPostId === item.id"
                         :bookmarks-menu-opened="bookmarkPostId === item.id"
-                        :selected="focusedPost === item"/>
+                        :selected="focusedPost === item"
+                        :show-comment-popup="commentPostId === item.id"
+                        :sending-comment="sendingComment"/>
       </template>
     </div>
     <div class="feed__cards" v-else>
@@ -28,10 +30,12 @@
         <da-card-post v-else :key="item.id" :post="item" ref="posts"
                       @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                       @click="onPostClick" :show-menu="isLoggedIn"
-                      @upvote="onUpvote"
+                      @upvote="onUpvote" @comment="onComment"
                       :menu-opened="selectedPostId === item.id"
                       :bookmarks-menu-opened="bookmarkPostId === item.id"
-                      :selected="focusedPost === item"/>
+                      :selected="focusedPost === item"
+                      :show-comment-popup="commentPostId === item.id"
+                      :sending-comment="sendingComment"/>
       </template>
     </div>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
@@ -91,6 +95,8 @@ export default {
       selectedPostId: null,
       bookmarkPost: null,
       showCreateList: false,
+      commentPostId: null,
+      sendingComment: false,
     };
   },
   computed: {
@@ -200,11 +206,44 @@ export default {
       post.read = true;
       this.trackEngagementWin({ action: 'POST_CLICK' });
       ga('send', 'event', 'Post', 'Click', post.source);
+      this.updateCommentPopup(post);
     },
 
     async onUpvote({ post, upvoted }) {
       ga('send', 'event', 'Post', 'Upvote', upvoted ? 'Add' : 'Remove');
       await this.toggleUpvote({ id: post.id, upvoted });
+      if (upvoted) {
+        this.updateCommentPopup(post);
+      }
+    },
+
+    updateCommentPopup(post) {
+      if (post.numComments > 0) {
+        this.commentPostId = null;
+      } else {
+        this.commentPostId = post.id;
+        ga('send', 'event', 'Comment Popup', 'Impression');
+      }
+    },
+
+    async onComment({ post, comment }) {
+      this.sendingComment = true;
+      ga('send', 'event', 'Comment Popup', 'Comment');
+      try {
+        const queries = await import(/* webpackChunkName: "queries" */ '../graphql/feed');
+        const res = await this.$apollo.mutate({
+          mutation: queries.COMMENT_ON_POST_MUTATION,
+          variables: { postId: post.id, content: comment },
+        });
+        window.open(res.data.commentOnPost.permalink, '_blank');
+        this.commentPostId = null;
+        // eslint-disable-next-line no-param-reassign
+        post.numComments = 1;
+        // eslint-disable-next-line no-param-reassign
+        post.commented = true;
+      } finally {
+        this.sendingComment = false;
+      }
     },
 
     onPostMenu({ post, event }) {

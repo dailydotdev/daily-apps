@@ -56,7 +56,7 @@
           <svgicon name="upvote"/>
           <span>Upvote</span>
         </button>
-        <template v-if="post.hasComments">
+        <template v-if="post.numComments">
           <a class="btn btn-menu" :class="{ 'post__action-completed': post.commented}"
              :href="post.commentsPermalink" target="_blank"
              rel="noopener noreferrer" @click="onCommentClick">

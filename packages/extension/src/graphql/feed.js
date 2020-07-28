@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 export const FEED_POST_FRAGMENT = gql`
   fragment FeedPost on Post {
-    id,title,url,publishedAt,createdAt,image,placeholder,readTime,source { id, name, image, public },tags,permalink,numComments
+    id,title,url,publishedAt,createdAt,image,placeholder,readTime,source { id, name, image, public },tags,permalink,numComments,commentsPermalink
   }`;
 
 export const USER_POST_FRAGMENT = gql`
@@ -83,5 +83,12 @@ export const CANCEL_UPVOTE_MUTATION = gql`
   mutation CancelUpvote($id: ID!) {
     cancelUpvote(id: $id) {
       _
+    }
+  }`;
+
+export const COMMENT_ON_POST_MUTATION = gql`
+  mutation CommentOnPost($postId: ID!, $content: String!) {
+    commentOnPost(postId: $postId, content: $content) {
+      permalink
     }
   }`;
