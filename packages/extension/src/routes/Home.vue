@@ -507,7 +507,6 @@ export default {
 
       clsObj(state) {
         return {
-          'animate-cards': state.ui.enableCardAnimations,
           [state.ui.spaciness]: true,
           [state.ui.insaneMode ? 'insane-mode' : 'card-mode']: true,
           'show-banner': this.showBanner,

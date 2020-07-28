@@ -90,7 +90,6 @@ beforeEach(() => {
 
   ui = {
     namespaced: true,
-    enableCardAnimations: true,
     state: {
       insaneMode: false,
     },

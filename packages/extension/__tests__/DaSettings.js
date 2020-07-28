@@ -39,11 +39,10 @@ beforeEach(() => {
     mutations: {
       setInsaneMode: jest.fn(),
       setSpaciness: jest.fn(),
-      setEnableCardAnimations: jest.fn(),
       setShowOnlyNotReadPosts: jest.fn(),
     },
   };
-  
+
   feed = {
     namespaced: true,
     state: {},
@@ -79,12 +78,6 @@ it('should dispatch "setTheme" when theme is changed', () => {
   const wrapper = mount(DaSettings, { store, localVue });
   wrapper.find('.settings__theme').vm.$emit('toggle', true);
   expect(ui.actions.setTheme).toBeCalledWith(expect.anything(), 'bright');
-});
-
-it('should commit "setEnableCardAnimations" when setting is changed', () => {
-  const wrapper = mount(DaSettings, { store, localVue });
-  wrapper.find('.settings__animations').vm.$emit('toggle', true);
-  expect(ui.mutations.setEnableCardAnimations).toBeCalledWith(expect.anything(), true);
 });
 
 it('should commit "setShowOnlyNotReadPosts" when setting is changed', () => {

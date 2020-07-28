@@ -50,12 +50,6 @@ it('should set show top sites in state', () => {
   expect(state.showTopSites).toEqual(true);
 });
 
-it('should set enable card animation in state', () => {
-  const state = {};
-  module.mutations.setEnableCardAnimations(state, true);
-  expect(state.enableCardAnimations).toEqual(true);
-});
-
 it('should set show only not read posts in state', () => {
   const state = {};
   module.mutations.setShowOnlyNotReadPosts(state, true);
@@ -126,7 +120,6 @@ it('should reset settings', () => {
   const state = {
     insaneMode: true,
     showTopSites: true,
-    enableCardAnimations: false,
     showOnlyNotReadPosts: true,
     showNotificationBadge: true,
     notifications,
@@ -135,7 +128,6 @@ it('should reset settings', () => {
   expect(state).toEqual({
     insaneMode: false,
     showTopSites: false,
-    enableCardAnimations: true,
     showOnlyNotReadPosts: false,
     showNotificationBadge: true,
     notifications,

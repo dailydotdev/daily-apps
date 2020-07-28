@@ -12,7 +12,6 @@ const initialState = () => ({
   lastNotificationTime: null,
   showNotifications: false,
   showSettings: false,
-  enableCardAnimations: true,
   onboarding: false,
   instructionsStep: 0,
   showOnlyNotReadPosts: false,
@@ -41,10 +40,6 @@ export default {
 
     setShowTopSites(state, value) {
       state.showTopSites = value;
-    },
-
-    setEnableCardAnimations(state, value) {
-      state.enableCardAnimations = value;
     },
 
     setShowOnlyNotReadPosts(state, value) {
@@ -96,7 +91,6 @@ export default {
       const def = initialState();
       state.insaneMode = def.insaneMode;
       state.showTopSites = def.showTopSites;
-      state.enableCardAnimations = def.enableCardAnimations;
       state.showOnlyNotReadPosts = def.showOnlyNotReadPosts;
     },
 

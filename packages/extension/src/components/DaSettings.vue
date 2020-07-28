@@ -19,8 +19,6 @@
                  :checked="showTopSites" @toggle="toggleTopSites"/>
       <da-switch label="Light theme" class="small settings__theme"
                  :checked="theme > 0" @toggle="toggleTheme"/>
-      <da-switch label="Card animations" class="small settings__animations"
-                 :checked="enableCardAnimations" @toggle="toggleCardAnimations"/>
       <da-switch label="Hide read posts" class="small settings__hide-read-posts"
                  :checked="showOnlyNotReadPosts" @toggle="toggleShowOnlyNotReadPosts"/>
     </div>
@@ -50,7 +48,7 @@ export default {
   },
   computed: {
     ...mapState('ui', [
-      'showTopSites', 'insaneMode', 'spaciness', 'enableCardAnimations', 'showOnlyNotReadPosts',
+      'showTopSites', 'insaneMode', 'spaciness', 'showOnlyNotReadPosts',
     ]),
     ...mapState({
       theme: state => themes.indexOf(state.ui.theme),
@@ -74,10 +72,6 @@ export default {
       ga('send', 'event', 'Settings', 'Click', 'Hide Read Posts');
       this.$store.commit('ui/setShowOnlyNotReadPosts', val);
       this.refreshFeed();
-    },
-    toggleCardAnimations(val) {
-      ga('send', 'event', 'Settings', 'Click', 'Card Animations');
-      this.$store.commit('ui/setEnableCardAnimations', val);
     },
     toggleTheme(pressed) {
       const newTheme = pressed ? themes[1] : themes[0];
@@ -143,16 +137,16 @@ export default {
       margin-top: 34px;
     }
     &:nth-child(3n+4) {
-      margin-bottom: 0px;
+      margin-bottom: 0;
     }
 
-    /*Handle special case for 1st and 4th element */
+    /* Handle special case for 1st and 4th element */
     &:first-of-type {
-      margin-top: 0px;
+      margin-top: 0;
     }
     &:nth-child(4) {
       margin-top: 6px;
-      margin-bottom: 0px;
+      margin-bottom: 0;
     }
 
   }

@@ -12,7 +12,6 @@ const syncSettings = (state) => {
     return profileService.updateSettings({
       theme: state.ui.theme || defaultTheme,
       showTopSites: state.ui.showTopSites,
-      enableCardAnimations: state.ui.enableCardAnimations,
       insaneMode: state.ui.insaneMode,
       spaciness: state.ui.spaciness,
       showOnlyNotReadPosts: state.ui.showOnlyNotReadPosts,
@@ -65,7 +64,6 @@ const plugin = (store) => {
       const settings = await profileService.fetchSettings();
       store.commit('ui/setInsaneMode', settings.insaneMode);
       store.commit('ui/setShowTopSites', settings.showTopSites);
-      store.commit('ui/setEnableCardAnimations', settings.enableCardAnimations);
       store.commit('ui/setSpaciness', settings.spaciness);
       store.commit('ui/setShowOnlyNotReadPosts', settings.showOnlyNotReadPosts);
       const pr1 = store.dispatch('ui/setTheme', settings.theme);
@@ -100,7 +98,6 @@ const plugin = (store) => {
     case 'ui/setTheme':
     case 'ui/setInsaneMode':
     case 'ui/setShowTopSites':
-    case 'ui/setEnableCardAnimations':
     case 'ui/setSpaciness':
     case 'ui/setShowOnlyNotReadPosts':
       // TODO: handle error
