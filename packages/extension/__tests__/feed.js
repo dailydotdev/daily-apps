@@ -10,6 +10,8 @@ import {
   TAG_FEED_QUERY,
   BOOKMARKS_FEED_QUERY,
   SEARCH_POSTS_QUERY,
+  UPVOTE_MUTATION,
+  CANCEL_UPVOTE_MUTATION,
 } from '../src/graphql/feed';
 import {
   ADD_BOOKMARKS_MUTATION,
@@ -32,13 +34,13 @@ jest.mock('../src/common/services', () => ({
   },
 }));
 
-const emptyFeed = { 
+const emptyFeed = {
   data: {
     feed: {
       pageInfo: { hasNextPage: true, endCursor: 'cursor' },
       edges: [],
     },
-  },  
+  },
 };
 
 const anonymousHandler = jest.fn();
@@ -50,6 +52,8 @@ const searchPostHandler = jest.fn();
 const addBookmarksHandler = jest.fn();
 const removeBookmarkHandler = jest.fn();
 const addBookmarkToListHandler = jest.fn();
+const upvoteHandler = jest.fn();
+const cancelUpvoteHandler = jest.fn();
 apolloClient.setRequestHandler(ANONYMOUS_FEED_QUERY, anonymousHandler);
 apolloClient.setRequestHandler(FEED_QUERY, feedHandler);
 apolloClient.setRequestHandler(BOOKMARKS_FEED_QUERY, bookmarksHandler);
@@ -59,6 +63,8 @@ apolloClient.setRequestHandler(SEARCH_POSTS_QUERY, searchPostHandler);
 apolloClient.setRequestHandler(ADD_BOOKMARKS_MUTATION, addBookmarksHandler);
 apolloClient.setRequestHandler(REMOVE_BOOKMARK_MUTATION, removeBookmarkHandler);
 apolloClient.setRequestHandler(ADD_BOOKMARK_TO_LIST_MUTATION, addBookmarkToListHandler);
+apolloClient.setRequestHandler(UPVOTE_MUTATION, upvoteHandler);
+apolloClient.setRequestHandler(CANCEL_UPVOTE_MUTATION, cancelUpvoteHandler);
 
 beforeEach(() => {
   anonymousHandler.mockReset();
@@ -73,6 +79,10 @@ beforeEach(() => {
   removeBookmarkHandler.mockResolvedValue({ data: { removeBookmark: { _: true }}});
   addBookmarkToListHandler.mockReset();
   addBookmarkToListHandler.mockResolvedValue({ data: { addBookmarkToList: { _: true }}});
+  upvoteHandler.mockReset();
+  upvoteHandler.mockResolvedValue({ data: { upvote: { _: true }}});
+  cancelUpvoteHandler.mockReset();
+  cancelUpvoteHandler.mockResolvedValue({ data: { cancelUpvote: { _: true }}});
 });
 
 it('should set show bookmarks in state', () => {
@@ -660,7 +670,7 @@ it('should not fetch next page when no more page', async () => {
 it('should fetch anonymous feed', async () => {
   const now = new Date();
   MockDate.set(now);
-  anonymousHandler.mockResolvedValue({ 
+  anonymousHandler.mockResolvedValue({
     data: {
       feed: {
         pageInfo: { hasNextPage: true, endCursor: 'cursor' },
@@ -669,7 +679,7 @@ it('should fetch anonymous feed', async () => {
           { node: { id: '2', source: { id: 's' }, createdAt: now.toISOString(), ratio: 1 } },
         ],
       },
-    },  
+    },
   });
 
   const state = { bookmarks: [{ id: '2' }], disabledPublications: [], enabledTags: [], latest: now, sortBy: 'popularity' };
@@ -703,7 +713,7 @@ it('should fetch anonymous feed', async () => {
 it('should fetch next anonymous feed page', async () => {
   const now = new Date();
   MockDate.set(now);
-  anonymousHandler.mockResolvedValueOnce({ 
+  anonymousHandler.mockResolvedValueOnce({
     data: {
       feed: {
         pageInfo: { hasNextPage: true, endCursor: 'cursor' },
@@ -712,7 +722,7 @@ it('should fetch next anonymous feed page', async () => {
           { node: { id: '2', source: { id: 's' }, createdAt: now.toISOString(), ratio: 1 } },
         ],
       },
-    },  
+    },
   });
 
   const state = { pageInfo: { hasNextPage: true, endCursor: 'cursor' }, bookmarks: [], posts: [], disabledPublications: [], enabledTags: [], latest: now, sortBy: 'popularity' };
@@ -964,4 +974,49 @@ it('should add bookmark to default list', async () => {
     { user: { profile: { name: 'John' } } },
   );
   expect(addBookmarkToListHandler).toBeCalledWith({ id: '1', listId: null });
+});
+
+it('should set a post as upvoted', () => {
+  const state = {
+    posts: [{
+      id: '1',
+    }, {
+      id: '2',
+    }, {
+      id: '3',
+    }],
+  };
+  module.mutations.toggleUpvote(state, { id: '2', upvoted: true });
+  expect(state.posts).toEqual([{
+    id: '1',
+  }, {
+    id: '2',
+    upvoted: true,
+  }, {
+    id: '3',
+  }]);
+});
+
+it('should send upvote request', async () => {
+  const state = {};
+  const payload = { id: '1', upvoted: true };
+  await testAction(module.actions.toggleUpvote, payload, state,
+    [{ type: 'toggleUpvote', payload }],
+    [],
+    { user: { profile: { name: 'John' } } },
+    { 'user/isLoggedIn': true },
+  );
+  expect(upvoteHandler).toBeCalledWith({ id: '1' });
+});
+
+it('should send cancel upvote request', async () => {
+  const state = {};
+  const payload = { id: '1', upvoted: false };
+  await testAction(module.actions.toggleUpvote, payload, state,
+    [{ type: 'toggleUpvote', payload }],
+    [],
+    { user: { profile: { name: 'John' } } },
+    { 'user/isLoggedIn': true },
+  );
+  expect(cancelUpvoteHandler).toBeCalledWith({ id: '1' });
 });

@@ -70,5 +70,5 @@ it('should emit upvote event on click', () => {
   const post = posts[0];
   const wrapper = shallowMount(DaCardPost, { localVue, propsData: { post } });
   wrapper.find('.post__buttons button:first-child').trigger('click');
-  expect(wrapper.emitted().upvote[0]).toEqual([post]);
+  expect(wrapper.emitted().upvote[0]).toEqual([{ post, upvoted: true }]);
 });

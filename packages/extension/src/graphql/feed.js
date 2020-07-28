@@ -2,12 +2,12 @@ import gql from 'graphql-tag';
 
 export const FEED_POST_FRAGMENT = gql`
   fragment FeedPost on Post {
-    id,title,url,publishedAt,createdAt,image,ratio,placeholder,readTime,source { id, name, image, public },tags,permalink
+    id,title,url,publishedAt,createdAt,image,ratio,placeholder,readTime,source { id, name, image, public },tags,permalink,numComments
   }`;
 
 export const USER_POST_FRAGMENT = gql`
   fragment UserPost on Post {
-    bookmarked,read,bookmarkList { id }
+    bookmarked,read,bookmarkList { id },upvoted,commented
   }`;
 
 export const FEED_POST_CONNECTION_FRAGMENT = gql`
@@ -71,3 +71,17 @@ export const SEARCH_POSTS_QUERY = gql`
     }
   }
 ${FEED_POST_CONNECTION_FRAGMENT}`;
+
+export const UPVOTE_MUTATION = gql`
+  mutation Upvote($id: ID!) {
+    upvote(id: $id) {
+      _
+    }
+  }`;
+
+export const CANCEL_UPVOTE_MUTATION = gql`
+  mutation CancelUpvote($id: ID!) {
+    cancelUpvote(id: $id) {
+      _
+    }
+  }`;

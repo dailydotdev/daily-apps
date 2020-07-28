@@ -8,6 +8,8 @@ import {
   TAG_FEED_QUERY,
   BOOKMARKS_FEED_QUERY,
   SEARCH_POSTS_QUERY,
+  UPVOTE_MUTATION,
+  CANCEL_UPVOTE_MUTATION,
 } from '../../graphql/feed';
 import {
   ADD_BOOKMARKS_MUTATION,
@@ -16,9 +18,17 @@ import {
 } from '../../graphql/bookmarks';
 import { mapPost } from '../../common/post';
 
-const setPostBookmark = (state, key, id, value, list) => {
+const findPostInFeed = (state, key, id) => {
   const index = state[key].findIndex(post => post.id === id);
   if (index < 0) {
+    return null;
+  }
+  return index;
+};
+
+const setPostBookmark = (state, key, id, value, list) => {
+  const index = findPostInFeed(state, key, id);
+  if (index === null) {
     return null;
   }
   Vue.set(state[key], index, { ...state[key][index], bookmarked: value, bookmarkList: list });
@@ -323,6 +333,14 @@ export default {
     setBookmarkList(state, id) {
       state.bookmarkList = id;
     },
+    toggleUpvote(state, { id, upvoted }) {
+      const feed = getFeed(state);
+      const index = findPostInFeed(state, feed, id);
+      if (index === null) {
+        return;
+      }
+      Vue.set(state[feed], index, { ...state[feed][index], upvoted });
+    },
   },
   actions: {
     async fetchNextFeedPage({
@@ -505,12 +523,12 @@ export default {
       if (isLoggedIn(rootState)) {
         try {
           if (bookmarked) {
-            apolloClient.mutate({
+            await apolloClient.mutate({
               mutation: ADD_BOOKMARKS_MUTATION,
               variables: { data: { postIds: [id] } },
             });
           } else {
-            apolloClient.mutate({
+            await apolloClient.mutate({
               mutation: REMOVE_BOOKMARK_MUTATION,
               variables: { id },
             });
@@ -524,7 +542,7 @@ export default {
     async addBookmarkToList({ commit }, { post, list }) {
       commit('toggleBookmarks', { id: post.id, bookmarked: true, list });
       try {
-        apolloClient.mutate({
+        await apolloClient.mutate({
           mutation: ADD_BOOKMARK_TO_LIST_MUTATION,
           variables: { id: post.id, listId: list ? list.id : null },
         });
@@ -532,6 +550,27 @@ export default {
       } catch (err) {
         commit('toggleBookmarks', { id: post.id, bookmarked: post.bookmarked, list: post.bookmarkList });
         return false;
+      }
+    },
+
+    async toggleUpvote({ commit, rootGetters }, { id, upvoted }) {
+      if (rootGetters['user/isLoggedIn']) {
+        commit('toggleUpvote', { id, upvoted });
+        try {
+          if (upvoted) {
+            await apolloClient.mutate({
+              mutation: UPVOTE_MUTATION,
+              variables: { id },
+            });
+          } else {
+            await apolloClient.mutate({
+              mutation: CANCEL_UPVOTE_MUTATION,
+              variables: { id },
+            });
+          }
+        } catch (err) {
+          commit('toggleUpvote', { id, upvoted: !upvoted });
+        }
       }
     },
   },
