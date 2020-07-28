@@ -1,11 +1,11 @@
-import { ratioToSize, reviveJSON, dateReviver } from '@daily/services';
+import { reviveJSON, dateReviver } from '@daily/services';
 
 const redirectLink = post => `${process.env.VUE_APP_API_URL}/r/${post.id}`;
 
 // eslint-disable-next-line import/prefer-default-export
 export const mapPost = (post) => {
   const newPost = {
-    ...ratioToSize(reviveJSON(post, dateReviver)),
+    ...reviveJSON(post, dateReviver),
     url: post.permalink || redirectLink(post),
     publication: post.source,
   };

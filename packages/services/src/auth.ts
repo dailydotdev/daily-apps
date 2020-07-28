@@ -51,7 +51,6 @@ export class AuthServiceImpl implements AuthService {
     this.baseURL = baseURL;
     this.request = axios.create({
       withCredentials: true,
-      timeout: 10000,
       headers: app ? {app} : {},
     });
   }
@@ -62,7 +61,7 @@ export class AuthServiceImpl implements AuthService {
 
   async authenticate(code: string, verifier: string): Promise<User> {
     const res = await this.request.post<User>(`${this.baseURL}/v1/auth/authenticate`, {code, code_verifier: verifier});
-    return reviveJSON(JSON.parse(res.data), dateReviver);
+    return reviveJSON(res.data, dateReviver);
   }
 
   getAuthorizationUrl(provider: string, redirectUri: string, codeChallenge: string): string {
@@ -71,12 +70,12 @@ export class AuthServiceImpl implements AuthService {
 
   async getUserProfile(): Promise<UserId | User> {
     const res = await this.request.get(`${this.baseURL}/v1/users/me`);
-    return JSON.parse(res.data);
+    return res.data;
   }
 
   async updateUserProfile(profile: UserProfile): Promise<User> {
     const res = await this.request.put(`${this.baseURL}/v1/users/me`, profile);
-    return JSON.parse(res.data);
+    return res.data;
   }
 
   async generateChallenge(): Promise<CodeChallenge> {

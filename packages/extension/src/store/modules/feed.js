@@ -1,24 +1,19 @@
 import Vue from 'vue';
 import { apolloClient } from '../../apollo';
 import { contentService, monetizationService } from '../../common/services';
-import {
-  FEED_QUERY,
-  ANONYMOUS_FEED_QUERY,
-  SOURCE_FEED_QUERY,
-  TAG_FEED_QUERY,
-  BOOKMARKS_FEED_QUERY,
-  SEARCH_POSTS_QUERY,
-} from '../../graphql/feed';
-import {
-  ADD_BOOKMARKS_MUTATION,
-  REMOVE_BOOKMARK_MUTATION,
-  ADD_BOOKMARK_TO_LIST_MUTATION,
-} from '../../graphql/bookmarks';
 import { mapPost } from '../../common/post';
 
-const setPostBookmark = (state, key, id, value, list) => {
+const findPostInFeed = (state, key, id) => {
   const index = state[key].findIndex(post => post.id === id);
   if (index < 0) {
+    return null;
+  }
+  return index;
+};
+
+const setPostBookmark = (state, key, id, value, list) => {
+  const index = findPostInFeed(state, key, id);
+  if (index === null) {
     return null;
   }
   Vue.set(state[key], index, { ...state[key][index], bookmarked: value, bookmarkList: list });
@@ -66,6 +61,7 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
     after: state.pageInfo ? state.pageInfo.endCursor : undefined,
   };
 
+  const queries = await import(/* webpackChunkName: "queries" */ '../../graphql/feed');
   if (state.showBookmarks) {
     if (loggedIn) {
       const variables = {};
@@ -77,7 +73,7 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
         }
       }
       return apolloClient.query({
-        query: BOOKMARKS_FEED_QUERY,
+        query: queries.BOOKMARKS_FEED_QUERY,
         variables: {
           ...base,
           ...variables,
@@ -91,7 +87,7 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
   if (state.filter) {
     if (state.filter.type === 'publication') {
       return apolloClient.query({
-        query: SOURCE_FEED_QUERY,
+        query: queries.SOURCE_FEED_QUERY,
         variables: {
           ...base,
           ranking: 'TIME',
@@ -102,7 +98,7 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
     }
 
     return apolloClient.query({
-      query: TAG_FEED_QUERY,
+      query: queries.TAG_FEED_QUERY,
       variables: {
         ...base,
         ranking: 'TIME',
@@ -114,7 +110,7 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
 
   if (state.search) {
     return apolloClient.query({
-      query: SEARCH_POSTS_QUERY,
+      query: queries.SEARCH_POSTS_QUERY,
       variables: {
         ...base,
         query: state.search,
@@ -127,7 +123,7 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
 
   if (loggedIn) {
     return apolloClient.query({
-      query: FEED_QUERY,
+      query: queries.FEED_QUERY,
       variables: {
         ...base,
         ranking,
@@ -140,7 +136,7 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
   const pubs = Object.keys(state.disabledPublications);
   const tags = Object.keys(state.enabledTags);
   return apolloClient.query({
-    query: ANONYMOUS_FEED_QUERY,
+    query: queries.ANONYMOUS_FEED_QUERY,
     variables: {
       ...base,
       ranking,
@@ -323,6 +319,14 @@ export default {
     setBookmarkList(state, id) {
       state.bookmarkList = id;
     },
+    toggleUpvote(state, { id, upvoted }) {
+      const feed = getFeed(state);
+      const index = findPostInFeed(state, feed, id);
+      if (index === null) {
+        return;
+      }
+      Vue.set(state[feed], index, { ...state[feed][index], upvoted });
+    },
   },
   actions: {
     async fetchNextFeedPage({
@@ -493,8 +497,9 @@ export default {
     },
 
     async mergeBookmarksConflicts({ commit, state }) {
+      const queries = await import(/* webpackChunkName: "queries" */ '../../graphql/bookmarks');
       await apolloClient.mutate({
-        mutation: ADD_BOOKMARKS_MUTATION,
+        mutation: queries.ADD_BOOKMARKS_MUTATION,
         variables: { data: { postIds: state.conflictBookmarks.map(b => b.id) } },
       });
       commit('mergeBookmarksConflicts');
@@ -504,14 +509,15 @@ export default {
       commit('toggleBookmarks', { id, bookmarked });
       if (isLoggedIn(rootState)) {
         try {
+          const queries = await import(/* webpackChunkName: "queries" */ '../../graphql/bookmarks');
           if (bookmarked) {
-            apolloClient.mutate({
-              mutation: ADD_BOOKMARKS_MUTATION,
+            await apolloClient.mutate({
+              mutation: queries.ADD_BOOKMARKS_MUTATION,
               variables: { data: { postIds: [id] } },
             });
           } else {
-            apolloClient.mutate({
-              mutation: REMOVE_BOOKMARK_MUTATION,
+            await apolloClient.mutate({
+              mutation: queries.REMOVE_BOOKMARK_MUTATION,
               variables: { id },
             });
           }
@@ -524,14 +530,37 @@ export default {
     async addBookmarkToList({ commit }, { post, list }) {
       commit('toggleBookmarks', { id: post.id, bookmarked: true, list });
       try {
-        apolloClient.mutate({
-          mutation: ADD_BOOKMARK_TO_LIST_MUTATION,
+        const queries = await import(/* webpackChunkName: "queries" */ '../../graphql/bookmarks');
+        await apolloClient.mutate({
+          mutation: queries.ADD_BOOKMARK_TO_LIST_MUTATION,
           variables: { id: post.id, listId: list ? list.id : null },
         });
         return true;
       } catch (err) {
         commit('toggleBookmarks', { id: post.id, bookmarked: post.bookmarked, list: post.bookmarkList });
         return false;
+      }
+    },
+
+    async toggleUpvote({ commit, rootGetters }, { id, upvoted }) {
+      if (rootGetters['user/isLoggedIn']) {
+        commit('toggleUpvote', { id, upvoted });
+        try {
+          const queries = await import(/* webpackChunkName: "queries" */ '../../graphql/feed');
+          if (upvoted) {
+            await apolloClient.mutate({
+              mutation: queries.UPVOTE_MUTATION,
+              variables: { id },
+            });
+          } else {
+            await apolloClient.mutate({
+              mutation: queries.CANCEL_UPVOTE_MUTATION,
+              variables: { id },
+            });
+          }
+        } catch (err) {
+          commit('toggleUpvote', { id, upvoted: !upvoted });
+        }
       }
     },
   },

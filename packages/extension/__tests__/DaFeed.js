@@ -81,6 +81,7 @@ beforeEach(() => {
       fetchAds: jest.fn(),
       toggleBookmarks: jest.fn(),
       addBookmarkToList: jest.fn(),
+      toggleUpvote: jest.fn(),
     },
     getters: {
       feed: state => state['posts'],
@@ -313,6 +314,16 @@ it('should set bookmark to the new list', (done) => {
       .toBeCalledWith(expect.anything(), { post: feed.state.posts[0], list: {id: 'list2', name: 'List 2'} });
     done();
   }, 10);
+});
+
+it('should upvote post', () => {
+  const wrapper = mount(DaFeed, { store, localVue });
+  wrapper.vm.$refs.posts[0].$emit('upvote', {
+    post: feed.state.posts[0],
+    upvoted: true,
+  });
+  expect(feed.actions.toggleUpvote)
+    .toBeCalledWith(expect.anything(), { id: feed.state.posts[0].id, upvoted: true });
 });
 
 

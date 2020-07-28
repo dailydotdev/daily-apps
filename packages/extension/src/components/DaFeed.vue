@@ -9,11 +9,12 @@
                         :selected="focusedPost === item"/>
         </template>
         <da-insane-post v-else :key="item.id" :post="item" ref="posts"
-                      @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
-                      @click="onPostClick" :show-menu="isLoggedIn"
-                      :menu-opened="selectedPostId === item.id"
-                      :bookmarks-menu-opened="bookmarkPostId === item.id"
-                      :selected="focusedPost === item" />
+                        @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
+                        @click="onPostClick" :show-menu="isLoggedIn"
+                        @upvote="onUpvote"
+                        :menu-opened="selectedPostId === item.id"
+                        :bookmarks-menu-opened="bookmarkPostId === item.id"
+                        :selected="focusedPost === item"/>
       </template>
     </div>
     <div class="feed__cards" v-else>
@@ -25,11 +26,12 @@
                       :selected="focusedPost === item"/>
         </template>
         <da-card-post v-else :key="item.id" :post="item" ref="posts"
-                    @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
-                    @click="onPostClick" :show-menu="isLoggedIn"
-                    :menu-opened="selectedPostId === item.id"
-                    :bookmarks-menu-opened="bookmarkPostId === item.id"
-                    :selected="focusedPost === item"/>
+                      @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
+                      @click="onPostClick" :show-menu="isLoggedIn"
+                      @upvote="onUpvote"
+                      :menu-opened="selectedPostId === item.id"
+                      :bookmarks-menu-opened="bookmarkPostId === item.id"
+                      :selected="focusedPost === item"/>
       </template>
     </div>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
@@ -42,24 +44,24 @@
                 @open="onBookmarkMenuOpened" @close="onBookmarkMenuClosed">
       <button class="btn btn-menu bookmark-context__new-btn"
               @click="openCreateList">
-        <svgicon name="plus" />
+        <svgicon name="plus"/>
         <span>New list</span>
       </button>
       <button class="btn btn-menu bookmark-context__list-btn" :class="{active: !listId}"
               @click="onBookmarkListClick(null)">
         <span>All articles</span>
-        <svgicon name="v" />
+        <svgicon name="v"/>
       </button>
       <button v-for="item in bookmarkLists" :key="item.id"
               class="btn btn-menu bookmark-context__list-btn" :class="{active: listId === item.id}"
               @click="onBookmarkListClick(item)">
         <span>{{item.name}}</span>
-        <svgicon name="v" />
+        <svgicon name="v"/>
       </button>
     </da-context>
     <da-create-list v-if="showCreateList"
                     @complete="onCreateListCompleted"
-                    @close="onCreateListClosed" />
+                    @close="onCreateListClosed"/>
   </div>
 </template>
 
@@ -104,7 +106,7 @@ export default {
     },
     listId() {
       return this.bookmarkPost && this.bookmarkPost.bookmarkList
-              && this.bookmarkPost.bookmarkList.id;
+        && this.bookmarkPost.bookmarkList.id;
     },
     focusedPost() {
       if (!this.hoveredPost) {
@@ -200,6 +202,11 @@ export default {
       ga('send', 'event', 'Post', 'Click', post.source);
     },
 
+    async onUpvote({ post, upvoted }) {
+      ga('send', 'event', 'Post', 'Upvote', upvoted ? 'Add' : 'Remove');
+      await this.toggleUpvote({ id: post.id, upvoted });
+    },
+
     onPostMenu({ post, event }) {
       ga('send', 'event', 'Post', 'Menu');
       this.$refs.context.open(event, post);
@@ -218,7 +225,7 @@ export default {
 
       // TODO: handle error
       contentService.reportPost(postId, reason)
-      // eslint-disable-next-line no-console
+        // eslint-disable-next-line no-console
         .catch(console.error);
 
       setTimeout(() => {
@@ -234,7 +241,7 @@ export default {
 
       // TODO: handle error
       contentService.hidePost(postId)
-      // eslint-disable-next-line no-console
+        // eslint-disable-next-line no-console
         .catch(console.error);
 
       this.removePost(postId);
@@ -243,6 +250,7 @@ export default {
     ...mapActions({
       setFilter: 'feed/setFilter',
       toggleBookmarks: 'feed/toggleBookmarks',
+      toggleUpvote: 'feed/toggleUpvote',
       addBookmarkToList: 'feed/addBookmarkToList',
       trackEngagementWin: 'ui/trackEngagementWin',
     }),

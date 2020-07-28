@@ -59,7 +59,7 @@ export default {
     },
 
     onUpvoteClick() {
-      this.$emit('upvote', this.post);
+      this.$emit('upvote', { post: this.post, upvoted: !this.post.upvoted });
     },
 
     onCommentClick() {

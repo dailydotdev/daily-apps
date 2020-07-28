@@ -118,14 +118,13 @@ export class ContentServiceImpl implements ContentService {
     this.baseURL = baseURL;
     this.request = axios.create({
       withCredentials: true,
-      timeout: 10000,
       headers: app ? {app} : {},
     });
   }
 
   async fetchPublications(): Promise<Publication[]> {
     const res = await this.request.get(`${this.baseURL}/v1/publications`);
-    return JSON.parse(res.data).map((x: any) => reviveJSON(x, dateReviver));
+    return res.data.map((x: any) => reviveJSON(x, dateReviver));
   }
 
   async requestPublication(source: string): Promise<void> {
@@ -134,7 +133,7 @@ export class ContentServiceImpl implements ContentService {
 
   async fetchOpenPubRequests(): Promise<PubRequest[]> {
     const res = await this.request.get(`${this.baseURL}/v1/publications/requests/open`);
-    return JSON.parse(res.data).map((x: any) => reviveJSON(x, dateReviver));
+    return res.data.map((x: any) => reviveJSON(x, dateReviver));
   }
 
   async editPubRequest(id: String, obj: PubRequestEdit): Promise<void> {
@@ -172,7 +171,7 @@ export class ContentServiceImpl implements ContentService {
       `${this.baseURL}/graphql`,
       formData,
     );
-    return JSON.parse(res.data).data.uploadSourceRequestLogo.sourceImage;
+    return res.data.data.uploadSourceRequestLogo.sourceImage;
   }
 
   async reportPost(postId: string, reason: string): Promise<void> {
@@ -185,7 +184,7 @@ export class ContentServiceImpl implements ContentService {
 
   async fetchFeedPublications(): Promise<any> {
     const res = await this.request.get(`${this.baseURL}/v1/feeds/publications`);
-    return JSON.parse(res.data).reduce((acc: any, cur: FeedPublication) => Object.assign({}, acc, {[cur.publicationId]: cur.enabled}), {});
+    return res.data.reduce((acc: any, cur: FeedPublication) => Object.assign({}, acc, {[cur.publicationId]: cur.enabled}), {});
   }
 
   async updateFeedPublications(pubs: FeedPublication[]): Promise<void> {
@@ -194,7 +193,7 @@ export class ContentServiceImpl implements ContentService {
 
   async fetchUserTags(): Promise<string[]> {
     const res = await this.request.get(`${this.baseURL}/v1/feeds/tags`);
-    return JSON.parse(res.data).map((t: any) => t.tag);
+    return res.data.map((t: any) => t.tag);
   }
 
   async addUserTags(tags: string[]): Promise<void> {
@@ -207,12 +206,12 @@ export class ContentServiceImpl implements ContentService {
 
   async fetchPopularTags(): Promise<Tag[]> {
     const res = await this.request.get(`${this.baseURL}/v1/tags/popular`);
-    return JSON.parse(res.data).map((x: any) => reviveJSON(x, dateReviver));
+    return res.data.map((x: any) => reviveJSON(x, dateReviver));
   }
 
   async searchTags(query: string): Promise<TagsSearchResult> {
     const res = await this.request.get(`${this.baseURL}/v1/tags/search?query=${query}`);
-    return reviveJSON(JSON.parse(res.data), dateReviver);
+    return reviveJSON(res.data, dateReviver);
   }
 
   async searchSuggestion(query: string): Promise<SearchSuggestionResults> {
@@ -222,6 +221,6 @@ export class ContentServiceImpl implements ContentService {
       variables: {params: inputParams},
     });
 
-    return JSON.parse(res).data.searchSuggestion;
+    return res.data.searchSuggestion;
   }
 }

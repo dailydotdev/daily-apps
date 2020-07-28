@@ -3342,9 +3342,10 @@ read-pkg@^5.2.0:
     parse-json "^5.0.0"
     type-fest "^0.6.0"
 
-redaxios@developit/redaxios#4841822f4e9e9fd7d666e649e31a056aa34fd5d3:
-  version "0.2.0"
-  resolved "https://codeload.github.com/developit/redaxios/tar.gz/4841822f4e9e9fd7d666e649e31a056aa34fd5d3"
+redaxios@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/redaxios/-/redaxios-0.3.0.tgz#83bf141494afbe210c44f32b142b8fd73c953f02"
+  integrity sha512-9C4Wvdp/jn4wwBCGMntqu0JCAw+Kfr/uGfMR+JwC0Bg94ORTRzo2dPdHSIPxwSE9/4ORYKmOjhH28mHiuzZSJA==
 
 regex-cache@^0.4.2:
   version "0.4.4"
