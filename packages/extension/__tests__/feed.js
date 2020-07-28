@@ -675,8 +675,8 @@ it('should fetch anonymous feed', async () => {
       feed: {
         pageInfo: { hasNextPage: true, endCursor: 'cursor' },
         edges: [
-          { node: { id: '1', source: { id: 's' }, createdAt: now.toISOString(), ratio: 2 } },
-          { node: { id: '2', source: { id: 's' }, createdAt: now.toISOString(), ratio: 1 } },
+          { node: { id: '1', source: { id: 's' }, createdAt: now.toISOString() } },
+          { node: { id: '2', source: { id: 's' }, createdAt: now.toISOString() } },
         ],
       },
     },
@@ -693,8 +693,8 @@ it('should fetch anonymous feed', async () => {
       { type: 'clearAd' },
       { type: 'setPosts', payload: { posts: [
         { type: 'ad', loading: true },
-        { id: '1', publication: { id: 's' }, createdAt: now, size: 'small', bookmarked: false, url: 'http://localhost:4000/r/1' },
-        { id: '2', publication: { id: 's' }, createdAt: now, size: 'medium', bookmarked: true, url: 'http://localhost:4000/r/2' },
+        { id: '1', publication: { id: 's' }, createdAt: now, bookmarked: false, url: 'http://localhost:4000/r/1' },
+        { id: '2', publication: { id: 's' }, createdAt: now, bookmarked: true, url: 'http://localhost:4000/r/2' },
       ], type: 'posts' } },
       { type: 'setLoading', payload: false },
       { type: 'setPageInfo', payload: { hasNextPage: true, endCursor: 'cursor' } },
@@ -718,8 +718,8 @@ it('should fetch next anonymous feed page', async () => {
       feed: {
         pageInfo: { hasNextPage: true, endCursor: 'cursor' },
         edges: [
-          { node: { id: '1', source: { id: 's' }, createdAt: now.toISOString(), ratio: 2 } },
-          { node: { id: '2', source: { id: 's' }, createdAt: now.toISOString(), ratio: 1 } },
+          { node: { id: '1', source: { id: 's' }, createdAt: now.toISOString() } },
+          { node: { id: '2', source: { id: 's' }, createdAt: now.toISOString() } },
         ],
       },
     },
@@ -735,8 +735,8 @@ it('should fetch next anonymous feed page', async () => {
       { type: 'clearAd' },
       { type: 'addPosts', payload: { posts: [
         { type: 'ad', loading: true },
-        { id: '1', publication: { id: 's' }, createdAt: now, size: 'small', bookmarked: false, url: 'http://localhost:4000/r/1' },
-        { id: '2', publication: { id: 's' }, createdAt: now, size: 'medium', bookmarked: false, url: 'http://localhost:4000/r/2' },
+        { id: '1', publication: { id: 's' }, createdAt: now, bookmarked: false, url: 'http://localhost:4000/r/1' },
+        { id: '2', publication: { id: 's' }, createdAt: now, bookmarked: false, url: 'http://localhost:4000/r/2' },
       ], type: 'posts' } },
       { type: 'setLoading', payload: false },
       { type: 'setPageInfo', payload: { hasNextPage: true, endCursor: 'cursor' } },
