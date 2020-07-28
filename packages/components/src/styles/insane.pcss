@@ -1,27 +1,36 @@
 .insane {
-    display: flex;
-    width: 100%;
-    padding: 14px 24px;
-    flex-direction: row;
-    background: var(--theme-background-highlight);
-    align-items: center;
-    border-bottom: 1px solid var(--theme-background-primary);
-    overflow: hidden;
+  width: 100%;
+  flex-direction: row;
+  padding: 4px 0;
 
-    .roomy & {
-        padding: 18px 32px;
-    }
+  & .post__title, & .post__comment-name {
+    margin: 4px 0;
+  }
 
-    .cozy & {
-        padding: 22px 40px;
-    }
+  & .post__metadata, & .post__comment-content {
+    margin-top: 4px;
+  }
+
+  & .post__link, & .post__comment {
+    margin-top: 10px;
+  }
+
+  & .post__vseparator {
+    align-self: stretch;
+  }
 }
 
-.insane__link {
-    flex: 1;
-    text-decoration: none;
+.insane__main, .insane__sub {
+  display: flex;
+  flex-direction: column;
 }
 
-.insane__title {
-    color: var(--theme-primary);
+.insane__sub {
+  align-items: center;
+  padding: 0 16px;
+}
+
+.insane__main {
+  flex: 1;
+  padding: 0 24px 0 16px;
 }

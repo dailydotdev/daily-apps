@@ -120,7 +120,7 @@ it('should dispatch "setFilter" with publication filter', (done) => {
   const expectedPublication = feed.state.posts[0].publication;
   wrapper.vm.$nextTick(() => {
     wrapper
-      .find('.card__pub').trigger('click');
+      .find('.post__pub').trigger('click');
     expect(feed.actions.setFilter)
       .toBeCalledWith(expect.anything(), {
         type: 'publication',
@@ -135,7 +135,7 @@ it('should dispatch "setFilter" with publication filter when in insane mode', ()
   const expectedPublication = feed.state.posts[0].publication;
   store.state.ui.insaneMode = true;
   wrapper
-    .find('.insane__publication').trigger('click');
+    .find('.post__pub').trigger('click');
   expect(feed.actions.setFilter)
     .toBeCalledWith(expect.anything(), {
       type: 'publication',

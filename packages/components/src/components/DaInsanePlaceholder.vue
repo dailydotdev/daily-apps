@@ -1,32 +1,37 @@
 <template>
-  <div class="insane insane--ph">
-    <div class="ph-text"></div>
-    <div class="ph-text"></div>
+  <div class="post post-ph insane">
+    <div class="insane__sub">
+      <div class="post__vmargin post__rounded-image placeholder"></div>
+    </div>
+    <div class="insane__main">
+      <div class="post__vmargin post-ph__text placeholder"></div>
+      <div class="post__vmargin post-ph__text card-ph__text-medium placeholder"></div>
+      <div
+        class="post__vmargin post-ph__text card-ph__text-small  placeholder"></div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'DaInsandePlacholder',
+  name: 'DaInsanePlaceholder',
 };
 </script>
 
 <style>
-.insane.insane--ph {
-  background: var(--theme-background-secondary);
-  justify-content: space-between;
+.insane.post-ph {
+  padding-top: 8px;
+  padding-right: 8px;
 
-  & .ph-text {
-    height: 16px;
-    border-radius: 4px;
+  & .post-ph__text {
+    width: 95%;
 
-    &:first-child {
-      width: 24.6%;
-      min-width: 200px;
+    &.card-ph__text-medium {
+      width: 73%;
     }
 
-    &:last-child {
-      width: 100px;
+    &.card-ph__text-small {
+      width: 13%;
     }
   }
 }
