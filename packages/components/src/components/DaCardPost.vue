@@ -144,9 +144,13 @@ export default {
   }
 
   & .post__buttons {
+    margin-bottom: 8px;
+
     & .btn {
       flex: 1;
       max-width: 50%;
+      margin-left: 8px;
+      margin-right: 8px;
     }
 
     &.full-width {

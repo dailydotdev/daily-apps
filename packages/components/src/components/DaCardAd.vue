@@ -40,6 +40,10 @@ export default {
 
 <style>
 .card.post-ad {
+  & .post__title {
+    margin-top: 16px;
+  }
+
   & .card__image {
     position: relative;
     margin-top: auto;

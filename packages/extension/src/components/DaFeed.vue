@@ -260,7 +260,37 @@ export default {
 
 <style>
 .feed__insane {
-  border-radius: 8px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+
+  & .insane {
+    margin: 4px 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .roomy & {
+    max-width: 680px;
+
+    & .insane {
+      margin: 8px 0;
+    }
+  }
+
+  .cozy & {
+    max-width: 640px;
+
+    & .insane {
+      margin: 12px 0;
+    }
+  }
 }
 
 .feed__cards {

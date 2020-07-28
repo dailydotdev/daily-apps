@@ -147,6 +147,8 @@ export default {
 
   & .post__buttons {
     position: relative;
+    margin-left: -12px;
+    margin-bottom: 4px;
   }
 
   & .post__report-popup {

@@ -2,15 +2,19 @@
   position: relative;
   display: flex;
   border-radius: 16px;
-  border: 1px solid var(--theme-active);
+  border: 1px solid var(--theme-hover);
   background: var(--theme-background-highlight);
   box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.24);
   overflow: hidden;
 
   &:not(.disabled) {
     &:hover, &.hover {
-      border-color: var(--theme-card-hover-border);
+      border-color: var(--theme-active);
       box-shadow: 0 32px 32px -8px rgba(0, 0, 0, 0.4);
+
+      .bright & {
+        box-shadow: 0 32px 32px -8px rgba(0, 0, 0, 0.16);
+      }
 
       & .post__show-on-hover {
         display: flex;
@@ -26,6 +30,10 @@
     &:hover, &.hover {
       box-shadow: none;
     }
+  }
+
+  .bright & {
+    box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -74,9 +82,9 @@
     flex-direction: row;
     align-items: center;
     overflow: hidden;
+    margin-top: 4px;
 
     & .btn {
-      height: 44px;
       justify-content: center;
       --button-color: var(--theme-secondary);
 
