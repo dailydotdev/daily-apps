@@ -27,7 +27,6 @@ it('should fetch ad from server', async () => {
     source: 'CodeFund',
     company: 'CodeFund',
     pixel: ['https://codefund.io/p/4d84e196-7e61-4420-839f-4d25b0160d7e/pixel.png'],
-    size: 'small',
   }];
 
   expect(ads).toEqual(expected);
@@ -42,7 +41,6 @@ it('should fetch ad with ratio from server', async () => {
       link: 'https://codefund.io/c/4d84e196-7e61-4420-839f-4d25b0160d7e',
       source: 'CodeFund',
       company: 'CodeFund',
-      ratio: 0.75,
       backgroundColor: '#ffffff',
     }]);
 
@@ -55,7 +53,6 @@ it('should fetch ad with ratio from server', async () => {
     link: 'https://codefund.io/c/4d84e196-7e61-4420-839f-4d25b0160d7e',
     source: 'CodeFund',
     company: 'CodeFund',
-    size: 'large',
     backgroundColor: '#ffffff',
   }];
 

@@ -39,7 +39,7 @@ export class ProfileServiceImpl implements ProfileService {
 
   async fetchSettings(): Promise<Settings> {
     const res = await this.request.get(`${this.baseURL}/v1/settings`);
-    return JSON.parse(res.data);
+    return res.data;
   }
 
   async updateSettings(settings: Settings): Promise<void> {
@@ -48,7 +48,7 @@ export class ProfileServiceImpl implements ProfileService {
 
   async fetchNotifications(since: Date): Promise<Notification[]> {
     const res = await this.request.get(`${this.baseURL}/v1/notifications${since ? `?since=${since.toISOString()}` : ''}`);
-    return JSON.parse(res.data).map((x: any) => reviveJSON(x, dateReviver));
+    return res.data.map((x: any) => reviveJSON(x, dateReviver));
   }
 
 }
