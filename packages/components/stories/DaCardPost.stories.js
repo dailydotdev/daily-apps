@@ -74,7 +74,7 @@ storiesOf('DaCardPost', module)
         return {
           ...posts[0], title: this.title, image: this.image,
           bookmarked: this.bookmarked, read: this.read,
-          hasComments: this.hasComments, upvoted: this.upvoted,
+          numComments: this.hasComments, upvoted: this.upvoted,
           commented: this.commented,
         };
       },

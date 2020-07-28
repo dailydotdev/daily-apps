@@ -70,7 +70,7 @@ function navigate(keyCode, posts, search, backToMainFeed, { current, insaneMode 
 }
 
 function navigateDaily({ keyCode, target }) {
-  if (target instanceof HTMLInputElement) {
+  if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
     return;
   }
   const { daFeedRef, hoveredPost } = store.state.feed;

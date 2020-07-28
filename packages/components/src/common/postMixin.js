@@ -30,6 +30,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    sendingComment: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
@@ -37,7 +41,7 @@ export default {
       notifying: false,
       notification: '',
       selectedComment: null,
-      enablePostComment: false,
+      hasPostComment: false,
     };
   },
 
@@ -83,11 +87,11 @@ export default {
     },
 
     onPostCommentClick() {
-      this.$emit('post-comment', { post: this.post, comment: this.$refs.comment.value });
+      this.$emit('comment', { post: this.post, comment: this.$refs.comment.value });
     },
 
     onCommentInput() {
-      this.enablePostComment = !!this.$refs.comment.value.length;
+      this.hasPostComment = !!this.$refs.comment.value.length;
     },
   },
 
@@ -102,6 +106,10 @@ export default {
 
     showComment() {
       return this.selectedComment !== null;
+    },
+
+    enablePostComment() {
+      return !this.sendingComment && this.hasPostComment;
     },
 
     cls() {

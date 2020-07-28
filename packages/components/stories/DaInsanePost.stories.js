@@ -83,7 +83,7 @@ storiesOf('DaInsanePost', module)
         return {
           ...posts[0], title: this.title,
           bookmarked: this.bookmarked, read: this.read,
-          hasComments: this.hasComments, upvoted: this.upvoted,
+          numComments: this.hasComments, upvoted: this.upvoted,
           commented: this.commented,
         };
       },
