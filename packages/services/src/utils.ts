@@ -1,26 +1,3 @@
-function getSizeFromRatio(ratio: number): string {
-  if (ratio > 1.5) {
-    return 'small';
-  }
-
-  if (ratio <= 0.75) {
-    return 'large';
-  }
-
-  return 'medium';
-}
-
-export function ratioToSize(obj: any, def: string = 'small'): any {
-  const newObj = Object.assign({}, obj);
-  if (newObj.ratio) {
-    newObj.size = getSizeFromRatio(newObj.ratio);
-  } else {
-    newObj.size = def;
-  }
-  delete newObj.ratio;
-  return newObj;
-}
-
 type Reviver = (key: any, value: any) => any;
 const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
 

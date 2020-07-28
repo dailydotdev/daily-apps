@@ -51,7 +51,6 @@ export class AuthServiceImpl implements AuthService {
     this.baseURL = baseURL;
     this.request = axios.create({
       withCredentials: true,
-      timeout: 10000,
       headers: app ? {app} : {},
     });
   }
