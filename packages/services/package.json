@@ -18,8 +18,7 @@
     "test": "jest",
     "test:ci": "JEST_JUNIT_OUTPUT=../../test-results/services/junit.xml jest --ci --reporters=jest-junit",
     "build": "rollup -c",
-    "watch": "rollup -cw",
-    "postinstall": "cd node_modules/redaxios && npx microbundle && cd ../../"
+    "watch": "rollup -cw"
   },
   "devDependencies": {
     "@types/jest": "^23.3.8",
@@ -37,7 +36,7 @@
   },
   "dependencies": {
     "@types/es6-promise": "^3.3.0",
-    "redaxios": "developit/redaxios#4841822f4e9e9fd7d666e649e31a056aa34fd5d3"
+    "redaxios": "^0.3.0"
   },
   "jest": {
     "moduleFileExtensions": [
