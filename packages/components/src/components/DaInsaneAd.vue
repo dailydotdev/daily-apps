@@ -1,49 +1,34 @@
 <template>
-  <div class="insane insane--ad hide-menu" :class="cls">
-    <a :href="ad.link" class="insane__link post__link" @click="$emit('click', ad)"
-        target="_blank" rel="noopener noreferrer">
-      <h5 class="insane__title">
-        <da-line-clamp :text="ad.description" :lines="3"/>
-      </h5>
-    </a>
-    <a class="insane__promoted micro2 reveal"
-       :href="ad.referralLink" v-if="ad && ad.referralLink">{{ promoted }}</a>
-    <span class="insane__promoted micro2" v-else>{{ promoted }}</span>
-    <img v-for="(item, index) in pixel" :key="index" :src="item" class="insane__pixel"/>
-    <div class="insane__reveal reveal"></div>
+  <div class="post post-ad insane" :class="cls">
+    <div class="post__vseparator post__vmargin"></div>
+    <div class="insane__main">
+      <a class="post__link" :href="ad.link" target="_blank" rel="noopener noreferrer"
+         :title="ad.description" @click="onClick">
+        <div class="post__title lil1 multiline-text-overflow">{{ad.description}}</div>
+        <div class="post__metadata">Promoted</div>
+      </a>
+    </div>
+    <img v-for="(item, index) in pixel" :key="index" :src="item" class="post__pixel"/>
   </div>
 </template>
 
 <script>
-import DaLineClamp from './DaLineClamp.vue';
 import adMixin from '../common/adMixin';
 
 export default {
-  name: 'DaInsandeAd',
+  name: 'DaInsaneAd',
   mixins: [adMixin],
-  components: {
-    DaLineClamp,
-  },
-  computed: {
-    cls() {
-      return {
-        hover: this.selected,
-      };
-    },
-  },
 };
 </script>
 
 <style>
-.insane__promoted {
-  color: var(--theme-secondary);
-  text-transform: uppercase;
-  text-decoration: none;
-}
+.insane.post-ad {
+  & .post__vseparator {
+    margin-left: 56px;
+  }
 
-.insane__pixel {
-  display: none;
-  width: 0;
-  height: 0;
+  & .post__metadata {
+    margin: 10px 0;
+  }
 }
 </style>

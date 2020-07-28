@@ -14,14 +14,14 @@ localVue.directive('tooltip', tooltip(localVue));
 it('should emit bookmark event on click', () => {
   const post = posts[0];
   const wrapper = shallowMount(DaCardPost, { localVue, propsData: { post } });
-  wrapper.find('.card__bookmark').trigger('click');
+  wrapper.find('.post__bookmark').trigger('click');
   expect(wrapper.emitted().bookmark[0]).toEqual([{ post, bookmarked: true, event: expect.anything() }]);
 });
 
 it('should emit menu event on click', () => {
   const post = posts[0];
   const wrapper = shallowMount(DaCardPost, { localVue, propsData: { post } });
-  wrapper.find('.card__menu').trigger('click');
+  wrapper.find('.post__menu').trigger('click');
   expect(wrapper.emitted().menu[0][0].post).toEqual(post);
 });
 
@@ -34,14 +34,14 @@ it('should set bookmarked class when bookmarked', () => {
 it('should set read time', () => {
   const post = posts[1];
   const wrapper = mount(DaCardPost, { localVue, propsData: { post } });
-  expect(wrapper.find('.card__metadata > *:last-child').element.innerHTML)
+  expect(wrapper.find('.post__metadata > *:last-child').element.innerHTML)
     .toEqual('2m read time');
 });
 
 it('should show publication date with proper formatting', () => {
   const post = posts[1];
   const wrapper = mount(DaCardPost, { localVue, propsData: { post } });
-  expect(wrapper.find('.card__metadata > *:first-child').element.innerHTML)
+  expect(wrapper.find('.post__metadata > *:first-child').element.innerHTML)
     .toEqual('Jun 12, 2018');
 });
 
@@ -62,13 +62,13 @@ it('should show notification', () => {
 it('should emit publication event on click', () => {
   const post = posts[0];
   const wrapper = shallowMount(DaCardPost, { localVue, propsData: { post } });
-  wrapper.find('.card__pub').trigger('click');
+  wrapper.find('.post__pub').trigger('click');
   expect(wrapper.emitted().publication[0]).toEqual([{ pub: post.publication }]);
 });
 
 it('should emit upvote event on click', () => {
   const post = posts[0];
   const wrapper = shallowMount(DaCardPost, { localVue, propsData: { post } });
-  wrapper.find('.card__buttons button:first-child').trigger('click');
+  wrapper.find('.post__buttons button:first-child').trigger('click');
   expect(wrapper.emitted().upvote[0]).toEqual([post]);
 });

@@ -2,8 +2,6 @@ import {
   getPostByElement,
   getAbovePost,
   getBelowPost,
-  getLeftPost,
-  getRightPost,
   getTopLeftMostPostEl,
   hoverPost,
 } from '@daily/components/src/common/domHelper';
@@ -20,13 +18,13 @@ export const validKeys = {
 };
 
 function getNewPostEl(keyCode, currentElement, insaneMode) {
-  if (keyCode === validKeys.h && !insaneMode) return getLeftPost(currentElement);
+  if (keyCode === validKeys.h && !insaneMode) return getAbovePost(currentElement);
 
-  if (keyCode === validKeys.l && !insaneMode) return getRightPost(currentElement);
+  if (keyCode === validKeys.l && !insaneMode) return getBelowPost(currentElement);
 
-  if (keyCode === validKeys.j) return getBelowPost(currentElement);
+  if (keyCode === validKeys.j && insaneMode) return getBelowPost(currentElement);
 
-  if (keyCode === validKeys.k) return getAbovePost(currentElement);
+  if (keyCode === validKeys.k && insaneMode) return getAbovePost(currentElement);
 
   return currentElement;
 }
@@ -78,7 +76,7 @@ function navigateDaily({ keyCode, target }) {
   const { daFeedRef, hoveredPost } = store.state.feed;
   const parent = daFeedRef().$parent;
   const search = { enable: parent.enableSearch };
-  const options = { insaneMode: daFeedRef.insaneMode, current: hoveredPost };
+  const options = { insaneMode: store.state.ui.insaneMode, current: hoveredPost };
   const newHoveredPost = navigate(
     keyCode,
     daFeedRef().$refs.posts,

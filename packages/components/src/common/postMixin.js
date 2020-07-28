@@ -92,13 +92,6 @@ export default {
   },
 
   computed: {
-    privateSource() {
-      if (this.post && this.post.publication) {
-        return this.post.publication.public === false;
-      }
-      return false;
-    },
-
     bookmarkTooltip() {
       return this.post.bookmarked ? 'Remove bookmark' : 'Bookmark';
     },
@@ -115,7 +108,7 @@ export default {
       return {
         read: (this.post.read && !this.showComment) || this.showCommentPopup || this.notifying,
         bookmarked: this.post.bookmarked,
-        hover: this.menuOpened || this.bookmarksMenuOpened,
+        hover: this.menuOpened || this.bookmarksMenuOpened || this.selected,
         disabled: this.showCommentPopup || this.notifying,
       };
     },

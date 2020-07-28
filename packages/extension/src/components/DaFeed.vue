@@ -261,7 +261,6 @@ export default {
 <style>
 .feed__insane {
   border-radius: 8px;
-  overflow: hidden;
 }
 
 .feed__cards {

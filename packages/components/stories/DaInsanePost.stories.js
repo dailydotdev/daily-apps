@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
+import {storiesOf} from '@storybook/vue';
+import {action} from '@storybook/addon-actions';
 import {
   withKnobs, text, array, select, boolean,
 } from '@storybook/addon-knobs';
@@ -15,7 +15,7 @@ Vue.filter('mdyDate', mdyDateFilter);
 storiesOf('DaInsanePost', module)
   .addDecorator(withKnobs)
   .add('select post', () => ({
-    components: { DaInsanePost },
+    components: {DaInsanePost},
     template: '<da-insane-post :post="post"/>',
     props: {
       index: {
@@ -29,7 +29,7 @@ storiesOf('DaInsanePost', module)
     },
   }))
   .add('actions', () => ({
-    components: { DaInsanePost },
+    components: {DaInsanePost},
     template: '<da-insane-post :post="post" @click="click" @bookmark="bookmark" @menu="menu" @publication="publication"/>',
     data() {
       return {
@@ -44,14 +44,11 @@ storiesOf('DaInsanePost', module)
     },
   }))
   .add('fully customized', () => ({
-    components: { DaInsanePost },
-    template: '<da-insane-post :post="post" :show-menu="showMenu" :menu-opened="menuOpened"/>',
+    components: {DaInsanePost},
+    template: '<da-insane-post :post="post" :show-menu="showMenu" :menu-opened="menuOpened" :bookmarks-menu-opened="bookmarksMenuOpened" :show-comment-popup="showCommentPopup"/>',
     props: {
       title: {
         default: text('title', posts[0].title),
-      },
-      tags: {
-        default: array('tags', posts[0].tags),
       },
       bookmarked: {
         default: boolean('bookmarked', posts[0].bookmarked),
@@ -62,15 +59,32 @@ storiesOf('DaInsanePost', module)
       menuOpened: {
         default: boolean('menu opened', false),
       },
+      bookmarksMenuOpened: {
+        default: boolean('bookmarks menu opened', false),
+      },
       read: {
         default: boolean('read', posts[0].read),
+      },
+      hasComments: {
+        default: boolean('hasComments', false),
+      },
+      upvoted: {
+        default: boolean('upvoted', false),
+      },
+      commented: {
+        default: boolean('commented', false),
+      },
+      showCommentPopup: {
+        default: boolean('show comment popup', false),
       },
     },
     computed: {
       post() {
         return {
-          ...posts[0], title: this.title, tags: this.tags, bookmarked: this.bookmarked,
-          read: this.read,
+          ...posts[0], title: this.title,
+          bookmarked: this.bookmarked, read: this.read,
+          hasComments: this.hasComments, upvoted: this.upvoted,
+          commented: this.commented,
         };
       },
     },

@@ -1,240 +1,160 @@
 <template>
-  <div class="insane__wrapper">
-    <div class="insane insane--post" :class="cls">
-      <a :href="post.url" class="insane__link post__link"
-          @click="$emit('click', post)" target="_blank" rel="noopener noreferrer">
-        <h5 class="insane__title">
-          <da-line-clamp :text="post.title" :lines="3"/>
-        </h5>
-        <div class="insane__tags micro1" v-tooltip="tags">
-          <span class="insane__tags__read-time"
-                v-if="post.readTime">{{ post.readTime }} min read</span>
-          <span v-if="post.readTime && tags.length > 0"> / </span>
-          <da-line-clamp :text="tags" :lines="1" :truncate="truncateTags"/>
-        </div>
-      </a>
-      <span class="insane__views micro2 reveal"
-            v-if="post.createdAt"> {{post.createdAt | mdyDate}} </span>
-      <button class="btn-icon insane__publication reveal" v-if="post.publication.name"
-              @click="$emit('publication', { pub: post.publication })">
-        <img class="insane__icon lazyload"
-             :data-src="post.publication.image"
-             :alt="post.publication.name" v-tooltip="post.publication.name"
+  <div class="post post-article insane" :class="cls">
+    <div class="insane__sub">
+      <button class="btn-icon post__back" @click="onBackClick" v-if="showComment"
+              v-tooltip="'Back'">
+        <svgicon name="arrow"/>
+      </button>
+      <button class="post__pub post__rounded-image" @click="onPublicationClick"
+              v-show="!showComment">
+        <img class="lazyload" :data-src="post.publication.image" :alt="post.publication.name"
+             v-tooltip="post.publication.name"
              :key="post.publication.name"/>
       </button>
-      <div class="insane__reveal reveal">
-        <button class="btn-icon insane__reveal__bookmark"
-                v-tooltip="post.bookmarked ? 'Remove bookmark' : 'Bookmark'"
-                @click="$emit('bookmark', { event: $event, post, bookmarked: !post.bookmarked })">
+      <button class="post__rounded-image post__profile-image"
+              :class="{ selected: selectedComment === item }" v-for="item in comments"
+              :key="item.user.id"
+              @click="onFeaturedCommentClick(item)">
+        <img class="lazyload" :data-src="item.user.image" :alt="`${item.user.name}'s image`"
+             v-tooltip="`See ${item.user.name.split(' ')[0]}'s comment`"/>
+      </button>
+    </div>
+    <div class="post__vseparator post__vmargin"></div>
+    <div class="insane__main">
+      <a class="post__link" :href="post.url" target="_blank" rel="noopener noreferrer"
+         :title="post.title" @click="onLinkClick" v-show="!showComment">
+        <div class="post__title lil1 multiline-text-overflow">{{post.title}}</div>
+        <div class="post__metadata">
+          <div>{{post.createdAt | mdyDate}}</div>
+          <template v-if="post.readTime">
+            <div class="post__metadata-separator"/>
+            <div>{{post.readTime}}m read time</div>
+          </template>
+        </div>
+      </a>
+      <template v-if="showComment">
+        <div class="post__comment">
+          <div class="post__comment-name lil1 singleline-text-overflow">
+            {{selectedComment.user.name}}
+          </div>
+          <div class="post__comment-content lil1 multiline-text-overflow">
+            {{selectedComment.content}}
+          </div>
+        </div>
+        <div class="post__buttons">
+          <a class="btn btn-menu"
+             :href="selectedComment.permalink" target="_blank"
+             rel="noopener noreferrer" @click="onCommentClick">
+            <svgicon name="comment"/>
+            <span>Join Discussion</span>
+          </a>
+        </div>
+      </template>
+      <div class="post__buttons" v-show="!showComment">
+        <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
+                @click="onUpvoteClick">
+          <svgicon name="upvote"/>
+          <span>Upvote</span>
+        </button>
+        <template v-if="post.hasComments">
+          <a class="btn btn-menu" :class="{ 'post__action-completed': post.commented}"
+             :href="post.commentsPermalink" target="_blank"
+             rel="noopener noreferrer" @click="onCommentClick">
+            <svgicon name="comment"/>
+            <span>Join</span>
+          </a>
+        </template>
+        <button class="btn-icon post__bookmark post__show-on-hover post__align-right"
+                :class="{ hover: bookmarksMenuOpened }" @click="onBookmarkClick"
+                v-tooltip="bookmarkTooltip" v-show="!showComment">
           <svgicon name="bookmark"/>
         </button>
-        <button class="btn-icon insane__reveal__menu" v-tooltip="'More'"
-                @click="$emit('menu', { post, event: $event })" v-if="showMenu">
-          <svgicon name="menu" class="menu__icon"/>
+        <button class="btn-icon post__show-on-hover post__menu" :class="{ hover: menuOpened }"
+                @click="onMenuClick"
+                v-tooltip="'More'" v-if="showMenu" v-show="!showComment">
+          <svgicon name="menu"/>
+        </button>
+        <div class="post__report-popup invert nuggets" v-if="notifying">
+          {{notification}}
+        </div>
+      </div>
+    </div>
+    <div class="post__comment-popup invert" v-if="showCommentPopup">
+      <div class="micro2 post__vmargin">Discussing this post with the community is
+        fun!
+      </div>
+      <textarea ref="comment" class="post__vmargin"
+                placeholder="Start a new discussion on this post" required
+                @input="onCommentInput"></textarea>
+      <div class="post__comment-popup__buttons">
+        <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
+                @click="onUpvoteClick">
+          <svgicon name="upvote"/>
+          <span>Upvote</span>
+        </button>
+        <button class="btn btn-invert"
+                @click="onPostCommentClick" :disabled="!enablePostComment">
+          <svgicon name="comment"/>
+          <span>Post</span>
         </button>
       </div>
-      <div v-if="privateSource" class="insane__private-mark"></div>
-      <transition name="insane-notification">
-        <div class="insane__notification nuggets" v-if="notifying">
-          {{ notification }}
-        </div>
-      </transition>
     </div>
-    <svgicon name="menu" class="insane__reveal__menu--duplicate" slot="other" v-if="menuOpened"/>
-    <svgicon name="bookmark" class="insane__reveal__bookmark--duplicate" slot="other"
-            v-if="bookmarksMenuOpened"/>
   </div>
 </template>
 
 <script>
 import 'lazysizes';
 import postMixin from '../common/postMixin';
-import DaLineClamp from './DaLineClamp.vue';
 
 export default {
   name: 'DaInsanePost',
   mixins: [postMixin],
-  components: {
-    DaLineClamp,
-  },
-
-  computed: {
-    tags() {
-      return (this.post.tags || []).map(t => `#${t}`).join(',');
-    },
-
-    cls() {
-      return {
-        bookmarked: this.post.bookmarked,
-        read: this.post.read,
-        'menu-opened': this.menuOpened || this.bookmarksMenuOpened,
-        'hide-menu': !this.showMenu,
-        hover: this.selected,
-      };
-    },
-  },
-
-  mounted() {
-    import('../../icons/bookmark');
-    import('../../icons/menu');
-  },
 };
 </script>
 
 <style>
-.insane__wrapper {
-  position: relative;
-  width: 100%;
+.insane.post-article {
+  & .insane__sub {
+    & > * {
+      margin: 3px;
 
-  & .menu__icon {
-    opacity: 0;
-  }
-}
+      &:first-child {
+        margin-top: 12px;
+      }
 
-.insane--ad .insane__reveal {
-  width: 56px;
-}
-
-.insane--ad,
-.insane--post {
-  position: relative;
-  transition: opacity 0.1s;
-  will-change: transform;
-
-  & .insane__link {
-    outline: none;
-  }
-
-  & .reveal {
-    transition: transform 0.2s ease-out;
-  }
-
-  &:hover, &.menu-opened, &.hover {
-    & .reveal {
-      transform: translateX(-88px);
+      &:last-child {
+        margin-bottom: 12px;
+      }
     }
   }
 
-  &.hide-menu:hover .reveal, &.hide-menu.hover .reveal {
-    transform: translateX(-56px);
-  }
+  & .post__comment-popup {
+    left: 56px;
+    right: 0;
+    top: 0;
+    height: 100%;
 
-  &.read {
-    background: var(--theme-background-secondary);
-
-    & .insane__title {
-      color: var(--theme-secondary);
+    & textarea {
+      padding: 6px 12px;
     }
   }
 
-  & .menu__icon {
-    opacity: 1;
+  &.disabled {
+    & .insane__sub, & .insane__main {
+      pointer-events: none;
+    }
   }
-}
 
-.menu-opened.insane--post {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-.insane__tags {
-  margin-top: 4px;
-  color: var(--theme-disabled);
-  max-width: 600px;
-
-  & > * {
-    word-break: break-all;
+  & .post__buttons {
+    position: relative;
   }
-}
 
-.insane__views {
-  color: var(--theme-secondary);
-}
-
-.insane__publication {
-  margin-left: 8px;
-}
-
-.insane__icon {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-}
-
-.insane__reveal {
-  position: absolute;
-  display: flex;
-  left: 100%;
-  top: 0;
-  height: 100%;
-  padding: 12px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  background: var(--theme-background-primary);
-
-  & .btn-icon {
-    margin: 0 2px;
+  & .post__report-popup {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    padding: 0 16px;
   }
-}
-
-.insane__notification {
-  position: absolute;
-  display: flex;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 222px;
-  height: 40px;
-  align-items: center;
-  justify-content: center;
-  margin: auto 0;
-  color: var(--color-salt-10);
-  background: var(--color-water-60);
-  border-radius: 8px 0 0 8px;
-  z-index: 10;
-}
-
-.insane__wrapper .insane__reveal__menu--duplicate,
-.insane__wrapper .insane__reveal__bookmark--duplicate {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-}
-
-.insane__wrapper .insane__reveal__menu--duplicate {
-  right: 13px;
-  bottom: 25px;
-  color: var(--theme-primary);
-}
-
-.insane__wrapper .insane__reveal__bookmark--duplicate {
-  right: 47px;
-  bottom: 29px;
-  color: var(--color-burger-60);
-}
-
-.bookmarked .insane__reveal__bookmark .svg-icon {
-  color: var(--color-burger-60);
-}
-
-.insane-notification-enter-active, .insane-notification-leave-active {
-  transition: transform 0.2s;
-}
-
-.insane-notification-enter, .insane-notification-leave-to {
-  transform: translateX(100%);
-}
-
-.insane__private-mark {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  height: 12px;
-  margin: auto 0;
-  background: var(--theme-premium);
-  border-radius: 2px;
 }
 </style>

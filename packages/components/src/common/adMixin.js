@@ -14,25 +14,14 @@ export default {
     pixel() {
       return this.ad.pixel || [];
     },
-
-    promoted() {
-      if (this.ad.company) {
-        return `/* Promoted by ${this.ad.company} */`;
-      }
-
-      return '/* Promoted */';
-    },
+    cls() {
+      return {
+        hover: this.selected,
+      };
+    }
   },
 
   methods: {
-    truncatePromoted(text, maxLength) {
-      const fallback = '/* Promoted */';
-      if (fallback.length < maxLength) {
-        return fallback;
-      }
-      return '';
-    },
-
     onClick() {
       this.$emit('click', this.ad);
     },
