@@ -63,7 +63,7 @@
            :href="selectedComment.permalink" target="_blank"
            rel="noopener noreferrer" @click="onCommentClick">
           <svgicon name="comment"/>
-          <span>Join Discussion</span>
+          <span>Comment</span>
         </a>
       </div>
     </template>
@@ -79,16 +79,15 @@
            :href="post.commentsPermalink" target="_blank"
            rel="noopener noreferrer" @click="onCommentClick">
           <svgicon name="comment"/>
-          <span>Join</span>
+          <span>Comments</span>
         </a>
       </template>
     </div>
     <div class="post__comment-popup invert" v-if="showCommentPopup">
-      <div class="micro2 card__hmargin post__vmargin">Discussing this post with the community is
-        fun!
+      <div class="micro2 card__hmargin post__vmargin">{{commentPopupTitle}}
       </div>
       <textarea ref="comment" class="post__vmargin"
-                placeholder="Start a new discussion on this post" required
+                :placeholder="commentPopupPlaceholder" required
                 @input="onCommentInput"></textarea>
       <div class="post__comment-popup__buttons">
         <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"

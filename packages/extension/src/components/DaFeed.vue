@@ -16,7 +16,7 @@
                         :bookmarks-menu-opened="bookmarkPostId === item.id"
                         :selected="focusedPost === item"
                         :show-comment-popup="commentPostId === item.id"
-                        :sending-comment="sendingComment"/>
+                        :sending-comment="sendingComment" :comment="lastSavedComment"/>
       </template>
     </div>
     <div class="feed__cards" v-else>
@@ -35,7 +35,7 @@
                       :bookmarks-menu-opened="bookmarkPostId === item.id"
                       :selected="focusedPost === item"
                       :show-comment-popup="commentPostId === item.id"
-                      :sending-comment="sendingComment"/>
+                      :sending-comment="sendingComment" :comment="lastSavedComment"/>
       </template>
     </div>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
@@ -74,6 +74,7 @@ import {
   mapState, mapActions, mapMutations, mapGetters,
 } from 'vuex';
 import { contentService } from '../common/services';
+import { getCache, LAST_COMMENT_KEY, setCache } from '../common/cache';
 
 export default {
   name: 'DaFeed',
@@ -97,6 +98,7 @@ export default {
       showCreateList: false,
       commentPostId: null,
       sendingComment: false,
+      lastSavedComment: '',
     };
   },
   computed: {
@@ -211,38 +213,63 @@ export default {
 
     async onUpvote({ post, upvoted }) {
       ga('send', 'event', 'Post', 'Upvote', upvoted ? 'Add' : 'Remove');
-      await this.toggleUpvote({ id: post.id, upvoted });
-      if (upvoted) {
-        this.updateCommentPopup(post);
+      if (this.isLoggedIn) {
+        await this.toggleUpvote({ id: post.id, upvoted });
+        if (upvoted) {
+          await this.updateCommentPopup(post);
+        }
+      } else {
+        this.$emit('login');
       }
     },
 
-    updateCommentPopup(post) {
+    async updateCommentPopup(post) {
+      this.lastSavedComment = '';
       if (post.numComments > 0) {
         this.commentPostId = null;
       } else {
         this.commentPostId = post.id;
         ga('send', 'event', 'Comment Popup', 'Impression');
+        await this.saveLastComment();
       }
     },
 
     async onComment({ post, comment }) {
-      this.sendingComment = true;
-      ga('send', 'event', 'Comment Popup', 'Comment');
+      this.lastSavedComment = comment;
+      if (this.isLoggedIn) {
+        this.sendingComment = true;
+        ga('send', 'event', 'Comment Popup', 'Comment');
+        try {
+          const queries = await import(/* webpackChunkName: "queries" */ '../graphql/feed');
+          const res = await this.$apollo.mutate({
+            mutation: queries.COMMENT_ON_POST_MUTATION,
+            variables: { postId: post.id, content: comment },
+          });
+          window.open(res.data.commentOnPost.permalink, '_blank');
+          this.commentPostId = null;
+          this.lastSavedComment = '';
+          // eslint-disable-next-line no-param-reassign
+          post.numComments = 1;
+          // eslint-disable-next-line no-param-reassign
+          post.commented = true;
+          await this.saveLastComment();
+        } finally {
+          this.sendingComment = false;
+        }
+      } else {
+        await this.saveLastComment();
+        this.$emit('login');
+      }
+    },
+
+    async saveLastComment() {
       try {
-        const queries = await import(/* webpackChunkName: "queries" */ '../graphql/feed');
-        const res = await this.$apollo.mutate({
-          mutation: queries.COMMENT_ON_POST_MUTATION,
-          variables: { postId: post.id, content: comment },
+        await setCache(LAST_COMMENT_KEY, {
+          postId: this.commentPostId,
+          comment: this.lastSavedComment,
         });
-        window.open(res.data.commentOnPost.permalink, '_blank');
-        this.commentPostId = null;
-        // eslint-disable-next-line no-param-reassign
-        post.numComments = 1;
-        // eslint-disable-next-line no-param-reassign
-        post.commented = true;
-      } finally {
-        this.sendingComment = false;
+      } catch (err) {
+        // Do nothing
       }
     },
 
@@ -298,9 +325,19 @@ export default {
       removePost: 'feed/removePost',
     }),
   },
-  mounted() {
+  async mounted() {
     import('@daily/components/icons/v');
     import('@daily/components/icons/plus');
+
+    try {
+      const cachedComment = await getCache(LAST_COMMENT_KEY, null);
+      if (cachedComment) {
+        this.commentPostId = cachedComment.postId;
+        this.lastSavedComment = cachedComment.comment;
+      }
+    } catch (err) {
+      // Do nothing
+    }
   },
 };
 </script>
