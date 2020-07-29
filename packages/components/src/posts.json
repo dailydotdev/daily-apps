@@ -17,8 +17,7 @@
     "featuredComments": [
       {
         "content": "One of the best articles about the prosecutor's fallacy 🔥",
-        "user": {
-          "id": "1",
+        "author": {
           "name": "Ido Shamun",
           "image": "https://avatars2.githubusercontent.com/u/1993245?v=4"
         },
@@ -26,8 +25,7 @@
       },
       {
         "content": "Very nice!",
-        "user": {
-          "id": "2",
+        "author": {
           "name": "Nimrod Kramer",
           "image": "https://pbs.twimg.com/profile_images/918841427559317504/DPfh86Tl_400x400.jpg"
         },
@@ -35,8 +33,7 @@
       },
       {
         "content": "Just perfect ✨",
-        "user": {
-          "id": "3",
+        "author": {
           "name": "Tsahi Matsliah",
           "image": "https://pbs.twimg.com/profile_images/1149607413365919745/FbVM3UrO_400x400.jpg"
         },
