@@ -12,11 +12,11 @@
              :key="post.publication.name"/>
       </button>
       <button class="post__rounded-image post__profile-image"
-              :class="{ selected: selectedComment === item }" v-for="item in comments"
-              :key="item.user.id"
+              :class="{ selected: selectedComment === item }" v-for="(item, index) in comments"
+              :key="index"
               @click="onFeaturedCommentClick(item)">
-        <img class="lazyload" :data-src="item.user.image" :alt="`${item.user.name}'s image`"
-             v-tooltip="`See ${item.user.name.split(' ')[0]}'s comment`"/>
+        <img class="lazyload" :data-src="item.author.image" :alt="`${item.author.name}'s image`"
+             v-tooltip="`See ${item.author.name.split(' ')[0]}'s comment`"/>
       </button>
     </div>
     <div class="post__vseparator post__vmargin"></div>
@@ -35,7 +35,7 @@
       <template v-if="showComment">
         <div class="post__comment">
           <div class="post__comment-name lil1 singleline-text-overflow">
-            {{selectedComment.user.name}}
+            {{selectedComment.author.name}}
           </div>
           <div class="post__comment-content lil1 multiline-text-overflow">
             {{selectedComment.content}}
