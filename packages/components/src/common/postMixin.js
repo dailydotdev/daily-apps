@@ -3,6 +3,7 @@ import '../../icons/menu';
 import '../../icons/upvote';
 import '../../icons/comment';
 import '../../icons/arrow';
+import commentPopupText from '../commentPopupText';
 
 export default {
   props: {
@@ -34,14 +35,23 @@ export default {
       type: Boolean,
       default: false,
     },
+    comment: {
+      type: String,
+      default: null,
+    },
   },
 
   data() {
+    const r = Math.random();
+    const selected = commentPopupText[Math.floor(r * commentPopupText.length)];
+
     return {
       notifying: false,
       notification: '',
       selectedComment: null,
       hasPostComment: false,
+      commentPopupTitle: selected.title,
+      commentPopupPlaceholder: selected.placeholder,
     };
   },
 
@@ -118,7 +128,16 @@ export default {
         bookmarked: this.post.bookmarked,
         hover: this.menuOpened || this.bookmarksMenuOpened || this.selected,
         disabled: this.showCommentPopup || this.notifying,
+        'show-comment-popup': this.showCommentPopup,
       };
     },
+  },
+
+  mounted() {
+    if (this.showCommentPopup && this.comment && this.comment.length) {
+      const el = this.$el.querySelector('textarea');
+      el.value = this.comment;
+      el.dispatchEvent(new Event('input'));
+    }
   },
 };

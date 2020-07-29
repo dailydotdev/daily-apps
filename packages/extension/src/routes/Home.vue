@@ -119,7 +119,8 @@
           </p>
         </div>
       </template>
-      <da-feed v-else-if="showFeed" ref='feed' :bookmark-lists="bookmarkLists"/>
+      <da-feed v-else-if="showFeed" ref='feed' :bookmark-lists="bookmarkLists"
+               @login="onLogin('Feed')"/>
       <DaSpinner v-if="loading" class="feed-spinner"/>
     </main>
     <div id="anchor" ref="anchor"></div>

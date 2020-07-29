@@ -115,7 +115,7 @@ beforeEach(() => {
   user = {
     namespaced: true,
     state: {
-      profile: null,
+      profile: {id: '1'},
     },
     getters: {
       isLoggedIn: state => !!state.profile,
@@ -157,6 +157,7 @@ it('should dispatch "setFilter" with publication filter when in insane mode', ()
 });
 
 it('should not show menu button when logged out', () => {
+  store.state.user.profile = null;
   const wrapper = mount(DaFeed, {store, localVue});
   expect(wrapper.vm.$refs.posts[0].showMenu).toEqual(false);
 });
