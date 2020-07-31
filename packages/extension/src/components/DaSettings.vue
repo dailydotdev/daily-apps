@@ -21,6 +21,8 @@
                  :checked="theme > 0" @toggle="toggleTheme"/>
       <da-switch label="Hide read posts" class="small settings__hide-read-posts"
                  :checked="showOnlyNotReadPosts" @toggle="toggleShowOnlyNotReadPosts"/>
+      <da-switch label="Open Links in New Tab" class="small settings__toggle-open-tab"
+                 :checked="openNewTab" @toggle="toggleOpenNewTab"/>
     </div>
   </div>
 </template>
@@ -48,7 +50,7 @@ export default {
   },
   computed: {
     ...mapState('ui', [
-      'showTopSites', 'insaneMode', 'spaciness', 'showOnlyNotReadPosts',
+      'showTopSites', 'insaneMode', 'spaciness', 'showOnlyNotReadPosts', 'openNewTab',
     ]),
     ...mapState({
       theme: state => themes.indexOf(state.ui.theme),
@@ -77,6 +79,10 @@ export default {
       const newTheme = pressed ? themes[1] : themes[0];
       this.$store.dispatch('ui/setTheme', newTheme);
       ga('send', 'event', 'Settings', 'Theme', this.theme);
+    },
+    toggleOpenNewTab(val) {
+      this.$store.commit('ui/setOpenNewTab', val);
+      ga('send', 'event', 'Settings', 'Click', 'Open New Tab');
     },
     ...mapActions({
       refreshFeed: 'feed/refreshFeed',
