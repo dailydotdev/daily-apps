@@ -147,6 +147,10 @@ export default {
     dndModeTime(state) {
       return state.dndModeTime;
     },
+
+    openNewTab(state) {
+      return state.openNewTab;
+    },
   },
   actions: {
     setTheme({ commit, state }, theme) {
