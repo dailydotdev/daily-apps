@@ -101,7 +101,7 @@ const plugin = (store) => {
     case 'ui/setInsaneMode':
     case 'ui/setShowTopSites':
     case 'ui/setSpaciness':
-    case 'ui/openNewTab':
+    case 'ui/setOpenNewTab':
     case 'ui/setShowOnlyNotReadPosts':
       // TODO: handle error
       await syncSettings(state);
