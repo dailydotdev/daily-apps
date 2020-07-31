@@ -15,6 +15,7 @@ it('should fetch settings from server', async () => {
     showTopSites: false,
     theme: 'darcula',
     spaciness: 'eco',
+    openNewTab: true,
   };
 
   nock(baseURL)
@@ -35,6 +36,7 @@ it('should update settings', async () => {
     showTopSites: false,
     theme: 'darcula',
     spaciness: 'eco',
+    openNewTab: false,
   };
 
   nock(baseURL)
