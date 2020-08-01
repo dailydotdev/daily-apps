@@ -111,7 +111,7 @@ export default {
 
   computed: {
     shouldOpenNewTab() {
-      return this.openNewTab ? "_blank" : "_self";
+      return this.openNewTab ? '_blank' : '_self';
     },
 
     bookmarkTooltip() {
