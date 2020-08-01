@@ -14,7 +14,7 @@
                         @upvote="onUpvote" @comment="onComment"
                         :menu-opened="selectedPostId === item.id"
                         :bookmarks-menu-opened="bookmarkPostId === item.id"
-                        :selected="focusedPost === item" :openNewTab="openNewTab"
+                        :selected="focusedPost === item" :open-new-tab="openNewTab"
                         :show-comment-popup="commentPostId === item.id"
                         :sending-comment="sendingComment" :comment="lastSavedComment"/>
       </template>
