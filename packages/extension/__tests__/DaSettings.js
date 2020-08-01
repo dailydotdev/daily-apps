@@ -30,6 +30,7 @@ beforeEach(() => {
       showTopSites: false,
       enabledCardAnimation: false,
       showOnlyNotReadPosts: false,
+      openNewTab: true,
       spaciness: 'eco',
     },
     actions: {
@@ -40,6 +41,7 @@ beforeEach(() => {
       setInsaneMode: jest.fn(),
       setSpaciness: jest.fn(),
       setShowOnlyNotReadPosts: jest.fn(),
+      setOpenNewTab: jest.fn(),
     },
   };
 

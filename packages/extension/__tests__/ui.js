@@ -128,6 +128,7 @@ it('should reset settings', () => {
     showTopSites: true,
     showOnlyNotReadPosts: true,
     showNotificationBadge: true,
+    openNewTab: false,
     notifications,
   };
   module.mutations.resetSettings(state);
@@ -136,6 +137,7 @@ it('should reset settings', () => {
     showTopSites: false,
     showOnlyNotReadPosts: false,
     showNotificationBadge: true,
+    openNewTab: true,
     notifications,
   });
 });
