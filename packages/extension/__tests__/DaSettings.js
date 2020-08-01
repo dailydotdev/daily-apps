@@ -30,6 +30,7 @@ beforeEach(() => {
       showTopSites: false,
       enabledCardAnimation: false,
       showOnlyNotReadPosts: false,
+      openNewTab: true,
       spaciness: 'eco',
     },
     actions: {
@@ -40,6 +41,7 @@ beforeEach(() => {
       setInsaneMode: jest.fn(),
       setSpaciness: jest.fn(),
       setShowOnlyNotReadPosts: jest.fn(),
+      setOpenNewTab: jest.fn(),
     },
   };
 
@@ -84,4 +86,10 @@ it('should commit "setShowOnlyNotReadPosts" when setting is changed', () => {
   const wrapper = mount(DaSettings, { store, localVue });
   wrapper.find('.settings__hide-read-posts').vm.$emit('toggle', true);
   expect(ui.mutations.setShowOnlyNotReadPosts).toBeCalledWith(expect.anything(), true);
+});
+
+it('should commit "setOpenNewTab" when setting is changed', () => {
+  const wrapper = mount(DaSettings, { store, localVue });
+  wrapper.find('.settings__toggle-open-tab').vm.$emit('toggle', true);
+  expect(ui.mutations.setOpenNewTab).toBeCalledWith(expect.anything(), true);
 });

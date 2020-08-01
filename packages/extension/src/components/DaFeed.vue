@@ -14,7 +14,7 @@
                         @upvote="onUpvote" @comment="onComment"
                         :menu-opened="selectedPostId === item.id"
                         :bookmarks-menu-opened="bookmarkPostId === item.id"
-                        :selected="focusedPost === item"
+                        :selected="focusedPost === item" :open-new-tab="openNewTab"
                         :show-comment-popup="commentPostId === item.id"
                         :sending-comment="sendingComment" :comment="lastSavedComment"/>
       </template>
@@ -33,7 +33,7 @@
                       @upvote="onUpvote" @comment="onComment"
                       :menu-opened="selectedPostId === item.id"
                       :bookmarks-menu-opened="bookmarkPostId === item.id"
-                      :selected="focusedPost === item"
+                      :selected="focusedPost === item" :open-new-tab="openNewTab"
                       :show-comment-popup="commentPostId === item.id"
                       :sending-comment="sendingComment" :comment="lastSavedComment"/>
       </template>
@@ -102,7 +102,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('ui', ['insaneMode', 'spaciness']),
+    ...mapState('ui', ['insaneMode', 'spaciness', 'openNewTab']),
     ...mapState('feed', ['ads', 'hoveredPost', 'showBookmarks', 'lastUsedBookmarkList']),
     ...mapGetters({
       posts: 'feed/feed',

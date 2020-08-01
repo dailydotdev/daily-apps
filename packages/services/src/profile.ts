@@ -10,6 +10,7 @@ export interface Settings {
   theme: string;
   spaciness: string;
   showOnlyNotReadPosts: boolean;
+  openNewTab: boolean;
 }
 
 export interface Notification {
