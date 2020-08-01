@@ -73,7 +73,7 @@ export default {
     },
 
     onLinkClick() {
-      this.$emit('click');
+      this.$emit('click', this.post);
     },
 
     onUpvoteClick() {
