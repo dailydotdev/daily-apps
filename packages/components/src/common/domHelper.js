@@ -1,5 +1,28 @@
-export function getPostByElement(posts, elementToFind) {
-  return posts.find(post => post.$el === elementToFind);
+export function getElementIndexFromSiblings(targetElement) {
+  let index = 0;
+  let element = targetElement.previousElementSibling;
+  while (element !== null) {
+    element = element.previousElementSibling;
+    index += 1;
+  }
+
+  return index;
+}
+
+export function getLeftPost(el) {
+  if (!el.parentElement.previousElementSibling) return el;
+
+  const index = getElementIndexFromSiblings(el);
+
+  return el.parentElement.previousElementSibling.childNodes[index];
+}
+
+export function getRightPost(el) {
+  if (!el.parentElement.nextElementSibling) return el;
+
+  const index = getElementIndexFromSiblings(el);
+
+  return el.parentElement.nextElementSibling.childNodes[index];
 }
 
 export function getBelowPost(el) {
@@ -14,6 +37,14 @@ export function getAbovePost(el) {
   return el.previousElementSibling;
 }
 
+export function getFirstPostOnFeed() {
+  const feed = document.getElementsByClassName("feed__cards")[0];
+
+  if (!feed) return null;
+
+  return feed.firstElementChild;
+}
+
 export function getTopLeftMostPostEl(posts, insaneMode) {
   const parent = posts[0].$el.parentElement;
 
@@ -26,8 +57,4 @@ export function getTopLeftMostPostEl(posts, insaneMode) {
   }
 
   return child;
-}
-
-export function hoverPost(selectedPost) {
-  selectedPost.$el.getElementsByClassName('post__link')[0].focus();
 }
