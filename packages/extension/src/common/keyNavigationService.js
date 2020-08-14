@@ -1,8 +1,8 @@
 import {
   getAbovePost,
   getBelowPost,
-  getLeftPost,
-  getRightPost,
+  getPreviousPost,
+  getNextPost,
   getFirstPostOnFeed
 } from "@daily/components/src/common/domHelper";
 import store from "../store";
@@ -19,16 +19,14 @@ export const validKeys = {
 
 const validKeysValues = Object.values(validKeys);
 
-function navigateFeed(keyCode, currentElement) {
-  const insaneMode = store.state.ui.insaneMode;
+function navigateFeed(keyCode, currentElement, insaneMode) {
+  if (keyCode === validKeys.h && !insaneMode) return getPreviousPost(currentElement);
 
-  if (keyCode === validKeys.h && !insaneMode) return getLeftPost(currentElement);
+  if (keyCode === validKeys.l && !insaneMode) return getNextPost(currentElement);
 
-  if (keyCode === validKeys.l && !insaneMode) return getRightPost(currentElement);
+  if (keyCode === validKeys.j) return getBelowPost(currentElement, insaneMode);
 
-  if (keyCode === validKeys.j) return getBelowPost(currentElement);
-
-  if (keyCode === validKeys.k) return getAbovePost(currentElement);
+  if (keyCode === validKeys.k) return getAbovePost(currentElement, insaneMode);
 
   return currentElement;
 }
@@ -62,7 +60,11 @@ function navigateDaily({ keyCode }) {
 
   if (keyCode === validKeys.b && currentPost) return triggerBookmark(currentPost);
 
-  const foundElement = currentPost ? navigateFeed(keyCode, currentPost.$el) : getFirstPostOnFeed();
+  const insaneMode = store.state.ui.insaneMode;
+
+  const foundElement = currentPost
+    ? navigateFeed(keyCode, currentPost.$el, insaneMode)
+    : getFirstPostOnFeed(insaneMode);
 
   const post = ref.$refs.posts.find(post => post.$el === foundElement);
 

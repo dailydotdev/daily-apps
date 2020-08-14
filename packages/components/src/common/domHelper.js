@@ -1,5 +1,11 @@
+export function getFeedElement(insaneMode = false) {
+  const feedClass = insaneMode ? "feed__insane" : "feed__cards";
+
+  return document.getElementsByClassName(feedClass)[0];
+}
+
 export function getCardsPerRow() {
-  const feed = document.getElementsByClassName("feed__cards")[0];
+  const feed = getFeedElement();
 
   if (!feed) return 0;
 
@@ -30,8 +36,10 @@ export function getElementIndexFromSiblings(targetElement) {
   return index;
 }
 
-export function getLeftPost(el) {
+export function getPreviousPost(el, insaneMode = false) {
   if (!el.previousElementSibling) return el;
+
+  if (insaneMode) return el.previousElementSibling;
 
   if (el.previousElementSibling.getBoundingClientRect().y !== el.getBoundingClientRect().y)
     return el;
@@ -39,36 +47,42 @@ export function getLeftPost(el) {
   return el.previousElementSibling;
 }
 
-export function getRightPost(el) {
+export function getNextPost(el, insaneMode = false) {
   if (!el.nextElementSibling) return el;
+
+  if (insaneMode) return el.nextElementSibling;
 
   if (el.nextElementSibling.getBoundingClientRect().y !== el.getBoundingClientRect().y) return el;
 
   return el.nextElementSibling;
 }
 
-export function getBelowPost(el) {
+export function getBelowPost(el, insaneMode) {
+  if (insaneMode) return getNextPost(el, insaneMode);
+
   const cardsPerRow = getCardsPerRow();
   const index = getElementIndexFromSiblings(el);
-  const feed = document.getElementsByClassName("feed__cards")[0];
+  const feed = getFeedElement(insaneMode);
 
   if (cardsPerRow + index >= feed.childNodes.length) return el;
 
   return feed.childNodes[cardsPerRow + index];
 }
 
-export function getAbovePost(el) {
+export function getAbovePost(el, insaneMode) {
+  if (insaneMode) return getPreviousPost(el, insaneMode);
+
   const cardsPerRow = getCardsPerRow();
   const index = getElementIndexFromSiblings(el);
-  const feed = document.getElementsByClassName("feed__cards")[0];
+  const feed = getFeedElement(insaneMode);
 
   if (index - cardsPerRow < 0) return el;
 
   return feed.childNodes[index - cardsPerRow];
 }
 
-export function getFirstPostOnFeed() {
-  const feed = document.getElementsByClassName("feed__cards")[0];
+export function getFirstPostOnFeed(insaneMode) {
+  const feed = getFeedElement(insaneMode);
 
   if (!feed) return null;
 
