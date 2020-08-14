@@ -41,8 +41,7 @@ export function getPreviousPost(el, insaneMode = false) {
 
   if (insaneMode) return el.previousElementSibling;
 
-  if (el.previousElementSibling.getBoundingClientRect().y !== el.getBoundingClientRect().y)
-    return el;
+  if (el.previousElementSibling.offsetTop !== el.offsetTop) return el;
 
   return el.previousElementSibling;
 }
@@ -52,7 +51,7 @@ export function getNextPost(el, insaneMode = false) {
 
   if (insaneMode) return el.nextElementSibling;
 
-  if (el.nextElementSibling.getBoundingClientRect().y !== el.getBoundingClientRect().y) return el;
+  if (el.nextElementSibling.offsetTop !== el.offsetTop) return el;
 
   return el.nextElementSibling;
 }
