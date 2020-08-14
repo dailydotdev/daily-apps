@@ -12,12 +12,12 @@ export function getCardsPerRow() {
   let previousTop = 0;
   let cardsPerRow = 0;
 
-  for (let i = 0; i < feed.childNodes.length; i++) {
+  for (let i = 0; i < feed.childNodes.length; i += 1) {
     const currentTop = feed.childNodes[i].offsetTop;
 
     if (previousTop !== currentTop && previousTop > 0) return cardsPerRow + 1;
 
-    if (previousTop === currentTop) cardsPerRow++;
+    if (previousTop === currentTop) cardsPerRow += 1;
 
     previousTop = currentTop;
   }
