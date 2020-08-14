@@ -46,7 +46,7 @@ function findPostInPosts(posts, toFind) {
 }
 
 function navigateDaily({ keyCode }) {
-  if (Object.values(validKeys).indexOf(keyCode) === -1) return null;
+  if (validKeysValues.indexOf(keyCode) === -1) return null;
 
   const { daFeedRef, hoveredPost } = store.state.feed;
 
@@ -66,7 +66,7 @@ function navigateDaily({ keyCode }) {
     ? navigateFeed(keyCode, currentPost.$el, insaneMode)
     : getFirstPostOnFeed(insaneMode);
 
-  const post = ref.$refs.posts.find(post => post.$el === foundElement);
+  const post = ref.$refs.posts.find(article => article.$el === foundElement);
 
   post.$el.getElementsByClassName('post__link')[0].focus();
 
