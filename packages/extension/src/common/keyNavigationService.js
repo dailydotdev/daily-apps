@@ -26,9 +26,9 @@ function navigateFeed(keyCode, currentElement) {
 
   if (keyCode === validKeys.l && !insaneMode) return getRightPost(currentElement);
 
-  if (keyCode === validKeys.j && insaneMode) return getBelowPost(currentElement);
+  if (keyCode === validKeys.j) return getBelowPost(currentElement);
 
-  if (keyCode === validKeys.k && insaneMode) return getAbovePost(currentElement);
+  if (keyCode === validKeys.k) return getAbovePost(currentElement);
 
   return currentElement;
 }

@@ -1,3 +1,24 @@
+export function getCardsPerRow() {
+  const feed = document.getElementsByClassName("feed__cards")[0];
+
+  if (!feed) return 0;
+
+  let previousTop = 0;
+  let cardsPerRow = 0;
+
+  for (let i = 0; i < feed.childNodes.length; i++) {
+    const currentTop = feed.childNodes[i].offsetTop;
+
+    if (previousTop !== currentTop && previousTop > 0) return cardsPerRow + 1;
+
+    if (previousTop === currentTop) cardsPerRow++;
+
+    previousTop = currentTop;
+  }
+
+  return 0;
+}
+
 export function getElementIndexFromSiblings(targetElement) {
   let index = 0;
   let element = targetElement.previousElementSibling;
@@ -10,31 +31,40 @@ export function getElementIndexFromSiblings(targetElement) {
 }
 
 export function getLeftPost(el) {
-  if (!el.parentElement.previousElementSibling) return el;
+  if (!el.previousElementSibling) return el;
 
-  const index = getElementIndexFromSiblings(el);
+  if (el.previousElementSibling.getBoundingClientRect().y !== el.getBoundingClientRect().y)
+    return el;
 
-  return el.parentElement.previousElementSibling.childNodes[index];
+  return el.previousElementSibling;
 }
 
 export function getRightPost(el) {
-  if (!el.parentElement.nextElementSibling) return el;
+  if (!el.nextElementSibling) return el;
 
-  const index = getElementIndexFromSiblings(el);
-
-  return el.parentElement.nextElementSibling.childNodes[index];
-}
-
-export function getBelowPost(el) {
-  if (el.nextElementSibling === null) return el;
+  if (el.nextElementSibling.getBoundingClientRect().y !== el.getBoundingClientRect().y) return el;
 
   return el.nextElementSibling;
 }
 
-export function getAbovePost(el) {
-  if (el.previousElementSibling === null) return el;
+export function getBelowPost(el) {
+  const cardsPerRow = getCardsPerRow();
+  const index = getElementIndexFromSiblings(el);
+  const feed = document.getElementsByClassName("feed__cards")[0];
 
-  return el.previousElementSibling;
+  if (cardsPerRow + index >= feed.childNodes.length) return el;
+
+  return feed.childNodes[cardsPerRow + index];
+}
+
+export function getAbovePost(el) {
+  const cardsPerRow = getCardsPerRow();
+  const index = getElementIndexFromSiblings(el);
+  const feed = document.getElementsByClassName("feed__cards")[0];
+
+  if (index - cardsPerRow < 0) return el;
+
+  return feed.childNodes[index - cardsPerRow];
 }
 
 export function getFirstPostOnFeed() {
@@ -43,18 +73,4 @@ export function getFirstPostOnFeed() {
   if (!feed) return null;
 
   return feed.firstElementChild;
-}
-
-export function getTopLeftMostPostEl(posts, insaneMode) {
-  const parent = posts[0].$el.parentElement;
-
-  let child = (insaneMode ? parent : parent.parentElement.firstElementChild).firstElementChild;
-  let result = getPostByElement(posts, child);
-
-  while (!result && child) {
-    child = child.nextElementSibling;
-    result = getPostByElement(posts, child);
-  }
-
-  return child;
 }
