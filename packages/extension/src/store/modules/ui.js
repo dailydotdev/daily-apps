@@ -15,6 +15,7 @@ const initialState = () => ({
   onboarding: false,
   instructionsStep: 0,
   showOnlyNotReadPosts: false,
+  openNewTab: true,
   lastBannerSeen: new Date(),
   showPremium: false,
   showNewSource: false,
@@ -44,6 +45,10 @@ export default {
 
     setShowOnlyNotReadPosts(state, value) {
       state.showOnlyNotReadPosts = value;
+    },
+
+    setOpenNewTab(state, value) {
+      state.openNewTab = value;
     },
 
     setSpaciness(state, value) {
@@ -92,6 +97,7 @@ export default {
       state.insaneMode = def.insaneMode;
       state.showTopSites = def.showTopSites;
       state.showOnlyNotReadPosts = def.showOnlyNotReadPosts;
+      state.openNewTab = def.openNewTab;
     },
 
     doneOnboarding(state) {
@@ -140,6 +146,10 @@ export default {
 
     dndModeTime(state) {
       return state.dndModeTime;
+    },
+
+    openNewTab(state) {
+      return state.openNewTab;
     },
   },
   actions: {

@@ -39,6 +39,10 @@ export default {
       type: String,
       default: null,
     },
+    openNewTab: {
+      type: Boolean,
+      default: true,
+    }
   },
 
   data() {
@@ -106,6 +110,10 @@ export default {
   },
 
   computed: {
+    shouldOpenNewTab() {
+      return this.openNewTab ? '_blank' : '_self';
+    },
+
     bookmarkTooltip() {
       return this.post.bookmarked ? 'Remove bookmark' : 'Bookmark';
     },

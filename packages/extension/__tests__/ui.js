@@ -56,6 +56,12 @@ it('should set show only not read posts in state', () => {
   expect(state.showOnlyNotReadPosts).toEqual(true);
 });
 
+it('should set open links as tabs in state', () => {
+  const state = {};
+  module.mutations.setOpenNewTab(state, true);
+  expect(state.openNewTab).toEqual(true);
+});
+
 it('should set spaciness in state', () => {
   const state = {};
   module.mutations.setSpaciness(state, 'roomy');
@@ -122,6 +128,7 @@ it('should reset settings', () => {
     showTopSites: true,
     showOnlyNotReadPosts: true,
     showNotificationBadge: true,
+    openNewTab: false,
     notifications,
   };
   module.mutations.resetSettings(state);
@@ -130,6 +137,7 @@ it('should reset settings', () => {
     showTopSites: false,
     showOnlyNotReadPosts: false,
     showNotificationBadge: true,
+    openNewTab: true,
     notifications,
   });
 });
