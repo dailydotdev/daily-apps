@@ -37,14 +37,6 @@ function triggerBookmark(article) {
   return article.$emit('bookmark', { post: article.post, bookmarked: !article.post.bookmarked });
 }
 
-function findPostInPosts(posts, toFind) {
-  if (!toFind) return null;
-
-  const postOrAdProp = toFind.post || toFind.ad;
-
-  return posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
-}
-
 function navigateDaily({ keyCode }) {
   if (validKeysValues.indexOf(keyCode) === -1) return null;
 
@@ -56,14 +48,12 @@ function navigateDaily({ keyCode }) {
 
   if (keyCode === validKeys['/']) return ref.$parent.enableSearch();
 
-  const currentPost = findPostInPosts(ref.$refs.posts, hoveredPost);
-
-  if (keyCode === validKeys.b && currentPost) return triggerBookmark(currentPost);
+  if (keyCode === validKeys.b && hoveredPost) return triggerBookmark(hoveredPost);
 
   const { insaneMode } = store.state.ui;
 
-  const foundElement = currentPost
-    ? navigateFeed(keyCode, currentPost.$el, insaneMode)
+  const foundElement = hoveredPost
+    ? navigateFeed(keyCode, hoveredPost.$el, insaneMode)
     : getFirstPostOnFeed(insaneMode);
 
   let post = ref.$refs.posts.find(article => article.$el === foundElement);
