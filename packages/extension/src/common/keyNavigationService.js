@@ -54,7 +54,7 @@ function navigateDaily({ keyCode }) {
 
   if (keyCode === validKeys.esc) return store.dispatch('feed/backToMainFeed');
 
-  if (keyCode === validKeys['/']) return ref.$search.enableSearch();
+  if (keyCode === validKeys['/']) return ref.$parent.enableSearch();
 
   const currentPost = findPostInPosts(ref.$refs.posts, hoveredPost);
 
