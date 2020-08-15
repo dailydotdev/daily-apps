@@ -76,7 +76,8 @@
                   </button>
                 </template>
               </template>
-              <button class="header__cta shadow1" @click="ctaClick" :style="cta.style">
+              <button class="header__cta shadow1" @click="ctaClick" :style="cta.style"
+                      v-if="!isPremium">
                 <span class="header__cta__text">{{cta.text}}</span>
                 <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>
                 <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
@@ -613,7 +614,9 @@ export default {
       enableKeyBindings();
       this.fetchStage = CRITICAL_FETCH_STAGE;
       this.checkVisitWin();
-      ga('send', 'event', 'CTA', 'Impression', this.cta.text, { nonInteraction: true });
+      if (!this.isPremium) {
+        ga('send', 'event', 'CTA', 'Impression', this.cta.text, { nonInteraction: true });
+      }
     });
   },
 
