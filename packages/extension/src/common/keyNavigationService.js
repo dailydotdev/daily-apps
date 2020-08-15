@@ -31,10 +31,10 @@ function navigateFeed(keyCode, currentElement, insaneMode) {
   return currentElement;
 }
 
-function triggerBookmark(post) {
-  if (post.ad) return null;
+function triggerBookmark(article) {
+  if (article.ad) return null;
 
-  return post.$emit('bookmark', { post: post.post, bookmarked: !post.post.bookmarked });
+  return article.$emit('bookmark', { post: article.post, bookmarked: !article.post.bookmarked });
 }
 
 function findPostInPosts(posts, toFind) {
@@ -66,7 +66,13 @@ function navigateDaily({ keyCode }) {
     ? navigateFeed(keyCode, currentPost.$el, insaneMode)
     : getFirstPostOnFeed(insaneMode);
 
-  const post = ref.$refs.posts.find(article => article.$el === foundElement);
+  let post = ref.$refs.posts.find(article => article.$el === foundElement);
+
+  if (!post) {
+    const nextPostAfterEmptyAdElement = getNextPost(foundElement, insaneMode);
+
+    post = ref.$refs.posts.find(article => article.$el === nextPostAfterEmptyAdElement);
+  }
 
   post.$el.getElementsByClassName('post__link')[0].focus();
 
