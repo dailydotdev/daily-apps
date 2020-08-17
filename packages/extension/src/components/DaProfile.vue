@@ -21,6 +21,8 @@
                      :value="company" @validity="updateFormValidity"/>
       <da-text-field class="profile__field" name="title" label="Job title"
                      :value="title" @validity="updateFormValidity"/>
+      <da-switch class="profile__switch small" name="acceptedMarketing"
+                 label="Subscribe to the Weekly Recap" :checked="acceptedMarketing"/>
       <button type="submit" class="profile__submit btn btn-invert btn-big"
               :disabled="disableSubmit" @click.prevent="submitForm" autofocus>
         Save Changes
@@ -57,6 +59,7 @@ import 'lazysizes';
 import { mapGetters, mapMutations } from 'vuex';
 import DaModal from '@daily/components/src/components/DaModal.vue';
 import DaTextField from '@daily/components/src/components/DaTextField.vue';
+import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
 import '@daily/components/icons/x';
 import DaSvg from './DaSvg.vue';
 import { version } from '../common/config';
@@ -70,6 +73,7 @@ export default {
     DaModal,
     DaTextField,
     DaSvg,
+    DaSwitch,
   },
 
   data() {
@@ -244,6 +248,10 @@ export default {
   &.show-hint {
     margin-bottom: 10px;
   }
+}
+
+.profile__switch {
+  margin: 18px 0 8px;
 }
 
 .profile__image {

@@ -13,6 +13,8 @@
         :value="company" @validity="updateFormValidity"/>
       <da-text-field class="confirm-acc__field" name="title" label="Job title"
         :value="title" @validity="updateFormValidity"/>
+      <da-switch class="confirm-acc__switch small" name="acceptedMarketing"
+                 label="Subscribe to the Weekly Recap" :checked="acceptedMarketing"/>
       <div class="confirm-acc__buttons">
         <button type="button" class="confirm-acc__logout btn btn-hollow btn-big"
           @click="onLogout">
@@ -31,6 +33,7 @@
 import 'lazysizes';
 import DaModal from '@daily/components/src/components/DaModal.vue';
 import DaTextField from '@daily/components/src/components/DaTextField.vue';
+import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
 import updateProfileMixin from '../common/updateProfileMixin';
 
 export default {
@@ -40,6 +43,7 @@ export default {
   components: {
     DaModal,
     DaTextField,
+    DaSwitch,
   },
 
   mounted() {
@@ -100,6 +104,10 @@ export default {
   margin-top: 24px;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.confirm-acc__switch {
+  margin: 18px 0 8px;
 }
 
 .confirm-acc__submit {

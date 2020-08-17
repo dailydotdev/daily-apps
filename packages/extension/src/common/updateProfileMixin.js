@@ -37,6 +37,10 @@ export default {
       provider(state) {
         return this.isLoggedIn ? state.user.profile.providers[0] : '';
       },
+
+      acceptedMarketing(state) {
+        return this.isLoggedIn ? state.user.profile.acceptedMarketing : false;
+      },
     }),
   },
 
@@ -57,6 +61,9 @@ export default {
       const data = Array.from(this.$refs.form.elements).reduce((acc, val) => {
         if (val.name === '') {
           return acc;
+        }
+        if (val.type === 'checkbox') {
+          return Object.assign(acc, { [val.name]: val.checked });
         }
         return Object.assign(acc, { [val.name]: val.value.length ? val.value : null });
       }, {});
