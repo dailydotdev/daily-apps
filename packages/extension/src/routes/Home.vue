@@ -588,7 +588,7 @@ export default {
           this.trackEngagementWin({ action: 'SCROLL' });
         }
       }
-    }, { root: null, rootMargin: '5px', threshold: 1 });
+    }, { root: null, rootMargin: '20px', threshold: 1 });
   },
 
   async mounted() {
