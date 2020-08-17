@@ -6,8 +6,14 @@
     <div v-if="added" class="new-source__header">
       <h3>Source added 🎉</h3>
       <p>
-        From now on new articles from this source will be added to your feed. Enjoy
+        From now on, new articles from this source will be added to your feed.
+        You can find all of your private sources in the sidebar to the left.
+        Enjoy
       </p>
+      <button class="btn btn-big btn-invert new-source__confirm"
+              @click="$emit('close')">
+        Ok, got it
+      </button>
     </div>
     <div v-else class="new-source__header">
       <h3>Add new source</h3>
@@ -55,23 +61,7 @@
         <span v-else-if="valid === false" class="error">Url is not valid</span>
       </div>
     </div>
-    <div class="new-source__footer" v-if="added">
-      <div class="new-source__added">
-        <div>
-          <div class="lil2">Private Card view</div>
-          <svg width="120" viewBox="0 0 120 144" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><mask id="a" fill="#fff"><path d="m2.66666667 0h10.66666663c1.4727594 0 2.6666667 1.19390733 2.6666667 2.66666667v10.66666663c0 1.4727594-1.1939073 2.6666667-2.6666667 2.6666667h-10.66666663c-1.47275934 0-2.66666667-1.1939073-2.66666667-2.6666667v-10.66666663c0-1.47275934 1.19390733-2.66666667 2.66666667-2.66666667z" fill="#fff" fill-rule="evenodd"/></mask><mask id="b" fill="#fff"><path d="m0 0h16v16h-16z" fill="#fff" fill-rule="evenodd"/></mask><g fill="none" fill-rule="evenodd"><path d="m4 0h112c2.209139 0 4 1.790861 4 4v60h-120v-60c0-2.209139 1.790861-4 4-4z" fill="#1c1e21"/><g transform="translate(0 60)"><path d="m4 0h112c2.209139 0 4 1.790861 4 4v76c0 2.209139-1.790861 4-4 4h-112c-2.209139 0-4-1.790861-4-4v-76c0-2.209139 1.790861-4 4-4z" fill="#303237"/><path d="m0 55h120v1h-120z" fill="#1c1e21"/><path d="m1 66c.55228475 0 1 .4477153 1 1v6c0 .5522847-.44771525 1-1 1s-1-.4477153-1-1v-6c0-.5522847.44771525-1 1-1z" fill="#ff258e"/><g fill="#5f646d"><rect height="8" rx="2" width="88" x="16" y="12"/><rect height="8" rx="2" width="72" x="24" y="24"/><rect height="8" rx="2" width="24" x="32" y="66"/></g><g mask="url(#a)" transform="translate(8 62)"><path d="m0 0h16v16h-16z" fill="#fff"/><image height="16" mask="url(#b)" width="16" :xlink:href="source.logo"/></g></g></g></svg>
-        </div>
-        <div>
-          <div class="lil2">Private List view</div>
-          <svg width="146" viewBox="0 0 146 114" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><mask id="a" fill="#fff"><path d="m2.66666667 0h10.66666663c1.4727594 0 2.6666667 1.19390733 2.6666667 2.66666667v10.66666663c0 1.4727594-1.1939073 2.6666667-2.6666667 2.6666667h-10.66666663c-1.47275934 0-2.66666667-1.1939073-2.66666667-2.6666667v-10.66666663c0-1.47275934 1.19390733-2.66666667 2.66666667-2.66666667z" fill="#fff" fill-rule="evenodd"/></mask><mask id="b" fill="#fff"><path d="m0 0h16v16h-16z" fill="#fff" fill-rule="evenodd"/></mask><g fill="none" fill-rule="evenodd"><g transform="translate(0 82)"><path d="m4 0h138c2.209139 0 4 1.790861 4 4v24c0 2.209139-1.790861 4-4 4h-138c-2.209139 0-4-1.790861-4-4v-24c0-2.209139 1.790861-4 4-4z" fill="#1c1e21"/><g fill="#25282c"><path d="m124.666667 8h10.666666c1.47276 0 2.666667 1.19390733 2.666667 2.6666667v10.6666666c0 1.4727594-1.193907 2.6666667-2.666667 2.6666667h-10.666666c-1.47276 0-2.666667-1.1939073-2.666667-2.6666667v-10.6666666c0-1.47275937 1.193907-2.6666667 2.666667-2.6666667z"/><rect height="8" rx="2" width="64" x="8" y="12"/></g></g><g transform="translate(0 42)"><path d="m4 0h138c2.209139 0 4 1.790861 4 4v24c0 2.209139-1.790861 4-4 4h-138c-2.209139 0-4-1.790861-4-4v-24c0-2.209139 1.790861-4 4-4z" fill="#303237"/><path d="m145 12c.552285 0 1 .4477153 1 1v6c0 .5522847-.447715 1-1 1s-1-.4477153-1-1v-6c0-.5522847.447715-1 1-1z" fill="#ff258e"/><rect fill="#5f646d" height="8" rx="2" width="64" x="8" y="12"/><g mask="url(#a)" transform="translate(122 8)"><path d="m0 0h16v16h-16z" fill="#fff"/><image height="16" mask="url(#b)" width="16" :xlink:href="source.logo"/></g></g><path d="m4 0h138c2.209139 0 4 1.790861 4 4v24c0 2.209139-1.790861 4-4 4h-138c-2.209139 0-4-1.790861-4-4v-24c0-2.209139 1.790861-4 4-4z" fill="#1c1e21"/><g fill="#25282c"><rect height="8" rx="2" width="64" x="8" y="12"/><path d="m124.666667 8h10.666666c1.47276 0 2.666667 1.19390733 2.666667 2.6666667v10.6666666c0 1.4727594-1.193907 2.6666667-2.666667 2.6666667h-10.666666c-1.47276 0-2.666667-1.1939073-2.666667-2.6666667v-10.6666666c0-1.47275937 1.193907-2.6666667 2.666667-2.6666667z"/></g></g></svg>
-        </div>
-      </div>
-      <button class="btn btn-big btn-invert new-source__confirm"
-              @click="$emit('close')">
-        Ok, got it
-      </button>
-    </div>
-    <div class="new-source__footer" v-else-if="hasSelectedRSS && !existsSource">
+    <div class="new-source__footer" v-if="!added && hasSelectedRSS && !existsSource">
       <div class="new-source__name">
         <img :src="source.logo" alt="Source logo" @error="replaceImage" />
         <da-text-field ref="name" placeholder="Source name" label="Source name"
