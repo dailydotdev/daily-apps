@@ -137,7 +137,15 @@ export default {
         hover: this.menuOpened || this.bookmarksMenuOpened || this.selected,
         disabled: this.showCommentPopup || this.notifying,
         'show-comment-popup': this.showCommentPopup,
+        private: this.privateSource,
       };
+    },
+
+    privateSource() {
+      if (this.post && this.post.publication) {
+        return this.post.publication.public === false;
+      }
+      return false;
     },
   },
 
