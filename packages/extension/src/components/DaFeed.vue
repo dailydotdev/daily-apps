@@ -142,6 +142,11 @@ export default {
         this.trackEngagementWin({ action: 'BOOKMARK' });
       }
       if (this.isPremium) {
+        if (this.bookmarkPost && this.bookmarkPost.id === post.id) {
+          this.bookmarkPost = null;
+          this.$refs.bookmarkContext.close();
+          return;
+        }
         this.$refs.bookmarkContext.open(event, post);
         if (bookmarked) {
           await this.setBookmarkList(post, this.lastUsedBookmarkList);
@@ -281,6 +286,10 @@ export default {
     },
 
     onPostMenu({ post, event }) {
+      if (this.selectedPostId === post.id) {
+        this.selectedPostId = null;
+        return;
+      }
       ga('send', 'event', 'Post', 'Menu');
       this.$refs.context.open(event, post);
     },
