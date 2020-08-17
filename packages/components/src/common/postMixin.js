@@ -3,6 +3,7 @@ import '../../icons/menu';
 import '../../icons/upvote';
 import '../../icons/comment';
 import '../../icons/arrow';
+import '../../icons/x';
 import commentPopupText from '../commentPopupText';
 
 export default {
@@ -107,6 +108,10 @@ export default {
     onCommentInput() {
       this.hasPostComment = !!this.$refs.comment.value.length;
     },
+
+    closeCommentPopup() {
+      this.$emit('closeCommentPopup');
+    }
   },
 
   computed: {

@@ -415,3 +415,12 @@ it('should submit comment', (done) => {
     done();
   });
 });
+
+it('should close comment popup on close button click', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  feed.state.posts[0].numComments = 0;
+  wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
+  await wrapper.vm.$nextTick();
+  wrapper.vm.$refs.posts[0].$emit('closeCommentPopup');
+  expect(wrapper.vm.commentPostId).toEqual(null);
+});

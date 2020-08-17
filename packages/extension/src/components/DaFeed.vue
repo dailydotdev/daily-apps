@@ -12,6 +12,7 @@
                         @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                         @click="onPostClick" :show-menu="isLoggedIn"
                         @upvote="onUpvote" @comment="onComment"
+                        @closeCommentPopup="closeCommentPopup"
                         :menu-opened="selectedPostId === item.id"
                         :bookmarks-menu-opened="bookmarkPostId === item.id"
                         :selected="focusedPost === item" :open-new-tab="openNewTab"
@@ -31,6 +32,7 @@
                       @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                       @click="onPostClick" :show-menu="isLoggedIn"
                       @upvote="onUpvote" @comment="onComment"
+                      @closeCommentPopup="closeCommentPopup"
                       :menu-opened="selectedPostId === item.id"
                       :bookmarks-menu-opened="bookmarkPostId === item.id"
                       :selected="focusedPost === item" :open-new-tab="openNewTab"
@@ -271,6 +273,10 @@ export default {
       } catch (err) {
         // Do nothing
       }
+    },
+
+    closeCommentPopup() {
+      this.commentPostId = null;
     },
 
     onPostMenu({ post, event }) {

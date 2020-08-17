@@ -80,7 +80,10 @@
       </div>
     </div>
     <div class="post__comment-popup invert" v-if="showCommentPopup">
-      <div class="micro2 post__vmargin">{{commentPopupTitle}}
+      <button class="btn-icon post__comment-close" @click="closeCommentPopup">
+        <svgicon name="x"/>
+      </button>
+      <div class="lil1 post__comment-title post__vmargin">{{commentPopupTitle}}
       </div>
       <textarea ref="comment" class="post__vmargin"
                 :placeholder="commentPopupPlaceholder" required
@@ -139,6 +142,12 @@ export default {
 
     & textarea {
       padding: 6px 12px;
+    }
+
+    & .post__comment-title {
+      margin-top: 10px;
+      margin-left: 0;
+      margin-right: 24px;
     }
   }
 
