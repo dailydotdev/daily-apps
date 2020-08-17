@@ -100,8 +100,9 @@
         </button>
         <button class="btn btn-invert"
                 @click="onPostCommentClick" :disabled="!enablePostComment">
-          <svgicon name="comment"/>
-          <span>Post</span>
+          <svgicon name="comment" v-show="!sendingComment"/>
+          <span v-show="!sendingComment">Post</span>
+          <da-spinner v-if="sendingComment"/>
         </button>
       </div>
     </div>
@@ -115,9 +116,11 @@
 import 'lazysizes/plugins/blur-up/ls.blur-up';
 import 'lazysizes';
 import postMixin from '../common/postMixin';
+import DaSpinner from './DaSpinner';
 
 export default {
   name: 'DaCardPost',
+  components: {DaSpinner},
   mixins: [postMixin],
 
   methods: {

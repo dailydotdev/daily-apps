@@ -96,8 +96,9 @@
         </button>
         <button class="btn btn-invert"
                 @click="onPostCommentClick" :disabled="!enablePostComment">
-          <svgicon name="comment"/>
-          <span>Post</span>
+          <svgicon name="comment" v-show="!sendingComment"/>
+          <span v-show="!sendingComment">Post</span>
+          <da-spinner v-if="sendingComment"/>
         </button>
       </div>
     </div>
