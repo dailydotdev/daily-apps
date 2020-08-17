@@ -43,7 +43,7 @@ export default {
     openNewTab: {
       type: Boolean,
       default: true,
-    }
+    },
   },
 
   data() {
@@ -111,7 +111,7 @@ export default {
 
     closeCommentPopup() {
       this.$emit('closeCommentPopup');
-    }
+    },
   },
 
   computed: {

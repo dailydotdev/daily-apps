@@ -79,38 +79,42 @@
         </div>
       </div>
     </div>
-    <div class="post__comment-popup invert" v-if="showCommentPopup">
-      <button class="btn-icon post__comment-close" @click="closeCommentPopup">
-        <svgicon name="x"/>
-      </button>
-      <div class="lil1 post__comment-title post__vmargin">{{commentPopupTitle}}
-      </div>
-      <textarea ref="comment" class="post__vmargin"
-                :placeholder="commentPopupPlaceholder" required
-                @input="onCommentInput"></textarea>
-      <div class="post__comment-popup__buttons">
-        <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
-                @click="onUpvoteClick">
-          <svgicon name="upvote"/>
-          <span>Upvote</span>
+    <transition name="comment-slide-down">
+      <div class="post__comment-popup invert" v-if="showCommentPopup">
+        <button class="btn-icon post__comment-close" @click="closeCommentPopup">
+          <svgicon name="x"/>
         </button>
-        <button class="btn btn-invert"
-                @click="onPostCommentClick" :disabled="!enablePostComment">
-          <svgicon name="comment" v-show="!sendingComment"/>
-          <span v-show="!sendingComment">Post</span>
-          <da-spinner v-if="sendingComment"/>
-        </button>
+        <div class="lil1 post__comment-title post__vmargin">{{commentPopupTitle}}
+        </div>
+        <textarea ref="comment" class="post__vmargin"
+                  :placeholder="commentPopupPlaceholder" required
+                  @input="onCommentInput"></textarea>
+        <div class="post__comment-popup__buttons">
+          <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
+                  @click="onUpvoteClick">
+            <svgicon name="upvote"/>
+            <span>Upvote</span>
+          </button>
+          <button class="btn btn-invert"
+                  @click="onPostCommentClick" :disabled="!enablePostComment">
+            <svgicon name="comment" v-show="!sendingComment"/>
+            <span v-show="!sendingComment">Post</span>
+            <da-spinner v-if="sendingComment"/>
+          </button>
+        </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script>
 import 'lazysizes';
 import postMixin from '../common/postMixin';
+import DaSpinner from './DaSpinner.vue';
 
 export default {
   name: 'DaInsanePost',
+  components: { DaSpinner },
   mixins: [postMixin],
 };
 </script>

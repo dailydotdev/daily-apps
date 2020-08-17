@@ -322,3 +322,22 @@
   right: 16px;
   top: 16px;
 }
+
+.comment-slide-up-enter-active, .comment-slide-up-leave-active,
+.comment-slide-down-enter-active, .comment-slide-down-leave-active {
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.comment-slide-up-enter-active, .comment-slide-down-enter-active {
+  transition-delay: 0.7s;
+}
+
+.comment-slide-up-enter, .comment-slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.comment-slide-down-enter, .comment-slide-down-leave-to {
+  opacity: 0;
+  transform: translateY(-24px);
+}

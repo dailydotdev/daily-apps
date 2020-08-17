@@ -275,8 +275,9 @@ export default {
       }
     },
 
-    closeCommentPopup() {
+    async closeCommentPopup() {
       this.commentPostId = null;
+      await this.saveLastComment();
     },
 
     onPostMenu({ post, event }) {
