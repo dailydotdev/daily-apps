@@ -53,6 +53,7 @@
         <div class="post__comment-name post__vmargin lil1 singleline-text-overflow">
           {{selectedComment.author.name}}
         </div>
+        <!-- eslint-disable-next-line max-len -->
         <div class="post__comment-content post__vmargin lil1 multiline-text-overflow">{{selectedComment.content}}</div>
       </div>
       <div class="post__buttons full-width">
