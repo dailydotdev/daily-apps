@@ -37,9 +37,7 @@
           <div class="post__comment-name lil1 singleline-text-overflow">
             {{selectedComment.author.name}}
           </div>
-          <div class="post__comment-content lil1 multiline-text-overflow">
-            {{selectedComment.content}}
-          </div>
+          <div class="post__comment-content lil1 multiline-text-overflow">{{selectedComment.content}}</div>
         </div>
         <div class="post__buttons">
           <a class="btn btn-menu"
