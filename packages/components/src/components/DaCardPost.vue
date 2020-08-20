@@ -62,7 +62,7 @@
            :href="selectedComment.permalink" target="_blank"
            rel="noopener noreferrer" @click="onCommentClick">
           <svgicon name="comment"/>
-          <span>Comment</span>
+          <span>View comment</span>
         </a>
       </div>
     </template>
