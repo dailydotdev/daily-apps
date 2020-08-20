@@ -7,7 +7,6 @@
 
 <script>
 import 'focus-visible';
-import { mapGetters } from 'vuex';
 import initializeAnalytics from '../common/analytics';
 import { getCache, setCache, ANALYTICS_CONSENT_KEY } from '../common/cache';
 import { browserName } from '../common/browser';
@@ -24,10 +23,6 @@ export default {
     };
   },
 
-  computed: {
-    ...mapGetters({ isLoggedIn: 'user/isLoggedIn' }),
-  },
-
   methods: {
     optOut() {
       setAnalyticsConsent(false);
@@ -42,7 +37,7 @@ export default {
     },
 
     initializeAnalytics(consent) {
-      initializeAnalytics(consent, this.isLoggedIn ? this.$store.state.user.profile.id : null);
+      initializeAnalytics(consent);
     },
 
     startTracking() {

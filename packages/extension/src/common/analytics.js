@@ -1,40 +1,18 @@
 import { version } from './config';
 import { browserName } from './browser';
-import { setCache, getCache, ANALYTICS_ID_KEY } from './cache';
-
-const getGAUserIdOrGenerate = () => {
-  const GA_COOKIE = document.cookie.replace(
-    /(?:(?:^|.*;)\s*_ga\s*=\s*(?:\w+\.\d\.)([^;]*).*$)|^.*$/, '$1',
-  );
-  return GA_COOKIE || (Math.random() * (2 ** 52));
-};
+import { getCache, ANALYTICS_ID_KEY } from './cache';
 
 const queue = [];
 
 const initialize = async () => {
+  const clientId = await getCache(ANALYTICS_ID_KEY);
   if (window.location.protocol.indexOf('moz-extension') > -1) {
-    const getOrGenerateAnalyticsId = async () => {
-      const id = await getCache(ANALYTICS_ID_KEY);
-      if (id) {
-        return id;
-      }
-
-      const newId = getGAUserIdOrGenerate();
-      setCache(ANALYTICS_ID_KEY, newId);
-      return newId;
-    };
-
     let page;
-    let userId;
 
-    const id = await getOrGenerateAnalyticsId();
     const getMessage = (action, type, ...args) => {
       if (action !== 'send') return null;
 
-      let prefix = `v=1&tid=${process.env.VUE_APP_GA}&cid=${id}&aip=1&dp=${page}`;
-      if (userId) {
-        prefix += `${prefix}&uid=${userId}`;
-      }
+      const prefix = `v=1&tid=${process.env.VUE_APP_GA}&cid=${clientId}&aip=1&dp=${page}`;
       if (type === 'event') {
         return `${prefix}&t=event&ec=${encodeURIComponent(args[0])}&ea=${encodeURIComponent(args[1])}&el=${encodeURIComponent(args[2])}`;
       }
@@ -55,8 +33,6 @@ const initialize = async () => {
       if (action === 'set') {
         if (type === 'page') {
           page = encodeURIComponent(args[0]);
-        } else if (type === 'userId') {
-          userId = encodeURIComponent(args[0]);
         }
         return;
       }
@@ -81,6 +57,10 @@ const initialize = async () => {
       m.parentNode.insertBefore(a, m);
     })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
     /* eslint-enable */
+    ga('create', process.env.VUE_APP_GA, { clientId });
+    ga('set', 'checkProtocolTask', () => {
+    });
+    ga('require', 'displayfeatures');
   }
 };
 
@@ -95,19 +75,10 @@ if (window.location.protocol.indexOf('moz-extension') > -1) {
     }, i[r].l = 1 * new Date();
   })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
   /* eslint-enable */
-
-  ga('create', process.env.VUE_APP_GA, 'auto');
-  ga('set', 'checkProtocolTask', () => {
-  });
-  ga('require', 'displayfeatures');
 }
 
-export default function (consent, userId) {
+export default function (consent) {
   if (consent) {
-    if (userId) {
-      ga('set', 'userId', userId);
-    }
-
     return initialize();
   }
 

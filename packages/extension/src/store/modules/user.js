@@ -1,10 +1,7 @@
 import { authService } from '../../common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../../common/cache';
 
-const updateAnalyticsUser = (id) => {
-  ga('set', 'userId', id);
-  return setCache(ANALYTICS_ID_KEY, id);
-};
+const updateAnalyticsUser = id => setCache(ANALYTICS_ID_KEY, id);
 
 const initialState = () => ({
   profile: null,
