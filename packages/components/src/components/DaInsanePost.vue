@@ -79,7 +79,7 @@
       </div>
     </div>
     <transition name="comment-slide-down">
-      <div class="post__comment-popup invert" v-if="showCommentPopup">
+      <div class="post__comment-popup invert" v-if="showCommentPopup && !privateSource">
         <button class="btn-icon post__comment-close" @click="closeCommentPopup">
           <svgicon name="x"/>
         </button>
