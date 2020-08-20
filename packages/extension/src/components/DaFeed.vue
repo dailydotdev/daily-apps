@@ -360,7 +360,6 @@ export default {
 
 <style>
 .feed__insane {
-  max-width: 720px;
   margin-left: auto;
   margin-right: auto;
 
@@ -377,7 +376,7 @@ export default {
   }
 
   .roomy & {
-    max-width: 680px;
+    max-width: 1200px;
 
     & .insane {
       margin: 8px 0;
@@ -385,7 +384,7 @@ export default {
   }
 
   .cozy & {
-    max-width: 640px;
+    max-width: 960px;
 
     & .insane {
       margin: 12px 0;
