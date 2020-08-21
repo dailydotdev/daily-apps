@@ -5,7 +5,6 @@ import {
   getNextPost,
   getFirstPostOnFeed,
 } from '@daily/components/src/common/domHelper';
-import store from '../store';
 
 export const validKeys = {
   h: 72,
@@ -17,7 +16,7 @@ export const validKeys = {
   esc: 27,
 };
 
-const validKeysValues = Object.values(validKeys);
+export const validKeysValues = Object.values(validKeys);
 
 function navigateFeed(keyCode, currentElement, insaneMode) {
   if (keyCode === validKeys.h && !insaneMode) return getPreviousPost(currentElement);
@@ -31,55 +30,34 @@ function navigateFeed(keyCode, currentElement, insaneMode) {
   return currentElement;
 }
 
-function triggerBookmark(article) {
-  if (article.ad) return null;
-
-  return article.$emit('bookmark', { post: article.post, bookmarked: !article.post.bookmarked });
-}
-
-function navigateDaily({ keyCode }) {
-  if (validKeysValues.indexOf(keyCode) === -1) return null;
-
-  const { daFeedRef, hoveredPost } = store.state.feed;
-
-  const ref = daFeedRef();
-
-  if (keyCode === validKeys.esc) return store.dispatch('feed/backToMainFeed');
-
-  if (keyCode === validKeys['/']) return ref.$parent.enableSearch();
-
-  if (keyCode === validKeys.b && hoveredPost) return triggerBookmark(hoveredPost);
-
-  const { insaneMode } = store.state.ui;
-
+function navigateDaily(keyCode, posts, hoveredPost, insaneMode) {
   const foundElement = hoveredPost
     ? navigateFeed(keyCode, hoveredPost.$el, insaneMode)
     : getFirstPostOnFeed(insaneMode);
 
-  let post = ref.$refs.posts.find(article => article.$el === foundElement);
+  const post = posts.find(article => article.$el === foundElement);
 
-  if (!post) {
-    const nextPostAfterEmptyAdElement = getNextPost(foundElement, insaneMode);
+  if (post) return post;
 
-    post = ref.$refs.posts.find(article => article.$el === nextPostAfterEmptyAdElement);
-  }
+  const nextPostAfterEmptyAdElement = getNextPost(foundElement, insaneMode);
 
-  post.$el.getElementsByClassName('post__link')[0].focus();
-
-  return store.commit('feed/setHoveredPost', post);
+  return posts.find(article => article.$el === nextPostAfterEmptyAdElement);
 }
 
-export function enableKeyBindings() {
-  window.addEventListener('keydown', navigateDaily);
+export function bindEvent(event, callback) {
+  window.addEventListener(event, callback);
 }
 
-export function disableKeyBindings() {
-  window.removeEventListener('keydown', navigateDaily);
+export function unbindEvent(event, callback) {
+  window.removeEventListener(event, callback);
 }
 
 Object.freeze(validKeys);
 
 export default {
-  enableKeyBindings,
-  disableKeyBindings,
+  navigate: navigateDaily,
+  bind: bindEvent,
+  unbind: unbindEvent,
+  validKeys,
+  validKeysValues,
 };

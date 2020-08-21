@@ -191,7 +191,9 @@ import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
-import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
+import keyNavigationService, {
+  bindEvent, unbindEvent, validKeys, validKeysValues,
+} from '../common/keyNavigationService';
 
 const CRITICAL_FETCH_STAGE = 1;
 const OPERATIONAL_FETCH_STAGE = 2;
@@ -285,6 +287,32 @@ export default {
   },
 
   methods: {
+    onKeyDown(event) {
+      const { keyCode } = event;
+      const { hoveredPost } = this;
+
+      if (validKeysValues.indexOf(keyCode) === -1) return null;
+
+      if (keyCode === validKeys.esc) return this.backToMainFeed();
+
+      if (keyCode === validKeys['/']) return this.enableSearch();
+
+      if (keyCode === validKeys.b && hoveredPost && hoveredPost.post)
+        return hoveredPost.$emit('bookmark', {
+          post: hoveredPost.post,
+          bookmarked: !hoveredPost.post.bookmarked
+        });
+
+      const post = keyNavigationService.navigate(
+        keyCode,
+        this.$refs.feed.$refs.posts,
+        hoveredPost,
+        this.insaneMode,
+      );
+
+      return this.setHoveredPost(post);
+    },
+
     ctaClick() {
       ga('send', 'event', 'CTA', 'Click', this.cta.text);
       this.setShowReferral(true);
@@ -462,6 +490,7 @@ export default {
     },
 
     ...mapActions({
+      backToMainFeed: 'feed/backToMainFeed',
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       addFilterToFeed: 'feed/addFilterToFeed',
       search: 'feed/search',
@@ -473,7 +502,7 @@ export default {
     }),
 
     ...mapMutations({
-      setDaFeedReference: 'feed/setDaFeedReference',
+      setHoveredPost: 'feed/setHoveredPost',
       clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
@@ -492,7 +521,7 @@ export default {
   computed: {
     ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPost']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
@@ -608,10 +637,8 @@ export default {
       this.generateChallenge();
     });
 
-    this.setDaFeedReference(() => this.$refs.feed);
-
     this.$nextTick(() => {
-      enableKeyBindings();
+      bindEvent('keydown', this.onKeyDown);
       this.fetchStage = CRITICAL_FETCH_STAGE;
       this.checkVisitWin();
       if (!this.isPremium) {
