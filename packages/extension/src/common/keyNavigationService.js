@@ -30,7 +30,7 @@ function navigateFeed(keyCode, currentElement, insaneMode) {
   return currentElement;
 }
 
-function navigateDaily(keyCode, posts, hoveredPost, insaneMode) {
+export function navigateDaily(keyCode, posts, hoveredPost, insaneMode) {
   const foundElement = hoveredPost
     ? navigateFeed(keyCode, hoveredPost.$el, insaneMode)
     : getFirstPostOnFeed(insaneMode);
