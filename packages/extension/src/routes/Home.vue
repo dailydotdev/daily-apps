@@ -191,8 +191,8 @@ import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
-import keyNavigationService, {
-  bindEvent, unbindEvent, validKeys, validKeysValues,
+import {
+  navigateDaily, bindEvent, unbindEvent, validKeys, validKeysValues,
 } from '../common/keyNavigationService';
 
 const CRITICAL_FETCH_STAGE = 1;
@@ -289,7 +289,7 @@ export default {
   methods: {
     onKeyDown(event) {
       const { keyCode } = event;
-      const { hoveredPost } = this;
+      const { hoveredPost, insaneMode } = this;
 
       if (validKeysValues.indexOf(keyCode) === -1) return null;
 
@@ -297,19 +297,14 @@ export default {
 
       if (keyCode === validKeys['/']) return this.enableSearch();
 
-      if (keyCode === validKeys.b && hoveredPost && hoveredPost.post)
+      if (keyCode === validKeys.b && hoveredPost && hoveredPost.post) {
         return hoveredPost.$emit('bookmark', {
           post: hoveredPost.post,
-          bookmarked: !hoveredPost.post.bookmarked
+          bookmarked: !hoveredPost.post.bookmarked,
         });
+      }
 
-      const post = keyNavigationService.navigate(
-        keyCode,
-        this.$refs.feed.$refs.posts,
-        hoveredPost,
-        this.insaneMode,
-      );
-
+      const post = navigateDaily(keyCode, this.$refs.feed.$refs.posts, hoveredPost, insaneMode);
       return this.setHoveredPost(post);
     },
 
@@ -521,7 +516,7 @@ export default {
   computed: {
     ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPost']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPost', 'dailyKeyBindings']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
@@ -605,6 +600,11 @@ export default {
         this.clearSearch();
       }
     },
+    dailyKeyBindings() {
+      if (this.dailyKeyBindings) return bindEvent('keydown', this.onKeyDown);
+
+      return unbindEvent('keydown', this.onKeyDown);
+    },
   },
 
   created() {
@@ -648,7 +648,7 @@ export default {
   },
 
   beforeDestroy() {
-    disableKeyBindings();
+    unbindEvent('keydown', this.onKeyDown);
   },
 };
 </script>
