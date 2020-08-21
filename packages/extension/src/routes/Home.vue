@@ -289,9 +289,10 @@ export default {
   methods: {
     onKeyDown(event) {
       const { keyCode } = event;
-      const { hoveredPost, insaneMode } = this;
 
       if (validKeysValues.indexOf(keyCode) === -1) return null;
+
+      const { hoveredPost, insaneMode } = this;
 
       if (keyCode === validKeys.esc) return this.backToMainFeed();
 
@@ -442,6 +443,7 @@ export default {
 
     enableSearch() {
       this.showSearch = true;
+      this.setDailyKeyBindings(false);
       setTimeout(() => this.$refs.search && this.$refs.search.focus(), 100);
     },
 
@@ -464,6 +466,7 @@ export default {
     },
 
     onSearchBlur() {
+      this.setDailyKeyBindings(true);
       if (!this.$refs.search.query().length) {
         this.showSearch = false;
       }
@@ -497,6 +500,7 @@ export default {
     }),
 
     ...mapMutations({
+      setDailyKeyBindings: 'feed/setDailyKeyBindings',
       setHoveredPost: 'feed/setHoveredPost',
       clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
