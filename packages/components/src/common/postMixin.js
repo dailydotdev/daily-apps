@@ -42,7 +42,11 @@ export default {
     openNewTab: {
       type: Boolean,
       default: true,
-    }
+    },
+    setDailyKeyBindings: {
+      type: Function,
+      required: true,
+    },
   },
 
   data() {
@@ -107,6 +111,14 @@ export default {
     onCommentInput() {
       this.hasPostComment = !!this.$refs.comment.value.length;
     },
+
+    onCommentFocus() {
+      this.setDailyKeyBindings(false);
+    },
+
+    onCommentBlur() {
+      this.setDailyKeyBindings(true);
+    }
   },
 
   computed: {
