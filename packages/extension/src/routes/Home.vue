@@ -294,7 +294,7 @@ export default {
 
       const { hoveredPost, insaneMode } = this;
 
-      if (keyCode === validKeys.esc) return this.backToMainFeed();
+      if (keyCode === validKeys.esc) return this.backToDailyFeed();
 
       if (keyCode === validKeys['/']) return this.enableSearch();
 
@@ -307,6 +307,14 @@ export default {
 
       const post = navigateDaily(keyCode, this.$refs.feed.$refs.posts, hoveredPost, insaneMode);
       return this.setHoveredPost(post);
+    },
+
+    backToDailyFeed() {
+      if (!this.showBookmarks) return this.backToMainFeed();
+
+      this.$store.dispatch('feed/setShowBookmarks', !this.showBookmarks);
+
+      return ga('send', 'event', 'Header', 'Bookmarks', !this.showBookmarks);
     },
 
     ctaClick() {
