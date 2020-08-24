@@ -191,9 +191,7 @@ import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
-import {
-  navigateDaily, bindEvent, unbindEvent, validKeys, validKeysValues,
-} from '../common/keyNavigationService';
+import { navigateDaily, validKeys, validKeysValues } from '../common/keyNavigationService';
 
 const CRITICAL_FETCH_STAGE = 1;
 const OPERATIONAL_FETCH_STAGE = 2;
@@ -645,7 +643,7 @@ export default {
     });
 
     this.$nextTick(() => {
-      bindEvent('keydown', this.onKeyDown);
+      window.addEventListener('keydown', this.onKeyDown);
       this.fetchStage = CRITICAL_FETCH_STAGE;
       this.checkVisitWin();
       if (!this.isPremium) {
@@ -655,7 +653,7 @@ export default {
   },
 
   beforeDestroy() {
-    unbindEvent('keydown', this.onKeyDown);
+    window.removeEventListener('keydown', this.onKeyDown);
   },
 };
 </script>

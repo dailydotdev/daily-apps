@@ -44,20 +44,11 @@ export function navigateDaily(keyCode, posts, hoveredPost, insaneMode) {
   return posts.find(article => article.$el === nextPostAfterEmptyAdElement);
 }
 
-export function bindEvent(event, callback) {
-  window.addEventListener(event, callback);
-}
-
-export function unbindEvent(event, callback) {
-  window.removeEventListener(event, callback);
-}
-
 Object.freeze(validKeys);
+Object.freeze(validKeysValues);
 
 export default {
   navigate: navigateDaily,
-  bind: bindEvent,
-  unbind: unbindEvent,
   validKeys,
   validKeysValues,
 };
