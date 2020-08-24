@@ -526,7 +526,7 @@ export default {
   computed: {
     ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPost', 'dailyKeyBindings']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPost']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
@@ -609,11 +609,6 @@ export default {
         this.trackPageView();
         this.clearSearch();
       }
-    },
-    dailyKeyBindings() {
-      if (this.dailyKeyBindings) return bindEvent('keydown', this.onKeyDown);
-
-      return unbindEvent('keydown', this.onKeyDown);
     },
   },
 

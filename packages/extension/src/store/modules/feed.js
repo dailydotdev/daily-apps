@@ -34,7 +34,6 @@ const initialState = () => ({
   sortBy: 'popularity',
   search: null,
   showFeed: true,
-  dailyKeyBindings: true,
   hoveredPost: null,
   ad: null,
   bookmarkList: null,
@@ -193,9 +192,6 @@ export default {
     hasConflicts: state => state.conflictBookmarks && state.conflictBookmarks.length > 0,
   },
   mutations: {
-    setDailyKeyBindings(state, enable) {
-      state.dailyKeyBindings = enable;
-    },
     setHoveredPost(state, hoveredPost) {
       state.hoveredPost = hoveredPost;
     },
