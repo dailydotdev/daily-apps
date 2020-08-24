@@ -289,7 +289,7 @@ export default {
   methods: {
     onKeyDown({ keyCode, target }) {
       if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
-        return;
+        return null;
       }
 
       if (validKeysValues.indexOf(keyCode) === -1) return null;
