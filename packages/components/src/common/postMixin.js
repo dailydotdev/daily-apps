@@ -3,6 +3,7 @@ import '../../icons/menu';
 import '../../icons/upvote';
 import '../../icons/comment';
 import '../../icons/arrow';
+import '../../icons/x';
 import commentPopupText from '../commentPopupText';
 
 export default {
@@ -42,7 +43,7 @@ export default {
     openNewTab: {
       type: Boolean,
       default: true,
-    }
+    },
   },
 
   data() {
@@ -107,6 +108,10 @@ export default {
     onCommentInput() {
       this.hasPostComment = !!this.$refs.comment.value.length;
     },
+
+    closeCommentPopup() {
+      this.$emit('closeCommentPopup');
+    },
   },
 
   computed: {
@@ -137,7 +142,15 @@ export default {
         hover: this.menuOpened || this.bookmarksMenuOpened || this.selected,
         disabled: this.showCommentPopup || this.notifying,
         'show-comment-popup': this.showCommentPopup,
+        private: this.privateSource,
       };
+    },
+
+    privateSource() {
+      if (this.post && this.post.publication) {
+        return this.post.publication.public === false;
+      }
+      return false;
     },
   },
 

@@ -5,6 +5,7 @@
   border: 1px solid var(--theme-hover);
   background: var(--theme-background-highlight);
   box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.24);
+  transition: box-shadow linear 0.1s;
   overflow: hidden;
 
   &:not(.disabled) {
@@ -96,6 +97,10 @@
     }
   }
 
+  &.private .post__buttons {
+    visibility: hidden;
+  }
+
   &.read {
     background: var(--theme-background-secondary);
 
@@ -113,6 +118,10 @@
       --button-color: var(--color-burger-60);
     }
   }
+}
+
+.post__bookmark {
+  margin-right: 4px;
 }
 
 .post__title {
@@ -229,6 +238,7 @@
   color: var(--theme-secondary);
   max-height: 200px;
   -webkit-line-clamp: 10;
+  white-space: pre-wrap;
 }
 
 .post__comment-popup, .post__report-popup {
@@ -252,10 +262,8 @@
     border: 1px solid var(--theme-separator);
     color: var(--theme-primary);
     background: none;
-    font-size: 10px;
-    line-height: 16px;
-    letter-spacing: 0.4px;
     resize: none;
+    @mixin lil1;
 
     &::placeholder {
       color: var(--theme-secondary);
@@ -265,6 +273,11 @@
       outline: none;
       border-color: var(--theme-primary);
     }
+  }
+
+  & .post__comment-title {
+    margin-left: 8px;
+    margin-right: 32px;
   }
 }
 
@@ -290,6 +303,16 @@
     width: 124px;
     --button-border-radius: 12px;
   }
+
+  & .spinner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    transform: scale(0.5);
+  }
 }
 
 .post__report-popup {
@@ -297,4 +320,29 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
+}
+
+.post__comment-close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+}
+
+.comment-slide-up-enter-active, .comment-slide-up-leave-active,
+.comment-slide-down-enter-active, .comment-slide-down-leave-active {
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.comment-slide-up-enter-active, .comment-slide-down-enter-active {
+  transition-delay: 0.7s;
+}
+
+.comment-slide-up-enter, .comment-slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.comment-slide-down-enter, .comment-slide-down-leave-to {
+  opacity: 0;
+  transform: translateY(-24px);
 }

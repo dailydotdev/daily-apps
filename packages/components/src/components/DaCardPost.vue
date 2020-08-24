@@ -53,9 +53,8 @@
         <div class="post__comment-name post__vmargin lil1 singleline-text-overflow">
           {{selectedComment.author.name}}
         </div>
-        <div class="post__comment-content post__vmargin lil1 multiline-text-overflow">
-          {{selectedComment.content}}
-        </div>
+        <!-- eslint-disable-next-line max-len -->
+        <div class="post__comment-content post__vmargin lil1 multiline-text-overflow">{{selectedComment.content}}</div>
       </div>
       <div class="post__buttons full-width">
         <div class="post__hseparator"></div>
@@ -63,7 +62,7 @@
            :href="selectedComment.permalink" target="_blank"
            rel="noopener noreferrer" @click="onCommentClick">
           <svgicon name="comment"/>
-          <span>Comment</span>
+          <span>View comment</span>
         </a>
       </div>
     </template>
@@ -83,25 +82,31 @@
         </a>
       </template>
     </div>
-    <div class="post__comment-popup invert" v-if="showCommentPopup">
-      <div class="micro2 card__hmargin post__vmargin">{{commentPopupTitle}}
-      </div>
-      <textarea ref="comment" class="post__vmargin"
-                :placeholder="commentPopupPlaceholder" required
-                @input="onCommentInput"></textarea>
-      <div class="post__comment-popup__buttons">
-        <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
-                @click="onUpvoteClick">
-          <svgicon name="upvote"/>
-          <span>Upvote</span>
+    <transition name="comment-slide-up">
+      <div class="post__comment-popup invert" v-if="showCommentPopup && !privateSource">
+        <button class="btn-icon post__comment-close" @click="closeCommentPopup">
+          <svgicon name="x"/>
         </button>
-        <button class="btn btn-invert"
-                @click="onPostCommentClick" :disabled="!enablePostComment">
-          <svgicon name="comment"/>
-          <span>Post</span>
-        </button>
+        <div class="lil1 post__comment-title post__vmargin">{{commentPopupTitle}}
+        </div>
+        <textarea ref="comment" class="post__vmargin"
+                  :placeholder="commentPopupPlaceholder" required
+                  @input="onCommentInput"></textarea>
+        <div class="post__comment-popup__buttons">
+          <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
+                  @click="onUpvoteClick">
+            <svgicon name="upvote"/>
+            <span>Upvote</span>
+          </button>
+          <button class="btn btn-invert"
+                  @click="onPostCommentClick" :disabled="!enablePostComment">
+            <svgicon name="comment" v-show="!sendingComment"/>
+            <span v-show="!sendingComment">Post</span>
+            <da-spinner v-if="sendingComment"/>
+          </button>
+        </div>
       </div>
-    </div>
+    </transition>
     <div class="post__report-popup invert nuggets" v-if="notifying">
       {{notification}}
     </div>
@@ -112,9 +117,11 @@
 import 'lazysizes/plugins/blur-up/ls.blur-up';
 import 'lazysizes';
 import postMixin from '../common/postMixin';
+import DaSpinner from './DaSpinner.vue';
 
 export default {
   name: 'DaCardPost',
+  components: { DaSpinner },
   mixins: [postMixin],
 
   methods: {

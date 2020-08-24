@@ -83,7 +83,7 @@ it('should update profile and close dialog', (done) => {
   const wrapper = mount(DaProfile, { store, localVue });
   wrapper.find('button[type="submit"]').trigger('click');
   setTimeout(() => {
-    expect(user.actions.updateProfile).toBeCalledWith(expect.anything(), { name: 'Ido', email: 'ido@acme.com', company: 'ACME', title: null });
+    expect(user.actions.updateProfile).toBeCalledWith(expect.anything(), { name: 'Ido', email: 'ido@acme.com', company: 'ACME', title: null, acceptedMarketing: false });
     expect(wrapper.emitted().close[0]).toEqual([]);
     done();
   });

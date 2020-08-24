@@ -10,9 +10,19 @@ exports[`should add private source 1`] = `
    
   <p>
     
-      From now on new articles from this source will be added to your feed. Enjoy
+      From now on, new articles from this source will be added to your feed.
+      You can find all of your private sources in the sidebar to the left.
+      Enjoy
     
   </p>
+   
+  <button
+    class="btn btn-big btn-invert new-source__confirm"
+  >
+    
+      Ok, got it
+    
+  </button>
 </div>
 `;
 
@@ -26,9 +36,19 @@ exports[`should add private source wit manually typed name 1`] = `
    
   <p>
     
-      From now on new articles from this source will be added to your feed. Enjoy
+      From now on, new articles from this source will be added to your feed.
+      You can find all of your private sources in the sidebar to the left.
+      Enjoy
     
   </p>
+   
+  <button
+    class="btn btn-big btn-invert new-source__confirm"
+  >
+    
+      Ok, got it
+    
+  </button>
 </div>
 `;
 

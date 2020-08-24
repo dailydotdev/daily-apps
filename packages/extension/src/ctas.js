@@ -8,7 +8,7 @@ const ctas = [
     },
   },
   {
-    text: 'Have friends?',
+    text: 'Share with friends?',
     icon: 'referral',
     style: {
       color: 'white',

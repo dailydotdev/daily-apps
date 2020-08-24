@@ -12,6 +12,7 @@
                         @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                         @click="onPostClick" :show-menu="isLoggedIn"
                         @upvote="onUpvote" @comment="onComment"
+                        @closeCommentPopup="closeCommentPopup"
                         :menu-opened="selectedPostId === item.id"
                         :bookmarks-menu-opened="bookmarkPostId === item.id"
                         :selected="focusedPost === item" :open-new-tab="openNewTab"
@@ -31,6 +32,7 @@
                       @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                       @click="onPostClick" :show-menu="isLoggedIn"
                       @upvote="onUpvote" @comment="onComment"
+                      @closeCommentPopup="closeCommentPopup"
                       :menu-opened="selectedPostId === item.id"
                       :bookmarks-menu-opened="bookmarkPostId === item.id"
                       :selected="focusedPost === item" :open-new-tab="openNewTab"
@@ -140,6 +142,11 @@ export default {
         this.trackEngagementWin({ action: 'BOOKMARK' });
       }
       if (this.isPremium) {
+        if (this.bookmarkPost && this.bookmarkPost.id === post.id) {
+          this.bookmarkPost = null;
+          this.$refs.bookmarkContext.close();
+          return;
+        }
         this.$refs.bookmarkContext.open(event, post);
         if (bookmarked) {
           await this.setBookmarkList(post, this.lastUsedBookmarkList);
@@ -273,7 +280,16 @@ export default {
       }
     },
 
+    async closeCommentPopup() {
+      this.commentPostId = null;
+      await this.saveLastComment();
+    },
+
     onPostMenu({ post, event }) {
+      if (this.selectedPostId === post.id) {
+        this.selectedPostId = null;
+        return;
+      }
       ga('send', 'event', 'Post', 'Menu');
       this.$refs.context.open(event, post);
     },
@@ -344,7 +360,6 @@ export default {
 
 <style>
 .feed__insane {
-  max-width: 720px;
   margin-left: auto;
   margin-right: auto;
 
@@ -361,7 +376,7 @@ export default {
   }
 
   .roomy & {
-    max-width: 680px;
+    max-width: 1200px;
 
     & .insane {
       margin: 8px 0;
@@ -369,7 +384,7 @@ export default {
   }
 
   .cozy & {
-    max-width: 640px;
+    max-width: 960px;
 
     & .insane {
       margin: 12px 0;

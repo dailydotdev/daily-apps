@@ -2,6 +2,7 @@
   <label class="switch" :class="{ checked }">
     <span class="switch__container">
       <input
+        :name="name"
         type="checkbox"
         :checked="checked"
         @change="toggle">
@@ -31,6 +32,9 @@ export default {
     label: {
       type: String,
       default: null,
+    },
+    name: {
+      type: String,
     },
   },
 
