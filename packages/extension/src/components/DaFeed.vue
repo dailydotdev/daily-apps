@@ -12,7 +12,6 @@
                         @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                         @click="onPostClick" :show-menu="isLoggedIn"
                         @upvote="onUpvote" @comment="onComment"
-                        :setDailyKeyBindings="setDailyKeyBindings"
                         :menu-opened="selectedPostId === item.id"
                         :bookmarks-menu-opened="bookmarkPostId === item.id"
                         :selected="focusedPost === item" :open-new-tab="openNewTab"
@@ -32,7 +31,6 @@
                       @bookmark="onBookmark" @publication="onPublication" @menu="onPostMenu"
                       @click="onPostClick" :show-menu="isLoggedIn"
                       @upvote="onUpvote" @comment="onComment"
-                      :setDailyKeyBindings="setDailyKeyBindings"
                       :menu-opened="selectedPostId === item.id"
                       :bookmarks-menu-opened="bookmarkPostId === item.id"
                       :selected="focusedPost === item" :open-new-tab="openNewTab"
@@ -325,7 +323,6 @@ export default {
 
     ...mapMutations({
       removePost: 'feed/removePost',
-      setDailyKeyBindings: 'feed/setDailyKeyBindings',
     }),
   },
   async mounted() {
