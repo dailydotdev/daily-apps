@@ -252,7 +252,8 @@ export default {
             mutation: queries.COMMENT_ON_POST_MUTATION,
             variables: { postId: post.id, content: comment },
           });
-          window.open(res.data.commentOnPost.permalink, '_blank');
+          const link = `${res.data.commentOnPost.permalink}?new=true`;
+          window.open(link, '_blank');
           this.commentPostId = null;
           this.lastSavedComment = '';
           // eslint-disable-next-line no-param-reassign

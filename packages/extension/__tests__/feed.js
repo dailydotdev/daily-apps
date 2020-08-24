@@ -980,20 +980,26 @@ it('should set a post as upvoted', () => {
   const state = {
     posts: [{
       id: '1',
+      numUpvotes: 0,
     }, {
       id: '2',
+      numUpvotes: 0,
     }, {
       id: '3',
+      numUpvotes: 0,
     }],
   };
   module.mutations.toggleUpvote(state, { id: '2', upvoted: true });
   expect(state.posts).toEqual([{
     id: '1',
+    numUpvotes: 0,
   }, {
     id: '2',
     upvoted: true,
+    numUpvotes: 1,
   }, {
     id: '3',
+    numUpvotes: 0,
   }]);
 });
 
