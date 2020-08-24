@@ -149,7 +149,9 @@ export default {
     }
   },
 
-  updated() {
-    if (this.selected) this.$el.getElementsByClassName("post__link")[0].focus();
+  watch: {
+    selected() {
+      if (this.selected) this.$el.getElementsByClassName("post__link")[0].focus();
+    }
   }
 };
