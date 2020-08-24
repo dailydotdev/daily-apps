@@ -70,17 +70,15 @@
       <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
               @click="onUpvoteClick">
         <svgicon name="upvote"/>
-        <span>Upvote</span>
+        <span>{{post.numUpvotes || 'Upvote'}}</span>
       </button>
-      <template v-if="post.numComments">
-        <div class="post__vseparator"></div>
-        <a class="btn btn-menu" :class="{ 'post__action-completed': post.commented}"
-           :href="post.commentsPermalink" target="_blank"
-           rel="noopener noreferrer" @click="onCommentClick">
-          <svgicon name="comment"/>
-          <span>Comments</span>
-        </a>
-      </template>
+      <div class="post__vseparator"></div>
+      <a class="btn btn-menu" :class="{ 'post__action-completed': post.commented}"
+         :href="post.commentsPermalink" target="_blank"
+         rel="noopener noreferrer" @click="onCommentClick">
+        <svgicon name="comment"/>
+        <span>{{post.numComments || 'Comment'}}</span>
+      </a>
     </div>
     <transition name="comment-slide-up">
       <div class="post__comment-popup invert" v-if="showCommentPopup && !privateSource">

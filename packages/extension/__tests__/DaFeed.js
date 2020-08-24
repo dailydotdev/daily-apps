@@ -411,7 +411,7 @@ it('should submit comment', (done) => {
     expect(wrapper.vm.commentPostId).toEqual(null);
     expect(feed.state.posts[0].numComments).toEqual(1);
     expect(feed.state.posts[0].commented).toEqual(true);
-    expect(window.open).toBeCalledWith('https://daily.dev', '_blank')
+    expect(window.open).toBeCalledWith('https://daily.dev?new=true', '_blank')
     done();
   });
 });
