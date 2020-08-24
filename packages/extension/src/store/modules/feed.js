@@ -321,7 +321,12 @@ export default {
       if (index === null) {
         return;
       }
-      Vue.set(state[feed], index, { ...state[feed][index], upvoted });
+      const add = upvoted ? 1 : -1;
+      Vue.set(state[feed], index, {
+        ...state[feed][index],
+        upvoted,
+        numUpvotes: state[feed][index].numUpvotes + add,
+      });
     },
   },
   actions: {
@@ -533,7 +538,11 @@ export default {
         });
         return true;
       } catch (err) {
-        commit('toggleBookmarks', { id: post.id, bookmarked: post.bookmarked, list: post.bookmarkList });
+        commit('toggleBookmarks', {
+          id: post.id,
+          bookmarked: post.bookmarked,
+          list: post.bookmarkList,
+        });
         return false;
       }
     },
