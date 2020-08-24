@@ -287,8 +287,10 @@ export default {
   },
 
   methods: {
-    onKeyDown(event) {
-      const { keyCode } = event;
+    onKeyDown({ keyCode, target }) {
+      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+        return;
+      }
 
       if (validKeysValues.indexOf(keyCode) === -1) return null;
 
@@ -306,7 +308,7 @@ export default {
       }
 
       const post = navigateDaily(keyCode, this.$refs.feed.$refs.posts, hoveredPost, insaneMode);
-      
+
       return this.setHoveredPost(post);
     },
 
