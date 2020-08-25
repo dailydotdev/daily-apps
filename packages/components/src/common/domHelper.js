@@ -1,33 +1,89 @@
-export function getPostByElement(posts, elementToFind) {
-  return posts.find(post => post.$el === elementToFind);
+export function getFeedElement(insaneMode = false) {
+  const feedClass = insaneMode ? "feed__insane" : "feed__cards";
+
+  return document.getElementsByClassName(feedClass)[0];
 }
 
-export function getBelowPost(el) {
-  if (el.nextElementSibling === null) return el;
+export function getCardsPerRow() {
+  const feed = getFeedElement();
 
-  return el.nextElementSibling;
+  if (!feed) return 0;
+
+  let previousTop = 0;
+  let cardsPerRow = 0;
+
+  for (let i = 0; i < feed.childNodes.length; i += 1) {
+    const currentTop = feed.childNodes[i].offsetTop;
+
+    if (previousTop !== currentTop && previousTop > 0) return cardsPerRow + 1;
+
+    if (previousTop === currentTop) cardsPerRow += 1;
+
+    previousTop = currentTop;
+  }
+
+  return 0;
 }
 
-export function getAbovePost(el) {
-  if (el.previousElementSibling === null) return el;
+export function getElementIndexFromSiblings(targetElement) {
+  let index = 0;
+  let element = targetElement.previousElementSibling;
+  while (element !== null) {
+    element = element.previousElementSibling;
+    index += 1;
+  }
+
+  return index;
+}
+
+export function getPreviousPost(el, insaneMode = false) {
+  if (!el.previousElementSibling) return el;
+
+  if (insaneMode) return el.previousElementSibling;
+
+  if (el.previousElementSibling.offsetTop !== el.offsetTop) return el;
 
   return el.previousElementSibling;
 }
 
-export function getTopLeftMostPostEl(posts, insaneMode) {
-  const parent = posts[0].$el.parentElement;
+export function getNextPost(el, insaneMode = false) {
+  if (!el.nextElementSibling) return el;
 
-  let child = (insaneMode ? parent : parent.parentElement.firstElementChild).firstElementChild;
-  let result = getPostByElement(posts, child);
+  if (insaneMode) return el.nextElementSibling;
 
-  while (!result && child) {
-    child = child.nextElementSibling;
-    result = getPostByElement(posts, child);
-  }
+  if (el.nextElementSibling.offsetTop !== el.offsetTop) return el;
 
-  return child;
+  return el.nextElementSibling;
 }
 
-export function hoverPost(selectedPost) {
-  selectedPost.$el.getElementsByClassName('post__link')[0].focus();
+export function getBelowPost(el, insaneMode) {
+  if (insaneMode) return getNextPost(el, insaneMode);
+
+  const cardsPerRow = getCardsPerRow();
+  const index = getElementIndexFromSiblings(el);
+  const feed = getFeedElement(insaneMode);
+
+  if (cardsPerRow + index >= feed.childNodes.length) return el;
+
+  return feed.childNodes[cardsPerRow + index];
+}
+
+export function getAbovePost(el, insaneMode) {
+  if (insaneMode) return getPreviousPost(el, insaneMode);
+
+  const cardsPerRow = getCardsPerRow();
+  const index = getElementIndexFromSiblings(el);
+  const feed = getFeedElement(insaneMode);
+
+  if (index - cardsPerRow < 0) return el;
+
+  return feed.childNodes[index - cardsPerRow];
+}
+
+export function getFirstPostOnFeed(insaneMode) {
+  const feed = getFeedElement(insaneMode);
+
+  if (!feed) return null;
+
+  return feed.firstElementChild;
 }

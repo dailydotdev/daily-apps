@@ -34,7 +34,6 @@ const initialState = () => ({
   sortBy: 'popularity',
   search: null,
   showFeed: true,
-  daFeedRef: null,
   hoveredPost: null,
   ad: null,
   bookmarkList: null,
@@ -195,9 +194,6 @@ export default {
   mutations: {
     setHoveredPost(state, hoveredPost) {
       state.hoveredPost = hoveredPost;
-    },
-    setDaFeedReference(state, value) {
-      state.daFeedRef = value;
     },
     setShowBookmarks(state, value) {
       state.showBookmarks = value;

@@ -1,11 +1,10 @@
 import {
-  getPostByElement,
   getAbovePost,
   getBelowPost,
-  getTopLeftMostPostEl,
-  hoverPost,
+  getPreviousPost,
+  getNextPost,
+  getFirstPostOnFeed,
 } from '@daily/components/src/common/domHelper';
-import store from '../store';
 
 export const validKeys = {
   h: 72,
@@ -17,88 +16,39 @@ export const validKeys = {
   esc: 27,
 };
 
-function getNewPostEl(keyCode, currentElement, insaneMode) {
-  if (keyCode === validKeys.h && !insaneMode) return getAbovePost(currentElement);
+export const validKeysValues = Object.values(validKeys);
 
-  if (keyCode === validKeys.l && !insaneMode) return getBelowPost(currentElement);
+function navigateFeed(keyCode, currentElement, insaneMode) {
+  if (keyCode === validKeys.h && !insaneMode) return getPreviousPost(currentElement);
 
-  if (keyCode === validKeys.j && insaneMode) return getBelowPost(currentElement);
+  if (keyCode === validKeys.l && !insaneMode) return getNextPost(currentElement);
 
-  if (keyCode === validKeys.k && insaneMode) return getAbovePost(currentElement);
+  if (keyCode === validKeys.j) return getBelowPost(currentElement, insaneMode);
+
+  if (keyCode === validKeys.k) return getAbovePost(currentElement, insaneMode);
 
   return currentElement;
 }
 
-function triggerBookmark(post) {
-  if (post.ad) return null;
+export function navigateDaily(keyCode, posts, hoveredPost, insaneMode) {
+  const foundElement = hoveredPost
+    ? navigateFeed(keyCode, hoveredPost.$el, insaneMode)
+    : getFirstPostOnFeed(insaneMode);
 
-  return post.$emit('bookmark', { post: post.post, bookmarked: !post.post.bookmarked });
-}
+  const post = posts.find(article => article.$el === foundElement);
 
-function getCurrentPost(posts, current) {
-  if (!current) return null;
+  if (post) return post;
 
-  const postOrAdProp = current.post || current.ad;
+  const nextPostAfterEmptyAdElement = getNextPost(foundElement, insaneMode);
 
-  return posts.find(article => [article.ad, article.post].indexOf(postOrAdProp) !== -1);
-}
-
-function navigate(keyCode, posts, search, backToMainFeed, { current, insaneMode }) {
-  if (keyCode === validKeys.esc) return backToMainFeed();
-
-  if (posts.length === 0) return null;
-
-  const item = getCurrentPost(posts, current);
-
-  if (Object.values(validKeys).indexOf(keyCode) === -1) return null;
-
-  if (keyCode === validKeys['/']) return search.enable();
-
-  if (keyCode === validKeys.b && item) return triggerBookmark(item);
-
-  const element = !item
-    ? getTopLeftMostPostEl(posts, insaneMode)
-    : getNewPostEl(keyCode, item.$el, insaneMode);
-
-  const selectedPost = getPostByElement(posts, element);
-
-  if (selectedPost === item) return selectedPost;
-
-  hoverPost(selectedPost);
-
-  return selectedPost;
-}
-
-function navigateDaily({ keyCode, target }) {
-  if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
-    return;
-  }
-  const { daFeedRef, hoveredPost } = store.state.feed;
-  const parent = daFeedRef().$parent;
-  const search = { enable: parent.enableSearch };
-  const options = { insaneMode: store.state.ui.insaneMode, current: hoveredPost };
-  const newHoveredPost = navigate(
-    keyCode,
-    daFeedRef().$refs.posts,
-    search,
-    () => store.dispatch('feed/backToMainFeed'),
-    options,
-  );
-
-  store.commit('feed/setHoveredPost', newHoveredPost);
-}
-
-export function enableKeyBindings() {
-  window.addEventListener('keydown', navigateDaily);
-}
-
-export function disableKeyBindings() {
-  window.removeEventListener('keydown', navigateDaily);
+  return posts.find(article => article.$el === nextPostAfterEmptyAdElement);
 }
 
 Object.freeze(validKeys);
+Object.freeze(validKeysValues);
 
 export default {
-  enableKeyBindings,
-  disableKeyBindings,
+  navigate: navigateDaily,
+  validKeys,
+  validKeysValues,
 };

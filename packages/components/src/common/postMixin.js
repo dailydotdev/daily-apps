@@ -161,4 +161,10 @@ export default {
       el.dispatchEvent(new Event('input'));
     }
   },
+
+  watch: {
+    selected() {
+      if (this.selected) this.$el.getElementsByClassName("post__link")[0].focus();
+    }
+  }
 };

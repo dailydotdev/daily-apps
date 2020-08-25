@@ -191,7 +191,7 @@ import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
 import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
-import { enableKeyBindings, disableKeyBindings } from '../common/keyNavigationService';
+import { navigateDaily, validKeys, validKeysValues } from '../common/keyNavigationService';
 
 const CRITICAL_FETCH_STAGE = 1;
 const OPERATIONAL_FETCH_STAGE = 2;
@@ -285,6 +285,39 @@ export default {
   },
 
   methods: {
+    onKeyDown({ keyCode, target }) {
+      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+        return null;
+      }
+
+      if (validKeysValues.indexOf(keyCode) === -1) return null;
+
+      if (keyCode === validKeys.esc) return this.backToDailyFeed();
+
+      if (keyCode === validKeys['/']) return this.enableSearch();
+
+      const { hoveredPost, insaneMode } = this;
+
+      if (keyCode === validKeys.b && hoveredPost && hoveredPost.post) {
+        return hoveredPost.$emit('bookmark', {
+          post: hoveredPost.post,
+          bookmarked: !hoveredPost.post.bookmarked,
+        });
+      }
+
+      const post = navigateDaily(keyCode, this.$refs.feed.$refs.posts, hoveredPost, insaneMode);
+
+      return this.setHoveredPost(post);
+    },
+
+    backToDailyFeed() {
+      if (!this.showBookmarks) return this.backToMainFeed();
+
+      this.$store.dispatch('feed/setShowBookmarks', !this.showBookmarks);
+
+      return ga('send', 'event', 'Header', 'Bookmarks', !this.showBookmarks);
+    },
+
     ctaClick() {
       ga('send', 'event', 'CTA', 'Click', this.cta.text);
       this.setShowReferral(true);
@@ -462,6 +495,7 @@ export default {
     },
 
     ...mapActions({
+      backToMainFeed: 'feed/backToMainFeed',
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
       addFilterToFeed: 'feed/addFilterToFeed',
       search: 'feed/search',
@@ -473,7 +507,7 @@ export default {
     }),
 
     ...mapMutations({
-      setDaFeedReference: 'feed/setDaFeedReference',
+      setHoveredPost: 'feed/setHoveredPost',
       clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
@@ -490,9 +524,9 @@ export default {
   },
 
   computed: {
-    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral']),
+    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPost']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
@@ -608,10 +642,8 @@ export default {
       this.generateChallenge();
     });
 
-    this.setDaFeedReference(() => this.$refs.feed);
-
     this.$nextTick(() => {
-      enableKeyBindings();
+      window.addEventListener('keydown', this.onKeyDown);
       this.fetchStage = CRITICAL_FETCH_STAGE;
       this.checkVisitWin();
       if (!this.isPremium) {
@@ -621,7 +653,7 @@ export default {
   },
 
   beforeDestroy() {
-    disableKeyBindings();
+    window.removeEventListener('keydown', this.onKeyDown);
   },
 };
 </script>
