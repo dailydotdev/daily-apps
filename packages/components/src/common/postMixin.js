@@ -164,7 +164,7 @@ export default {
 
   watch: {
     selected() {
-      if (this.selected) this.$el.getElementsByClassName("post__link")[0].focus();
-    }
-  }
+      if (this.selected) this.$el.getElementsByClassName('post__link')[0].focus();
+    },
+  },
 };
