@@ -1,5 +1,5 @@
 export function getFeedElement(insaneMode = false) {
-  const feedClass = insaneMode ? "feed__insane" : "feed__cards";
+  const feedClass = insaneMode ? 'feed__insane' : 'feed__cards';
 
   return document.getElementsByClassName(feedClass)[0];
 }
