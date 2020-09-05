@@ -20,7 +20,9 @@ export const validKeysValues = Object.values(validKeys);
 
 /**
  * Handles which `domHelper` to trigger based on the valid `keyCode` passed as first parameter.
- * <pre> Returns an array of which `index` `0` is the actual `post` or `ad` `Vue.Component` and `index` `1` as its actual index from its siblings in the DOM Element for `feed` 
+ * <pre> Returns an array of which `index` `0` is the actual `post` or `ad`
+ * `Vue.Component` and `index` `1` as its actual index from its siblings
+ * in the DOM Element for `feed`</pre>
  * @param  {number} code - `keyCode` property from `keydown` event
  * @param  {HTMLElement} element - the currently selected `post` Component's element
  * @param  {number} index - the current index of the `el` parameter from its siblings
@@ -39,12 +41,16 @@ function navigateFeed(code, element, index, insaneMode) {
 }
 
 /**
- * Returns an array of which `index` `0` is the actual `post` or `ad` `Vue.Component` and `index` `1` as its actual index from its siblings in the DOM Element for `feed`
- * <pre>If the first item on `feed` element is still being loaded (specifically the `ad`) and the feat has been triggered, it will fetch the next `post` `Vue.Component`
+ * Returns an array of which `index` `0` is the actual `post` or `ad`
+ * `Vue.Component` and `index` `1` as its actual index from its siblings in
+ * the DOM Element for `feed`
+ * <pre>If the first item on `feed` element is still being loaded (specifically the `ad`)
+ *  and the feat has been triggered, it will fetch the next `post` `Vue.Component`</pre>
  * @param  {number} keyCode - `keyCode` property from `keydown` event
  * @param  {Vue.Component[]} posts - `ref` from Feed Component
  * @param  {[Vue.Component, number]} [hoveredPost
- * @param  {number} currentIndex] - `state` property that holds the current `hoveredPost` Component and its `index` from DOM
+ * @param  {number} currentIndex] - `state` property that holds the current
+ * `hoveredPost`Component and its `index` from DOM
  * @param  {boolean} insaneMode - `state` property for display mode
  */
 export function navigateDaily(keyCode, posts, [hoveredPost, currentIndex], insaneMode) {

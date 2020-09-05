@@ -35,9 +35,10 @@ export function getCardsPerRow() {
 
 /**
  * Returns the `previousElementSibling` of the currently `hoveredPost` `element`.
- * <pre> If none - return the currently selected values
+ * <pre> If none - return the currently selected values</pre>
  * <pre> If `insaneMode` is true - immediately return the `previousElementSibling`</pre>
- * <pre> If `offsetTop` of the `previousElementSibling` is not equal - it indicates they're not on the same row -
+ * <pre> If `offsetTop` of the `previousElementSibling` is not equal -
+ * it indicates they're not on the same row -
  * leftmost post is the currently selected one</pre>
  * @param  {HTMLElement} el - the currently selected `post` Component's element
  * @param  {number} index - the current index of the `el` parameter from its siblings
@@ -55,9 +56,10 @@ export function getPreviousPost(el, index, insaneMode = false) {
 
 /**
  * Returns the `nextElementSibling` of the currently `hoveredPost` `element`.
- * <pre> If none - return the currently selected values
+ * <pre> If none - return the currently selected values</pre>
  * <pre> If `insaneMode` is true - immediately return the `nextElementSibling`</pre>
- * <pre> If `offsetTop` of the `nextElementSibling` is not equal - it indicates they're not on the same row -
+ * <pre> If `offsetTop` of the `nextElementSibling` is not equal -
+ * it indicates they're not on the same row -
  * rightmost post is the currently selected one</pre>
  * @param  {HTMLElement} el - the currently selected `post` Component's element
  * @param  {number} index - the current index of the `el` parameter from its siblings
