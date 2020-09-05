@@ -39,7 +39,7 @@ export function navigateDaily(keyCode, posts, [hoveredPost, currentIndex], insan
 
   if (post) return [post, index];
 
-  const [nextPostAfterEmptyAdElement, i] = getNextPost(foundElement, insaneMode);
+  const [nextPostAfterEmptyAdElement, i] = getNextPost(foundElement, currentIndex, insaneMode);
 
   return [posts.find(article => article.$el === nextPostAfterEmptyAdElement), i];
 }
