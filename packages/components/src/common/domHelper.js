@@ -1,5 +1,5 @@
 export function getFeedElement(insaneMode = false) {
-  const feedClass = insaneMode ? 'feed__insane' : 'feed__cards';
+  const feedClass = insaneMode ? "feed__insane" : "feed__cards";
 
   return document.getElementsByClassName(feedClass)[0];
 }
@@ -25,59 +25,46 @@ export function getCardsPerRow() {
   return 0;
 }
 
-export function getElementIndexFromSiblings(targetElement) {
-  let index = 0;
-  let element = targetElement.previousElementSibling;
-  while (element !== null) {
-    element = element.previousElementSibling;
-    index += 1;
-  }
+export function getPreviousPost(el, index, insaneMode = false) {
+  if (!el.previousElementSibling) return [el, index];
 
-  return index;
+  if (insaneMode) return [el.previousElementSibling, index - 1];
+
+  if (el.previousElementSibling.offsetTop !== el.offsetTop) return [el, index];
+
+  return [el.previousElementSibling, index - 1];
 }
 
-export function getPreviousPost(el, insaneMode = false) {
-  if (!el.previousElementSibling) return el;
+export function getNextPost(el, index, insaneMode = false) {
+  if (!el.nextElementSibling) return [el, index];
 
-  if (insaneMode) return el.previousElementSibling;
+  if (insaneMode) return [el.nextElementSibling, index + 1];
 
-  if (el.previousElementSibling.offsetTop !== el.offsetTop) return el;
+  if (el.nextElementSibling.offsetTop !== el.offsetTop) return [el, index];
 
-  return el.previousElementSibling;
+  return [el.nextElementSibling, index + 1];
 }
 
-export function getNextPost(el, insaneMode = false) {
-  if (!el.nextElementSibling) return el;
-
-  if (insaneMode) return el.nextElementSibling;
-
-  if (el.nextElementSibling.offsetTop !== el.offsetTop) return el;
-
-  return el.nextElementSibling;
-}
-
-export function getBelowPost(el, insaneMode) {
-  if (insaneMode) return getNextPost(el, insaneMode);
+export function getBelowPost(el, index, insaneMode) {
+  if (insaneMode) return getNextPost(el, index, insaneMode);
 
   const cardsPerRow = getCardsPerRow();
-  const index = getElementIndexFromSiblings(el);
   const feed = getFeedElement(insaneMode);
 
-  if (cardsPerRow + index >= feed.childNodes.length) return el;
+  if (cardsPerRow + index >= feed.childNodes.length) return [el, index];
 
-  return feed.childNodes[cardsPerRow + index];
+  return [feed.childNodes[index + cardsPerRow], index + cardsPerRow];
 }
 
-export function getAbovePost(el, insaneMode) {
-  if (insaneMode) return getPreviousPost(el, insaneMode);
+export function getAbovePost(el, index, insaneMode) {
+  if (insaneMode) return getPreviousPost(el, index, insaneMode);
 
   const cardsPerRow = getCardsPerRow();
-  const index = getElementIndexFromSiblings(el);
   const feed = getFeedElement(insaneMode);
 
-  if (index - cardsPerRow < 0) return el;
+  if (index - cardsPerRow < 0) return [el, index];
 
-  return feed.childNodes[index - cardsPerRow];
+  return [feed.childNodes[index - cardsPerRow], index - cardsPerRow];
 }
 
 export function getFirstPostOnFeed(insaneMode) {
@@ -85,5 +72,5 @@ export function getFirstPostOnFeed(insaneMode) {
 
   if (!feed) return null;
 
-  return feed.firstElementChild;
+  return [feed.firstElementChild, 0];
 }
