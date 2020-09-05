@@ -18,30 +18,30 @@ export const validKeys = {
 
 export const validKeysValues = Object.values(validKeys);
 
-function navigateFeed(keyCode, currentElement, insaneMode) {
-  if (keyCode === validKeys.h && !insaneMode) return getPreviousPost(currentElement);
+function navigateFeed(code, element, index, insaneMode) {
+  if (code === validKeys.h && !insaneMode) return getPreviousPost(element, index);
 
-  if (keyCode === validKeys.l && !insaneMode) return getNextPost(currentElement);
+  if (code === validKeys.l && !insaneMode) return getNextPost(element, index);
 
-  if (keyCode === validKeys.j) return getBelowPost(currentElement, insaneMode);
+  if (code === validKeys.j) return getBelowPost(element, index, insaneMode);
 
-  if (keyCode === validKeys.k) return getAbovePost(currentElement, insaneMode);
+  if (code === validKeys.k) return getAbovePost(element, index, insaneMode);
 
-  return currentElement;
+  return [element, index];
 }
 
-export function navigateDaily(keyCode, posts, hoveredPost, insaneMode) {
-  const foundElement = hoveredPost
-    ? navigateFeed(keyCode, hoveredPost.$el, insaneMode)
+export function navigateDaily(keyCode, posts, [hoveredPost, currentIndex], insaneMode) {
+  const [foundElement, index] = hoveredPost
+    ? navigateFeed(keyCode, hoveredPost.$el, currentIndex, insaneMode)
     : getFirstPostOnFeed(insaneMode);
 
   const post = posts.find(article => article.$el === foundElement);
 
-  if (post) return post;
+  if (post) return [post, index];
 
-  const nextPostAfterEmptyAdElement = getNextPost(foundElement, insaneMode);
+  const [nextPostAfterEmptyAdElement, i] = getNextPost(foundElement, insaneMode);
 
-  return posts.find(article => article.$el === nextPostAfterEmptyAdElement);
+  return [posts.find(article => article.$el === nextPostAfterEmptyAdElement), i];
 }
 
 Object.freeze(validKeys);
