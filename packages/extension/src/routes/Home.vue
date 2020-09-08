@@ -296,7 +296,7 @@ export default {
 
       if (keyCode === validKeys['/']) return this.enableSearch();
 
-      const { hoveredPost, insaneMode } = this;
+      const [hoveredPost, index] = this.hoveredPostAndIndex || [null, -1];
 
       if (keyCode === validKeys.b && hoveredPost && hoveredPost.post) {
         return hoveredPost.$emit('bookmark', {
@@ -305,9 +305,10 @@ export default {
         });
       }
 
-      const post = navigateDaily(keyCode, this.$refs.feed.$refs.posts, hoveredPost, insaneMode);
+      const { posts } = this.$refs.feed.$refs;
+      const postAndIndex = navigateDaily(keyCode, posts, [hoveredPost, index], this.insaneMode);
 
-      return this.setHoveredPost(post);
+      return this.setHoveredPostAndIndex(postAndIndex);
     },
 
     backToDailyFeed() {
@@ -507,7 +508,7 @@ export default {
     }),
 
     ...mapMutations({
-      setHoveredPost: 'feed/setHoveredPost',
+      setHoveredPostAndIndex: 'feed/setHoveredPostAndIndex',
       clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
@@ -526,7 +527,7 @@ export default {
   computed: {
     ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
-    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPost']),
+    ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({

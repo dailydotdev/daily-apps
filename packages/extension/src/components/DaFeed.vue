@@ -105,7 +105,7 @@ export default {
   },
   computed: {
     ...mapState('ui', ['insaneMode', 'spaciness', 'openNewTab']),
-    ...mapState('feed', ['ads', 'hoveredPost', 'showBookmarks', 'lastUsedBookmarkList']),
+    ...mapState('feed', ['ads', 'hoveredPostAndIndex', 'showBookmarks', 'lastUsedBookmarkList']),
     ...mapGetters({
       posts: 'feed/feed',
       isLoggedIn: 'user/isLoggedIn',
@@ -119,11 +119,11 @@ export default {
         && this.bookmarkPost.bookmarkList.id;
     },
     focusedPost() {
-      if (!this.hoveredPost) {
+      if (!this.hoveredPostAndIndex) {
         return null;
       }
 
-      const item = this.hoveredPost;
+      const [item] = this.hoveredPostAndIndex;
       return item.ad || item.post;
     },
   },

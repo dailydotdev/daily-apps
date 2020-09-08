@@ -34,7 +34,7 @@ const initialState = () => ({
   sortBy: 'popularity',
   search: null,
   showFeed: true,
-  hoveredPost: null,
+  hoveredPostAndIndex: null,
   ad: null,
   bookmarkList: null,
   lastUsedBookmarkList: null,
@@ -192,8 +192,8 @@ export default {
     hasConflicts: state => state.conflictBookmarks && state.conflictBookmarks.length > 0,
   },
   mutations: {
-    setHoveredPost(state, hoveredPost) {
-      state.hoveredPost = hoveredPost;
+    setHoveredPostAndIndex(state, hoveredPostAndIndex) {
+      state.hoveredPostAndIndex = hoveredPostAndIndex;
     },
     setShowBookmarks(state, value) {
       state.showBookmarks = value;
