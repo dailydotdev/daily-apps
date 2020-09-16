@@ -62,9 +62,10 @@ it('should do nothing when input is empty and input is required', (done) => {
 it('should trigger submit', (done) => {
   const wrapper = mount(DaEditableText, { localVue, propsData });
   wrapper.vm.activate();
-  wrapper.vm.$nextTick(() => {
+  wrapper.vm.$nextTick(async () => {
     wrapper.find('.editable__input').element.value = 'my value';
     wrapper.find('.editable__input').trigger('input');
+    await wrapper.vm.$nextTick();
     wrapper.find('.editable__submit').trigger('click');
     wrapper.vm.$nextTick(() => {
       expect(wrapper.find('.editable__active').element).toBeFalsy();
@@ -97,9 +98,10 @@ it('should reset value when reactivating', (done) => {
     propsData: { ...propsData, resetOnSubmit: true },
   });
   wrapper.vm.activate();
-  wrapper.vm.$nextTick(() => {
+  wrapper.vm.$nextTick(async () => {
     wrapper.find('.editable__input').element.value = 'my value';
     wrapper.find('.editable__input').trigger('input');
+    await wrapper.vm.$nextTick();
     wrapper.find('.editable__submit').trigger('click');
     wrapper.vm.$nextTick(() => {
       wrapper.vm.activate();
@@ -117,9 +119,10 @@ it('should set non-editable text as value', (done) => {
     propsData: { ...propsData, valueAsText: true },
   });
   wrapper.vm.activate();
-  wrapper.vm.$nextTick(() => {
+  wrapper.vm.$nextTick(async () => {
     wrapper.find('.editable__input').element.value = 'my value';
     wrapper.find('.editable__input').trigger('input');
+    await wrapper.vm.$nextTick();
     wrapper.find('.editable__submit').trigger('click');
     wrapper.vm.$nextTick(() => {
       expect(wrapper.find('.editable__non-active span').element.textContent)

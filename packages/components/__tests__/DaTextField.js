@@ -24,39 +24,43 @@ it('should hide label', () => {
     .toEqual(propsData.placeholder);
 });
 
-it('should set placeholder when focused and show label', () => {
+it('should set placeholder when focused and show label', async () => {
   const wrapper = mount(DaTextField, { localVue, propsData });
   const input = wrapper.find('input');
   input.element.focus();
+  await wrapper.vm.$nextTick();
   expect(input.element.placeholder)
     .toEqual(propsData.placeholder);
   const style = getComputedStyle(wrapper.find('.text-field__label').element);
   expect(style.display).toEqual('');
 });
 
-it('should show label when input is set', () => {
+it('should show label when input is set', async () => {
   const wrapper = mount(DaTextField, { localVue, propsData });
   const input = wrapper.find('input');
   input.element.value = 'test';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   const style = getComputedStyle(wrapper.find('.text-field__label').element);
   expect(style.display).toEqual('');
 });
 
-it('should have invalid class when input is not valid', () => {
+it('should have invalid class when input is not valid', async () => {
   const props = { ...propsData, required: true };
   const wrapper = mount(DaTextField, { localVue, propsData: props });
   const input = wrapper.find('input');
   input.trigger('blur');
+  await wrapper.vm.$nextTick();
   expect(wrapper.classes()).toContain('invalid');
 });
 
-it('should set aria-live when input is not valid', () => {
+it('should set aria-live when input is not valid', async () => {
   const props = { ...propsData, required: true, hint: 'required field' };
   const wrapper = mount(DaTextField, { localVue, propsData: props });
   expect(wrapper.find('.text-field__hint').attributes()['aria-live']).toBeFalsy();
   const input = wrapper.find('input');
   input.trigger('blur');
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.text-field__hint').attributes()['aria-live']).toEqual('assertive');
 });
 
