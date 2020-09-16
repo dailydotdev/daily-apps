@@ -39,20 +39,22 @@ it('should disable confirm button', () => {
   expect(wrapper.find('.bookmark-modal__confirm').element.disabled).toEqual(true);
 });
 
-it('should enable confirm button when input is valid', () => {
+it('should enable confirm button when input is valid', async () => {
   const wrapper = mount(DaCreateList, { localVue });
   const input = wrapper.find('input');
   input.element.value = 'name';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.bookmark-modal__confirm').element.disabled).toEqual(false);
 });
 
-it('should create a new list', (done) => {
+it('should create a new list', async (done) => {
   createBookmarkListHandler.mockResolvedValue({data: { createBookmarkList: {id: '1', name: 'name'}}});
   const wrapper = mount(DaCreateList, { localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
   const input = wrapper.find('input');
   input.element.value = 'name';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   wrapper.find('.bookmark-modal__confirm').trigger('click');
   expect(createBookmarkListHandler).toBeCalledWith({name: 'name'});
   setTimeout(() => {

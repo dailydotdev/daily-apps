@@ -317,6 +317,7 @@ it('should open create bookmark list modal', (done) => {
   setTimeout(async () => {
     wrapper.findAll('.feed__bookmark-context .btn').at(0).trigger('click');
     await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
     expect(wrapper.find('.create-list').element).toBeTruthy();
     done();
   }, 10);

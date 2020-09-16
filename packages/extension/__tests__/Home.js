@@ -133,32 +133,38 @@ it('should close context menu when clicking two times on the DnD button', (done)
   }, 10);
 });
 
-it('should open search bar when clicking on the button', () => {
+it('should open search bar when clicking on the button', async () => {
   const wrapper = mount(DaHome, { store, localVue });
   expect(wrapper.find('.content__header .search').element).toBeUndefined();
   wrapper.find('.search-btn').trigger('click');
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.content__header .search').element).toBeTruthy();
 });
 
-it('should close search bar when switching to bookmarks', () => {
+it('should close search bar when switching to bookmarks', async () => {
   const wrapper = mount(DaHome, { store, localVue });
   wrapper.find('.search-btn').trigger('click');
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.content__header .search').element).toBeTruthy();
   feed.state.showBookmarks = true;
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.content__header .search').element).toBeUndefined();
 });
 
-it('should close search bar when setting filter', () => {
+it('should close search bar when setting filter', async () => {
   const wrapper = mount(DaHome, { store, localVue });
   wrapper.find('.search-btn').trigger('click');
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.content__header .search').element).toBeTruthy();
   feed.state.filter = { type: 'publication', info: { id: 'angular', name: 'Angular' } };
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.content__header .search').element).toBeUndefined();
 });
 
-it('should search query', () => {
+it('should search query', async () => {
   const wrapper = mount(DaHome, { store, localVue });
   wrapper.find('.search-btn').trigger('click');
+  await wrapper.vm.$nextTick();
   wrapper.find('.content__header .search').vm.$emit('submit', 'hello');
   expect(feed.actions.search).toBeCalledWith(expect.anything(), 'hello');
 });
@@ -202,6 +208,7 @@ it('should open integrations popup', async () => {
   const wrapper = mount(DaHome, { store, localVue });
   expect(wrapper.find('.integrations').element).toBeFalsy();
   wrapper.find('.integration-btn').trigger('click');
+  await wrapper.vm.$nextTick();
   await wrapper.vm.$nextTick();
   expect(wrapper.find('.integrations').element).toBeTruthy();
 });

@@ -216,9 +216,8 @@ export default {
       fetchPolicy: 'cache-only',
       manual: true,
       async result({ data, networkStatus, loading }) {
-        if (networkStatus === NetworkStatus.ready && !loading && data.latestNotifications) {
-          const dompurify = await import('dompurify');
-          const DOMPurify = dompurify.default(window);
+        if (networkStatus === NetworkStatus.ready && !loading && data && data.latestNotifications) {
+          const DOMPurify = await import('dompurify');
           this.notifications = data.latestNotifications
             .map(n => ({ timestamp: new Date(n.timestamp), html: DOMPurify.sanitize(n.html) }));
           const timestamp = this.notifications.length && this.notifications[0].timestamp;
