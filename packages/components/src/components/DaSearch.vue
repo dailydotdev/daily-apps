@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import createDOMPurify from 'dompurify';
+import DOMPurify from 'dompurify';
 
 export default {
   name: 'DaSearch',
@@ -78,7 +78,7 @@ export default {
 
   methods: {
     purify(html) {
-      return this.DOMPurify.sanitize(html);
+      return DOMPurify.sanitize(html);
     },
     query() {
       return this.$refs.input.value;
@@ -131,10 +131,6 @@ export default {
         this.$refs.input.value = this.currentInput;
       }
     },
-  },
-
-  created() {
-    this.DOMPurify = createDOMPurify(window);
   },
 
   mounted() {

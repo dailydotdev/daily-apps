@@ -1,5 +1,5 @@
 /**
- * Returns an `HTMLElement` of the `feed` Component 
+ * Returns an `HTMLElement` of the `feed` Component
  * @param  {boolean} [insaneMode=false] - `state` property for display mode
  */
 export function getFeedElement(insaneMode = false) {

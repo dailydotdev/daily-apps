@@ -50,9 +50,10 @@ it('should prepopulate user information', () => {
   expect(wrapper.find('button[type="submit"]').element.disabled).toEqual(false);
 });
 
-it('should disable submit when required fields are empty', () => {
+it('should disable submit when required fields are empty', async () => {
   store.state.user.profile = { email: 'ido@acme.com', company: 'ACME', image: 'https://image.com/', providers: ['github'] };
   const wrapper = mount(DaProfile, { store, localVue });
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('button[type="submit"]').element.disabled).toEqual(true);
 });
 

@@ -26,7 +26,7 @@ let store;
 beforeEach(() => {
   window.ga = () => {
   };
-  
+
   feed = {
     namespaced: true,
     state: {
@@ -53,7 +53,7 @@ beforeEach(() => {
   });
 
   bookmarkListHandler.mockReset();
-  bookmarkListHandler.mockResolvedValue({data: {bookmarkLists: 
+  bookmarkListHandler.mockResolvedValue({data: {bookmarkLists:
     [{id: '1', name: 'handbook'}, {id: '2', name: 'favorite'}]
   }});
 });
@@ -110,6 +110,7 @@ it('should open create list modal on plus button click', async () => {
   await wrapper.vm.$nextTick();
   wrapper.find('.bookmark-list__header button').trigger('click');
   await wrapper.vm.$nextTick();
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.create-list').element).toBeTruthy();
 });
 
@@ -136,6 +137,7 @@ it('should open rename list modal', async () => {
   await wrapper.vm.$nextTick();
   wrapper.find('.bookmark-list__menu-btn').trigger('click');
   wrapper.find('.bookmark-list__context button').trigger('click');
+  await wrapper.vm.$nextTick();
   await wrapper.vm.$nextTick();
   expect(wrapper.find('.rename-list').element).toBeTruthy();
 });

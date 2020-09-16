@@ -97,6 +97,7 @@ it('should update url field value according to selection', async () => {
   const wrapper = mount(DaIntegrations, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
   await wrapper.vm.$nextTick();
   wrapper.find('.dropdown').vm.$emit('selected', 1);
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.integration__url-box input').element.value).toEqual('https://daily.dev/rss/bookmarks');
 });
 

@@ -21,17 +21,20 @@ it('should set placeholder as trigger text', () => {
     .toEqual(propsData.placeholder);
 });
 
-it('should open menu on click', () => {
+it('should open menu on click', async () => {
   const wrapper = mount(DaDropdown, { localVue, propsData });
   expect(wrapper.find('.dropdown__menu').element).toBeFalsy();
   wrapper.find('.dropdown__trigger').trigger('click');
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.dropdown__menu').element).toBeTruthy();
 });
 
-it('should select the menu option', () => {
+it('should select the menu option', async () => {
   const wrapper = mount(DaDropdown, { localVue, propsData });
   wrapper.find('.dropdown__trigger').trigger('click');
+  await wrapper.vm.$nextTick();
   wrapper.findAll('[role="option"]').at(1).trigger('click');
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.dropdown__trigger span').element.innerHTML)
     .toEqual('Option B');
   expect(wrapper.find('.dropdown__menu').element).toBeFalsy();

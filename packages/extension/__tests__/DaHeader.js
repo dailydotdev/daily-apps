@@ -103,9 +103,10 @@ it('should emit "login" on sign-in button click', () => {
   expect(wrapper.emitted().login[0]).toEqual([]);
 });
 
-it('should emit "profile" on profile button click', () => {
+it('should emit "profile" on profile button click', async () => {
   const wrapper = mount(DaHeader, { store, localVue });
   store.state.user.profile = { image: 'http://image.com' };
+  await wrapper.vm.$nextTick();
   wrapper.find('.header__profile').trigger('click');
   expect(wrapper.emitted().profile[0]).toEqual([]);
 });

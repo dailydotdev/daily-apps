@@ -18,19 +18,21 @@ it('should set by default placeholder as label', () => {
     .toEqual(propsData.label);
 });
 
-it('should set placeholder when focused', () => {
+it('should set placeholder when focused', async () => {
   const wrapper = mount(DaSearchField, { localVue, propsData });
   const input = wrapper.find('input');
   input.element.focus();
+  await wrapper.vm.$nextTick();
   expect(input.element.placeholder)
     .toEqual(propsData.placeholder);
 });
 
-it('should show the clear button when there is input', () => {
+it('should show the clear button when there is input', async () => {
   const wrapper = mount(DaSearchField, { localVue, propsData });
   const input = wrapper.find('input');
   input.element.value = 'test';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   const style = getComputedStyle(wrapper.find('button').element);
   expect(style.display).toEqual('inline-block');
 });

@@ -108,7 +108,7 @@ it('should disable confirm button', () => {
   expect(wrapper.find('button[type="submit"]').element.disabled).toEqual(true);
 });
 
-it('should enable confirm button when input is valid', () => {
+it('should enable confirm button when input is valid', async () => {
   const wrapper = mount(DaNewSource, {
     store,
     localVue,
@@ -117,10 +117,11 @@ it('should enable confirm button when input is valid', () => {
   const input = wrapper.find('input');
   input.element.value = 'https://example.com';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('button[type="submit"]').element.disabled).toEqual(false);
 });
 
-it('should show error when cannot find rss', (done) => {
+it('should show error when cannot find rss', async (done) => {
   fetchTimeout.mockResolvedValue({
     json: jest.fn().mockResolvedValue({
       type: 'website',
@@ -137,6 +138,7 @@ it('should show error when cannot find rss', (done) => {
   const input = wrapper.find('input');
   input.element.value = 'https://example.com';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   wrapper.find('button[type="submit"]').trigger('click');
   setTimeout(() => {
     expect(wrapper.find('.new-source__status').element).toMatchSnapshot();
@@ -144,7 +146,7 @@ it('should show error when cannot find rss', (done) => {
   });
 });
 
-it('should show error when cannot scrape website', (done) => {
+it('should show error when cannot scrape website', async (done) => {
   fetchTimeout.mockResolvedValue({json: jest.fn().mockResolvedValue({type: 'unavailable'})});
   const wrapper = mount(DaNewSource, {
     store,
@@ -154,6 +156,7 @@ it('should show error when cannot scrape website', (done) => {
   const input = wrapper.find('input');
   input.element.value = 'https://example.com';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   wrapper.find('button[type="submit"]').trigger('click');
   setTimeout(() => {
     expect(wrapper.find('.new-source__status').element).toMatchSnapshot();
@@ -161,7 +164,7 @@ it('should show error when cannot scrape website', (done) => {
   });
 });
 
-it('should list scraped rss feeds', (done) => {
+it('should list scraped rss feeds', async (done) => {
   fetchTimeout.mockResolvedValue({
     json: jest.fn().mockResolvedValue({
       type: 'website',
@@ -178,6 +181,7 @@ it('should list scraped rss feeds', (done) => {
   const input = wrapper.find('input');
   input.element.value = 'https://example.com';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   wrapper.find('button[type="submit"]').trigger('click');
   setTimeout(() => {
     expect(wrapper.find('.new-source__status').element).toMatchSnapshot();
@@ -186,7 +190,7 @@ it('should list scraped rss feeds', (done) => {
   });
 });
 
-it('should proceed directly to source info when one rss is available', (done) => {
+it('should proceed directly to source info when one rss is available', async (done) => {
   fetchTimeout.mockResolvedValue({
     json: jest.fn().mockResolvedValue({
       type: 'website',
@@ -203,6 +207,7 @@ it('should proceed directly to source info when one rss is available', (done) =>
   const input = wrapper.find('input');
   input.element.value = 'https://example.com';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   wrapper.find('button[type="submit"]').trigger('click');
   setTimeout(() => {
     expect(wrapper.find('.new-source__status').element).toMatchSnapshot();

@@ -264,6 +264,7 @@ it('should search for tags', async () => {
   wrapper.vm.filterChecked = true;
   wrapper.vm.$refs.search.value = 'java';
   wrapper.find('.sidebar__search .sidebar__input').trigger('input');
+  await wrapper.vm.$nextTick();
   expect(handler).toBeCalledWith({ query: 'java' });
   await wrapper.vm.$nextTick();
   expect(wrapper.vm.activeTags).toEqual([

@@ -17,10 +17,11 @@ it('should set by default placeholder as label', () => {
     .toEqual(propsData.label);
 });
 
-it('should set placeholder when focused', () => {
+it('should set placeholder when focused', async () => {
   const wrapper = mount(DaSearch, { localVue, propsData });
   const input = wrapper.find('input');
   input.element.focus();
+  await wrapper.vm.$nextTick();
   expect(input.element.placeholder)
     .toEqual(propsData.placeholder);
 });
@@ -51,10 +52,11 @@ it('should emit input event when input is changed', () => {
   expect(wrapper.emitted().input[0]).toEqual(['hello']);
 });
 
-it('should reveal autocomplete dropdown', () => {
+it('should reveal autocomplete dropdown', async () => {
   const newProps = { ...propsData, suggestions: [{ title: 'Opt1' }, { title: 'Opt2' }] };
   const wrapper = mount(DaSearch, { localVue, propsData: newProps });
   wrapper.find('input').element.focus();
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.search__autocomplete').element).toBeTruthy();
 });
 
@@ -66,36 +68,43 @@ it('should hide autocomplete dropdown on blur', () => {
   expect(wrapper.find('.search__autocomplete').element).toBeFalsy();
 });
 
-it('should cycle through autocomplete suggestions', () => {
+it('should cycle through autocomplete suggestions', async () => {
   const newProps = { ...propsData, suggestions: [{ title: 'Opt1' }, { title: 'Opt2' }] };
   const wrapper = mount(DaSearch, { localVue, propsData: newProps });
   wrapper.find('input').element.focus();
+  await wrapper.vm.$nextTick();
   wrapper.find('input').trigger('keydown.down');
+  await wrapper.vm.$nextTick();
   const selected = wrapper.find('.search__autocomplete .selected');
   expect(selected.element.textContent.trim()).toEqual('Opt1');
   expect(selected.element.getAttribute('aria-selected')).toEqual('true');
 });
 
-it('should cycle through autocomplete suggestions in reverse order', () => {
+it('should cycle through autocomplete suggestions in reverse order', async () => {
   const newProps = { ...propsData, suggestions: [{ title: 'Opt1' }, { title: 'Opt2' }] };
   const wrapper = mount(DaSearch, { localVue, propsData: newProps });
   const input = wrapper.find('input');
   input.element.focus();
+  await wrapper.vm.$nextTick();
   input.trigger('keydown.up');
+  await wrapper.vm.$nextTick();
   const selected = wrapper.find('.search__autocomplete .selected');
   expect(selected.element.textContent.trim()).toEqual('Opt2');
   expect(selected.element.getAttribute('aria-selected')).toEqual('true');
 });
 
-it('should revert to original query as the first suggestion', () => {
+it('should revert to original query as the first suggestion', async () => {
   const newProps = { ...propsData, suggestions: [{ title: 'Opt1' }, { title: 'Opt2' }] };
   const wrapper = mount(DaSearch, { localVue, propsData: newProps });
   const input = wrapper.find('input');
   input.element.focus();
   input.element.value = 'text';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   input.trigger('keydown.down');
+  await wrapper.vm.$nextTick();
   input.trigger('keydown.up');
+  await wrapper.vm.$nextTick();
   expect(wrapper.find('.search__autocomplete .selected').element).toBeFalsy();
   expect(input.element.value).toEqual('text');
 });
@@ -108,11 +117,12 @@ it('should emit blur event when input is out of focus', () => {
   expect(wrapper.emitted().blur[0]).toEqual([]);
 });
 
-it('should show the clear button when there is input', () => {
+it('should show the clear button when there is input', async () => {
   const wrapper = mount(DaSearch, { localVue, propsData });
   const input = wrapper.find('input');
   input.element.value = 'test';
   input.trigger('input');
+  await wrapper.vm.$nextTick();
   const style = getComputedStyle(wrapper.find('.search__container button').element);
   expect(style.display).toEqual('inline-block');
 });
