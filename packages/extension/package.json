@@ -1,6 +1,6 @@
 {
   "name": "@daily/extension",
-  "version": "2.19.3",
+  "version": "2.20.0",
   "private": true,
   "scripts": {
     "serve": "TARGET=development yarn manifest && vue-cli-service build --mode development --watch",
