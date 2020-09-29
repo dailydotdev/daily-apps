@@ -3,7 +3,6 @@ const path = require('path');
 module.exports = {
   plugins: {
     autoprefixer: {},
-    'postcss-import': {},
     'postcss-mixins': {
       mixinsDir: path.join(__dirname, 'src/styles/mixins'),
     },
