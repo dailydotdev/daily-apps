@@ -22,6 +22,8 @@ it('should authenticate', async () => {
     name: 'Ido',
     image: 'https://dailynow.co',
     newUser: false,
+    infoConfirmed: true,
+    permalink: 'https://daily.dev/ido',
   };
 
   nock(baseURL)
@@ -35,9 +37,9 @@ it('should authenticate', async () => {
 });
 
 it('should return authorization url', () => {
-  const expected = 'http://localhost:3000/v1/auth/authorize?provider=google&redirect_uri=https://go.dailynow.co?key=var&code_challenge=challenge';
+  const expected = 'http://localhost:3000/v1/auth/authorize?provider=google&redirect_uri=https://go.dailynow.co?key=var&skip_authenticate=true';
   const service = new AuthServiceImpl(baseURL);
-  const actual = service.getAuthorizationUrl('google', 'https://go.dailynow.co?key=var', 'challenge');
+  const actual = service.getAuthorizationUrl('google', 'https://go.dailynow.co?key=var');
 
   expect(actual).toEqual(expected);
 });
@@ -62,6 +64,8 @@ it('should get user profile', async () => {
     name: 'John',
     image: 'https://image.com',
     newUser: false,
+    infoConfirmed: true,
+    permalink: 'https://daily.dev/ido',
   };
 
   nock(baseURL)
@@ -82,6 +86,8 @@ it('should update user profile', async () => {
     company: 'ACME',
     title: 'Developer',
     infoConfirmed: true,
+    permalink: 'https://daily.dev/ido',
+    providers: ['github'],
   };
 
   nock(baseURL)

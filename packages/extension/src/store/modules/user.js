@@ -5,7 +5,6 @@ const updateAnalyticsUser = id => setCache(ANALYTICS_ID_KEY, id);
 
 const initialState = () => ({
   profile: null,
-  challenge: null,
 });
 
 export default {
@@ -17,9 +16,6 @@ export default {
     },
     confirmNewUser(state) {
       state.profile = { ...state.profile, newUser: false };
-    },
-    setChallenge(state, challenge) {
-      state.challenge = challenge;
     },
   },
   getters: {
@@ -38,21 +34,6 @@ export default {
       commit('setProfile', profile);
     },
 
-    async authenticate({ commit, state, dispatch }, { provider, code }) {
-      try {
-        const profile = await authService.authenticate(code, state.challenge.verifier);
-        ga('send', 'event', 'Login', 'Done', provider);
-
-        if (!profile.newUser) {
-          commit('feed/checkBookmarksConflicts', null, { root: true });
-        }
-        await dispatch('login', profile);
-      } catch (err) {
-        // TODO: handle error
-        ga('send', 'event', 'Login', 'Failed', provider);
-      }
-    },
-
     async logout({ commit, dispatch }) {
       // TODO: handle error
       await authService.logout();
@@ -67,14 +48,14 @@ export default {
       }
     },
 
-    async generateChallenge({ commit }) {
-      const challenge = await authService.generateChallenge();
-      commit('setChallenge', challenge);
-    },
-
     async validateAuth({ commit, dispatch, state }) {
       const profile = await authService.getUserProfile();
       if (profile.providers) {
+        if (!profile.infoConfirmed) {
+          const redirectUri = browser.extension.getURL('index.html');
+          window.location.href = `${profile.registrationLink}?redirect_uri=${encodeURI(redirectUri)}`;
+          return;
+        }
         if (state.profile && state.profile.id === profile.id) {
           // Keep newUser true according multiple sessions until confirmed
           commit('setProfile', Object.assign({}, profile, { newUser: state.profile && state.profile.newUser }));
@@ -84,11 +65,6 @@ export default {
       } else if (state.profile) {
         await dispatch('logout');
       }
-    },
-
-    async updateProfile({ commit, state }, newProfile) {
-      await authService.updateUserProfile(newProfile);
-      commit('setProfile', Object.assign({}, state.profile, newProfile, { infoConfirmed: true }));
     },
   },
 };

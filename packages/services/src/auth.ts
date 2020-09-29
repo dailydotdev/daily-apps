@@ -19,9 +19,11 @@ export interface UserProfile {
 
 export interface User extends UserProfile {
   id: string,
-  providers?: string[],
-  infoConfirmed?: boolean,
+  providers: string[],
+  infoConfirmed: boolean,
   newUser?: boolean,
+  permalink: string;
+  registrationLink?: string;
 }
 
 export interface CodeChallenge {
@@ -34,13 +36,11 @@ export interface AuthService {
 
   authenticate(code: string, verifier: string): Promise<User>;
 
-  getAuthorizationUrl(provider: string, redirectUri: string, codeChallenge: string): string;
+  getAuthorizationUrl(provider: string, redirectUri: string): string;
 
   getUserProfile(): Promise<UserId | User>;
 
   updateUserProfile(profile: UserProfile): Promise<User>;
-
-  generateChallenge(): Promise<CodeChallenge>;
 }
 
 export class AuthServiceImpl implements AuthService {
@@ -64,8 +64,8 @@ export class AuthServiceImpl implements AuthService {
     return reviveJSON(res.data, dateReviver);
   }
 
-  getAuthorizationUrl(provider: string, redirectUri: string, codeChallenge: string): string {
-    return `${this.baseURL}/v1/auth/authorize?provider=${provider}&redirect_uri=${encodeURI(redirectUri)}&code_challenge=${codeChallenge}`;
+  getAuthorizationUrl(provider: string, redirectUri: string): string {
+    return `${this.baseURL}/v1/auth/authorize?provider=${provider}&redirect_uri=${encodeURI(redirectUri)}&skip_authenticate=true`;
   }
 
   async getUserProfile(): Promise<UserId | User> {
@@ -76,20 +76,5 @@ export class AuthServiceImpl implements AuthService {
   async updateUserProfile(profile: UserProfile): Promise<User> {
     const res = await this.request.put(`${this.baseURL}/v1/users/me`, profile);
     return res.data;
-  }
-
-  async generateChallenge(): Promise<CodeChallenge> {
-    const array = new Uint32Array(32);
-    window.crypto.getRandomValues(array);
-    const verifier = Array.from(array, dec => ('0' + dec.toString(16)).substr(-2)).join('');
-
-    const encoder = new TextEncoder();
-    const data = encoder.encode(verifier);
-    const hashed = await window.crypto.subtle.digest('SHA-256', data);
-    const challenge = btoa(String.fromCharCode(...new Uint8Array(hashed)))
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
-    return {verifier, challenge};
   }
 }
