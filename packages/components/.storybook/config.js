@@ -5,7 +5,7 @@ import svgicon from 'vue-svgicon';
 import 'focus-visible';
 
 import darkTheme from './dark';
-import '../stories/style.pcss';
+import './GlobalStyles';
 import tooltip from '../src/directives/tooltip';
 
 Vue.use(svgicon);
