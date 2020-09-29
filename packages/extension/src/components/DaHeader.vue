@@ -19,18 +19,6 @@
       </a>
       <div class="separator"></div>
     </template>
-    <a class="btn-icon" href="https://github.com/dailydotdev/daily"
-       v-tooltip.bottom="'Check out our repository'">
-      <svgicon name="github"/>
-    </a>
-    <a class="btn-icon" href="https://www.producthunt.com/posts/daily-2-0"
-       v-tooltip.bottom="'Our Product Hunt page'">
-      <svgicon name="ph"/>
-    </a>
-    <div class="separator"></div>
-    <button class="btn-icon" v-tooltip.bottom="'Daily Go'" @click="$emit('go')">
-      <svgicon name="mobile"/>
-    </button>
     <button class="btn-icon btn-dnd" v-tooltip.bottom="'Do Not Disturb'"
             :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)">
       <svgicon name="timer"/>
@@ -41,6 +29,7 @@
       <span class="header__badge" v-if="showNotificationBadge"></span>
     </button>
     <a :href="profileLink" class="header__profile" v-if="isLoggedIn">
+      <span class="lil2">{{reputation}}</span>
       <img :src="profileImage" alt="Profile image"/>
       <da-svg v-if="isPremium" src="/graphics/glitter_border.svg" class="glitter-mark"/>
     </a>
@@ -124,6 +113,13 @@ export default {
         }
 
         return '';
+      },
+      reputation(state) {
+        if (this.isLoggedIn) {
+          return state.user.profile.reputation;
+        }
+
+        return 0;
       },
     }),
   },
@@ -304,26 +300,32 @@ export default {
 
   & .header__profile {
     position: relative;
-    width: 30px;
-    height: 30px;
+    display: flex;
     padding: 0;
     margin: 0 8px 0 14px;
-    background: none;
+    align-items: center;
+    background: var(--theme-background-highlight);
     border: none;
+    border-radius: 8px;
     cursor: pointer;
 
+    & span {
+      margin: 0 8px 0 12px;
+      color: var(--theme-primary);
+    }
+
     & img {
-      width: 100%;
-      height: 100%;
+      width: 30px;
+      height: 30px;
       overflow: hidden;
-      border-radius: 4px;
+      border-radius: 8px;
     }
 
     & .glitter-mark {
-      top: -5px;
-      right: -5px;
-      width: 10px;
-      height: 10px;
+      top: -8px;
+      right: -8px;
+      width: 16px;
+      height: 16px;
 
       & #border {
         fill: var(--theme-background-highlight);;
