@@ -40,10 +40,10 @@
       <svgicon name="terminal"/>
       <span class="header__badge" v-if="showNotificationBadge"></span>
     </button>
-    <button class="header__profile" v-if="isLoggedIn" @click="$emit('profile')">
+    <a :href="profileLink" class="header__profile" v-if="isLoggedIn">
       <img :src="profileImage" alt="Profile image"/>
       <da-svg v-if="isPremium" src="/graphics/glitter_border.svg" class="glitter-mark"/>
-    </button>
+    </a>
     <button class="btn btn-water-cheese header__sign-in" v-else
             @click="$emit('login')">
       <svgicon name="user_daily"/>
@@ -114,6 +114,13 @@ export default {
       profileImage(state) {
         if (this.isLoggedIn) {
           return state.user.profile.image;
+        }
+
+        return '';
+      },
+      profileLink(state) {
+        if (this.isLoggedIn) {
+          return state.user.profile.permalink;
         }
 
         return '';

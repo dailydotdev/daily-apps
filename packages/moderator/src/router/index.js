@@ -29,11 +29,6 @@ const router = new Router({
       path: '/login',
       component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
     },
-    {
-      path: '/oauth/:provider/callback',
-      name: 'oauth',
-      component: () => import(/* webpackChunkName: "oauth" */ '../views/OAuth.vue'),
-    },
   ],
 });
 

@@ -11,9 +11,6 @@ export default {
     setProfile(state, profile) {
       state.profile = profile;
     },
-    setChallenge(state, challenge) {
-      state.challenge = challenge;
-    },
   },
   getters: {
     isLoggedIn(state) {
@@ -25,9 +22,13 @@ export default {
       const profile = await authService.authenticate(code, state.challenge.verifier);
       commit('setProfile', profile);
     },
-    async generateChallenge({ commit }) {
-      const challenge = await authService.generateChallenge();
-      commit('setChallenge', challenge);
+    async validateAuth({ commit }) {
+      const profile = await authService.getUserProfile();
+      if (profile.providers) {
+        commit('setProfile', profile);
+      } else {
+        commit('setProfile', null);
+      }
     },
   },
 };

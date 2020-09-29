@@ -63,12 +63,6 @@ const router = new VueRouter({
   mode: 'history',
   routes: [
     { path: '/', component: () => import(/* webpackChunkName: "home" */ '../routes/Home.vue') },
-    // { path: '/', redirect: '/onboarding' },
-    {
-      path: '/login',
-      component: () => import(/* webpackChunkName: "login" */ '../routes/Login.vue'),
-      props: route => ({ ...route.query }),
-    },
   ],
 });
 

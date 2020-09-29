@@ -3,8 +3,7 @@
     <da-banner :theme="banner.theme" :title="banner.title"
                :subtitle="banner.subtitle" :cta="banner.cta"
                :url="banner.url" v-if="showBanner" @close="closeBanner"/>
-    <da-header @go="onGoClicked" @login="onLogin('Header')"
-               @profile="onProfile" @menu="onDndMenu"></da-header>
+    <da-header @go="onGoClicked" @login="onLogin('Header')" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
     <da-sidebar ref="sidebar" v-if="fetchStage >= 2"
                 @loaded="fetchStage += 1"
@@ -130,8 +129,6 @@
     <da-request v-if="showRequestModal" @close="showRequestModal = false"/>
     <da-welcome v-if="showReadyModal" @close="nextInstruction"/>
     <da-login v-if="showLoginModal" @close="showLoginModal = false"/>
-    <da-profile v-if="showProfileModal" @close="showProfileModal = false"/>
-    <da-confirm-account v-if="showConfirmAccountModal"/>
     <da-merge v-if="hasConflicts" @confirm="mergeBookmarksConflicts"
               @cancel="clearBookmarksConflicts"/>
     <da-premium v-if="showPremium" @close="setShowPremium(false)" @login="onLogin('Premium')"/>
@@ -251,7 +248,6 @@ export default {
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
     DaSearch: () => import('@daily/components/src/components/DaSearch.vue'),
     DaLogin: () => import('../components/DaLogin.vue'),
-    DaProfile: () => import('../components/DaProfile.vue'),
     DaGo: () => import('../components/DaGo.vue'),
     DaWelcome: () => import('../components/DaWelcome.vue'),
     DaCongrats: () => import('../components/DaCongrats.vue'),
@@ -259,7 +255,6 @@ export default {
     DaSettings: () => import('../components/DaSettings.vue'),
     DaMerge: () => import('../components/DaMerge.vue'),
     DaBanner: () => import('../components/DaBanner'),
-    DaConfirmAccount: () => import('../components/DaConfirmAccount'),
     DaBookmarkList: () => import('../components/DaBookmarkList'),
     DaPremium: () => import('../components/DaPremium'),
     DaNewSource: () => import('../components/DaNewSource'),
@@ -273,7 +268,6 @@ export default {
       showGoModal: false,
       showRequestModal: false,
       showLoginModal: false,
-      showProfileModal: false,
       showIntegrations: false,
       lineNumbers: 1,
       showSearch: false,
@@ -378,11 +372,6 @@ export default {
     onLogin(section) {
       ga('send', 'event', section, 'Login');
       this.showLoginModal = true;
-    },
-
-    onProfile() {
-      ga('send', 'event', 'Header', 'Profile');
-      this.showProfileModal = true;
     },
 
     onAddFilter() {
@@ -500,7 +489,6 @@ export default {
       addFilterToFeed: 'feed/addFilterToFeed',
       search: 'feed/search',
       mergeBookmarksConflicts: 'feed/mergeBookmarksConflicts',
-      generateChallenge: 'user/generateChallenge',
       validateAuth: 'user/validateAuth',
       checkVisitWin: 'ui/checkVisitWin',
       trackEngagementWin: 'ui/trackEngagementWin',
@@ -548,14 +536,6 @@ export default {
           'show-banner': this.showBanner,
           'show-bookmarks': this.showBookmarks,
         };
-      },
-
-      showConfirmAccountModal(state) {
-        if (this.isLoggedIn) {
-          return !state.user.profile.infoConfirmed;
-        }
-
-        return false;
       },
 
       showCongratsModal(state) {
@@ -637,10 +617,6 @@ export default {
     }
 
     this.updateLines();
-
-    requestIdleCallback(async () => {
-      this.generateChallenge();
-    });
 
     this.$nextTick(() => {
       window.addEventListener('keydown', this.onKeyDown);

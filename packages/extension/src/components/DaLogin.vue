@@ -37,7 +37,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import 'lazysizes';
 import DaModal from '@daily/components/src/components/DaModal.vue';
 import DaSvg from './DaSvg.vue';
@@ -51,14 +50,10 @@ export default {
     DaSvg,
   },
 
-  computed: {
-    ...mapState('user', ['challenge']),
-  },
-
   methods: {
     getLoginLink(provider) {
-      const redirectUri = browser.extension.getURL(`index.html?provider=${provider}`);
-      return authService.getAuthorizationUrl(provider, redirectUri, this.challenge.challenge);
+      const redirectUri = browser.extension.getURL('index.html');
+      return authService.getAuthorizationUrl(provider, redirectUri);
     },
 
     onLogin(provider) {

@@ -9,7 +9,7 @@
                       v-tooltip="insaneMode ? 'Card View' : 'Insane View'"/>
     </div>
     <div class="settings__column">
-      <h5>Spaciness</h5>
+      <h5>Density</h5>
       <da-radio name="spaciness" :options="spaceOpts" :value="spaciness"
                 @toggle="toggleSpaciness"/>
     </div>
