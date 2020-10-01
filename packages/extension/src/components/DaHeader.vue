@@ -283,7 +283,7 @@ export default {
   & .header__top-site {
     width: 28px;
     height: 28px;
-    border-radius: 4px;
+    border-radius: 8px;
     border: 1px solid var(--color-pepper-70);
     overflow: hidden;
     display: block;
