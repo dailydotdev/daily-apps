@@ -287,7 +287,7 @@ export default {
     border: 1px solid var(--color-pepper-70);
     overflow: hidden;
     display: block;
-    background: #FFF;
+    background: var(--color-salt-10);
   }
 
   & .top-site__image {
