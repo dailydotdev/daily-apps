@@ -281,16 +281,18 @@ export default {
   }
 
   & .header__top-site {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
     border: 1px solid var(--color-pepper-70);
     overflow: hidden;
+    display: block;
+    background: #FFF;
   }
 
   & .top-site__image {
-    width: 23px;
-    height: 23px;
+    width: 100%;
+    display: block;
     background: var(--color-salt-10);
   }
 
