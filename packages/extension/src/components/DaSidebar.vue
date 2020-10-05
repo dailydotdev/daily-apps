@@ -398,7 +398,7 @@ export default {
 
 .sidebar__filter {
   display: flex;
-  padding-top: 48px;
+  padding-top: 56px;
   background: var(--theme-background-highlight);
 }
 

@@ -1,12 +1,7 @@
 <template>
   <header class="header">
     <button class="header__logo" @click="onBackHome">
-      <svgicon name="logo" class="header__logo__icon"/>
-    </button>
-    <div class="separator"></div>
-    <button class="btn-icon btn-layout" v-tooltip.bottom="'Layout Settings'"
-            :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)">
-      <svgicon name="layout"/>
+      <da-svg src="/graphics/dailydev.svg" class="header__logo__icon"/>
     </button>
     <da-switch class="header__switch" icon="bookmark" :checked="showBookmarks"
                v-tooltip.bottom="showBookmarks ? 'Back to feed' : 'Show your bookmarks'"
@@ -28,6 +23,10 @@
       <svgicon name="terminal"/>
       <span class="header__badge" v-if="showNotificationBadge"></span>
     </button>
+    <button class="btn-icon btn-layout" v-tooltip.bottom="'Layout Settings'"
+            :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)">
+      <svgicon name="layout"/>
+    </button>
     <a :href="profileLink" class="header__profile" v-if="isLoggedIn">
       <span class="lil2">{{reputation}}</span>
       <img :src="profileImage" alt="Profile image"/>
@@ -44,7 +43,7 @@
           <img :src="getIconUrl('https://www.google.com/')" class="top-site__image"/>
         </div>
         <div class="header__top-site">
-          <img :src="getIconUrl('https://web.whatsapp.com/')" class="top-site__image"/>
+          <img :src="getIconUrl('https://dev.to/')" class="top-site__image"/>
         </div>
         <div class="header__top-site">
           <img :src="getIconUrl('https://www.youtube.com/')" class="top-site__image"/>
@@ -142,7 +141,6 @@ export default {
 
   methods: {
     loadIcons() {
-      import('@daily/components/icons/logo');
       import('@daily/components/icons/layout');
       import('@daily/components/icons/bookmark');
       import('@daily/components/icons/user_daily');
@@ -218,7 +216,7 @@ export default {
   top: 0;
   display: flex;
   width: 100%;
-  height: 48px;
+  height: 56px;
   flex-direction: row;
   align-items: center;
   padding: 0 8px;
@@ -234,6 +232,11 @@ export default {
   & > .btn-icon {
     margin-left: 2px;
     margin-right: 2px;
+
+    & > .svg-icon {
+      width: 28px;
+      height: 28px;
+    }
   }
 
   & .header__logo {
@@ -244,9 +247,8 @@ export default {
   }
 
   & .header__logo__icon {
-    width: 40px;
-    height: 40px;
-    color: var(--theme-primary);
+    width: 114px;
+    height: 20px;
   }
 
   & .separator {
@@ -284,7 +286,6 @@ export default {
     width: 28px;
     height: 28px;
     border-radius: 8px;
-    border: 1px solid var(--color-pepper-70);
     overflow: hidden;
     display: block;
     background: var(--color-salt-10);
@@ -304,7 +305,7 @@ export default {
     position: relative;
     display: flex;
     padding: 0;
-    margin: 0 8px 0 14px;
+    margin: 0 8px 0 12px;
     align-items: center;
     background: var(--theme-background-highlight);
     border: none;
@@ -317,8 +318,8 @@ export default {
     }
 
     & img {
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       overflow: hidden;
       border-radius: 8px;
     }
@@ -341,7 +342,7 @@ export default {
 
   & .instructions {
     top: 0;
-    right: 190px;
+    right: 240px;
     width: 222px;
   }
 
@@ -352,8 +353,8 @@ export default {
 
 .header__badge {
   position: absolute;
-  left: 17px;
-  bottom: 16px;
+  left: 23px;
+  bottom: 22px;
   width: 10px;
   height: 10px;
   padding: 2px;
@@ -377,6 +378,7 @@ export default {
 
   & .header__top-site {
     margin: 0 4px;
+    border: 1px solid var(--color-pepper-70);
     cursor: default;
   }
 }

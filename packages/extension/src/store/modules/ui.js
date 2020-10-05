@@ -20,6 +20,7 @@ const initialState = () => ({
   showPremium: false,
   showNewSource: false,
   showReferral: false,
+  ctaClicked: false,
   // Win moments tracking
   triggeredReferral: false,
   postClicks: 0,
@@ -125,6 +126,10 @@ export default {
       if (value) {
         state.showReferral = true;
       }
+    },
+
+    setCtaClicked(state, value) {
+      state.ctaClicked = value;
     },
   },
   getters: {
