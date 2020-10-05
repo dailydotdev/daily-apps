@@ -75,12 +75,13 @@
                   </button>
                 </template>
               </template>
-              <button class="header__cta shadow1" @click="ctaClick" :style="cta.style"
-                      v-if="!isPremium">
-                <span class="header__cta__text">{{cta.text}}</span>
-                <img class="header__cta__image" :src="`/logos/${cta.logo}.svg`" v-if="cta.logo"/>
-                <svgicon class="header__cta__image" :icon="cta.icon" v-else/>
-              </button>
+              <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
+                 @click="ctaClick" v-if="!isPremium"
+                 href="https://daily.dev/win-free-t-shirt"
+                 target="_blank" rel="noopener noreferrer">
+                <span class="header__cta__text">Win free t-shirt</span>
+                <svgicon class="header__cta__image" icon="gift"/>
+              </a>
             </div>
           </transition>
         </template>
@@ -186,7 +187,6 @@ import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 import DaHeader from '../components/DaHeader.vue';
 import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
-import ctas from '../ctas';
 import { trackPageView } from '../common/analytics';
 import { navigateDaily, validKeys, validKeysValues } from '../common/keyNavigationService';
 
@@ -264,7 +264,6 @@ export default {
 
   data() {
     return {
-      cta: ctas[Math.floor(Math.random() * ctas.length)],
       showGoModal: false,
       showRequestModal: false,
       showLoginModal: false,
@@ -313,8 +312,8 @@ export default {
     },
 
     ctaClick() {
-      ga('send', 'event', 'CTA', 'Click', this.cta.text);
-      this.setShowReferral(true);
+      ga('send', 'event', 'CTA', 'Click', 'T-Shirt');
+      this.$store.commit('ui/setCtaClicked', true);
     },
 
     updateLines() {
@@ -512,7 +511,7 @@ export default {
   },
 
   computed: {
-    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode']),
+    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'ctaClicked']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
@@ -611,10 +610,7 @@ export default {
     import('@daily/components/icons/hamburger');
     import('@daily/components/icons/magnifying');
     import('@daily/components/icons/integration');
-
-    if (this.cta.icon) {
-      import(`@daily/components/icons/${this.cta.icon}`);
-    }
+    import('@daily/components/icons/gift');
 
     this.updateLines();
 
@@ -623,7 +619,7 @@ export default {
       this.fetchStage = CRITICAL_FETCH_STAGE;
       this.checkVisitWin();
       if (!this.isPremium) {
-        ga('send', 'event', 'CTA', 'Impression', this.cta.text, { nonInteraction: true });
+        ga('send', 'event', 'CTA', 'Impression', 'T-Shirt', { nonInteraction: true });
       }
     });
   },
@@ -687,7 +683,7 @@ export default {
 }
 
 .home.page {
-  padding-top: 48px;
+  padding-top: 56px;
   padding-left: 36px;
 
   --banner-height: 40px;
@@ -845,14 +841,18 @@ export default {
 
 .header__cta {
   display: flex;
-  height: 40px;
+  height: unset;
   padding: 6px 6px 6px 16px;
-  flex-direction: row;
   align-items: center;
   margin-left: auto;
   border-radius: 8px;
   border: none;
   cursor: pointer;
+  --button-color: var(--theme-secondary);
+
+  &.first-time {
+    --button-color: var(--theme-avocado);
+  }
 }
 
 .header__cta__text {
