@@ -109,6 +109,14 @@ export default {
       this.hasPostComment = !!this.$refs.comment.value.length;
     },
 
+    onCommentKeydown(event) {
+      // Ctrl + Enter
+      if (event.ctrlKey && event.keyCode === 13 && this.enablePostComment) {
+        event.preventDefault();
+        this.onPostCommentClick();
+      }
+    },
+
     closeCommentPopup() {
       this.$emit('closeCommentPopup');
     },
