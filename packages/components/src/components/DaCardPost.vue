@@ -89,7 +89,8 @@
         </div>
         <textarea ref="comment" class="post__vmargin"
                   :placeholder="commentPopupPlaceholder" required
-                  @input="onCommentInput"></textarea>
+                  @input="onCommentInput"
+                  @keydown="onCommentKeydown"></textarea>
         <div class="post__comment-popup__buttons">
           <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
                   @click="onUpvoteClick">
