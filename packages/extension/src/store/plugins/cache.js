@@ -48,7 +48,7 @@ const stateToCache = (state) => {
   };
   toCache.user = vue2Json(state.user);
 
-  return toCache;
+  return JSON.parse(JSON.stringify(toCache));
 };
 
 const plugin = (store) => {
