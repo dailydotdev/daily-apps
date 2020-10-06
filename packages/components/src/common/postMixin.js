@@ -110,8 +110,8 @@ export default {
     },
 
     onCommentKeydown(event) {
-      // Ctrl + Enter
-      if (event.ctrlKey && event.keyCode === 13 && this.enablePostComment) {
+      // Ctrl / Command + Enter
+      if ((event.ctrlKey || event.metaKey) && event.keyCode === 13 && this.enablePostComment) {
         event.preventDefault();
         this.onPostCommentClick();
       }
