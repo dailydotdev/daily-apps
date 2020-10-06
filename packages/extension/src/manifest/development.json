@@ -4,6 +4,6 @@
     "persistent": false
   },
   "permissions": [
-    "http://localhost:4000/"
+    "http://localhost/"
   ]
 }
