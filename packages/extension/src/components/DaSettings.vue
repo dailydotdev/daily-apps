@@ -16,7 +16,7 @@
     <div class="settings__column">
       <h5>Preferences</h5>
       <da-switch label="Recently visited sites" class="small settings__top-sites"
-                 :checked="showTopSites" @toggle="toggleTopSites"/>
+                 :checked="showTopSites" @toggle="toggleTopSites" immediate-event/>
       <da-switch label="Light theme" class="small settings__theme"
                  :checked="theme > 0" @toggle="toggleTheme"/>
       <da-switch label="Hide read posts" class="small settings__hide-read-posts"

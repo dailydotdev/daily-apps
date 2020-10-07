@@ -285,6 +285,7 @@ export default {
   & .header__top-site {
     width: 28px;
     height: 28px;
+    padding: 2px;
     border-radius: 8px;
     overflow: hidden;
     display: block;
@@ -295,6 +296,8 @@ export default {
     width: 100%;
     display: block;
     background: var(--color-salt-10);
+    border-radius: 8px;
+    overflow: hidden;
   }
 
   & .space {

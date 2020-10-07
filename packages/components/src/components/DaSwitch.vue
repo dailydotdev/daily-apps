@@ -36,18 +36,26 @@ export default {
     name: {
       type: String,
     },
+    immediateEvent: {
+      type: Boolean,
+      required: false,
+    },
   },
 
   methods: {
     toggle(event) {
-      // Need to wait for the long transition to prevent jagged animation
-      this.$refs.handle.addEventListener('transitionend', () => {
+      if (this.immediateEvent) {
+        this.$emit('toggle', event.target.checked);
+      } else {
+        // Need to wait for the long transition to prevent jagged animation
         this.$refs.handle.addEventListener('transitionend', () => {
-          setTimeout(() => {
-            this.$emit('toggle', event.target.checked);
-          });
+          this.$refs.handle.addEventListener('transitionend', () => {
+            setTimeout(() => {
+              this.$emit('toggle', event.target.checked);
+            });
+          }, { once: true });
         }, { once: true });
-      }, { once: true });
+      }
     },
   },
 };
