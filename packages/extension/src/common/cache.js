@@ -7,7 +7,9 @@ export const FIRST_INSTALL_KEY = 'firstInstall';
 export const LAST_COMMENT_KEY = 'lastComment';
 
 export function setCache(key, value) {
-  return browser.storage.local.set({ [key]: value });
+  if (!browser.extension.inIncognitoContext) {
+    return browser.storage.local.set({ [key]: value });
+  }
 }
 
 export async function getCache(key, defaultValue) {
