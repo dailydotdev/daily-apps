@@ -4,7 +4,7 @@ export const FEED_POST_FRAGMENT = gql`
   fragment FeedPost on Post {
     id,title,url,publishedAt,createdAt,image,placeholder,readTime,
     source { id, name, image, public },tags,permalink,numComments,numUpvotes,
-    commentsPermalink,featuredComments { content, permalink, author { name, image } }
+    commentsPermalink,featuredComments { id, content, permalink, author { name, image } }
   }`;
 
 export const USER_POST_FRAGMENT = gql`

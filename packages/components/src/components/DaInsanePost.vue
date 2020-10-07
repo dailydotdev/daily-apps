@@ -12,8 +12,8 @@
              :key="post.publication.name"/>
       </button>
       <button class="post__rounded-image post__profile-image"
-              :class="{ selected: selectedComment === item }" v-for="(item, index) in comments"
-              :key="index"
+              :class="{ selected: selectedComment === item }" v-for="item in comments"
+              :key="item.id"
               @click="onFeaturedCommentClick(item)">
         <img class="lazyload" :data-src="item.author.image" :alt="`${item.author.name}'s image`"
              v-tooltip="`See ${item.author.name.split(' ')[0]}'s comment`"/>
