@@ -10,7 +10,7 @@ export const LAST_COMMENT_KEY = 'lastComment';
 
 export function setCache(key, value) {
   isPrivateMode().then(function(isPrivate) {
-    if (isPrivate) {
+    if (!isPrivate) {
       return browser.storage.local.set({ [key]: value });
     }
   });  
