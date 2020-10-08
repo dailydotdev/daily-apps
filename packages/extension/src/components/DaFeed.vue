@@ -5,7 +5,8 @@
         <template v-if="item.type === 'ad'">
           <da-insane-placeholder v-if="item.loading" :key="index"/>
           <da-insane-ad v-else :key="index" :ad="item" ref="posts"
-                        @click="onAdClick" @impression="onAdImpression" :show-menu="isLoggedIn"
+                        @click="onAdClick" @impression="onAdImpression"
+                        @remove-ads="setShowPremium(true)"
                         :selected="focusedPost === item"/>
         </template>
         <da-insane-post v-else :key="item.id" :post="item" ref="posts"
@@ -26,6 +27,7 @@
           <da-card-placeholder v-if="item.loading" :key="index"/>
           <da-card-ad v-else :key="index" :ad="item" ref="posts"
                       @click="onAdClick" @impression="onAdImpression"
+                      @remove-ads="setShowPremium(true)"
                       :selected="focusedPost === item"/>
         </template>
         <da-card-post v-else :key="item.id" :post="item" ref="posts"
@@ -340,6 +342,7 @@ export default {
 
     ...mapMutations({
       removePost: 'feed/removePost',
+      setShowPremium: 'ui/setShowPremium',
     }),
   },
   async mounted() {

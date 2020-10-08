@@ -25,6 +25,9 @@ export default {
     onClick() {
       this.$emit('click', this.ad);
     },
+    onRemoveAds() {
+      this.$emit('remove-ads');
+    },
   },
 
   mounted() {
