@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import { configure, addParameters } from '@storybook/vue';
 
+import '../stories/style.pcss';
+
 import svgicon from 'vue-svgicon';
 import 'focus-visible';
 
 import darkTheme from './dark';
-import './GlobalStyles';
 import tooltip from '../src/directives/tooltip';
 
 Vue.use(svgicon);

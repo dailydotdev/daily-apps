@@ -6,8 +6,11 @@
       <div class="card__image post__vmargin" :style="imgStyle">
         <img :data-src="ad.image" :data-lowsrc="ad.placeholder" alt="Ad image" class="lazyload"/>
       </div>
-      <div class="post__metadata card__hmargin">Promoted</div>
     </a>
+    <div class="post__metadata card__hmargin">
+      <span>Promoted</span>
+      <button @click="onRemoveAds">Remove ads?</button>
+    </div>
     <img v-for="(item, index) in pixel" :key="index" :src="item" class="post__pixel"/>
   </div>
 </template>
@@ -58,6 +61,10 @@ export default {
     max-width: 250px;
     max-height: 100px;
     margin: auto;
+  }
+
+  & .post__metadata {
+    justify-content: space-between;
   }
 }
 </style>

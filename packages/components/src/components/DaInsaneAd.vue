@@ -5,8 +5,11 @@
       <a class="post__link" :href="ad.link" target="_blank" rel="noopener noreferrer"
          :title="ad.description" @click="onClick">
         <div class="post__title lil1 multiline-text-overflow">{{ad.description}}</div>
-        <div class="post__metadata">Promoted</div>
       </a>
+      <div class="post__metadata">
+        <span>Promoted</span>
+        <button @click="onRemoveAds">Remove ads?</button>
+      </div>
     </div>
     <img v-for="(item, index) in pixel" :key="index" :src="item" class="post__pixel"/>
   </div>
@@ -29,6 +32,10 @@ export default {
 
   & .post__metadata {
     margin: 10px 0;
+
+    & button {
+      margin-left: 24px;
+    }
   }
 }
 </style>
