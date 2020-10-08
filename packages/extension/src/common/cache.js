@@ -8,7 +8,7 @@ export const LAST_COMMENT_KEY = 'lastComment';
 
 export function setCache(key, value) {
   if (!browser.extension.inIncognitoContext) {
-    return browser.storage.local.set({ [key]: value });
+    browser.storage.local.set({ [key]: value });
   }
 }
 
