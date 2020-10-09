@@ -29,7 +29,7 @@
     "jest-junit": "^6.4.0",
     "jsdom": "^13.1.0",
     "nock": "^10.0.1",
-    "rollup": "^0.67.0",
+    "rollup": "^2.29.0",
     "rollup-plugin-typescript2": "^0.17.2",
     "ts-jest": "^26.1.0",
     "typescript": "^3.1.3"
