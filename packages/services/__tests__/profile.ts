@@ -40,7 +40,7 @@ it('should update settings', async () => {
   };
 
   nock(baseURL)
-    .post('/v1/settings', body)
+    .post('/v1/settings', JSON.stringify(body))
     .reply(204);
 
   await service.updateSettings(body);
