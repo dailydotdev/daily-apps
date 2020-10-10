@@ -55,7 +55,7 @@ it('should edit an existing pub request', async () => {
   const payload: PubRequestEdit = {url: 'https://dailynow.co'};
 
   nock(baseURL)
-    .put('/v1/publications/requests/1', payload)
+    .put('/v1/publications/requests/1', JSON.stringify(payload))
     .reply(204);
 
   await service.editPubRequest('1', payload);

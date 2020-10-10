@@ -23,7 +23,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.8",
     "@types/jsdom": "^16.2.4",
-    "@types/nock": "^9.3.0",
+    "@types/nock": "^11.1.0",
     "cross-fetch": "^3.0.5",
     "jest": "^26.0.0",
     "jest-junit": "^6.4.0",
