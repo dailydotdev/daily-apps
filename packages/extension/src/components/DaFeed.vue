@@ -423,7 +423,10 @@ export default {
   }
 
   & .bookmark-context__list-btn {
-    height: 44px;
+    &, &:last-child {
+      height: 44px;
+    }
+
     --button-color: var(--theme-secondary);
     @mixin micro1;
     text-transform: none;

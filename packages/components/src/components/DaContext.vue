@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { VueContext } from 'vue-context';
+import VueContext from 'vue-context';
 
 export default {
   name: 'DaContext',
@@ -37,6 +37,8 @@ export default {
 </script>
 
 <style>
+@import '~vue-context/dist/css/vue-context.css';
+
 .context .btn {
   height: 41px;
   padding: 0 16px;
@@ -59,7 +61,9 @@ export default {
 .v-context.context {
   display: flex;
   width: auto;
+  min-width: unset;
   flex-direction: column;
+  padding: 0;
   background: var(--theme-background-highlight);
   border-radius: 4px;
   border: none;
