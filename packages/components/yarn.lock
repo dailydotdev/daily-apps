@@ -17061,9 +17061,9 @@ vue-style-loader@^4.1.0, vue-style-loader@^4.1.2:
     loader-utils "^1.0.2"
 
 vue-svgicon@^3.2.2:
-  version "3.2.8"
-  resolved "https://registry.yarnpkg.com/vue-svgicon/-/vue-svgicon-3.2.8.tgz#a6309112b7962c9d953f95168668f0c8c51c3a17"
-  integrity sha512-g7IZfDT7Oj7ao8+VyZwXd+4aAOr438V846OW2vFOiGogEtvd1omo/7u0k+o8uVkEaWCSDrPK+pucGMgYLbjwoQ==
+  version "3.2.9"
+  resolved "https://registry.yarnpkg.com/vue-svgicon/-/vue-svgicon-3.2.9.tgz#6c54b7ef5275619c13b571c2f682c3bfcc042d2f"
+  integrity sha512-3gNx1v77ok45ieF/gWIg1U35HqoxuA+4ukTWtBN6z4w1LycO9QrPC+MfdTlIztBjRnkruDbMg+Us0hOuep09/g==
   dependencies:
     camelcase "^5.2.0"
     colors "^1.3.0"
@@ -17636,14 +17636,6 @@ yargs-parser@^11.1.1:
     camelcase "^5.0.0"
     decamelize "^1.2.0"
 
-yargs-parser@^16.1.0:
-  version "16.1.0"
-  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-16.1.0.tgz#73747d53ae187e7b8dbe333f95714c76ea00ecf1"
-  integrity sha512-H/V41UNZQPkUMIT5h5hiwg4QKIY1RPvoBV4XcjUbRM8Bk2oKqqyZ0DIEbTFZB0XjbtSPG8SAa/0DxCQmiRgzKg==
-  dependencies:
-    camelcase "^5.0.0"
-    decamelize "^1.2.0"
-
 yargs-parser@^18.1.2:
   version "18.1.3"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-18.1.3.tgz#be68c4975c6b2abf469236b0c870362fab09a7b0"
@@ -17695,24 +17687,7 @@ yargs@^11.0.0:
     y18n "^3.2.1"
     yargs-parser "^9.0.2"
 
-yargs@^15.0.0:
-  version "15.0.2"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-15.0.2.tgz#4248bf218ef050385c4f7e14ebdf425653d13bd3"
-  integrity sha512-GH/X/hYt+x5hOat4LMnCqMd8r5Cv78heOMIJn1hr7QPPBqfeC6p89Y78+WB9yGDvfpCvgasfmWLzNzEioOUD9Q==
-  dependencies:
-    cliui "^6.0.0"
-    decamelize "^1.2.0"
-    find-up "^4.1.0"
-    get-caller-file "^2.0.1"
-    require-directory "^2.1.1"
-    require-main-filename "^2.0.0"
-    set-blocking "^2.0.0"
-    string-width "^4.2.0"
-    which-module "^2.0.0"
-    y18n "^4.0.0"
-    yargs-parser "^16.1.0"
-
-yargs@^15.3.0, yargs@^15.3.1, yargs@^15.4.1:
+yargs@^15.0.0, yargs@^15.3.0, yargs@^15.3.1, yargs@^15.4.1:
   version "15.4.1"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-15.4.1.tgz#0d87a16de01aee9d8bec2bfbf74f67851730f4f8"
   integrity sha512-aePbxDmcYW++PaqBsJ+HYUFwCdv4LVvdnhBy78E57PIor8/OVvhMrADFFEDh8DHDFRv/O9i3lPhsENjO7QX0+A==
