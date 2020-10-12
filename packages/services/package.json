@@ -21,7 +21,7 @@
     "watch": "rollup -cw"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.8",
+    "@types/jest": "^26.0.14",
     "@types/jsdom": "^16.2.4",
     "@types/nock": "^11.1.0",
     "cross-fetch": "^3.0.5",
