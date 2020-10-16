@@ -14,7 +14,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "dialog-polyfill": "^0.4.10",
+    "dialog-polyfill": "^0.5.3",
     "dompurify": "^2.0.15",
     "lazysizes": "^5.2.2",
     "vue-context": "^3.4.0",
