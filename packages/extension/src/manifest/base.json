@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "name": "daily.dev - News for Busy Developers",
   "short_name": "daily.dev",
-  "description": "Get programming news with zero effort. Simply open a new tab, and you’re all set. A must-have tool for busy developers!",
+  "description": "daily.dev is the easiest way to stay updated on the latest programming news",
   "homepage_url": "https://daily.dev",
   "icons": {
     "16": "icons/16.png",
