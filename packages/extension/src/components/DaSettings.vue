@@ -67,8 +67,11 @@ export default {
     },
     async toggleTopSites(val) {
       ga('send', 'event', 'Settings', 'Click', 'Top Sites');
-      // TODO: handle error
-      await this.$store.dispatch('ui/setShowTopSites', val);
+      if (val) {
+        this.$store.commit('ui/setShowTopSitesModal', true);
+      } else {
+        await this.$store.dispatch('ui/setShowTopSites', val);
+      }
     },
     async toggleShowOnlyNotReadPosts(val) {
       ga('send', 'event', 'Settings', 'Click', 'Hide Read Posts');

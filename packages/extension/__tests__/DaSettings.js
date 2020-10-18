@@ -38,6 +38,7 @@ beforeEach(() => {
       setShowTopSites: jest.fn(),
     },
     mutations: {
+      setShowTopSitesModal: jest.fn(),
       setInsaneMode: jest.fn(),
       setSpaciness: jest.fn(),
       setShowOnlyNotReadPosts: jest.fn(),
@@ -70,10 +71,16 @@ it('should commit "setSpaciness" when radio is toggled', () => {
   expect(ui.mutations.setSpaciness).toBeCalledWith(expect.anything(), 'roomy');
 });
 
-it('should dispatch "setShowTopSites" when setting is changed', () => {
+it('should commit "setShowTopSitesModal" when top sites is enabled', () => {
   const wrapper = mount(DaSettings, { store, localVue });
   wrapper.find('.settings__top-sites').vm.$emit('toggle', true);
-  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), true);
+  expect(ui.mutations.setShowTopSitesModal).toBeCalledWith(expect.anything(), true);
+});
+
+it('should dispatch "setShowTopSites" when top sites is disabled', () => {
+  const wrapper = mount(DaSettings, { store, localVue });
+  wrapper.find('.settings__top-sites').vm.$emit('toggle', false);
+  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), false);
 });
 
 it('should dispatch "setTheme" when theme is changed', () => {

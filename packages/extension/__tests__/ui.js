@@ -2,7 +2,6 @@ import MockDate from 'mockdate';
 import { applyTheme } from '@daily/services';
 import module from '../src/store/modules/ui';
 import { testAction } from './fixtures/helpers';
-import { profileService } from '../src/common/services';
 
 jest.mock('../src/common/services', () => ({
   profileService: {

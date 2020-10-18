@@ -26,6 +26,7 @@ const initialState = () => ({
   postClicks: 0,
   bookmarks: 0,
   scrolls: 0,
+  showTopSitesModal: false,
 });
 
 export default {
@@ -131,18 +132,14 @@ export default {
     setCtaClicked(state, value) {
       state.ctaClicked = value;
     },
+
+    setShowTopSitesModal(state, value) {
+      state.showTopSitesModal = value;
+    },
   },
   getters: {
-    topSitesInstructions(state) {
-      return state.instructionsStep === 0;
-    },
-
     sidebarInstructions(state) {
-      return state.instructionsStep === 1;
-    },
-
-    showReadyModal(state) {
-      return state.instructionsStep === 2;
+      return state.instructionsStep === 0;
     },
 
     dndMode(state) {
@@ -178,6 +175,7 @@ export default {
       }
 
       commit('setShowTopSites', value);
+      commit('setShowTopSitesModal', false);
     },
 
     async checkVisitWin({ commit, state }) {

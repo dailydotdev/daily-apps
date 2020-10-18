@@ -7,21 +7,22 @@
                v-tooltip.bottom="showBookmarks ? 'Back to feed' : 'Show your bookmarks'"
                @toggle="toggleBookmarks"></da-switch>
     <div class="space"></div>
-    <template v-if="showTopSites">
-      <a v-for="(item, index) in topSites" :key="index" class="header__top-site"
-         :href="item.url" v-tooltip.bottom="item.title" @mouseup="mouseUp('Top Sites')">
-        <img :src="getIconUrl(item.url)" class="top-site__image"/>
-      </a>
-      <div class="separator"></div>
-    </template>
-    <button class="btn-icon btn-dnd" v-tooltip.bottom="'Do Not Disturb'"
-            :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)">
-      <svgicon name="timer"/>
-    </button>
+    <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
+       @click="ctaClick" v-if="!isPremium"
+       href="https://daily.dev/win-free-t-shirt"
+       target="_blank" rel="noopener noreferrer">
+      <span class="header__cta__text">Win a free t-shirt</span>
+      <svgicon class="header__cta__image" icon="gift"/>
+    </a>
+    <div class="separator"></div>
     <button class="btn-icon btn-terminal" v-tooltip.bottom="'Latest updates'"
             :class="{ 'active': notificationsOpened }" @click="toggleNotifications">
       <svgicon name="terminal"/>
       <span class="header__badge" v-if="showNotificationBadge"></span>
+    </button>
+    <button class="btn-icon btn-dnd" v-tooltip.bottom="'Do Not Disturb'"
+            :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)">
+      <svgicon name="timer"/>
     </button>
     <button class="btn-icon btn-layout" v-tooltip.bottom="'Layout Settings'"
             :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)">
@@ -37,36 +38,6 @@
       <svgicon name="user_daily"/>
       <span>Sign in</span>
     </button>
-    <div class="instructions invert" v-if="topSitesInstructions">
-      <div class="instructions__top-sites">
-        <div class="header__top-site">
-          <img :src="getIconUrl('https://www.google.com/')" class="top-site__image"/>
-        </div>
-        <div class="header__top-site">
-          <img :src="getIconUrl('https://dev.to/')" class="top-site__image"/>
-        </div>
-        <div class="header__top-site">
-          <img :src="getIconUrl('https://www.youtube.com/')" class="top-site__image"/>
-        </div>
-        <div class="header__top-site">
-          <img :src="getIconUrl('https://www.twitter.com/')" class="top-site__image"/>
-        </div>
-        <div class="header__top-site">
-          <img :src="getIconUrl('https://www.facebook.com/')" class="top-site__image"/>
-        </div>
-      </div>
-      <div class="instructions__desc">
-        Should we show your recently visited sites?
-      </div>
-      <div class="instructions__buttons">
-        <button class="btn btn-invert" @click="onToggleTopSites(false)">
-          No
-        </button>
-        <button class="btn btn-invert" @click="onToggleTopSites(true)">
-          Yes
-        </button>
-      </div>
-    </div>
   </header>
 </template>
 
@@ -84,18 +55,11 @@ export default {
     DaSwitch: () => import('@daily/components/src/components/DaSwitch.vue'),
   },
 
-  data() {
-    return {
-      topSites: [],
-    };
-  },
-
   computed: {
     ...mapState('ui', [
-      'showTopSites', 'showNotificationBadge', 'notificationsOpened', 'showDndMenu', 'showSettings',
+      'showNotificationBadge', 'notificationsOpened', 'showDndMenu', 'showSettings', 'ctaClicked',
     ]),
     ...mapState('feed', ['showBookmarks']),
-    ...mapGetters('ui', ['topSitesInstructions']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
       notificationsOpened: state => state.ui.showNotifications,
@@ -123,20 +87,8 @@ export default {
     }),
   },
 
-  watch: {
-    async showTopSites(val) {
-      if (val) {
-        await this.getTopSites();
-      }
-    },
-  },
-
-  async mounted() {
+  mounted() {
     this.loadIcons();
-
-    if (this.showTopSites) {
-      await this.getTopSites();
-    }
   },
 
   methods: {
@@ -149,25 +101,6 @@ export default {
       import('@daily/components/icons/ph');
       import('@daily/components/icons/github');
       import('@daily/components/icons/timer');
-    },
-
-    async getTopSites() {
-      try {
-        if ('topSites' in browser) {
-          this.topSites = (await browser.topSites.get()).slice(0, 5);
-        }
-        return [];
-      } catch {
-        return [];
-      }
-    },
-
-    getIconUrl(url) {
-      return `https://api.daily.dev/icon?url=${encodeURIComponent(url)}&size=20`;
-    },
-
-    mouseUp(data) {
-      ga('send', 'event', 'Header', 'Click', data);
     },
 
     toggleBookmarks(pressed) {
@@ -189,11 +122,9 @@ export default {
       this.backToMainFeed();
     },
 
-    async onToggleTopSites(val) {
-      ga('send', 'event', 'Instructions', 'Click', 'Top Sites');
-      // TODO: handle error
-      this.$store.commit('ui/nextInstruction');
-      await this.$store.dispatch('ui/setShowTopSites', val);
+    ctaClick() {
+      ga('send', 'event', 'CTA', 'Click', 'T-Shirt');
+      this.$store.commit('ui/setCtaClicked', true);
     },
 
     ...mapMutations({
@@ -282,24 +213,6 @@ export default {
     margin-right: 0;
   }
 
-  & .header__top-site {
-    width: 28px;
-    height: 28px;
-    padding: 2px;
-    border-radius: 8px;
-    overflow: hidden;
-    display: block;
-    background: var(--color-salt-10);
-  }
-
-  & .top-site__image {
-    width: 100%;
-    display: block;
-    background: var(--color-salt-10);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
   & .space {
     flex: 1;
   }
@@ -325,6 +238,7 @@ export default {
       height: 32px;
       overflow: hidden;
       border-radius: 8px;
+      object-fit: cover;
     }
 
     & .glitter-mark {
@@ -341,16 +255,6 @@ export default {
         fill: var(--theme-premium);
       }
     }
-  }
-
-  & .instructions {
-    top: 0;
-    right: 240px;
-    width: 222px;
-  }
-
-  & .instructions__desc {
-    text-align: center;
   }
 }
 
@@ -374,29 +278,34 @@ export default {
   }
 }
 
-.instructions__top-sites {
+.header__cta {
   display: flex;
-  flex-direction: row;
-  margin: 0 -4px 12px;
+  height: unset;
+  padding: 6px 6px 6px 16px;
+  align-items: center;
+  margin-left: auto;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  --button-color: var(--theme-secondary);
 
-  & .header__top-site {
-    margin: 0 4px;
-    border: 1px solid var(--color-pepper-70);
-    cursor: default;
+  &.first-time {
+    --button-color: var(--theme-avocado);
   }
 }
 
-.instructions__buttons {
-  display: flex;
-  flex-direction: row;
-  align-self: stretch;
-  margin-top: 8px;
+.header__cta__text {
+  margin-right: 10px;
 
-  & .btn {
-    margin: 0 4px;
-    flex: 1;
-    justify-content: center;
+  & {
+    @mixin lil2;
   }
+}
+
+.header__cta__image {
+  width: 28px;
+  height: 28px;
+  color: var(--color-salt-10);
 }
 
 @media (min-width: 1062px) {
