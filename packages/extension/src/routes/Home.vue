@@ -75,13 +75,22 @@
                   </button>
                 </template>
               </template>
-              <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
-                 @click="ctaClick" v-if="!isPremium"
-                 href="https://daily.dev/win-free-t-shirt"
-                 target="_blank" rel="noopener noreferrer">
-                <span class="header__cta__text">Win free t-shirt</span>
-                <svgicon class="header__cta__image" icon="gift"/>
-              </a>
+              <div class="top-sites">
+                <template v-if="showTopSites">
+                  <a v-for="(item, index) in topSites" :key="index" class="top-site"
+                     :href="item.url" v-tooltip.bottom="item.title">
+                    <img :src="getIconUrl(item.url)" class="top-site__image"/>
+                  </a>
+                </template>
+                <template v-else>
+                  <label for="top-sites-btn">
+                    Show most visited sites
+                  </label>
+                  <button class="btn btn-hollow" id="top-sites-btn" @click="enableTopSites">
+                    <svgicon name="plus"/>
+                  </button>
+                </template>
+              </div>
             </div>
           </transition>
         </template>
@@ -128,7 +137,6 @@
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
     <da-congrats v-if="showCongratsModal" @close="confirmNewUser"/>
     <da-request v-if="showRequestModal" @close="showRequestModal = false"/>
-    <da-welcome v-if="showReadyModal" @close="nextInstruction"/>
     <da-login v-if="showLoginModal" @close="showLoginModal = false"/>
     <da-merge v-if="hasConflicts" @confirm="mergeBookmarksConflicts"
               @cancel="clearBookmarksConflicts"/>
@@ -136,6 +144,7 @@
     <da-new-source v-if="showNewSource" @close="setShowNewSource(false)"
                    @requested-source="showRequestModal = true"/>
     <da-integrations v-if="showIntegrations" @close="showIntegrations = false"/>
+    <da-top-sites-modal v-if="showTopSitesModal" @close="setShowTopSitesModal(false)"/>
     <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
       <template slot="title">Terminal</template>
       <template slot="content">
@@ -249,17 +258,17 @@ export default {
     DaSearch: () => import('@daily/components/src/components/DaSearch.vue'),
     DaLogin: () => import('../components/DaLogin.vue'),
     DaGo: () => import('../components/DaGo.vue'),
-    DaWelcome: () => import('../components/DaWelcome.vue'),
     DaCongrats: () => import('../components/DaCongrats.vue'),
     DaRequest: () => import('../components/DaRequest.vue'),
     DaSettings: () => import('../components/DaSettings.vue'),
     DaMerge: () => import('../components/DaMerge.vue'),
-    DaBanner: () => import('../components/DaBanner'),
-    DaBookmarkList: () => import('../components/DaBookmarkList'),
-    DaPremium: () => import('../components/DaPremium'),
-    DaNewSource: () => import('../components/DaNewSource'),
-    DaIntegrations: () => import('../components/DaIntegrations'),
-    DaReferral: () => import('../components/DaReferral'),
+    DaBanner: () => import('../components/DaBanner.vue'),
+    DaBookmarkList: () => import('../components/DaBookmarkList.vue'),
+    DaPremium: () => import('../components/DaPremium.vue'),
+    DaNewSource: () => import('../components/DaNewSource.vue'),
+    DaIntegrations: () => import('../components/DaIntegrations.vue'),
+    DaReferral: () => import('../components/DaReferral.vue'),
+    DaTopSitesModal: () => import('../components/DaTopSitesModal.vue'),
   },
 
   data() {
@@ -273,6 +282,7 @@ export default {
       searchSuggestions: [],
       fetchStage: null,
       banner: null,
+      topSites: [],
     };
   },
 
@@ -309,11 +319,6 @@ export default {
       this.$store.dispatch('feed/setShowBookmarks', !this.showBookmarks);
 
       return ga('send', 'event', 'Header', 'Bookmarks', !this.showBookmarks);
-    },
-
-    ctaClick() {
-      ga('send', 'event', 'CTA', 'Click', 'T-Shirt');
-      this.$store.commit('ui/setCtaClicked', true);
     },
 
     updateLines() {
@@ -482,6 +487,26 @@ export default {
       this.banner = undefined;
     },
 
+    enableTopSites() {
+      this.$store.commit('ui/setShowTopSitesModal', true);
+    },
+
+    async getTopSites() {
+      try {
+        if ('topSites' in browser) {
+          this.topSites = (await browser.topSites.get()).slice(0, 8);
+          return;
+        }
+        this.topSites = [];
+      } catch {
+        this.topSites = [];
+      }
+    },
+
+    getIconUrl(url) {
+      return `https://api.daily.dev/icon?url=${encodeURIComponent(url)}&size=20`;
+    },
+
     ...mapActions({
       backToMainFeed: 'feed/backToMainFeed',
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
@@ -506,12 +531,13 @@ export default {
       setShowPremium: 'ui/setShowPremium',
       setShowNewSource: 'ui/setShowNewSource',
       setShowReferral: 'ui/setShowReferral',
+      setShowTopSitesModal: 'ui/setShowTopSitesModal',
       confirmNewUser: 'user/confirmNewUser',
     }),
   },
 
   computed: {
-    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'ctaClicked']),
+    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal']),
     ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
@@ -589,6 +615,11 @@ export default {
         this.clearSearch();
       }
     },
+    async showTopSites(val) {
+      if (val) {
+        await this.getTopSites();
+      }
+    },
   },
 
   created() {
@@ -622,6 +653,10 @@ export default {
         ga('send', 'event', 'CTA', 'Impression', 'T-Shirt', { nonInteraction: true });
       }
     });
+
+    if (this.showTopSites) {
+      await this.getTopSites();
+    }
   },
 
   beforeDestroy() {
@@ -837,36 +872,6 @@ export default {
       width: 44px;
     }
   }
-}
-
-.header__cta {
-  display: flex;
-  height: unset;
-  padding: 6px 6px 6px 16px;
-  align-items: center;
-  margin-left: auto;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  --button-color: var(--theme-secondary);
-
-  &.first-time {
-    --button-color: var(--theme-avocado);
-  }
-}
-
-.header__cta__text {
-  margin-right: 10px;
-
-  & {
-    @mixin lil2;
-  }
-}
-
-.header__cta__image {
-  width: 28px;
-  height: 28px;
-  color: var(--color-salt-10);
 }
 
 .content__empty {
@@ -1194,6 +1199,60 @@ export default {
 
   & #text {
     fill: var(--color-salt-10);
+  }
+}
+
+.top-sites {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+
+  & label {
+    margin-right: 8px;
+    color: var(--theme-secondary);
+    cursor: pointer;
+    @mixin nuggets;
+  }
+
+  & .btn.btn-hollow {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    justify-content: center;
+    --button-color: var(--theme-secondary);
+    --button-border: 1px solid var(--button-color);
+    --button-border-radius: 8px;
+
+    & .svg-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  & .top-site {
+    width: 28px;
+    height: 28px;
+    padding: 2px;
+    margin: 0 4px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: block;
+    background: var(--color-salt-10);
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  & .top-site__image {
+    width: 100%;
+    display: block;
+    border-radius: 8px;
+    overflow: hidden;
   }
 }
 </style>

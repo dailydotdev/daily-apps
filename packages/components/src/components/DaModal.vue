@@ -38,7 +38,7 @@ export default {
 
   async mounted() {
     if (typeof HTMLDialogElement !== 'function') {
-      const dialogPolyfill = await import('dialog-polyfill/dialog-polyfill');
+      const dialogPolyfill = await import('dialog-polyfill');
       dialogPolyfill.default.registerDialog(this.$refs.dialog);
     }
     if (this.$refs.dialog.showModal) {

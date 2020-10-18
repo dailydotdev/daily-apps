@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import icons from '@daily/components/src/icons';
-import tooltip from '@daily/components/src/directives/tooltip';
+import { VTooltip } from 'v-tooltip';
 import DaIconToggle from '@daily/components/src/components/DaIconToggle.vue';
 import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
 import DaHeader from '../src/components/DaHeader.vue';
@@ -10,7 +10,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(icons);
-localVue.directive('tooltip', tooltip(localVue));
+localVue.directive('tooltip', VTooltip);
 localVue.component('da-icon-toggle', DaIconToggle);
 localVue.component('da-switch', DaSwitch);
 
@@ -101,20 +101,6 @@ it('should emit "login" on sign-in button click', () => {
   const wrapper = mount(DaHeader, { store, localVue });
   wrapper.find('.header__sign-in').trigger('click');
   expect(wrapper.emitted().login[0]).toEqual([]);
-});
-
-it('should mutate state when clicking no on instruction popup', () => {
-  const wrapper = mount(DaHeader, { store, localVue });
-  wrapper.findAll('.instructions .btn').at(0).trigger('click');
-  expect(ui.mutations.nextInstruction).toBeCalledWith(expect.anything(), undefined);
-  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), false);
-});
-
-it('should mutate state when clicking yes on instruction popup', () => {
-  const wrapper = mount(DaHeader, { store, localVue });
-  wrapper.findAll('.instructions .btn').at(1).trigger('click');
-  expect(ui.mutations.nextInstruction).toBeCalledWith(expect.anything(), undefined);
-  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), true);
 });
 
 it('should emit "menu" on dnd-mode button click', () => {

@@ -2,7 +2,6 @@ import MockDate from 'mockdate';
 import { applyTheme } from '@daily/services';
 import module from '../src/store/modules/ui';
 import { testAction } from './fixtures/helpers';
-import { profileService } from '../src/common/services';
 
 jest.mock('../src/common/services', () => ({
   profileService: {
@@ -42,12 +41,6 @@ it('should set insane mode in state', () => {
   const state = {};
   module.mutations.setInsaneMode(state, true);
   expect(state.insaneMode).toEqual(true);
-});
-
-it('should set show top sites in state', () => {
-  const state = {};
-  module.mutations.setShowTopSites(state, true);
-  expect(state.showTopSites).toEqual(true);
 });
 
 it('should set show only not read posts in state', () => {

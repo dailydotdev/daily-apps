@@ -14,8 +14,8 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "dialog-polyfill": "^0.4.10",
-    "dompurify": "^2.0.15",
+    "dialog-polyfill": "^0.5.3",
+    "dompurify": "^2.1.1",
     "lazysizes": "^5.2.2",
     "vue-context": "^3.4.0",
     "vue-svgicon": "^3.2.2"
@@ -54,6 +54,7 @@
     "postcss-loader": "^3.0.0",
     "postcss-mixins": "^6.2.0",
     "postcss-nested": "^4.1.2",
+    "v-tooltip": "^2.0.3",
     "vue": "^2.5.17",
     "vue-loader": "^15.7.0",
     "vue-style-loader": "^4.1.2",

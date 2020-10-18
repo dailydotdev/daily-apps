@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import icons from '@daily/components/src/icons';
-import tooltip from '@daily/components/src/directives/tooltip';
+import { VTooltip } from 'v-tooltip';
 import DaIconToggle from '@daily/components/src/components/DaIconToggle.vue';
 import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
 import DaSettings from '../src/components/DaSettings.vue';
@@ -10,7 +10,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(icons);
-localVue.directive('tooltip', tooltip(localVue));
+localVue.directive('tooltip', VTooltip);
 localVue.component('da-icon-toggle', DaIconToggle);
 localVue.component('da-switch', DaSwitch);
 
@@ -38,6 +38,7 @@ beforeEach(() => {
       setShowTopSites: jest.fn(),
     },
     mutations: {
+      setShowTopSitesModal: jest.fn(),
       setInsaneMode: jest.fn(),
       setSpaciness: jest.fn(),
       setShowOnlyNotReadPosts: jest.fn(),
@@ -70,10 +71,16 @@ it('should commit "setSpaciness" when radio is toggled', () => {
   expect(ui.mutations.setSpaciness).toBeCalledWith(expect.anything(), 'roomy');
 });
 
-it('should dispatch "setShowTopSites" when setting is changed', () => {
+it('should commit "setShowTopSitesModal" when top sites is enabled', () => {
   const wrapper = mount(DaSettings, { store, localVue });
   wrapper.find('.settings__top-sites').vm.$emit('toggle', true);
-  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), true);
+  expect(ui.mutations.setShowTopSitesModal).toBeCalledWith(expect.anything(), true);
+});
+
+it('should dispatch "setShowTopSites" when top sites is disabled', () => {
+  const wrapper = mount(DaSettings, { store, localVue });
+  wrapper.find('.settings__top-sites').vm.$emit('toggle', false);
+  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), false);
 });
 
 it('should dispatch "setTheme" when theme is changed', () => {
