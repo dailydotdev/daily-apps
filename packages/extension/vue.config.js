@@ -97,8 +97,8 @@ module.exports = {
     return {
       plugins,
       performance: {
-        maxEntrypointSize: 409600,
-        maxAssetSize: 409600,
+        maxEntrypointSize: 500000,
+        maxAssetSize: 500000,
         hints: process.env.NODE_ENV === 'production' ? 'error' : false,
         assetFilter(assetFilename) {
           return !assetFilename.endsWith('.svg') && !assetFilename.endsWith('.zip');
