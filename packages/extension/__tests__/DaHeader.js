@@ -103,20 +103,6 @@ it('should emit "login" on sign-in button click', () => {
   expect(wrapper.emitted().login[0]).toEqual([]);
 });
 
-it('should mutate state when clicking no on instruction popup', () => {
-  const wrapper = mount(DaHeader, { store, localVue });
-  wrapper.findAll('.instructions .btn').at(0).trigger('click');
-  expect(ui.mutations.nextInstruction).toBeCalledWith(expect.anything(), undefined);
-  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), false);
-});
-
-it('should mutate state when clicking yes on instruction popup', () => {
-  const wrapper = mount(DaHeader, { store, localVue });
-  wrapper.findAll('.instructions .btn').at(1).trigger('click');
-  expect(ui.mutations.nextInstruction).toBeCalledWith(expect.anything(), undefined);
-  expect(ui.actions.setShowTopSites).toBeCalledWith(expect.anything(), true);
-});
-
 it('should emit "menu" on dnd-mode button click', () => {
   const wrapper = mount(DaHeader, { store, localVue });
   wrapper.find('button.btn-dnd').trigger('click');
