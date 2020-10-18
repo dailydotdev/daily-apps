@@ -32,6 +32,7 @@
     "graphql-tag": "^2.10.3",
     "lazysizes": "^5.2.2",
     "lerna": "^3.4.3",
+    "v-tooltip": "^2.0.3",
     "vue": "^2.5.17",
     "vue-apollo": "^3.0.3",
     "vue-router": "^3.0.2",

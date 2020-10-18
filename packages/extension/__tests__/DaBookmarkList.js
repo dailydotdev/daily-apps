@@ -2,7 +2,7 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import icons from '@daily/components/src/icons';
-import tooltip from '@daily/components/src/directives/tooltip';
+import { VTooltip } from 'v-tooltip';
 import { apolloClient } from '../src/apollo';
 import DaBookmarkList from '../src/components/DaBookmarkList.vue';
 import { BOOKMARK_LISTS_QUERY } from '../src/graphql/bookmarkList';
@@ -14,7 +14,7 @@ let localVue = createLocalVue();
 localVue.use(Vuex);
 localVue.use(VueApollo);
 localVue.use(icons);
-localVue.directive('tooltip', tooltip(localVue));
+localVue.directive('tooltip', VTooltip);
 
 const bookmarkListHandler = jest.fn();
 apolloClient.setRequestHandler(BOOKMARK_LISTS_QUERY, bookmarkListHandler);

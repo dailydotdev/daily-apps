@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
+import { VTooltip } from 'v-tooltip';
 import icons from '@daily/components/src/icons';
-import tooltip from '@daily/components/src/directives/tooltip';
 import mdyDateFilter from '@daily/components/src/common/mdyDateFilter';
 import App from './App.vue';
 import store from '../store';
@@ -55,7 +55,7 @@ const bootPromise = loadFromCache().catch(console.error);
 
 Vue.use(VueRouter);
 Vue.use(icons);
-Vue.directive('tooltip', tooltip(Vue));
+Vue.directive('tooltip', VTooltip);
 Vue.filter('mdyDate', mdyDateFilter);
 
 const router = new VueRouter({

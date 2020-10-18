@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import icons from '@daily/components/src/icons';
-import tooltip from '@daily/components/src/directives/tooltip';
+import { VTooltip } from 'v-tooltip';
 import DaIconToggle from '@daily/components/src/components/DaIconToggle.vue';
 import DaSwitch from '@daily/components/src/components/DaSwitch.vue';
 import DaHeader from '../src/components/DaHeader.vue';
@@ -10,7 +10,7 @@ const localVue = createLocalVue();
 
 localVue.use(Vuex);
 localVue.use(icons);
-localVue.directive('tooltip', tooltip(localVue));
+localVue.directive('tooltip', VTooltip);
 localVue.component('da-icon-toggle', DaIconToggle);
 localVue.component('da-switch', DaSwitch);
 

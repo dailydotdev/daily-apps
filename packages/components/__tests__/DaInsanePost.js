@@ -1,6 +1,6 @@
 import {shallowMount, mount, createLocalVue} from '@vue/test-utils';
 import svgicon from 'vue-svgicon';
-import tooltip from '../src/directives/tooltip';
+import { VTooltip } from 'v-tooltip';
 import DaInsanePost from '../src/components/DaInsanePost.vue';
 import posts from '../src/posts';
 import mdyDateFilter from '../src/common/mdyDateFilter';
@@ -9,7 +9,7 @@ const localVue = createLocalVue();
 
 localVue.use(svgicon);
 localVue.filter('mdyDate', mdyDateFilter);
-localVue.directive('tooltip', tooltip(localVue));
+localVue.directive('tooltip', VTooltip);
 
 it('should emit click event', () => {
   const post = posts[0];

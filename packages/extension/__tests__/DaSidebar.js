@@ -2,7 +2,7 @@ import { shallowMount, mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import icons from '@daily/components/src/icons';
-import tooltip from '@daily/components/src/directives/tooltip';
+import { VTooltip } from 'v-tooltip';
 import DaModeSwitch from '@daily/components/src/components/DaModeSwitch.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
 import { apolloClient } from '../src/apollo';
@@ -22,7 +22,7 @@ let localVue = createLocalVue();
 localVue.use(Vuex);
 localVue.use(VueApollo);
 localVue.use(icons);
-localVue.directive('tooltip', tooltip(localVue));
+localVue.directive('tooltip', VTooltip);
 localVue.component('da-mode-switch', DaModeSwitch);
 
 let feed;
