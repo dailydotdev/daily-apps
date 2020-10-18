@@ -42,7 +42,7 @@ export default {
     },
 
     setShowTopSites(state, value) {
-      state.showTopSites = value;
+      state.showTopSites = value && 'topSites' in browser;
     },
 
     setShowOnlyNotReadPosts(state, value) {

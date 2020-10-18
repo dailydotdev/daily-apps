@@ -43,12 +43,6 @@ it('should set insane mode in state', () => {
   expect(state.insaneMode).toEqual(true);
 });
 
-it('should set show top sites in state', () => {
-  const state = {};
-  module.mutations.setShowTopSites(state, true);
-  expect(state.showTopSites).toEqual(true);
-});
-
 it('should set show only not read posts in state', () => {
   const state = {};
   module.mutations.setShowOnlyNotReadPosts(state, true);
