@@ -7,10 +7,8 @@ import svgicon from 'vue-svgicon';
 import 'focus-visible';
 
 import darkTheme from './dark';
-import tooltip from '../src/directives/tooltip';
 
 Vue.use(svgicon);
-Vue.directive('tooltip', tooltip(Vue));
 
 addParameters({
   options: {
