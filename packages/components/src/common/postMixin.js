@@ -4,6 +4,7 @@ import '../../icons/upvote';
 import '../../icons/comment';
 import '../../icons/arrow';
 import '../../icons/x';
+import '../../icons/feather';
 import commentPopupText from '../commentPopupText';
 
 export default {
