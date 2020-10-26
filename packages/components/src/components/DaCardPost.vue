@@ -43,6 +43,11 @@
         </template>
       </div>
       <div class="card__image">
+        <div class="post__author" v-if="post.author">
+          <img class="lazyload" :data-src="post.author.image" alt="Author image"/>
+          <div class="post__author__name">{{post.author.name}}</div>
+          <svgicon name="feather"/>
+        </div>
         <img class="lazyload" :data-src="post.image"
              :data-lowsrc="post.placeholder" alt="Post image" :key="post.image"
              @error="useDefaultImage"/>
@@ -196,6 +201,25 @@ export default {
 
     & textarea {
       padding: 10px 12px;
+    }
+  }
+
+  & .post__author__name {
+    margin-left: 8px;
+    color: var(--theme-secondary);
+  }
+
+  & .post__author {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 40px;
+    padding: 0 12px 0 16px;
+    background: var(--theme-background-primary);
+
+    & .svg-icon {
+      margin-left: auto;
     }
   }
 }
