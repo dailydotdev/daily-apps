@@ -39,7 +39,11 @@
         },
         "permalink": "https://daily.dev"
       }
-    ]
+    ],
+    "author": {
+      "name": "Ido Shamun",
+      "image": "https://avatars2.githubusercontent.com/u/1993245?v=4"
+    }
   },
   {
     "id": "9c0ae2dc8d2cb7e11a4be8bcbebca9fa",

@@ -30,6 +30,10 @@
             <div class="post__metadata-separator"/>
             <div>{{post.readTime}}m read time</div>
           </template>
+          <div class="post__author" v-if="post.author">
+            <svgicon name="feather"/>
+            <div class="post__author__name">{{post.author.name}}</div>
+          </div>
         </div>
       </a>
       <template v-if="showComment">
@@ -172,6 +176,15 @@ export default {
     bottom: 0;
     margin: auto 0;
     padding: 0 16px;
+  }
+
+  & .post__author {
+    margin-left: 12px;
+
+    & .post__author__name {
+      margin-left: 4px;
+      color: var(--theme-cheese);
+    }
   }
 }
 </style>

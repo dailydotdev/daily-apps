@@ -359,3 +359,36 @@
   opacity: 0;
   transform: translateY(-24px);
 }
+
+.post .post__author {
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.1s linear;
+
+  & img {
+    width: 24px;
+    height: 24px;
+    border-radius: 100%;
+  }
+
+  & .svg-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--theme-cheese);
+  }
+}
+
+.post:hover .post__author {
+  visibility: visible;
+  opacity: 1;
+}
+
+.post__author__name {
+  font-size: 10px;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+  font-weight: bold;
+}
