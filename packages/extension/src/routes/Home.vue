@@ -70,6 +70,10 @@
                           @click="setSortBy('popularity')">Popular
                   </button>
                   <button class="btn btn-menu sort-by"
+                          :class="{'not-selected': sortBy !== 'upvotes'}"
+                          @click="setSortBy('upvotes')">Most upvoted
+                  </button>
+                  <button class="btn btn-menu sort-by"
                           :class="{'not-selected': sortBy !== 'creation'}"
                           @click="setSortBy('creation')">Recent
                   </button>
