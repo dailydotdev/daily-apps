@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <button class="header__logo" @click="onBackHome">
-      <da-svg src="/graphics/dailydev.svg" class="header__logo__icon"/>
+      <da-svg src="/graphics/birthdaylogo.svg" class="header__logo__icon"/>
     </button>
     <da-switch class="header__switch" icon="bookmark" :checked="showBookmarks"
                v-tooltip.bottom="showBookmarks ? 'Back to feed' : 'Show your bookmarks'"
@@ -9,9 +9,9 @@
     <div class="space"></div>
     <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
        @click="ctaClick" v-if="!isPremium"
-       href="https://daily.dev/win-free-t-shirt"
+       href="https://daily.dev/birthday-giveaway"
        target="_blank" rel="noopener noreferrer">
-      <span class="header__cta__text">Win a free t-shirt</span>
+      <span class="header__cta__text">Special Birthday Giveaway</span>
       <svgicon class="header__cta__image" icon="gift"/>
     </a>
     <div class="separator"></div>
@@ -179,7 +179,6 @@ export default {
 
   & .header__logo__icon {
     width: 114px;
-    height: 20px;
   }
 
   & .separator {
