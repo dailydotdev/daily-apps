@@ -21,6 +21,7 @@ const initialState = () => ({
   showNewSource: false,
   showReferral: false,
   ctaClicked: false,
+  birthdayClicked: false,
   // Win moments tracking
   triggeredReferral: false,
   postClicks: 0,
@@ -130,7 +131,8 @@ export default {
     },
 
     setCtaClicked(state, value) {
-      state.ctaClicked = value;
+      state.birthdayClicked = value;
+      // state.ctaClicked = value;
     },
 
     setShowTopSitesModal(state, value) {

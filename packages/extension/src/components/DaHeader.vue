@@ -7,7 +7,7 @@
                v-tooltip.bottom="showBookmarks ? 'Back to feed' : 'Show your bookmarks'"
                @toggle="toggleBookmarks"></da-switch>
     <div class="space"></div>
-    <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
+    <a class="header__cta btn btn-menu" :class="{'first-time': birthdayClicked === false}"
        @click="ctaClick" v-if="!isPremium"
        href="https://daily.dev/birthday-giveaway"
        target="_blank" rel="noopener noreferrer">
@@ -57,7 +57,7 @@ export default {
 
   computed: {
     ...mapState('ui', [
-      'showNotificationBadge', 'notificationsOpened', 'showDndMenu', 'showSettings', 'ctaClicked',
+      'showNotificationBadge', 'notificationsOpened', 'showDndMenu', 'showSettings', 'birthdayClicked',
     ]),
     ...mapState('feed', ['showBookmarks']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
