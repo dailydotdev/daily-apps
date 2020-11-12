@@ -7,7 +7,9 @@
         <div class="post__title lil1 multiline-text-overflow">{{ad.description}}</div>
       </a>
       <div class="post__metadata">
-        <span>Promoted</span>
+        <a v-if="isCarbon" :href="ad.referralLink"
+           target="_blank" rel="noopener noreferrer">Promoted by Carbon</a>
+        <span v-else>Promoted</span>
         <button @click="onRemoveAds">Remove ads?</button>
       </div>
     </div>

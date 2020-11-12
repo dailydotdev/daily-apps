@@ -8,7 +8,9 @@
       </div>
     </a>
     <div class="post__metadata card__hmargin">
-      <span>Promoted</span>
+      <a v-if="isCarbon" :href="ad.referralLink"
+         target="_blank" rel="noopener noreferrer">Promoted by Carbon</a>
+      <span v-else>Promoted</span>
       <button @click="onRemoveAds">Remove ads?</button>
     </div>
     <img v-for="(item, index) in pixel" :key="index" :src="item" class="post__pixel"/>

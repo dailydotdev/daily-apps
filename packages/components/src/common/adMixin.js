@@ -19,6 +19,9 @@ export default {
         hover: this.selected,
       };
     },
+    isCarbon() {
+      return this.ad.source === 'Carbon';
+    },
   },
 
   methods: {
