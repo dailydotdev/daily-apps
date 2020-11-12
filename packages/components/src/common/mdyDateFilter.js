@@ -1,23 +1,7 @@
-// Month abbreviation, Day with leading zeros, Year Filter (Jun 30, 2019)
+import { subDays, isSameDay } from 'date-fns';
 
-// Time spans in milliseconds, used for comparing dates. Month and year variable, thus omitted.
+// Time spans in milliseconds, used for comparing dates.
 const oneMinute = 60000;
-const oneDay = 86400000;
-
-/**
- * Returns whether a given date is yesterday.
- * @param {Date} date
- * @returns {Boolean}
- */
-const isYesterday = (date, now = new Date()) => {
-  const dateMs = date.getTime();
-  const dateDayMs = dateMs - (dateMs % oneDay);
-
-  const nowMs = now.getTime();
-  const nowDayMs = nowMs - (nowMs % oneDay);
-
-  return dateDayMs === nowDayMs - oneDay;
-};
 
 export default (value, now = new Date()) => {
   const date = new Date(value);
@@ -27,11 +11,11 @@ export default (value, now = new Date()) => {
 
   if (dt <= oneMinute) return 'Now';
 
-  if (dt <= oneDay) {
+  if (isSameDay(date, now)) {
     return 'Today';
   }
 
-  if (isYesterday(date, now)) return 'Yesterday';
+  if (isSameDay(date, subDays(now, 1))) return 'Yesterday';
 
   return date.toLocaleString('en-US', {
     month: 'short',
