@@ -6719,9 +6719,9 @@ detective-typescript@^5.8.0:
     typescript "^3.8.3"
 
 dialog-polyfill@^0.5.3:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/dialog-polyfill/-/dialog-polyfill-0.5.3.tgz#ba7a288ea34a79210cb220bc305dd33ac08aaee5"
-  integrity sha512-DVYazl3klQtPjs4dOzDTOt4uQ8cRDfu8EBhoY81ISmH0fbrMvYuaethcQ9UevmF9kAaLnBJ0O5eDUnZ7QalArA==
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/dialog-polyfill/-/dialog-polyfill-0.5.4.tgz#e43bc54794a7fc605852352649bdd4d03cfb59e5"
+  integrity sha512-LqQvIky9+qIFD7MCESOXdMZc4ObCdEbzbuvnPJVCiRXKQMzMjpQKK50UI+2sj0bJBPKn6ugPpMRpuLrgYc4RjA==
 
 diff@^3.2.0:
   version "3.5.0"
