@@ -98,14 +98,33 @@
     overflow: hidden;
     margin-top: 4px;
 
+    .post__buttons__placeholder {
+      display: flex;
+      width: 72px;
+    }
+
     & .btn {
-      justify-content: center;
+      height: 28px;
+      margin-top: 2px;
+      margin-bottom: 2px;
+      padding-left: 4px;
+      padding-right: 8px;
+
       --button-color: var(--theme-secondary);
 
       @mixin nuggets;
 
       &:hover {
         --button-color: var(--theme-primary);
+      }
+
+      &:before {
+        width: 28px;
+        border-radius: var(--button-border-radius);
+      }
+
+      & .svg-icon {
+        margin-left: 0;
       }
     }
   }

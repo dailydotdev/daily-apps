@@ -63,7 +63,7 @@
       <button v-for="item in bookmarkLists" :key="item.id"
               class="btn btn-menu bookmark-context__list-btn" :class="{active: listId === item.id}"
               @click="onBookmarkListClick(item)">
-        <span>{{item.name}}</span>
+        <span>{{ item.name }}</span>
         <svgicon name="v"/>
       </button>
     </da-context>
@@ -79,6 +79,7 @@ import {
 } from 'vuex';
 import { contentService } from '../common/services';
 import { getCache, LAST_COMMENT_KEY, setCache } from '../common/cache';
+import { POSTS_ENGAGED_SUBSCRIPTION } from '../graphql/feed';
 
 export default {
   name: 'DaFeed',
@@ -94,6 +95,22 @@ export default {
   },
   props: {
     bookmarkLists: Array,
+  },
+  apollo: {
+    $subscribe: {
+      postsEngaged: {
+        query: POSTS_ENGAGED_SUBSCRIPTION,
+        variables() {
+          return { loggedIn: this.isLoggedIn, ids: this.posts.map(post => post.id) };
+        },
+        skip() {
+          return !this.posts || !this.posts.length;
+        },
+        result({ data }) {
+          this.updatePost({ post: data.postsEngaged });
+        },
+      },
+    },
   },
   data() {
     return {
@@ -342,6 +359,7 @@ export default {
 
     ...mapMutations({
       removePost: 'feed/removePost',
+      updatePost: 'feed/updatePost',
       setShowPremium: 'ui/setShowPremium',
     }),
   },

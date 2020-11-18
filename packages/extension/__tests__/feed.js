@@ -1026,3 +1026,30 @@ it('should send cancel upvote request', async () => {
   );
   expect(cancelUpvoteHandler).toBeCalledWith({ id: '1' });
 });
+
+it('should update an existing post', () => {
+  const state = {
+    posts: [{
+      id: '1',
+    }, {
+      id: '2',
+      numUpvotes: 5,
+      numComments: 3,
+    }, {
+      id: '3',
+    }],
+    bookmarks: [],
+  };
+  module.mutations.updatePost(state, { post: { id: '2', numUpvotes: 6 } });
+  expect(state.posts).toEqual([{
+    id: '1',
+  }, {
+    id: '2',
+    numUpvotes: 6,
+    numComments: 3,
+    publication: undefined,
+    url: 'http://localhost:4000/r/2',
+  }, {
+    id: '3',
+  }]);
+});

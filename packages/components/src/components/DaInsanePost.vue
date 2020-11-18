@@ -54,17 +54,21 @@
         </div>
       </template>
       <div class="post__buttons" v-show="!showComment">
-        <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
-                @click="onUpvoteClick">
-          <svgicon name="upvote"/>
-          <span>{{post.numUpvotes || 'Upvote'}}</span>
-        </button>
-        <a class="btn btn-menu" :class="{ 'post__action-completed': post.commented}"
-           :href="post.commentsPermalink" target="_blank"
-           rel="noopener noreferrer" @click="onCommentClick">
-          <svgicon name="comment"/>
-          <span>{{post.numComments || 'Comment'}}</span>
-        </a>
+        <div class="post__buttons__placeholder">
+          <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
+                  @click="onUpvoteClick">
+            <svgicon name="upvote"/>
+            <da-counter :value="post.numUpvotes || ''" />
+          </button>
+        </div>
+        <div class="post__buttons__placeholder">
+          <a class="btn btn-menu" :class="{ 'post__action-completed': post.commented}"
+             :href="post.commentsPermalink" target="_blank"
+             rel="noopener noreferrer" @click="onCommentClick">
+            <svgicon name="comment"/>
+            <da-counter :value="post.numComments || ''" />
+          </a>
+        </div>
         <button class="btn-icon post__bookmark post__show-on-hover post__align-right"
                 :class="{ hover: bookmarksMenuOpened }" @click="onBookmarkClick"
                 v-tooltip="bookmarkTooltip" v-show="!showComment">
@@ -113,10 +117,11 @@
 import 'lazysizes';
 import postMixin from '../common/postMixin';
 import DaSpinner from './DaSpinner.vue';
+import DaCounter from './DaCounter.vue';
 
 export default {
   name: 'DaInsanePost',
-  components: { DaSpinner },
+  components: { DaSpinner, DaCounter },
   mixins: [postMixin],
 };
 </script>

@@ -61,7 +61,7 @@
         <!-- eslint-disable-next-line max-len -->
         <div class="post__comment-content post__vmargin lil1 multiline-text-overflow">{{selectedComment.content}}</div>
       </div>
-      <div class="post__buttons full-width">
+      <div class="post__buttons">
         <div class="post__hseparator"></div>
         <a class="btn btn-menu"
            :href="selectedComment.permalink" target="_blank"
@@ -72,18 +72,21 @@
       </div>
     </template>
     <div class="post__buttons" v-show="!showComment">
-      <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
-              @click="onUpvoteClick">
-        <svgicon name="upvote"/>
-        <span>{{post.numUpvotes || 'Upvote'}}</span>
-      </button>
-      <div class="post__vseparator"></div>
-      <a class="btn btn-menu" :class="{ 'post__action-completed': post.commented}"
-         :href="post.commentsPermalink" target="_blank"
-         rel="noopener noreferrer" @click="onCommentClick">
-        <svgicon name="comment"/>
-        <span>{{post.numComments || 'Comment'}}</span>
-      </a>
+      <div class="post__buttons__placeholder">
+        <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
+                @click="onUpvoteClick">
+          <svgicon name="upvote"/>
+          <da-counter :value="post.numUpvotes || ''" />
+        </button>
+      </div>
+      <div class="post__buttons__placeholder">
+        <a class="btn btn-menu" :class="{ 'post__action-completed': post.commented}"
+           :href="post.commentsPermalink" target="_blank"
+           rel="noopener noreferrer" @click="onCommentClick">
+          <svgicon name="comment"/>
+          <da-counter :value="post.numComments || ''" />
+        </a>
+      </div>
     </div>
     <transition name="comment-slide-up">
       <div class="post__comment-popup invert" v-if="showCommentPopup && !privateSource">
@@ -122,10 +125,11 @@ import 'lazysizes/plugins/blur-up/ls.blur-up';
 import 'lazysizes';
 import postMixin from '../common/postMixin';
 import DaSpinner from './DaSpinner.vue';
+import DaCounter from './DaCounter.vue';
 
 export default {
   name: 'DaCardPost',
-  components: { DaSpinner },
+  components: { DaSpinner, DaCounter },
   mixins: [postMixin],
 
   methods: {
@@ -154,24 +158,8 @@ export default {
   }
 
   & .post__buttons {
+    margin-left: 20px;
     margin-bottom: 8px;
-
-    & .btn {
-      flex: 1;
-      max-width: 50%;
-      margin-left: 8px;
-      margin-right: 8px;
-    }
-
-    &.full-width {
-      flex-direction: column;
-
-      & .btn {
-        max-width: unset;
-        flex: unset;
-        align-self: stretch;
-      }
-    }
   }
 
   & .post__comment {

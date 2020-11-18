@@ -103,3 +103,11 @@ export const COMMENT_ON_POST_MUTATION = gql`
       permalink
     }
   }`;
+
+export const POSTS_ENGAGED_SUBSCRIPTION = gql`
+  subscription PostsEngaged($ids: [ID]!) {
+    postsEngaged(ids: $ids) {
+      ...FeedPost
+    }
+  }
+${FEED_POST_FRAGMENT}`;
