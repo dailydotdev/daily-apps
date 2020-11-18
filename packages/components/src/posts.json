@@ -68,7 +68,9 @@
     "size": "medium",
     "bookmarked": true,
     "hasComments": true,
-    "commentsPermalink": "https://daily.dev"
+    "commentsPermalink": "https://daily.dev",
+    "numUpvotes": 5,
+    "numComments": 3
   },
   {
     "id": "0b14843f08279a41ea69c1edd35a2c16",

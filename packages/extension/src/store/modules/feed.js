@@ -253,6 +253,13 @@ export default {
         state[type] = state[type].concat(posts);
       }
     },
+    updatePost(state, { post }) {
+      const type = getFeed(state);
+      const i = state[type].findIndex(existingPost => existingPost.id === post.id);
+      if (i > -1) {
+        Vue.set(state[type], i, { ...state[type][i], ...mapPost(post) });
+      }
+    },
     removePost(state, postId) {
       const feed = getFeed(state);
       const index = state[feed].findIndex(p => p.id === postId);

@@ -12,7 +12,7 @@ import DaInsanePost from '../../components/src/components/DaInsanePost.vue';
 import DaContext from '../../components/src/components/DaContext.vue';
 import DaCardPlaceholder from '../../components/src/components/DaCardPlaceholder.vue';
 import {apolloClient} from '../src/apollo';
-import {COMMENT_ON_POST_MUTATION} from '../src/graphql/feed';
+import {COMMENT_ON_POST_MUTATION, POSTS_ENGAGED_SUBSCRIPTION} from '../src/graphql/feed';
 
 jest.mock('../src/apollo');
 
@@ -30,6 +30,9 @@ localVue.component('da-card-placeholder', DaCardPlaceholder);
 
 const commentOnPostHandler = jest.fn();
 apolloClient.setRequestHandler(COMMENT_ON_POST_MUTATION, commentOnPostHandler);
+
+const postsEngagedHandler = jest.fn();
+apolloClient.setRequestHandler(POSTS_ENGAGED_SUBSCRIPTION, postsEngagedHandler);
 
 let feed;
 let ui;
@@ -50,6 +53,8 @@ beforeEach(() => {
 
   commentOnPostHandler.mockReset();
   commentOnPostHandler.mockResolvedValue({data: {commentOnPost: {permalink: 'https://daily.dev'}}});
+  postsEngagedHandler.mockReset();
+  postsEngagedHandler.mockReturnValue(new Promise(() => {}));
 
   feed = {
     namespaced: true,
