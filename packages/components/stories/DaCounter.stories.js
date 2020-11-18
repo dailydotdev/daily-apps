@@ -1,5 +1,5 @@
 import {storiesOf} from "@storybook/vue";
-import {text, withKnobs} from "@storybook/addon-knobs";
+import {number, withKnobs} from "@storybook/addon-knobs";
 
 import DaCounter from '../src/components/DaCounter.vue';
 
@@ -10,7 +10,7 @@ storiesOf('DaCounter', module)
     template: '<da-counter :value="value" style="color: var(--theme-primary);"/>',
     props: {
       value: {
-        default: text('value', '0'),
+        default: number('value', 0),
       },
     },
   }));

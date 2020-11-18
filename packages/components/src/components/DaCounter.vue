@@ -1,7 +1,7 @@
 <template>
   <span class="counter">
-    <transition name="counter">
-      <span :key="value">{{value}}</span>
+    <transition :name="transition">
+      <span :key="value">{{value > 0 ? value : ''}}</span>
     </transition>
   </span>
 </template>
@@ -11,8 +11,22 @@ export default {
   name: 'DaCounter',
   props: {
     value: {
-      type: [Number, String],
+      type: Number,
       required: true,
+    },
+  },
+  data() {
+    return {
+      transition: 'counter-up',
+    };
+  },
+  watch: {
+    value(newValue, oldValue) {
+      if (newValue > oldValue) {
+        this.transition = 'counter-up';
+      } else {
+        this.transition = 'counter-down';
+      }
     },
   },
 };
@@ -27,23 +41,23 @@ export default {
   }
 }
 
-.counter-enter-active {
+.counter-up-enter-active, .counter-down-enter-active {
   position: absolute;
   top: 0;
   left: 0;
 }
 
-.counter-enter-active, .counter-leave-active {
+.counter-up-enter-active, .counter-up-leave-active {
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   will-change: opacity, transform;
 }
 
-.counter-enter {
+.counter-up-enter {
   opacity: 0;
   transform: translate3d(0, 20px, 0);
 }
 
-.counter-leave-active {
+.counter-up-leave-active {
   opacity: 0;
   transform: translate3d(0, -20px, 0);
 }
