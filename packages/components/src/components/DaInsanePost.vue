@@ -56,16 +56,16 @@
       <div class="post__buttons" v-show="!showComment">
         <div class="post__buttons__placeholder">
           <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
-                  @click="onUpvoteClick" v-tooltip="'Upvote'">
-            <svgicon name="upvote"/>
+                  @click="onUpvoteClick">
+            <svgicon name="upvote" v-tooltip="'Upvote'"/>
             <da-counter :value="post.numUpvotes" />
           </button>
         </div>
         <div class="post__buttons__placeholder">
           <a class="btn btn-menu" :class="{ 'post__action-completed': post.commented}"
              :href="post.commentsPermalink" target="_blank"
-             rel="noopener noreferrer" @click="onCommentClick" v-tooltip="'Comment'">
-            <svgicon name="comment"/>
+             rel="noopener noreferrer" @click="onCommentClick">
+            <svgicon name="comment" v-tooltip="'Comment'"/>
             <da-counter :value="post.numComments" />
           </a>
         </div>
