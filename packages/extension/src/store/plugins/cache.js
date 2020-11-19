@@ -30,6 +30,7 @@ const stateToCache = (state) => {
     bookmarks: state.feed.bookmarks.map(post2Cache),
     latest: time2Cache(state.feed.latest),
     lastUsedBookmarkList: state.feed.lastUsedBookmarkList,
+    sortBy: state.feed.sortBy,
   };
   if (state.feed.conflictBookmarks) {
     toCache.feed.conflictBookmarks = state.feed.conflictBookmarks.map(post2Cache);
