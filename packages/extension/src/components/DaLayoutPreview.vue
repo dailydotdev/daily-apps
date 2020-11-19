@@ -78,7 +78,7 @@ export default {
   width: 6px;
   height: 6px;
   margin: 0 1.5px;
-  background: var(--theme-background-secondary);
+  background: var(--theme-secondary);
   border-radius: 100%;
 
   &.on {
