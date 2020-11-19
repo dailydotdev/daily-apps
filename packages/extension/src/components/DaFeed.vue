@@ -18,7 +18,8 @@
                         :bookmarks-menu-opened="bookmarkPostId === item.id"
                         :selected="focusedPost === item" :open-new-tab="openNewTab"
                         :show-comment-popup="commentPostId === item.id"
-                        :sending-comment="sendingComment" :comment="lastSavedComment"/>
+                        :sending-comment="sendingComment" :comment="lastSavedComment"
+                        :disable-counter="!pageInfo"/>
       </template>
     </div>
     <div class="feed__cards" v-else>
@@ -39,7 +40,8 @@
                       :bookmarks-menu-opened="bookmarkPostId === item.id"
                       :selected="focusedPost === item" :open-new-tab="openNewTab"
                       :show-comment-popup="commentPostId === item.id"
-                      :sending-comment="sendingComment" :comment="lastSavedComment"/>
+                      :sending-comment="sendingComment" :comment="lastSavedComment"
+                      :disable-counter="!pageInfo"/>
       </template>
     </div>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
@@ -126,7 +128,7 @@ export default {
   },
   computed: {
     ...mapState('ui', ['insaneMode', 'spaciness', 'openNewTab']),
-    ...mapState('feed', ['ads', 'hoveredPostAndIndex', 'showBookmarks', 'lastUsedBookmarkList']),
+    ...mapState('feed', ['ads', 'hoveredPostAndIndex', 'showBookmarks', 'lastUsedBookmarkList', 'pageInfo']),
     ...mapGetters({
       posts: 'feed/feed',
       isLoggedIn: 'user/isLoggedIn',

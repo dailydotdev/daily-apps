@@ -45,6 +45,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    disableCounter: {
+      type: Boolean,
+      default: false,
+    }
   },
 
   data() {
