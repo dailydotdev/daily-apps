@@ -76,7 +76,7 @@
         <button class="btn btn-menu" :class="{ 'post__action-completed': post.upvoted}"
                 @click="onUpvoteClick">
           <svgicon name="upvote" v-tooltip="'Upvote'"/>
-          <da-counter :value="post.numUpvotes" />
+          <da-counter :value="post.numUpvotes" :disable="disableCounter" />
         </button>
       </div>
       <div class="post__buttons__placeholder">
@@ -84,7 +84,7 @@
            :href="post.commentsPermalink" target="_blank"
            rel="noopener noreferrer" @click="onCommentClick">
           <svgicon name="comment" v-tooltip="'Comment'"/>
-          <da-counter :value="post.numComments" />
+          <da-counter :value="post.numComments" :disable="disableCounter" />
         </a>
       </div>
     </div>

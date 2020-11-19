@@ -107,6 +107,7 @@ export const COMMENT_ON_POST_MUTATION = gql`
 export const POSTS_ENGAGED_SUBSCRIPTION = gql`
   subscription PostsEngaged($ids: [ID]!) {
     postsEngaged(ids: $ids) {
+      id
       numComments
       numUpvotes
     }

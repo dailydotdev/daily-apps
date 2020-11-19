@@ -14,6 +14,10 @@ export default {
       type: Number,
       required: true,
     },
+    disable: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -22,7 +26,7 @@ export default {
   },
   watch: {
     value(newValue, oldValue) {
-      if (newValue > oldValue) {
+      if (newValue > oldValue && !this.disable) {
         this.transition = 'counter-up';
       } else {
         this.transition = 'counter-down';
