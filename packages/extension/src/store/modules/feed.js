@@ -257,7 +257,7 @@ export default {
       const type = getFeed(state);
       const i = state[type].findIndex(existingPost => existingPost.id === post.id);
       if (i > -1) {
-        Vue.set(state[type], i, { ...state[type][i], ...mapPost(post) });
+        Vue.set(state[type], i, { ...state[type][i], ...post });
       }
     },
     removePost(state, postId) {
