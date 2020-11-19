@@ -36,6 +36,7 @@ const wsLink = new WebSocketLink({
   uri: process.env.VUE_APP_SUBS_URL,
   options: {
     reconnect: true,
+    lazy: true,
   },
 });
 

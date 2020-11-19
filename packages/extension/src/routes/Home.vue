@@ -134,7 +134,7 @@
         </div>
       </template>
       <da-feed v-else-if="showFeed" ref='feed' :bookmark-lists="bookmarkLists"
-               @login="onLogin('Feed')"/>
+               :fetch-stage="fetchStage" @login="onLogin('Feed')"/>
       <DaSpinner v-if="loading" class="feed-spinner"/>
     </main>
     <div id="anchor" ref="anchor"></div>
@@ -202,10 +202,7 @@ import DaSvg from '../components/DaSvg.vue';
 import DaFeed from '../components/DaFeed.vue';
 import { trackPageView } from '../common/analytics';
 import { navigateDaily, validKeys, validKeysValues } from '../common/keyNavigationService';
-
-const CRITICAL_FETCH_STAGE = 1;
-const OPERATIONAL_FETCH_STAGE = 2;
-const ENGAGEMENT_FETCH_STAGE = 4;
+import { CRITICAL_FETCH_STAGE, OPERATIONAL_FETCH_STAGE, ENGAGEMENT_FETCH_STAGE } from '../common/consts';
 
 export default {
   name: 'Home',
