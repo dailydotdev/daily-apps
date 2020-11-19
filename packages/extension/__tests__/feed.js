@@ -1047,8 +1047,6 @@ it('should update an existing post', () => {
     id: '2',
     numUpvotes: 6,
     numComments: 3,
-    publication: undefined,
-    url: 'http://localhost:4000/r/2',
   }, {
     id: '3',
   }]);
