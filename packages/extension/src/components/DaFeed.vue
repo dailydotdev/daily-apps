@@ -19,7 +19,7 @@
                         :selected="focusedPost === item" :open-new-tab="openNewTab"
                         :show-comment-popup="commentPostId === item.id"
                         :sending-comment="sendingComment" :comment="lastSavedComment"
-                        :disable-counter="!pageInfo"/>
+                        :disable-counter="disableCounter"/>
       </template>
     </div>
     <div class="feed__cards" v-else>
@@ -41,7 +41,7 @@
                       :selected="focusedPost === item" :open-new-tab="openNewTab"
                       :show-comment-popup="commentPostId === item.id"
                       :sending-comment="sendingComment" :comment="lastSavedComment"
-                      :disable-counter="!pageInfo"/>
+                      :disable-counter="disableCounter"/>
       </template>
     </div>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
@@ -124,11 +124,12 @@ export default {
       commentPostId: null,
       sendingComment: false,
       lastSavedComment: '',
+      disableCounter: true,
     };
   },
   computed: {
     ...mapState('ui', ['insaneMode', 'spaciness', 'openNewTab']),
-    ...mapState('feed', ['ads', 'hoveredPostAndIndex', 'showBookmarks', 'lastUsedBookmarkList', 'pageInfo']),
+    ...mapState('feed', ['ads', 'hoveredPostAndIndex', 'showBookmarks', 'lastUsedBookmarkList']),
     ...mapGetters({
       posts: 'feed/feed',
       isLoggedIn: 'user/isLoggedIn',
@@ -148,6 +149,13 @@ export default {
 
       const [item] = this.hoveredPostAndIndex;
       return item.ad || item.post;
+    },
+  },
+  watch: {
+    posts(oldValue, newValue) {
+      if (oldValue && newValue) {
+        this.disableCounter = false;
+      }
     },
   },
   methods: {
