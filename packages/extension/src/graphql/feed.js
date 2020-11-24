@@ -5,7 +5,7 @@ export const FEED_POST_FRAGMENT = gql`
     id,title,url,publishedAt,createdAt,image,placeholder,readTime,
     source { id, name, image, public },tags,permalink,numComments,numUpvotes,
     commentsPermalink,featuredComments { id, content, permalink, author { name, image } },
-    author { name, image }
+    author { name, image }, trending
   }`;
 
 export const USER_POST_FRAGMENT = gql`

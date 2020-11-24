@@ -4,7 +4,7 @@ import {
   withKnobs,
   text,
   select,
-  boolean,
+  boolean, number,
 } from '@storybook/addon-knobs';
 
 import DaCardPost from '../src/components/DaCardPost.vue';
@@ -38,6 +38,9 @@ storiesOf('DaCardPost', module)
       },
       image: {
         default: text('image', posts[0].image),
+      },
+      trending: {
+        default: number('trending', 0),
       },
       bookmarked: {
         default: boolean('bookmarked', posts[0].bookmarked),
@@ -74,6 +77,7 @@ storiesOf('DaCardPost', module)
           bookmarked: this.bookmarked, read: this.read,
           numComments: this.hasComments, upvoted: this.upvoted,
           commented: this.commented,
+          trending: this.trending,
         };
       },
     },

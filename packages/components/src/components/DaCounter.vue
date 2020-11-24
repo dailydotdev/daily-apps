@@ -10,14 +10,11 @@
 export default {
   name: 'DaCounter',
   props: {
-    value: {
-      type: Number,
-      required: true,
-    },
+    value: Number,
     disable: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {
