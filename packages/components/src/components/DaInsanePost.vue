@@ -1,5 +1,8 @@
 <template>
   <div class="post post-article insane" :class="cls">
+    <div class="post__trending" v-if="post.trending" v-tooltip="trendingTooltip">
+      <div></div>
+    </div>
     <div class="insane__sub">
       <button class="btn-icon post__back" @click="onBackClick" v-if="showComment"
               v-tooltip="'Back'">
@@ -189,6 +192,20 @@ export default {
     & .post__author__name {
       margin-left: 4px;
       color: var(--theme-cheese);
+    }
+  }
+
+  & .post__trending {
+    width: 36px;
+    height: 24px;
+    right: 100%;
+    top: 16px;
+    margin-right: 1px;
+
+    & div {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      transform: translateX(32px);
     }
   }
 }

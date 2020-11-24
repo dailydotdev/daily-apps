@@ -2,7 +2,7 @@ import Vue from 'vue';
 import {storiesOf} from '@storybook/vue';
 import {action} from '@storybook/addon-actions';
 import {
-  withKnobs, text, array, select, boolean,
+  withKnobs, text, array, select, boolean, number,
 } from '@storybook/addon-knobs';
 
 import DaInsanePost from '../src/components/DaInsanePost.vue';
@@ -50,6 +50,9 @@ storiesOf('DaInsanePost', module)
       title: {
         default: text('title', posts[0].title),
       },
+      trending: {
+        default: number('trending', 0),
+      },
       bookmarked: {
         default: boolean('bookmarked', posts[0].bookmarked),
       },
@@ -85,6 +88,7 @@ storiesOf('DaInsanePost', module)
           bookmarked: this.bookmarked, read: this.read,
           numComments: this.hasComments, upvoted: this.upvoted,
           commented: this.commented,
+          trending: this.trending,
         };
       },
     },

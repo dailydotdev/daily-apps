@@ -72,3 +72,15 @@ it('should emit upvote event on click', () => {
   wrapper.find('.post__buttons button:first-child').trigger('click');
   expect(wrapper.emitted().upvote[0]).toEqual([{ post, upvoted: true }]);
 });
+
+it('should not show trending indicator', () => {
+  const post = posts[1];
+  const wrapper = mount(DaCardPost, { localVue, propsData: { post } });
+  expect(wrapper.find('.post__trending').element).toBeFalsy();
+});
+
+it('should show trending indicator', () => {
+  const post = posts[2];
+  const wrapper = mount(DaCardPost, { localVue, propsData: { post } });
+  expect(wrapper.find('.post__trending').element).toBeTruthy();
+});

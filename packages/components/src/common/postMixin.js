@@ -48,7 +48,7 @@ export default {
     disableCounter: {
       type: Boolean,
       default: false,
-    }
+    },
   },
 
   data() {
@@ -148,6 +148,14 @@ export default {
       return !this.sendingComment && this.hasPostComment;
     },
 
+    trending() {
+      return this.post.trending > 0;
+    },
+
+    trendingTooltip() {
+      return this.trending ? `${this.post.trending} devs read it last hour` : '';
+    },
+
     cls() {
       return {
         read: (this.post.read && !this.showComment) || this.showCommentPopup || this.notifying,
@@ -156,6 +164,7 @@ export default {
         disabled: this.showCommentPopup || this.notifying,
         'show-comment-popup': this.showCommentPopup,
         private: this.privateSource,
+        trending: this.trending,
       };
     },
 

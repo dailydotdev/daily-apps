@@ -7,6 +7,11 @@
   box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.24);
   transition: box-shadow linear 0.1s;
   overflow: hidden;
+  z-index: 0;
+
+  &.trending {
+    overflow: visible;
+  }
 
   &:not(.disabled) {
     &:hover, &.hover {
@@ -405,9 +410,42 @@
   opacity: 1;
 }
 
-.post__author__name {
+.post__trending, .post__author__name {
   font-size: 10px;
   line-height: 16px;
   letter-spacing: 0.4px;
   font-weight: bold;
+}
+
+.post__trending {
+  position: absolute;
+  overflow: hidden;
+
+  & div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-salt-10);
+    background: var(--color-ketchup-40);
+    border-radius: 4px;
+    text-transform: uppercase;
+    will-change: transform;
+    transition: transform 0.1s linear;
+
+    &:before {
+      display: block;
+      content: 'Hot';
+      opacity: 0;
+    }
+
+    .post.post-article:hover &, .post.post-article &:hover {
+      transform: none;
+
+      &:before {
+        opacity: 1;
+      }
+    }
+  }
 }

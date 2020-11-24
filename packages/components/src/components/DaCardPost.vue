@@ -1,5 +1,8 @@
 <template>
   <div class="post card post-article" :class="cls">
+    <div class="post__trending" v-if="post.trending" v-tooltip="trendingTooltip">
+      <div></div>
+    </div>
     <div class="card__header card__hmargin post__vmargin">
       <button class="btn-icon post__back" @click="onBackClick" v-if="showComment"
               v-tooltip="'Back'">
@@ -208,6 +211,20 @@ export default {
 
     & .svg-icon {
       margin-left: auto;
+    }
+  }
+
+  & .post__trending {
+    width: 40px;
+    height: 16px;
+    left: 16px;
+    bottom: 100%;
+    margin-bottom: 1px;
+
+    & div {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      transform: translateY(12px);
     }
   }
 }
