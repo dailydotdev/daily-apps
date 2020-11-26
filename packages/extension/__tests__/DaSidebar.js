@@ -93,7 +93,7 @@ beforeEach(() => {
     mutations: {
       setShowNewSource: jest.fn(),
     },
-  },
+  };
 
   store = new Vuex.Store({
     modules: { feed, user, ui },

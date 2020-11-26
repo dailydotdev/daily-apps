@@ -5,25 +5,15 @@
                :url="banner.url" v-if="showBanner" @close="closeBanner"/>
     <da-header @go="onGoClicked" @login="onLogin('Header')" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
-    <da-sidebar ref="sidebar" v-if="fetchStage >= 2"
-                @loaded="fetchStage += 1"
-                @login="onLogin('Sidebar')"></da-sidebar>
-    <div class="line-numbers" @mouseenter="$refs.sidebar && $refs.sidebar.open()"
-         v-show="!showBookmarks">
-      <svgicon name="hamburger" class="line-numbers_icon"/>
-      <div class="line-numbers__lines" ref="lineNumbers">
-        <pre v-for="n in lineNumbers" class="micro2" :key="n">{{ n }}</pre>
-      </div>
-      <svg class="line-numbers__collapse" width="10" height="12" viewBox="0 0 10 12"
-           xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" fill-rule="evenodd">
-          <g>
-            <path class="fill" d="M0 0h10v7.826L5 12 0 7.826z"></path>
-            <path class="stroke" d="M.5.5v7.092L5 11.35 9.5 7.59V.5h-9z"></path>
-          </g>
-          <path d="M3 5h4" class="stroke" stroke-linecap="square"></path>
-        </g>
-      </svg>
+    <div class="sidebar-container" :class="{opened: sidebarOpened}">
+      <da-sidebar
+        @loaded="fetchStage += 1"
+        @login="onLogin('Sidebar')"></da-sidebar>
+      <button class="sidebar-trigger"
+              v-tooltip="sidebarTooltip"
+              @click="toggleSidebar">
+        <svgicon name="arrow"/>
+      </button>
     </div>
     <da-settings v-if="showSettings"/>
     <da-bookmark-list v-if="showBookmarks"/>
@@ -178,14 +168,6 @@
       </template>
       <button v-else class="btn btn-menu" @click="onDisableDndMode">Turn Off</button>
     </da-context>
-    <div class="instructions sidebar-instructions invert" v-if="sidebarInstructions">
-      <div class="instructions__desc">
-        Hover on the sidebar to filter your feed based on tags and sources.
-      </div>
-      <button class="btn btn-invert" @click="nextInstruction">
-        Got it
-      </button>
-    </div>
   </div>
 </template>
 
@@ -278,16 +260,26 @@ export default {
       showRequestModal: false,
       showLoginModal: false,
       showIntegrations: false,
-      lineNumbers: 1,
       showSearch: false,
       searchSuggestions: [],
       fetchStage: null,
       banner: null,
       topSites: [],
+      sidebarOpened: false,
+      sidebarTooltip: 'Open sidebar',
     };
   },
 
   methods: {
+    toggleSidebar() {
+      if (this.sidebarOpened) {
+        ga('send', 'event', 'Sidebar', 'Toggle', 'Close');
+        this.sidebarOpened = false;
+      } else {
+        ga('send', 'event', 'Sidebar', 'Toggle', 'Open');
+        this.sidebarOpened = true;
+      }
+    },
     onKeyDown({ keyCode, target }) {
       if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
         return null;
@@ -320,18 +312,6 @@ export default {
       this.$store.dispatch('feed/setShowBookmarks', !this.showBookmarks);
 
       return ga('send', 'event', 'Header', 'Bookmarks', !this.showBookmarks);
-    },
-
-    updateLines() {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          const pres = this.$refs.lineNumbers.querySelectorAll('pre');
-          const lines = Math.ceil(this.$refs.lineNumbers.clientHeight / pres[0].clientHeight);
-          if (lines > this.lineNumbers) {
-            this.lineNumbers = lines;
-          }
-        });
-      });
     },
 
     onDndMenu(event) {
@@ -525,7 +505,6 @@ export default {
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
       hideNotifications: 'ui/hideNotifications',
-      nextInstruction: 'ui/nextInstruction',
       setShowDndMenu: 'ui/setShowDndMenu',
       setLastBannerSeen: 'ui/setLastBannerSeen',
       updateNotificationBadge: 'ui/updateNotificationBadge',
@@ -539,7 +518,7 @@ export default {
 
   computed: {
     ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal']),
-    ...mapGetters('ui', ['sidebarInstructions', 'showReadyModal', 'dndMode']),
+    ...mapGetters('ui', ['showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
@@ -588,6 +567,11 @@ export default {
   },
 
   watch: {
+    sidebarOpened() {
+      setTimeout(() => {
+        this.sidebarTooltip = this.sidebarOpened ? 'Close sidebar' : 'Open sidebar';
+      }, 100);
+    },
     async fetchStage(val) {
       if (val === CRITICAL_FETCH_STAGE) {
         await this.criticalFetch();
@@ -598,9 +582,6 @@ export default {
       } else if (val === ENGAGEMENT_FETCH_STAGE) {
         this.engagementFetch();
       }
-    },
-    posts() {
-      this.updateLines();
     },
     showBookmarks() {
       this.trackPageView();
@@ -643,8 +624,6 @@ export default {
     import('@daily/components/icons/magnifying');
     import('@daily/components/icons/integration');
     import('@daily/components/icons/gift');
-
-    this.updateLines();
 
     this.$nextTick(() => {
       window.addEventListener('keydown', this.onKeyDown);
@@ -720,22 +699,21 @@ export default {
 
 .home.page {
   padding-top: 56px;
-  padding-left: 36px;
 
   --banner-height: 40px;
   --cards-margin: 32px;
   --num-cards: 2;
-  --content-margin: 40px;
+  --content-margin: 80px;
   --feed-max-width: calc(var(--cards-margin) * (var(--num-cards) - 1) + 340px * var(--num-cards));
 
   &.roomy {
     --cards-margin: 48px;
-    --content-margin: 48px;
+    --content-margin: 88px;
   }
 
   &.cozy {
     --cards-margin: 56px;
-    --content-margin: 56px;
+    --content-margin: 96px;
   }
 
   @media (min-width: 1062px) {
@@ -961,18 +939,6 @@ export default {
     &:visited, &:active {
       color: inherit;
     }
-  }
-}
-
-.sidebar-instructions {
-  top: 72px;
-  left: 45px;
-  width: 188px;
-
-  & .btn {
-    margin-top: 8px;
-    align-self: stretch;
-    justify-content: center;
   }
 }
 
@@ -1254,6 +1220,61 @@ export default {
     display: block;
     border-radius: 8px;
     overflow: hidden;
+  }
+}
+
+.sidebar-container {
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 264px;
+  height: 100%;
+  transform: translateX(-100%);
+  transition: transform 0.2s linear;
+  will-change: transform;
+  z-index: 30;
+
+  &.opened {
+    transform: none;
+  }
+}
+
+.sidebar-trigger {
+  position: absolute;
+  display: flex;
+  top: 82px;
+  left: 100%;
+  width: 48px;
+  height: 64px;
+  align-items: center;
+  justify-content: center;
+  margin-left: -1px;
+  background: var(--theme-background-primary);
+  border: 1px solid var(--theme-separator);
+  border-radius: 0 16px 16px 0;
+  cursor: pointer;
+  z-index: 0;
+
+  & .svg-icon {
+    transform: rotate(90deg);
+  }
+
+  &:hover .svg-icon {
+    color: var(--theme-primary);
+  }
+
+  .sidebar-container.opened & {
+    background: var(--theme-background-highlight);
+    box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.24);
+
+    & .svg-icon {
+      transform: rotate(270deg);
+    }
+
+    .bright & {
+      box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.08);
+    }
   }
 }
 </style>
