@@ -1,6 +1,5 @@
 <template>
-  <aside class="sidebar" :class="{opened}"
-         @mouseleave="close">
+  <aside class="sidebar">
     <div class="sidebar__wrapper scrollbar">
       <div class="sidebar__filter">
         <da-mode-switch class="sidebar__filter_switch"
@@ -128,13 +127,6 @@ export default {
     DaModeSwitch,
   },
 
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-  },
-
   apollo: {
     rawPublications: {
       query: SOURCES_QUERY,
@@ -167,7 +159,6 @@ export default {
 
   data() {
     return {
-      opened: false,
       filterChecked: false,
       searchedTags: [],
       searchFocused: false,
@@ -251,22 +242,6 @@ export default {
     },
   },
   methods: {
-    open() {
-      if (this.opened || this.disabled) {
-        return;
-      }
-
-      ga('send', 'event', 'Sidebar', 'Toggle', 'Open');
-      this.setOpened(true);
-    },
-    close() {
-      if (!this.opened) {
-        return;
-      }
-
-      ga('send', 'event', 'Sidebar', 'Toggle', 'Close');
-      this.setOpened(false);
-    },
     toggleFilter(checked) {
       ga('send', 'event', 'Sidebar', 'Filter', checked ? 'Tags' : 'Publications');
       this.filterChecked = checked;
@@ -311,11 +286,6 @@ export default {
         this.searchedTags = [];
       }
     },
-    setOpened(opened) {
-      setTimeout(() => {
-        this.opened = opened;
-      });
-    },
     dataLoaded({ networkStatus, loading }) {
       if (networkStatus === NetworkStatus.ready && !loading && !this.loaded) {
         this.loaded = this.rawPublications.length > 0 && this.rawTags.length > 0;
@@ -349,24 +319,15 @@ export default {
 <style>
 .sidebar {
   display: block;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 264px;
+  position: relative;
   height: 100%;
   overflow: hidden;
   background: var(--theme-background-primary);
-  border-right: 1px solid var(--theme-background-primary);
-  box-shadow: var(--theme-shadow-offset) 0 16px 0 rgba(0, 0, 0, .1);
-  transform: translateX(-100%);
-  transition: transform 0.15s linear;
-  will-change: transform;
-  z-index: 20;
-  contain: layout paint size;
-
-  &.opened {
-    transform: none;
-  }
+  border-right: 1px solid var(--theme-separator);
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.24);
+  z-index: 1;
 
   & .text-overflow {
     display: block;
@@ -375,6 +336,14 @@ export default {
     text-overflow: ellipsis;
     min-width: 0;
     max-width: 100%;
+  }
+
+  & .scrollbar::-webkit-scrollbar {
+    background-color: var(--theme-background-highlight);
+  }
+
+  .bright & {
+    box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -398,7 +367,6 @@ export default {
 
 .sidebar__filter {
   display: flex;
-  padding-top: 56px;
   background: var(--theme-background-highlight);
 }
 
@@ -576,6 +544,7 @@ form.sidebar__element {
   bottom: 0;
   background: var(--theme-background-secondary);
   border-top: 1px solid var(--theme-separator);
+  border-bottom-right-radius: 16px;
   z-index: 10001;
   --button-border-radius: 0;
 

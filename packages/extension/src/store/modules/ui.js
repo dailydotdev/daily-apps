@@ -4,7 +4,7 @@ import { FIRST_INSTALL_KEY, getCache } from '../../common/cache';
 const initialState = () => ({
   theme: null,
   insaneMode: false,
-  spaciness: 'eco',
+  spaciness: 'roomy',
   dndModeTime: null,
   showDndMenu: false,
   showTopSites: false,
@@ -13,7 +13,6 @@ const initialState = () => ({
   showNotifications: false,
   showSettings: false,
   onboarding: false,
-  instructionsStep: 0,
   showOnlyNotReadPosts: false,
   openNewTab: true,
   lastBannerSeen: new Date(),
@@ -90,10 +89,6 @@ export default {
       state.showNotificationBadge = newNotification || neverSeen;
     },
 
-    nextInstruction(state) {
-      state.instructionsStep += 1;
-    },
-
     resetSettings(state) {
       const def = initialState();
       state.insaneMode = def.insaneMode;
@@ -138,10 +133,6 @@ export default {
     },
   },
   getters: {
-    sidebarInstructions(state) {
-      return state.instructionsStep === 0;
-    },
-
     dndMode(state) {
       return state.dndModeTime !== null;
     },

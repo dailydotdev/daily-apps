@@ -143,14 +143,6 @@ it('should reset everything', async () => {
     [{ type: 'setTheme', payload: null }]);
 });
 
-it('should increment instructionStep', () => {
-  const state = {
-    instructionsStep: 0,
-  };
-  module.mutations.nextInstruction(state);
-  expect(state.instructionsStep).toEqual(1);
-});
-
 it('should set DND mode time in state and DND mode should be true', () => {
   const time = new Date().getTime();
   const state = {};

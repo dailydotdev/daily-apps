@@ -220,3 +220,14 @@ it('should check visit win', (done) => {
     done();
   });
 });
+
+it('should toggle sidebar', async () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.sidebar-container').classes()).not.toContain('opened');
+  wrapper.find('.sidebar-trigger').trigger('click');
+  await wrapper.vm.$nextTick();
+  expect(wrapper.find('.sidebar-container').classes()).toContain('opened');
+  wrapper.find('.sidebar-trigger').trigger('click');
+  await wrapper.vm.$nextTick();
+  expect(wrapper.find('.sidebar-container').classes()).not.toContain('opened');
+});
