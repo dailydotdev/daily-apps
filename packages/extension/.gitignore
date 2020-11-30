@@ -24,6 +24,7 @@ yarn-error.log*
 *.pem
 *.pub
 *.zip
+*.crx
 /dist-zip
 
 manifest.json

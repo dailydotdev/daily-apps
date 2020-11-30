@@ -12,7 +12,6 @@ const initialState = () => ({
   lastNotificationTime: null,
   showNotifications: false,
   showSettings: false,
-  onboarding: false,
   showOnlyNotReadPosts: false,
   openNewTab: true,
   lastBannerSeen: new Date(),
@@ -26,6 +25,9 @@ const initialState = () => ({
   bookmarks: 0,
   scrolls: 0,
   showTopSitesModal: false,
+  // Onboarding
+  onboarding: true,
+  minimalUi: true,
 });
 
 export default {
@@ -95,10 +97,11 @@ export default {
       state.showTopSites = def.showTopSites;
       state.showOnlyNotReadPosts = def.showOnlyNotReadPosts;
       state.openNewTab = def.openNewTab;
+      state.spaciness = def.spaciness;
     },
 
     doneOnboarding(state) {
-      state.onboarding = true;
+      state.onboarding = false;
     },
 
     setLastBannerSeen(state, value) {

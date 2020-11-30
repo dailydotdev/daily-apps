@@ -27,6 +27,7 @@ beforeEach(() => {
     namespaced: true,
     state: {
       showTopSites: true,
+      minimalUi: false,
     },
     actions: {
       setShowTopSites: jest.fn(),
@@ -107,4 +108,21 @@ it('should emit "menu" on dnd-mode button click', () => {
   const wrapper = mount(DaHeader, { store, localVue });
   wrapper.find('button.btn-dnd').trigger('click');
   expect(wrapper.emitted().menu).toBeTruthy();
+});
+
+it('should set sign in button style to default while not in minimal ui mode', () => {
+  const wrapper = mount(DaHeader, { store, localVue });
+  expect(wrapper.find('.header__sign-in').classes()).toContain('btn-water-cheese');
+});
+
+it('should remove some buttons while in minimal ui mode', () => {
+  ui.state.minimalUi = true;
+  const wrapper = mount(DaHeader, { store, localVue });
+  expect(wrapper.find('.header__switch').element).toBeFalsy();
+  expect(wrapper.find('.header__cta').element).toBeFalsy();
+  expect(wrapper.find('.separator').element).toBeFalsy();
+  expect(wrapper.find('.btn-terminal').element).toBeFalsy();
+  expect(wrapper.find('.btn-dnd').element).toBeFalsy();
+  expect(wrapper.find('.btn-layout').element).toBeFalsy();
+  expect(wrapper.find('.header__sign-in').classes()).toContain('btn-menu');
 });
