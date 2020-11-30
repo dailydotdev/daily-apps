@@ -231,3 +231,9 @@ it('should toggle sidebar', async () => {
   await wrapper.vm.$nextTick();
   expect(wrapper.find('.sidebar-container').classes()).not.toContain('opened');
 });
+
+it('should hide sidebar when showing bookmarks', async () => {
+  feed.state.showBookmarks = true;
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.sidebar-container').element.style.display).toEqual('none');
+});

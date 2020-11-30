@@ -5,7 +5,7 @@
                :url="banner.url" v-if="showBanner" @close="closeBanner"/>
     <da-header @go="onGoClicked" @login="onLogin('Header')" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
-    <div class="sidebar-container" :class="{opened: sidebarOpened}">
+    <div class="sidebar-container" :class="{opened: sidebarOpened}" v-show="!showBookmarks">
       <da-sidebar
         @loaded="fetchStage += 1"
         @login="onLogin('Sidebar')"></da-sidebar>
