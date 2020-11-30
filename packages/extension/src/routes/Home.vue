@@ -796,17 +796,7 @@ export default {
   height: 44px;
   flex-direction: row;
   align-items: center;
-  margin: 28px 0;
-
-  .roomy & {
-    margin-top: 36px;
-    margin-bottom: 36px;
-  }
-
-  .cozy & {
-    margin-top: 44px;
-    margin-bottom: 44px;
-  }
+  margin: 36px 0;
 
   & h4 {
     color: var(--theme-secondary);
