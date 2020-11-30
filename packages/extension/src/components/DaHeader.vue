@@ -5,27 +5,30 @@
     </button>
     <da-switch class="header__switch" icon="bookmark" :checked="showBookmarks"
                v-tooltip.bottom="showBookmarks ? 'Back to feed' : 'Show your bookmarks'"
-               @toggle="toggleBookmarks"></da-switch>
+               @toggle="toggleBookmarks" v-if="!minimalUi"></da-switch>
     <div class="space"></div>
     <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
-       @click="ctaClick" v-if="!isPremium"
+       @click="ctaClick" v-if="!isPremium && !minimalUi"
        href="https://daily.dev/win-free-t-shirt"
        target="_blank" rel="noopener noreferrer">
       <span class="header__cta__text">Win a free t-shirt</span>
       <svgicon class="header__cta__image" icon="gift"/>
     </a>
-    <div class="separator"></div>
+    <div class="separator" v-if="!minimalUi"></div>
     <button class="btn-icon btn-terminal" v-tooltip.bottom="'Latest updates'"
-            :class="{ 'active': notificationsOpened }" @click="toggleNotifications">
+            :class="{ 'active': notificationsOpened }" @click="toggleNotifications"
+            v-if="!minimalUi">
       <svgicon name="terminal"/>
       <span class="header__badge" v-if="showNotificationBadge"></span>
     </button>
     <button class="btn-icon btn-dnd" v-tooltip.bottom="'Do Not Disturb'"
-            :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)">
+            :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)"
+            v-if="!minimalUi">
       <svgicon name="timer"/>
     </button>
     <button class="btn-icon btn-layout" v-tooltip.bottom="'Layout Settings'"
-            :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)">
+            :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)"
+            v-if="!minimalUi">
       <svgicon name="layout"/>
     </button>
     <a :href="profileLink" class="header__profile" v-if="isLoggedIn">
@@ -33,7 +36,8 @@
       <img :src="profileImage" alt="Profile image"/>
       <da-svg v-if="isPremium" src="/graphics/glitter_border.svg" class="glitter-mark"/>
     </a>
-    <button class="btn btn-water-cheese header__sign-in" v-else
+    <button class="btn header__sign-in" v-else
+            :class="minimalUi ? 'btn-menu' : 'btn-water-cheese'"
             @click="$emit('login')">
       <svgicon name="user_daily"/>
       <span>Sign in</span>
@@ -57,7 +61,7 @@ export default {
 
   computed: {
     ...mapState('ui', [
-      'showNotificationBadge', 'notificationsOpened', 'showDndMenu', 'showSettings', 'ctaClicked',
+      'showNotificationBadge', 'notificationsOpened', 'showDndMenu', 'showSettings', 'ctaClicked', 'minimalUi',
     ]),
     ...mapState('feed', ['showBookmarks']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
@@ -210,6 +214,10 @@ export default {
   & .header__sign-in {
     margin-left: 8px;
     margin-right: 0;
+
+    &.btn-menu {
+      --button-color: var(--theme-secondary);
+    }
   }
 
   & .space {

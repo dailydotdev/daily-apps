@@ -29,7 +29,7 @@ const migrateVersion1 = async () => {
     getCache('profile', null),
     getCache('notificationTime', null),
   ]);
-  return {
+  return setCache(STATE_KEY, {
     feed: {
       bookmarks,
       publications: Object.keys(pubs).map(id => ({ id, enabled: pubs[id] })),
@@ -39,14 +39,30 @@ const migrateVersion1 = async () => {
       ...settings,
     },
     user: { profile },
-  };
+  });
+};
+
+const migrateVersion2 = async () => {
+  const cache = await getCache(STATE_KEY, {});
+  return setCache(STATE_KEY, {
+    ui: {
+      onboarding: false,
+      minimalUi: false,
+      ...cache.ui,
+    },
+    ...cache,
+  });
 };
 
 const migrateCache = async () => {
-  const version = await getCache(DATA_VERSION_KEY, '1');
-  if (version !== CURRENT_DATA_VERSION) {
-    const newCache = await migrateVersion1();
-    await setCache(STATE_KEY, newCache);
+  const version = await getCache(DATA_VERSION_KEY, null);
+  if (version) {
+    if (version === 1) {
+      await migrateVersion1();
+    }
+    if (version <= 2) {
+      await migrateVersion2();
+    }
   }
   await setCache(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
 };
