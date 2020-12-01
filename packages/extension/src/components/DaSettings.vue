@@ -105,7 +105,7 @@ export default {
   flex-direction: row;
   align-self: stretch;
   background: var(--theme-background-secondary);
-  padding: 24px 16px;
+  padding: 24px 16px 24px 80px;
   overflow: hidden;
 
   & .separator {

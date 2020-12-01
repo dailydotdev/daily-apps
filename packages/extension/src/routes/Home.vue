@@ -5,7 +5,7 @@
                :url="banner.url" v-if="showBanner" @close="closeBanner"/>
     <da-header @go="onGoClicked" @login="onLogin('Header')" @menu="onDndMenu"></da-header>
     <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
-    <div class="sidebar-container" :class="{opened: sidebarOpened}">
+    <div class="sidebar-container" :class="{opened: sidebarOpened}" v-show="!showBookmarks">
       <da-sidebar
         @loaded="fetchStage += 1"
         @login="onLogin('Sidebar')"></da-sidebar>
@@ -799,17 +799,7 @@ export default {
   height: 44px;
   flex-direction: row;
   align-items: center;
-  margin: 28px 0;
-
-  .roomy & {
-    margin-top: 36px;
-    margin-bottom: 36px;
-  }
-
-  .cozy & {
-    margin-top: 44px;
-    margin-bottom: 44px;
-  }
+  margin: 36px 0;
 
   & h4 {
     color: var(--theme-secondary);
