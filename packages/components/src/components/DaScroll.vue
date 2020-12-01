@@ -31,6 +31,10 @@ export default {
 
   mounted() {
     import("../../icons/arrow");
+    window.addEventListener("scroll", this.scroll, {passive: true});
+  },
+  dismount() {
+    window.removeEventListener("scroll");
   },
 };
 </script>
