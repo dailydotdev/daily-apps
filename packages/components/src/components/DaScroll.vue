@@ -1,10 +1,6 @@
 <template>
-  <div
-    class="scroll__switch"
-    :class="[showed ? 'shown' : '']"
-    @click="scrollTop"
-  >
-    <svgicon name="arrow" class="scroll__switch__icon" />
+  <div class="scroll-btn" :class="[show ? 'show' : '']" @click="scrollTop">
+    <svgicon name="arrow" class="scroll-btn-icon" />
   </div>
 </template>
 
@@ -14,7 +10,7 @@ export default {
 
   data() {
     return {
-      showed: false,
+      show: false,
     };
   },
 
@@ -26,7 +22,7 @@ export default {
 
   created() {
     this.scroll = (event) => {
-      this.showed =
+      this.show =
         document.documentElement.scrollTop >
         document.documentElement.scrollHeight / 3;
     };
@@ -35,13 +31,12 @@ export default {
 
   mounted() {
     import("../../icons/arrow");
-    window.addEventListener("scroll", this.scroll);
   },
 };
 </script>
 
 <style>
-.scroll__switch {
+.scroll-btn {
   height: 48px;
   width: 48px;
   border-radius: 100%;
@@ -59,14 +54,14 @@ export default {
     cursor: pointer;
   }
 
-  &.shown {
+  &.show {
     opacity: 0.8;
     transform: scale(1);
     visibility: visible;
   }
 }
 
-.scroll__switch__icon {
+.scroll-btn-icon {
   width: 32px;
   height: 32px;
   color: var(--theme-background-primary);
