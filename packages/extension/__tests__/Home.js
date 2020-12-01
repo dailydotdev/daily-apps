@@ -237,3 +237,14 @@ it('should hide sidebar when showing bookmarks', async () => {
   const wrapper = mount(DaHome, { store, localVue });
   expect(wrapper.find('.sidebar-container').element.style.display).toEqual('none');
 });
+
+it('should not show welcome balloon by default', async () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.welcome-balloon').element).toBeFalsy();
+});
+
+it('should show welcome balloon during onboarding', async () => {
+  ui.state.onboarding = true;
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.welcome-balloon').element).toBeTruthy();
+});

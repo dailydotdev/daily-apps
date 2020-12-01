@@ -15,6 +15,14 @@
         <svgicon name="arrow"/>
       </button>
     </div>
+    <button class="rank-btn">
+      <div class="rank-btn__inner">
+        <da-rank :rank="1"/>
+      </div>
+    </button>
+    <div v-if="onboarding" class="welcome-balloon micro2">
+      Welcome to your feed! The last place you’ll ever need to stay updated 📚 Click above to start.
+    </div>
     <da-settings v-if="showSettings"/>
     <da-bookmark-list v-if="showBookmarks"/>
     <main class="content">
@@ -177,6 +185,7 @@ import {
 } from 'vuex';
 import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
+import DaRank from '@daily/components/src/components/DaRank.vue';
 import { BANNER_QUERY, LATEST_NOTIFICATIONS_QUERY } from '../graphql/home';
 import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 import DaHeader from '../components/DaHeader.vue';
@@ -234,6 +243,7 @@ export default {
     DaHeader,
     DaSvg,
     DaFeed,
+    DaRank,
     DaSidebar: () => import('../components/DaSidebar.vue'),
     DaDndMessage: () => import('../components/DaDndMessage.vue'),
     DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
@@ -517,7 +527,7 @@ export default {
   },
 
   computed: {
-    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'minimalUi']),
+    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'minimalUi', 'onboarding']),
     ...mapGetters('ui', ['showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
@@ -540,6 +550,7 @@ export default {
           [state.ui.insaneMode ? 'insane-mode' : 'card-mode']: true,
           'show-banner': this.showBanner,
           'show-bookmarks': this.showBookmarks,
+          onboarding: this.onboarding,
         };
       },
 
@@ -1266,5 +1277,80 @@ export default {
       box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.08);
     }
   }
+}
+
+@keyframes rank-attention {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.rank-btn {
+  position: absolute;
+  display: flex;
+  left: 0;
+  right: 0;
+  top: 16px;
+  width: 80px;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--theme-background-primary);
+  border: none;
+  border-radius: 100%;
+  cursor: pointer;
+  z-index: 31;
+
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--theme-hover);
+    border-radius: 100%;
+    z-index: -1;
+    transition: background 0.1s linear;
+    animation: rank-attention 2s infinite ease-in-out;
+  }
+
+  &:hover {
+    &:before {
+      background: var(--theme-active);
+    }
+  }
+}
+
+.rank-btn__inner {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  background: var(--theme-primary);
+  border-radius: 100%;
+  box-shadow: 0 8px 16px 2px var(--theme-active);
+
+  --stop-color1: var(--theme-background-primary);
+  --stop-color2: var(--theme-background-primary);
+}
+
+.welcome-balloon {
+  max-width: 420px;
+  margin-top: 56px;
+  padding: 16px 24px;
+  color: var(--theme-secondary);
+  border: 1px solid var(--theme-active);
+  border-radius: 16px;
+  text-align: center;
+  align-self: center;
 }
 </style>

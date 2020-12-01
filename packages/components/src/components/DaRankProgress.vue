@@ -146,8 +146,6 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
-    width: 32px;
-    height: 32px;
     margin: auto;
 
     --stop-color1: var(--theme-active);

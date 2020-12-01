@@ -45,8 +45,8 @@ export default {
 
 <style>
 .rank {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
 
   & path {
     fill: var(--fill);
