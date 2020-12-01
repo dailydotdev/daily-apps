@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'DaScroll',
+  name: "DaScroll",
 
   data() {
     return {
@@ -16,24 +16,26 @@ export default {
 
   methods: {
     scrollTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
   },
 
   created() {
     this.scroll = () => {
-      this.show = document.documentElement.scrollTop
-        > document.documentElement.scrollHeight / 3;
+      this.show =
+        document.documentElement.scrollTop >
+        document.documentElement.scrollHeight / 3;
     };
     this.scroll = this.scroll.bind(this);
   },
 
   mounted() {
-    import('../../icons/arrow');
-    window.addEventListener('scroll', this.scroll, { passive: true });
+    import("../../icons/arrow");
+    window.addEventListener("scroll", this.scroll, { passive: true });
   },
-  dismount() {
-    window.removeEventListener('scroll');
+
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.scroll);
   },
 };
 </script>
@@ -45,22 +47,22 @@ export default {
   border-radius: 100%;
   bottom: 32px;
   right: 32px;
-  Opacity: 0;
+  opacity: 0;
   position: fixed;
   background: var(--theme-primary);
-  box-shadow: inset  0 0 0 2px rgba(255,255,255,0.2);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2);
   transform: translateY(15px);
   transition: all 200ms linear;
   visibility: hidden;
   cursor: pointer;
 
   &.show {
-    Opacity: 0.8;
+    opacity: 0.8;
     visibility: visible;
     transform: translateY(0);
   }
 
-    &.show:hover {
+  &.show:hover {
     opacity: 1;
   }
 }
