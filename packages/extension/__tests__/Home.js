@@ -284,3 +284,18 @@ it('should finish onboarding when closing the rank popup', async () => {
   await wrapper.vm.$nextTick();
   expect(ui.mutations.doneOnboarding).toBeCalledTimes(1);
 });
+
+it('should show onboarding rank button during the onboarding', async () => {
+  ui.state.onboarding = true;
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.rank-btn').classes()).toContain('signal');
+  expect(wrapper.find('.rank-btn .rank-progress').element).toBeFalsy();
+  expect(wrapper.find('.rank-btn .rank-btn__inner').element).toBeTruthy();
+});
+
+it('should show regular rank button', async () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.rank-btn').classes()).not.toContain('signal');
+  expect(wrapper.find('.rank-btn .rank-progress').element).toBeTruthy();
+  expect(wrapper.find('.rank-btn .rank-btn__inner').element).toBeFalsy();
+});
