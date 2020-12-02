@@ -63,15 +63,11 @@ beforeEach(() => {
   });
 });
 
-it('should commit "setShowBookmarks" when switch is toggled', (done) => {
+it('should commit "setShowBookmarks" when clicking on the bookmarks', async () => {
   const wrapper = mount(DaHeader, { store, localVue });
-  wrapper.find('.header__switch').trigger('click');
-  wrapper.find('.header__switch').find('.switch__handle').trigger('transitionend');
-  wrapper.find('.header__switch').find('.switch__handle').trigger('transitionend');
-  setTimeout(() => {
-    expect(feed.actions.setShowBookmarks).toBeCalledWith(expect.anything(), true);
-    done();
-  }, 100);
+  wrapper.find('.btn-bookmarks').trigger('click');
+  await wrapper.vm.$nextTick();
+  expect(feed.actions.setShowBookmarks).toBeCalledWith(expect.anything(), true);
 });
 
 it('should emit "login" on sign-in button click', () => {
@@ -94,10 +90,9 @@ it('should set sign in button style to default while not in minimal ui mode', ()
 it('should remove some buttons while in minimal ui mode', () => {
   ui.state.minimalUi = true;
   const wrapper = mount(DaHeader, { store, localVue });
-  expect(wrapper.find('.header__switch').element).toBeFalsy();
+  expect(wrapper.find('.btn-bookmarks').element).toBeFalsy();
   expect(wrapper.find('.header__cta').element).toBeFalsy();
   expect(wrapper.find('.separator').element).toBeFalsy();
-  expect(wrapper.find('.btn-terminal').element).toBeFalsy();
   expect(wrapper.find('.btn-dnd').element).toBeFalsy();
   expect(wrapper.find('.btn-layout').element).toBeFalsy();
   expect(wrapper.find('.header__sign-in').classes()).toContain('btn-menu');

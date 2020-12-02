@@ -3,9 +3,6 @@
     <button class="header__logo" @click="onBackHome">
       <da-svg src="/graphics/dailydev.svg" class="header__logo__icon"/>
     </button>
-    <da-switch class="header__switch" icon="bookmark" :checked="showBookmarks"
-               v-tooltip.bottom="showBookmarks ? 'Back to feed' : 'Show your bookmarks'"
-               @toggle="toggleBookmarks" v-if="!minimalUi"></da-switch>
     <div class="space"></div>
     <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
        @click="ctaClick" v-if="!isPremium && !minimalUi"
@@ -15,6 +12,11 @@
       <svgicon class="header__cta__image" icon="gift"/>
     </a>
     <div class="separator" v-if="!minimalUi"></div>
+    <button class="btn-icon btn-bookmarks" v-tooltip.bottom="'Bookmarks'"
+            :class="{ 'active': showBookmarks }" @click="toggleBookmarks(!showBookmarks)"
+            v-if="!minimalUi">
+      <svgicon name="bookmark"/>
+    </button>
     <button class="btn-icon btn-dnd" v-tooltip.bottom="'Do Not Disturb'"
             :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)"
             v-if="!minimalUi">
@@ -50,7 +52,6 @@ export default {
 
   components: {
     DaSvg,
-    DaSwitch: () => import('@daily/components/src/components/DaSwitch.vue'),
   },
 
   computed: {
@@ -171,27 +172,6 @@ export default {
     margin-right: 8px;
   }
 
-  & .header__switch {
-    width: var(--da-switch-width);
-    height: var(--da-switch-height);
-    margin-left: 8px;
-
-    --da-switch-checked-color: var(--color-burger-60);
-    --da-switch-checked-background: var(--color-burger-90);
-
-    &:hover {
-      --da-switch-checked-color: var(--color-burger-50);
-    }
-
-    .bright & {
-      --da-switch-checked-background: var(--color-burger-30);
-
-      &:hover {
-        --da-switch-checked-color: var(--color-burger-70);
-      }
-    }
-  }
-
   & .header__sign-in {
     margin-left: 8px;
     margin-right: 0;
@@ -244,6 +224,20 @@ export default {
       }
     }
   }
+
+  & .btn-bookmarks {
+    width: var(--da-switch-width);
+    height: var(--da-switch-height);
+    margin-left: 8px;
+
+    &:hover {
+      --button-color: var(--color-burger-50);
+    }
+
+    &.active {
+      --button-color: var(--color-burger-60);
+    }
+  }
 }
 
 .header__badge {
@@ -294,16 +288,5 @@ export default {
   width: 28px;
   height: 28px;
   color: var(--color-salt-10);
-}
-
-@media (min-width: 1062px) {
-  .header .header__switch {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-  }
 }
 </style>
