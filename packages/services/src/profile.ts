@@ -1,6 +1,5 @@
 // @ts-ignore
 import axios, {AxiosInstance} from 'redaxios';
-import {dateReviver, reviveJSON} from './utils';
 
 export interface Settings {
   appInsaneMode: boolean;
@@ -22,8 +21,6 @@ export interface ProfileService {
   fetchSettings(): Promise<Settings>;
 
   updateSettings(settings: Settings): Promise<void>;
-
-  fetchNotifications(since: Date): Promise<Notification[]>;
 }
 
 export class ProfileServiceImpl implements ProfileService {
@@ -46,10 +43,4 @@ export class ProfileServiceImpl implements ProfileService {
   async updateSettings(settings: Settings): Promise<void> {
     await this.request.post(`${this.baseURL}/v1/settings`, settings);
   }
-
-  async fetchNotifications(since: Date): Promise<Notification[]> {
-    const res = await this.request.get(`${this.baseURL}/v1/notifications${since ? `?since=${since.toISOString()}` : ''}`);
-    return res.data.map((x: any) => reviveJSON(x, dateReviver));
-  }
-
 }

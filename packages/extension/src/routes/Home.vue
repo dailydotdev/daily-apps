@@ -148,19 +148,6 @@
                    @requested-source="showRequestModal = true"/>
     <da-integrations v-if="showIntegrations" @close="showIntegrations = false"/>
     <da-top-sites-modal v-if="showTopSitesModal" @close="setShowTopSitesModal(false)"/>
-    <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
-      <template slot="title">Terminal</template>
-      <template slot="content">
-        <div class="notifications__item" v-for="(item, index) in notifications" :key="index">
-          <div class="notifications__item__time">{{ item.timestamp | terminalTime }}</div>
-          <div v-html="item.html"></div>
-        </div>
-        <div class="notifications__empty" v-if="!notifications.length">
-          From time to time the terminal will announce
-          new product releases and other surprises so stay tuned
-        </div>
-      </template>
-    </da-terminal>
     <da-referral v-if="showReferral" @close="setShowReferral(false)"/>
     <da-rank-popup v-if="showRankPopup" @close="closeRankPopup"/>
     <da-unlock-ui-modal v-if="showUnlockUi" @close="unlockFullUi"/>
@@ -190,7 +177,7 @@ import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import DaRank from '@daily/components/src/components/DaRank.vue';
 import DaRankProgress from '@daily/components/src/components/DaRankProgress.vue';
-import { BANNER_QUERY, LATEST_NOTIFICATIONS_QUERY } from '../graphql/home';
+import { BANNER_QUERY } from '../graphql/home';
 import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 import DaHeader from '../components/DaHeader.vue';
 import DaSvg from '../components/DaSvg.vue';
@@ -211,20 +198,6 @@ export default {
       },
       skip() {
         return !this.lastBannerSeen || !this.lastBannerSeen.toISOString;
-      },
-    },
-    notifications: {
-      query: LATEST_NOTIFICATIONS_QUERY,
-      fetchPolicy: 'cache-only',
-      manual: true,
-      async result({ data, networkStatus, loading }) {
-        if (networkStatus === NetworkStatus.ready && !loading && data && data.latestNotifications) {
-          const DOMPurify = await import('dompurify');
-          this.notifications = data.latestNotifications
-            .map(n => ({ timestamp: new Date(n.timestamp), html: DOMPurify.sanitize(n.html) }));
-          const timestamp = this.notifications.length && this.notifications[0].timestamp;
-          this.updateNotificationBadge(timestamp);
-        }
       },
     },
     bookmarkLists: {
@@ -251,7 +224,6 @@ export default {
     DaRankProgress,
     DaSidebar: () => import('../components/DaSidebar.vue'),
     DaDndMessage: () => import('../components/DaDndMessage.vue'),
-    DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
     DaSearch: () => import('@daily/components/src/components/DaSearch.vue'),
     DaLogin: () => import('../components/DaLogin.vue'),
@@ -424,7 +396,6 @@ export default {
     engagementFetch() {
       if (this.$apollo.queries.banner) {
         this.$apollo.queries.banner.setOptions({ fetchPolicy: 'cache-and-network' });
-        this.$apollo.queries.notifications.setOptions({ fetchPolicy: 'cache-and-network' });
       }
     },
 
@@ -532,10 +503,8 @@ export default {
       clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
-      hideNotifications: 'ui/hideNotifications',
       setShowDndMenu: 'ui/setShowDndMenu',
       setLastBannerSeen: 'ui/setLastBannerSeen',
-      updateNotificationBadge: 'ui/updateNotificationBadge',
       setShowPremium: 'ui/setShowPremium',
       setShowNewSource: 'ui/setShowNewSource',
       setShowReferral: 'ui/setShowReferral',
@@ -547,7 +516,7 @@ export default {
   },
 
   computed: {
-    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'minimalUi', 'onboarding', 'showUnlockUi']),
+    ...mapState('ui', ['showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'minimalUi', 'onboarding', 'showUnlockUi']),
     ...mapGetters('ui', ['showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
@@ -916,52 +885,6 @@ export default {
   height: 1px;
   width: 1px;
   opacity: 0;
-}
-
-.notifications {
-  position: fixed;
-  width: 300px;
-  height: 234px;
-  right: 35px;
-  top: 44px;
-  z-index: 100;
-
-  & .notifications__item {
-    margin: 16px 0;
-
-    &:first-child {
-      margin-top: 0;
-    }
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-
-    & > * {
-      margin: 4px 0;
-
-      &:first-child {
-        margin-top: 0;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  & .notifications__item__time {
-    color: var(--theme-disabled);
-  }
-
-  & a {
-    text-decoration: none;
-    color: var(--theme-primary);
-
-    &:visited, &:active {
-      color: inherit;
-    }
-  }
 }
 
 .v-context.context {

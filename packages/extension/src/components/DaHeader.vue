@@ -15,12 +15,6 @@
       <svgicon class="header__cta__image" icon="gift"/>
     </a>
     <div class="separator" v-if="!minimalUi"></div>
-    <button class="btn-icon btn-terminal" v-tooltip.bottom="'Latest updates'"
-            :class="{ 'active': notificationsOpened }" @click="toggleNotifications"
-            v-if="!minimalUi">
-      <svgicon name="terminal"/>
-      <span class="header__badge" v-if="showNotificationBadge"></span>
-    </button>
     <button class="btn-icon btn-dnd" v-tooltip.bottom="'Do Not Disturb'"
             :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)"
             v-if="!minimalUi">
@@ -61,12 +55,11 @@ export default {
 
   computed: {
     ...mapState('ui', [
-      'showNotificationBadge', 'notificationsOpened', 'showDndMenu', 'showSettings', 'ctaClicked', 'minimalUi',
+      'showDndMenu', 'showSettings', 'ctaClicked', 'minimalUi',
     ]),
     ...mapState('feed', ['showBookmarks']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
-      notificationsOpened: state => state.ui.showNotifications,
       profileImage(state) {
         if (this.isLoggedIn) {
           return state.user.profile.image;
@@ -100,7 +93,6 @@ export default {
       import('@daily/components/icons/layout');
       import('@daily/components/icons/bookmark');
       import('@daily/components/icons/user_daily');
-      import('@daily/components/icons/terminal');
       import('@daily/components/icons/mobile');
       import('@daily/components/icons/ph');
       import('@daily/components/icons/github');
@@ -110,15 +102,6 @@ export default {
     toggleBookmarks(pressed) {
       this.$store.dispatch('feed/setShowBookmarks', pressed);
       ga('send', 'event', 'Header', 'Bookmarks', pressed);
-    },
-
-    toggleNotifications() {
-      ga('send', 'event', 'Header', 'Terminal', !this.notificationsOpened);
-      if (this.notificationsOpened) {
-        this.hideNotifications();
-      } else {
-        this.showNotifications();
-      }
     },
 
     onBackHome() {
@@ -132,8 +115,6 @@ export default {
     },
 
     ...mapMutations({
-      hideNotifications: 'ui/hideNotifications',
-      showNotifications: 'ui/showNotifications',
       setShowSettings: 'ui/setShowSettings',
     }),
 

@@ -8,9 +8,6 @@ const initialState = () => ({
   dndModeTime: null,
   showDndMenu: false,
   showTopSites: false,
-  showNotificationBadge: false,
-  lastNotificationTime: null,
-  showNotifications: false,
   showSettings: false,
   showOnlyNotReadPosts: false,
   openNewTab: true,
@@ -59,16 +56,6 @@ export default {
       state.spaciness = value;
     },
 
-    showNotifications(state) {
-      state.lastNotificationTime = new Date();
-      state.showNotificationBadge = false;
-      state.showNotifications = true;
-    },
-
-    hideNotifications(state) {
-      state.showNotifications = false;
-    },
-
     setShowSettings(state, value) {
       state.showSettings = value;
     },
@@ -83,13 +70,6 @@ export default {
 
     disableDndMode(state) {
       state.dndModeTime = null;
-    },
-
-    updateNotificationBadge(state, timestamp) {
-      const newNotification = state.lastNotificationTime && !!timestamp
-        && timestamp > state.lastNotificationTime;
-      const neverSeen = !state.lastNotificationTime && !!timestamp;
-      state.showNotificationBadge = newNotification || neverSeen;
     },
 
     resetSettings(state) {

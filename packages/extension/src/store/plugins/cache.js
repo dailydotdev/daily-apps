@@ -36,10 +36,8 @@ const stateToCache = (state) => {
     toCache.feed.conflictBookmarks = state.feed.conflictBookmarks.map(post2Cache);
   }
   const ui = Object.assign({}, state.ui);
-  delete ui.showNotifications;
   delete ui.showDndMenu;
   delete ui.showSettings;
-  delete ui.notifications;
   delete ui.showPremium;
   delete ui.showNewSource;
   toCache.ui = {

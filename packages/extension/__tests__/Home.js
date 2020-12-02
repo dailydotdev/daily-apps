@@ -10,11 +10,6 @@ import DaHeader from '../src/components/DaHeader.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
 import DaFeed from '../src/components/DaFeed.vue';
 import { createDummyEvent } from './fixtures/helpers';
-import { LATEST_NOTIFICATIONS_QUERY } from '../src/graphql/home';
-import { SOURCES_QUERY } from '../src/graphql/sidebar';
-import { apolloClient } from '../src/apollo';
-import { POPULAR_TAGS_QUERY } from '../src/graphql/tags';
-import { BOOKMARK_LISTS_QUERY } from '../src/graphql/bookmarkList';
 
 jest.mock('../src/apollo');
 
@@ -77,7 +72,6 @@ beforeEach(() => {
     mutations: {
       setDndModeTime: jest.fn(),
       setShowDndMenu: jest.fn(),
-      updateNotificationBadge: jest.fn(),
       doneOnboarding: jest.fn(),
       unlockFullUi: jest.fn(),
     },
@@ -190,23 +184,6 @@ it('should show banner when data is available', (done) => {
   });
   setTimeout(() => {
     expect(wrapper.find('.banner')).toMatchSnapshot();
-    done();
-  });
-});
-
-it('should fetch notifications and update badge', (done) => {
-  const now = new Date();
-  apolloClient.setRequestHandler(SOURCES_QUERY, () => Promise.resolve({data: { sources: {} }}));
-  apolloClient.setRequestHandler(POPULAR_TAGS_QUERY, () => Promise.resolve({data: { popularTags: {} }}));
-  apolloClient.setRequestHandler(
-    LATEST_NOTIFICATIONS_QUERY,
-    () => Promise.resolve({ data: { latestNotifications: [{html: 'hello world', timestamp: now.toISOString()}] } }));
-  apolloClient.setRequestHandler(BOOKMARK_LISTS_QUERY, () => Promise.resolve({data: {bookmarkLists: {}}}));
-  const wrapper = mount(DaHome, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
-  wrapper.vm.$apollo.queries.notifications.setOptions({ fetchPolicy: 'network-only' });
-  setTimeout(() => {
-    expect(wrapper.vm.notifications).toEqual([{html: 'hello world', timestamp: now}]);
-    expect(ui.mutations.updateNotificationBadge).toBeCalledWith(expect.anything(), now);
     done();
   });
 });
