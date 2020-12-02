@@ -221,3 +221,22 @@ it('should trigger referral due to scroll', async () => {
     { type: 'setTriggeredReferral', payload: true },
   ]);
 });
+
+it('should show unlock ui', async () => {
+  const state = { minimalUi: true };
+  module.mutations.checkFullUi(state);
+  expect(state.showUnlockUi).toEqual(true);
+});
+
+it('should not show unlock ui when minimal ui is off', async () => {
+  const state = { minimalUi: false };
+  module.mutations.checkFullUi(state);
+  expect(state.showUnlockUi).toBeFalsy();
+});
+
+it('should turn off minimal ui', async () => {
+  const state = { minimalUi: true, showUnlockUi: true };
+  module.mutations.unlockFullUi(state);
+  expect(state.showUnlockUi).toBeFalsy();
+  expect(state.minimalUi).toBeFalsy();
+});

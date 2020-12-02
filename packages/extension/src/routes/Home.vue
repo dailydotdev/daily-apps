@@ -163,6 +163,7 @@
     </da-terminal>
     <da-referral v-if="showReferral" @close="setShowReferral(false)"/>
     <da-rank-popup v-if="showRankPopup" @close="closeRankPopup"/>
+    <da-unlock-ui-modal v-if="showUnlockUi" @close="unlockFullUi"/>
     <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened"
                 @close="setShowDndMenu(false)">
       <template v-if="!dndMode">
@@ -267,6 +268,7 @@ export default {
     DaReferral: () => import('../components/DaReferral.vue'),
     DaTopSitesModal: () => import('../components/DaTopSitesModal.vue'),
     DaRankPopup: () => import('../components/DaRankPopup.vue'),
+    DaUnlockUiModal: () => import('../components/DaUnlockUiModal.vue'),
   },
 
   data() {
@@ -540,11 +542,12 @@ export default {
       setShowTopSitesModal: 'ui/setShowTopSitesModal',
       confirmNewUser: 'user/confirmNewUser',
       doneOnboarding: 'ui/doneOnboarding',
+      unlockFullUi: 'ui/unlockFullUi',
     }),
   },
 
   computed: {
-    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'minimalUi', 'onboarding']),
+    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'minimalUi', 'onboarding', 'showUnlockUi']),
     ...mapGetters('ui', ['showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),

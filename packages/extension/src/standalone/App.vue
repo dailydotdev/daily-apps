@@ -145,6 +145,52 @@ a {
   }
 }
 
+.modal.border .modal__container {
+  border: 1px solid var(--theme-active);
+  overflow: visible;
+
+  & header, & h1 {
+    margin: 0;
+    color: var(--theme-primary);
+  }
+
+  & .text, & p {
+    margin: 8px 0 0;
+    color: var(--theme-secondary);
+  }
+
+  & .btn {
+    justify-content: center;
+  }
+
+  & .top-icon {
+    position: absolute;
+    display: flex;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin: 0 auto;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+
+  & ul {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    margin: 32px 0;
+    padding: 0;
+    list-style: none;
+
+    & li {
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+}
+
 .modal.full .modal__container {
   padding-top: 0;
 }

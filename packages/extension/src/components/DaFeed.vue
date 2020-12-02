@@ -247,6 +247,7 @@ export default {
       this.trackEngagementWin({ action: 'POST_CLICK' });
       ga('send', 'event', 'Post', 'Click', post.source);
       this.updateCommentPopup(post);
+      this.checkFullUi();
     },
 
     async onUpvote({ post, upvoted }) {
@@ -373,6 +374,7 @@ export default {
       removePost: 'feed/removePost',
       updatePost: 'feed/updatePost',
       setShowPremium: 'ui/setShowPremium',
+      checkFullUi: 'ui/checkFullUi',
     }),
   },
   async mounted() {

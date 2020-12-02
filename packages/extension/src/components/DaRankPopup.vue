@@ -1,6 +1,6 @@
 <template>
-  <da-modal class="rank-modal" :close-on-click="false" @close="$emit('close')">
-    <div class="rank-modal__progress-container">
+  <da-modal class="rank-modal border" :close-on-click="false" @close="$emit('close')">
+    <div class="rank-modal__progress-container top-icon">
       <da-rank-progress :rank="readingRank.rank" :progress="readingRank.progress"
                         :enable-hover="false" :fill-by-default="true"/>
     </div>
@@ -17,7 +17,7 @@
       </li>
     </ul>
     <button class="btn btn-big btn-invert rank-modal__confirm"
-            @click="onConfirm">Ok, let’s do it</button>
+            @click="$emit('close')">Ok, let’s do it</button>
   </da-modal>
 </template>
 
@@ -46,12 +46,6 @@ export default {
   computed: {
     ...mapState('user', ['readingRank']),
   },
-
-  methods: {
-    onConfirm() {
-      this.$emit('close');
-    },
-  },
 };
 </script>
 
@@ -64,39 +58,16 @@ export default {
     width: 480px;
     margin-top: 56px;
     padding: 64px 20px 40px;
-    border: 1px solid var(--theme-active);
-    overflow: visible;
-
-    & header {
-      margin: 0;
-      color: var(--theme-primary);
-    }
-
-    & .text {
-      margin-top: 8px;
-      color: var(--theme-secondary);
-    }
   }
 }
 
 .rank-modal__confirm {
   width: 204px;
-  justify-content: center;
 }
 
 .rank-modal__ranks-list {
-  display: flex;
-  flex-direction: column;
-  align-self: stretch;
-  margin: 32px 0;
-  padding: 0;
-  list-style: none;
 
   & .ranks-list__item {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    align-items: center;
     padding: 8px 12px;
     border-radius: 16px;
 
@@ -126,20 +97,13 @@ export default {
 }
 
 .rank-modal__progress-container {
-  position: absolute;
   display: flex;
-  left: 0;
-  right: 0;
-  top: 0;
   width: 80px;
   height: 80px;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
   background: var(--theme-light);
   border-radius: 100%;
-  transform: translateY(-50%);
   box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.24);
-  z-index: 1;
 }
 </style>

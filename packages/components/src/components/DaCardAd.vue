@@ -1,7 +1,7 @@
 <template>
   <div class="post card post-ad" :class="cls">
     <a class="post__link" :href="ad.link" target="_blank" rel="noopener noreferrer"
-       :title="ad.description" @click="onClick">
+       :title="ad.description" @click="onClick" @click.middle="onClick">
       <div class="post__title card__hmargin lil1 multiline-text-overflow">{{ad.description}}</div>
       <div class="card__image post__vmargin" :style="imgStyle">
         <img :data-src="ad.image" :data-lowsrc="ad.placeholder" alt="Ad image" class="lazyload"/>

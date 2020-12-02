@@ -25,7 +25,7 @@
     <div class="post__vseparator post__vmargin"></div>
     <div class="insane__main">
       <a class="post__link" :href="post.url" target="_blank" rel="noopener noreferrer"
-         :title="post.title" @click="onLinkClick" v-show="!showComment">
+         :title="post.title" @click="onLinkClick" @click.middle="onLinkClick" v-show="!showComment">
         <div class="post__title lil1 multiline-text-overflow">{{post.title}}</div>
         <div class="post__metadata">
           <div>{{post.createdAt | mdyDate}}</div>
