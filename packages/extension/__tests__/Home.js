@@ -72,12 +72,14 @@ beforeEach(() => {
     state: {
       insaneMode: false,
       showDndMenu: false,
+      showUnlockUi: false,
     },
     mutations: {
       setDndModeTime: jest.fn(),
       setShowDndMenu: jest.fn(),
       updateNotificationBadge: jest.fn(),
       doneOnboarding: jest.fn(),
+      unlockFullUi: jest.fn(),
     },
     getters: {
       topSitesInstructions: jest.fn(),
@@ -298,4 +300,14 @@ it('should show regular rank button', async () => {
   expect(wrapper.find('.rank-btn').classes()).not.toContain('signal');
   expect(wrapper.find('.rank-btn .rank-progress').element).toBeTruthy();
   expect(wrapper.find('.rank-btn .rank-btn__inner').element).toBeFalsy();
+});
+
+it('should unlock full ui when closing the unlock ui modal', async () => {
+  ui.state.showUnlockUi = true;
+  const wrapper = mount(DaHome, { store, localVue });
+  await wrapper.vm.$nextTick();
+  expect(wrapper.find('.unlock-ui-modal').element).toBeTruthy();
+  wrapper.find('.unlock-ui-modal').vm.$emit('close');
+  await wrapper.vm.$nextTick();
+  expect(ui.mutations.unlockFullUi).toBeCalledTimes(1);
 });

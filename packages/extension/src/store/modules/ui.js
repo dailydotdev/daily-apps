@@ -28,6 +28,7 @@ const initialState = () => ({
   // Onboarding
   onboarding: true,
   minimalUi: true,
+  showUnlockUi: false,
 });
 
 export default {
@@ -133,6 +134,17 @@ export default {
 
     setShowTopSitesModal(state, value) {
       state.showTopSitesModal = value;
+    },
+
+    checkFullUi(state) {
+      if (state.minimalUi) {
+        state.showUnlockUi = true;
+      }
+    },
+
+    unlockFullUi(state) {
+      state.showUnlockUi = false;
+      state.minimalUi = false;
     },
   },
   getters: {

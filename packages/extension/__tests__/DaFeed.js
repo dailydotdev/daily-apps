@@ -112,6 +112,9 @@ beforeEach(() => {
     state: {
       insaneMode: false,
     },
+    mutations: {
+      checkFullUi: jest.fn(),
+    },
     actions: {
       trackEngagementWin: jest.fn(),
     },
@@ -429,4 +432,12 @@ it('should close comment popup on close button click', async () => {
   await wrapper.vm.$nextTick();
   wrapper.vm.$refs.posts[0].$emit('closeCommentPopup');
   expect(wrapper.vm.commentPostId).toEqual(null);
+});
+
+it('should check for full ui eligibility on post click', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  feed.state.posts[0].numComments = 0;
+  wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
+  await wrapper.vm.$nextTick();
+  expect(ui.mutations.checkFullUi).toBeCalledTimes(1);
 });
