@@ -15,10 +15,11 @@
         <svgicon name="arrow"/>
       </button>
     </div>
-    <button class="rank-btn" @click="openRankPopup">
-      <div class="rank-btn__inner">
+    <button class="rank-btn" @click="openRankPopup" :class="{ signal: onboarding }">
+      <div class="rank-btn__inner" v-if="onboarding">
         <da-rank :rank="1"/>
       </div>
+      <da-rank-progress v-else :rank="readingRank.rank" :progress="readingRank.progress"/>
     </button>
     <div v-if="onboarding" class="welcome-balloon micro2">
       Welcome to your feed! The last place you’ll ever need to stay updated 📚 Click above to start.
@@ -187,6 +188,7 @@ import {
 import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import DaRank from '@daily/components/src/components/DaRank.vue';
+import DaRankProgress from '@daily/components/src/components/DaRankProgress.vue';
 import { BANNER_QUERY, LATEST_NOTIFICATIONS_QUERY } from '../graphql/home';
 import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 import DaHeader from '../components/DaHeader.vue';
@@ -245,6 +247,7 @@ export default {
     DaSvg,
     DaFeed,
     DaRank,
+    DaRankProgress,
     DaSidebar: () => import('../components/DaSidebar.vue'),
     DaDndMessage: () => import('../components/DaDndMessage.vue'),
     DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
@@ -545,6 +548,7 @@ export default {
     ...mapGetters('ui', ['showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
+    ...mapState('user', ['readingRank']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
       title(state) {
@@ -1322,23 +1326,25 @@ export default {
   cursor: pointer;
   z-index: 31;
 
-  &:before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--theme-hover);
-    border-radius: 100%;
-    z-index: -1;
-    transition: background 0.1s linear;
-    animation: rank-attention 2s infinite ease-in-out;
-  }
-
-  &:hover {
+  &.signal {
     &:before {
-      background: var(--theme-active);
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--theme-hover);
+      border-radius: 100%;
+      z-index: -1;
+      transition: background 0.1s linear;
+      animation: rank-attention 2s infinite ease-in-out;
+    }
+
+    &:hover {
+      &:before {
+        background: var(--theme-active);
+      }
     }
   }
 }
