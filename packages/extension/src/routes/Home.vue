@@ -15,7 +15,7 @@
         <svgicon name="arrow"/>
       </button>
     </div>
-    <button class="rank-btn">
+    <button class="rank-btn" @click="openRankPopup">
       <div class="rank-btn__inner">
         <da-rank :rank="1"/>
       </div>
@@ -161,6 +161,7 @@
       </template>
     </da-terminal>
     <da-referral v-if="showReferral" @close="setShowReferral(false)"/>
+    <da-rank-popup v-if="showRankPopup" @close="closeRankPopup"/>
     <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened"
                 @close="setShowDndMenu(false)">
       <template v-if="!dndMode">
@@ -262,6 +263,7 @@ export default {
     DaIntegrations: () => import('../components/DaIntegrations.vue'),
     DaReferral: () => import('../components/DaReferral.vue'),
     DaTopSitesModal: () => import('../components/DaTopSitesModal.vue'),
+    DaRankPopup: () => import('../components/DaRankPopup.vue'),
   },
 
   data() {
@@ -271,6 +273,7 @@ export default {
       showLoginModal: false,
       showIntegrations: false,
       showSearch: false,
+      showRankPopup: false,
       searchSuggestions: [],
       fetchStage: null,
       banner: null,
@@ -498,6 +501,16 @@ export default {
       return `https://api.daily.dev/icon?url=${encodeURIComponent(url)}&size=20`;
     },
 
+    openRankPopup() {
+      ga('send', 'event', 'Rank', 'Click');
+      this.showRankPopup = true;
+    },
+
+    closeRankPopup() {
+      this.showRankPopup = false;
+      this.doneOnboarding();
+    },
+
     ...mapActions({
       backToMainFeed: 'feed/backToMainFeed',
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
@@ -523,6 +536,7 @@ export default {
       setShowReferral: 'ui/setShowReferral',
       setShowTopSitesModal: 'ui/setShowTopSitesModal',
       confirmNewUser: 'user/confirmNewUser',
+      doneOnboarding: 'ui/doneOnboarding',
     }),
   },
 
