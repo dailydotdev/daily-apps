@@ -77,6 +77,7 @@ beforeEach(() => {
       setDndModeTime: jest.fn(),
       setShowDndMenu: jest.fn(),
       updateNotificationBadge: jest.fn(),
+      doneOnboarding: jest.fn(),
     },
     getters: {
       topSitesInstructions: jest.fn(),
@@ -94,6 +95,10 @@ beforeEach(() => {
     namespaced: true,
     state: {
       profile: null,
+      readingRank: {
+        rank: 0,
+        progress: 0,
+      },
     },
     getters: {
       isLoggedIn: state => !!state.profile,
@@ -247,4 +252,35 @@ it('should show welcome balloon during onboarding', async () => {
   ui.state.onboarding = true;
   const wrapper = mount(DaHome, { store, localVue });
   expect(wrapper.find('.welcome-balloon').element).toBeTruthy();
+});
+
+it('should open rank popup when clicking on the rank', async () => {
+  ui.state.onboarding = true;
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.rank-modal').element).toBeFalsy();
+  wrapper.find('.rank-btn').trigger('click');
+  await wrapper.vm.$nextTick();
+  await wrapper.vm.$nextTick();
+  expect(wrapper.find('.rank-modal').element).toBeTruthy();
+});
+
+it('should open rank popup when clicking on the rank', async () => {
+  ui.state.onboarding = true;
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.rank-modal').element).toBeFalsy();
+  wrapper.find('.rank-btn').trigger('click');
+  await wrapper.vm.$nextTick();
+  await wrapper.vm.$nextTick();
+  expect(wrapper.find('.rank-modal').element).toBeTruthy();
+});
+
+it('should finish onboarding when closing the rank popup', async () => {
+  ui.state.onboarding = true;
+  const wrapper = mount(DaHome, { store, localVue });
+  wrapper.find('.rank-btn').trigger('click');
+  await wrapper.vm.$nextTick();
+  await wrapper.vm.$nextTick();
+  wrapper.find('.rank-modal').vm.$emit('close');
+  await wrapper.vm.$nextTick();
+  expect(ui.mutations.doneOnboarding).toBeCalledTimes(1);
 });

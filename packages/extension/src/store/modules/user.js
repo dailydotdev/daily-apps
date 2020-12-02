@@ -5,6 +5,10 @@ const updateAnalyticsUser = id => setCache(ANALYTICS_ID_KEY, id);
 
 const initialState = () => ({
   profile: null,
+  readingRank: {
+    rank: 0,
+    progress: 0,
+  },
 });
 
 export default {
