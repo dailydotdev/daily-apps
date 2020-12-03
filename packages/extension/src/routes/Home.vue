@@ -397,7 +397,9 @@ export default {
       if (this.$apollo.queries.banner) {
         this.$apollo.queries.banner.setOptions({ fetchPolicy: 'cache-and-network' });
       }
-      this.updateShownProgress();
+      if (!this.isLoggedIn) {
+        this.updateShownProgress();
+      }
     },
 
     trackPageView() {

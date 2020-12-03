@@ -1,6 +1,8 @@
-import { isToday } from 'date-fns';
+import { isToday, startOfToday } from 'date-fns';
+import { apolloClient } from '../../apollo';
 import { authService } from '../../common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../../common/cache';
+import { USER_READING_RANK_QUERY } from '../../graphql/home';
 
 const updateAnalyticsUser = id => setCache(ANALYTICS_ID_KEY, id);
 
@@ -36,6 +38,13 @@ export default {
     },
     updateShownProgress(state) {
       state.readingRank.shownProgress = state.readingRank.progress;
+    },
+    updateReadingRank(state, { rank, progress }) {
+      state.readingRank.rank = rank;
+      state.readingRank.progress = progress;
+    },
+    setLastReadToToday(state) {
+      state.lastRead = startOfToday();
     },
   },
   getters: {
@@ -99,6 +108,26 @@ export default {
         document.addEventListener('visibilitychange', () => setTimeout(() => dispatch('updateShownProgress'), 1000), { once: true });
       } else {
         commit('updateShownProgress');
+      }
+    },
+
+    async fetchReadingRank({ commit, dispatch, state }) {
+      if (state.profile) {
+        const res = await apolloClient.query({
+          query: USER_READING_RANK_QUERY,
+          variables: { id: state.profile.id },
+          fetchPolicy: 'no-cache',
+        });
+        commit('updateReadingRank', { rank: res.data.userReadingRank.currentRank, progress: res.data.userReadingRank.progressThisWeek });
+        if (res.data.userReadingRank.readToday) {
+          commit('setLastReadToToday');
+        }
+        if (state.readingRank.progress < state.readingRank.shownProgress) {
+          dispatch('updateShownProgress');
+        } else {
+          // Let the rank update and then show progress animation
+          setTimeout(() => dispatch('updateShownProgress'), 1000);
+        }
       }
     },
   },
