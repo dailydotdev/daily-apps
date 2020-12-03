@@ -1,9 +1,14 @@
 <template>
   <div class="rank-progress" :class="cls" @mouseover="onMouseOver" @mouseout="hover = false">
     <da-radial-progress class="rank-progress__bar" :rank="rank" :progress="progress"
-                        :max-degrees="maxDegrees"/>
+                        :max-degrees="maxDegrees" @transitionend="onProgressTransitionEnd"/>
     <da-rank class="rank-progress__badge" :rank="rank"/>
     <da-rank class="rank-progress__next" :rank="rank+1" v-if="hasRank && !finalRank"/>
+    <transition name="rank-notification-slide-down">
+      <div class="rank-progress__notification nuggets" v-if="animatingProgress">
+        +{{progressDelta}} Reading article
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -38,6 +43,8 @@ export default {
   data() {
     return {
       hover: false,
+      animatingProgress: false,
+      progressDelta: 1,
     };
   },
   computed: {
@@ -54,7 +61,7 @@ export default {
       return {
         'has-rank': this.hasRank,
         hover: this.hover,
-        color: this.hover || this.fillByDefault,
+        color: this.hover || this.fillByDefault || this.animatingProgress,
       };
     },
   },
@@ -62,10 +69,16 @@ export default {
     rank() {
       this.updateColors();
     },
+    progress(newVal, oldVal) {
+      if (newVal > oldVal) {
+        this.progressDelta = newVal - oldVal;
+        this.animatingProgress = true;
+      }
+    },
   },
   methods: {
     onMouseOver() {
-      if (this.enableHover) {
+      if (this.enableHover && !this.animatingProgress) {
         this.hover = true;
       }
     },
@@ -77,6 +90,11 @@ export default {
       } else {
         this.$el.style.setProperty('--rank-color', 'var(--theme-secondary)');
       }
+    },
+    onProgressTransitionEnd() {
+      setTimeout(() => {
+        this.animatingProgress = false;
+      }, 2000);
     },
   },
   mounted() {
@@ -96,6 +114,7 @@ export default {
     height: 100%;
     --radial-progress-step: var(--theme-active);
     --radial-progress-completed-step: var(--theme-secondary);
+    --radial-progress-transition-delay: 0.3s;
   }
 
   & .rank-progress__badge {
@@ -114,7 +133,7 @@ export default {
     }
   }
 
-  .rank-progress__next {
+  & .rank-progress__next {
     position: absolute;
     left: 32px;
     top: 32px;
@@ -124,6 +143,16 @@ export default {
 
     --stop-color1: var(--theme-active);
     --stop-color2: var(--theme-active);
+  }
+
+  & .rank-progress__notification {
+    position: absolute;
+    left: -51px;
+    top: 100%;
+    width: 150px;
+    text-align: center;
+    margin-top: 8px;
+    color: var(--rank-color);
   }
 
   &.has-rank {
@@ -149,5 +178,14 @@ export default {
       opacity: 1;
     }
   }
+}
+
+.rank-notification-slide-down-enter-active, .rank-notification-slide-down-leave-active {
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.rank-notification-slide-down-enter, .rank-notification-slide-down-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 </style>

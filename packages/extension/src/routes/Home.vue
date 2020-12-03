@@ -1245,7 +1245,6 @@ export default {
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  overflow: hidden;
   background: var(--theme-background-primary);
   border: none;
   border-radius: 100%;
@@ -1253,6 +1252,8 @@ export default {
   z-index: 31;
 
   &.signal {
+    overflow: hidden;
+
     &:before {
       content: '';
       position: absolute;

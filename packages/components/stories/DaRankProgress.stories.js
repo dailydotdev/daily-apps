@@ -7,7 +7,7 @@ storiesOf('DaRankProgress', module)
   .addDecorator(withKnobs)
   .add('default', () => ({
     components: { DaRankProgress },
-    template: '<da-rank-progress :progress="progress" :rank="rank"/>',
+    template: '<da-rank-progress :progress="progress" :rank="rank" style="margin-left: 300px"/>',
     props: {
       progress: {
         default: number('progress', 0),
