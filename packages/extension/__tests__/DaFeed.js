@@ -129,6 +129,9 @@ beforeEach(() => {
       isLoggedIn: state => !!state.profile,
       isPremium: state => !!state.profile && !!state.profile.premium,
     },
+    actions: {
+      updateRankProgress: jest.fn(),
+    },
   };
 
   store = new Vuex.Store({
@@ -436,8 +439,23 @@ it('should close comment popup on close button click', async () => {
 
 it('should check for full ui eligibility on post click', async () => {
   const wrapper = mount(DaFeed, {store, localVue});
-  feed.state.posts[0].numComments = 0;
   wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
   await wrapper.vm.$nextTick();
   expect(ui.mutations.checkFullUi).toBeCalledTimes(1);
+});
+
+it('should update rank progress on post click', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  feed.state.posts[0].read = false;
+  wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
+  await wrapper.vm.$nextTick();
+  expect(user.actions.updateRankProgress).toBeCalledTimes(1);
+});
+
+it('should not update rank progress when post was read', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  feed.state.posts[0].read = true;
+  wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
+  await wrapper.vm.$nextTick();
+  expect(user.actions.updateRankProgress).toBeCalledTimes(0);
 });

@@ -31,6 +31,12 @@ export default new Vuex.Store({
           state[key] = { ...state[key], ...cached[key] };
         });
 
+        if (cached.user) {
+          if (cached.user.lastRead) {
+            state.user.lastRead = cache2Time(cached.user.lastRead);
+          }
+        }
+
         if (cached.ui) {
           state.ui.lastNotificationTime = cache2Time(cached.ui.lastNotificationTime);
           if (cached.ui.lastBannerSeen !== undefined) {

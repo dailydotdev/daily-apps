@@ -1,3 +1,4 @@
+import { isToday } from 'date-fns';
 import { authService } from '../../common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../../common/cache';
 
@@ -8,7 +9,9 @@ const initialState = () => ({
   readingRank: {
     rank: 0,
     progress: 0,
+    shownProgress: 0,
   },
+  lastRead: null,
 });
 
 export default {
@@ -20,6 +23,19 @@ export default {
     },
     confirmNewUser(state) {
       state.profile = { ...state.profile, newUser: false };
+    },
+    reset(state) {
+      const defaultState = initialState();
+      state.profile = null;
+      state.readingRank = defaultState.readingRank;
+      state.lastRead = null;
+    },
+    incrementReadingProgress(state, now = new Date()) {
+      state.lastRead = now;
+      state.readingRank.progress += 1;
+    },
+    updateShownProgress(state) {
+      state.readingRank.shownProgress = state.readingRank.progress;
     },
   },
   getters: {
@@ -41,7 +57,7 @@ export default {
     async logout({ commit, dispatch }) {
       // TODO: handle error
       await authService.logout();
-      commit('setProfile', null);
+      commit('reset');
       await Promise.all([
         dispatch('ui/reset', null, { root: true }),
         dispatch('feed/reset', null, { root: true }),
@@ -68,6 +84,21 @@ export default {
         }
       } else if (state.profile) {
         await dispatch('logout');
+      }
+    },
+
+    async updateRankProgress({ commit, state, dispatch }) {
+      if (!state.lastRead || !isToday(state.lastRead)) {
+        commit('incrementReadingProgress');
+        setTimeout(() => dispatch('updateShownProgress'), 100);
+      }
+    },
+
+    async updateShownProgress({ commit, dispatch }) {
+      if (document.visibilityState === 'hidden') {
+        document.addEventListener('visibilitychange', () => setTimeout(() => dispatch('updateShownProgress'), 1000), { once: true });
+      } else {
+        commit('updateShownProgress');
       }
     },
   },

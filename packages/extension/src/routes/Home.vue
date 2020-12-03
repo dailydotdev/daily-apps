@@ -19,7 +19,7 @@
       <div class="rank-btn__inner" v-if="onboarding">
         <da-rank :rank="1"/>
       </div>
-      <da-rank-progress v-else :rank="readingRank.rank" :progress="readingRank.progress"/>
+      <da-rank-progress v-else :rank="readingRank.rank" :progress="readingRank.shownProgress"/>
     </button>
     <div v-if="onboarding" class="welcome-balloon micro2">
       Welcome to your feed! The last place you’ll ever need to stay updated 📚 Click above to start.
@@ -397,6 +397,7 @@ export default {
       if (this.$apollo.queries.banner) {
         this.$apollo.queries.banner.setOptions({ fetchPolicy: 'cache-and-network' });
       }
+      this.updateShownProgress();
     },
 
     trackPageView() {
@@ -496,6 +497,7 @@ export default {
       validateAuth: 'user/validateAuth',
       checkVisitWin: 'ui/checkVisitWin',
       trackEngagementWin: 'ui/trackEngagementWin',
+      updateShownProgress: 'user/updateShownProgress',
     }),
 
     ...mapMutations({

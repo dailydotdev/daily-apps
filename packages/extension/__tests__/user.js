@@ -1,3 +1,4 @@
+import {subDays} from 'date-fns';
 import module from '../src/store/modules/user';
 import { authService } from '../src/common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../src/common/cache';
@@ -48,7 +49,7 @@ it('should logout and reset all preferences', async () => {
     module.actions.logout,
     null,
     state,
-    [{ type: 'setProfile', payload: null }],
+    [{ type: 'reset' }],
     [{ type: 'ui/reset', payload: null }, { type: 'feed/reset', payload: null }],
   );
   expect(setCache).toBeCalledWith(ANALYTICS_ID_KEY, '1');
@@ -112,4 +113,58 @@ it('should mark user as not premium', () => {
   const state = { profile: { } };
   const actual = module.getters.isPremium(state);
   expect(actual).toEqual(false);
+});
+
+it('should reset state', () => {
+  const state = { profile: {}, readingRank: { rank: 1, progress: 2 } }
+  module.mutations.reset(state);
+  expect(state).toMatchSnapshot();
+});
+
+it('should increment reading progress', () => {
+  const now = new Date();
+  const state = { readingRank: { rank: 1, progress: 2 } };
+  module.mutations.incrementReadingProgress(state, now);
+  expect(state).toEqual({
+    lastRead: now,
+    readingRank: { rank: 1, progress: 3 },
+  });
+});
+
+it('should increment progress if the user never read', async () => {
+  const state = { profile: null, readingRank: { rank: 0, progress: 0 }, lastRead: null };
+  await testAction(
+    module.actions.updateRankProgress,
+    null,
+    state,
+    [{ type: 'incrementReadingProgress' }],
+  );
+});
+
+it('should increment progress when reading on a new day', async () => {
+  const state = { profile: null, readingRank: { rank: 0, progress: 0 }, lastRead: subDays(new Date(), 1) };
+  await testAction(
+    module.actions.updateRankProgress,
+    null,
+    state,
+    [{ type: 'incrementReadingProgress' }],
+  );
+});
+
+it('should not increment progress when reading on the same day', async () => {
+  const state = { profile: null, readingRank: { rank: 0, progress: 0 }, lastRead: new Date() };
+  await testAction(
+    module.actions.updateRankProgress,
+    null,
+    state,
+    [],
+  );
+});
+
+it('should update shown reading progress', () => {
+  const state = { readingRank: { rank: 1, progress: 2, shownProgress: 0 } };
+  module.mutations.updateShownProgress(state);
+  expect(state).toEqual({
+    readingRank: { rank: 1, progress: 2, shownProgress: 2 },
+  });
 });
