@@ -73,7 +73,7 @@ const plugin = (store) => {
         .then(pubs => store.commit('feed/setDisabledPublications', Object.keys(pubs)));
       const pr3 = contentService.fetchUserTags()
         .then(tags => store.commit('feed/setEnabledTags', tags));
-      await Promise.all([pr1, pr2, pr3]);
+      await Promise.all([pr1, pr2, pr3, store.dispatch('user/fetchReadingRank')]);
     } finally {
       syncing = false;
     }
@@ -91,10 +91,12 @@ const plugin = (store) => {
       }
 
       if (isLoggedIn(state)) {
-        requestIdleCallback(async () => {
-          // TODO: handle error
-          await fetchPersonalization(state);
-        });
+        setTimeout(() => {
+          requestIdleCallback(async () => {
+            // TODO: handle error
+            await fetchPersonalization(state);
+          });
+        }, 2000);
       }
       break;
     case 'ui/setTheme':

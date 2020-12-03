@@ -1,8 +1,15 @@
-import {subDays} from 'date-fns';
+import {startOfToday, subDays} from 'date-fns';
 import module from '../src/store/modules/user';
 import { authService } from '../src/common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../src/common/cache';
 import { testAction } from './fixtures/helpers';
+import {apolloClient} from "../src/apollo";
+import {USER_READING_RANK_QUERY} from "../src/graphql/home";
+
+const userReadingRankHandler = jest.fn();
+apolloClient.setRequestHandler(USER_READING_RANK_QUERY, userReadingRankHandler);
+
+jest.mock('../src/apollo');
 
 jest.mock('../src/common/services', () => ({
   authService: {
@@ -21,6 +28,8 @@ jest.mock('../src/common/cache', () => ({
 }));
 
 beforeEach(() => {
+  jest.clearAllMocks();
+
   window.ga = () => {
   };
 
@@ -166,5 +175,62 @@ it('should update shown reading progress', () => {
   module.mutations.updateShownProgress(state);
   expect(state).toEqual({
     readingRank: { rank: 1, progress: 2, shownProgress: 2 },
+  });
+});
+
+it('should fetch reading rank', async () => {
+  userReadingRankHandler.mockResolvedValue({ data: { userReadingRank: { currentRank: 1, progressThisWeek: 3, readToday: true }}})
+  const state = { profile: { id: '1' }, readingRank: { rank: 0, progress: 0, shownProgress: 0 } };
+  await testAction(
+    module.actions.fetchReadingRank,
+    null,
+    state,
+    [
+      { type: 'updateReadingRank', payload: {rank: 1, progress: 3} },
+      { type: 'setLastReadToToday' },
+      ],
+  );
+  expect(userReadingRankHandler).toBeCalledWith({ id: '1' });
+});
+
+it('should fetch reading rank and not set last read', async () => {
+  userReadingRankHandler.mockResolvedValue({ data: { userReadingRank: { currentRank: 1, progressThisWeek: 3, readToday: false }}})
+  const state = { profile: { id: '1' }, readingRank: { rank: 0, progress: 0, shownProgress: 0 } };
+  await testAction(
+    module.actions.fetchReadingRank,
+    null,
+    state,
+    [
+      { type: 'updateReadingRank', payload: {rank: 1, progress: 3} },
+    ],
+  );
+  expect(userReadingRankHandler).toBeCalledWith({ id: '1' });
+});
+
+it('should not fetch reading rank when logged-out', async () => {
+  userReadingRankHandler.mockResolvedValue({ data: { userReadingRank: { currentRank: 1, progressThisWeek: 3, readToday: true }}})
+  const state = { profile: null, readingRank: { rank: 0, progress: 0, shownProgress: 0 } };
+  await testAction(
+    module.actions.fetchReadingRank,
+    null,
+    state,
+    [],
+  );
+  expect(userReadingRankHandler).toBeCalledTimes(0);
+});
+
+it('should update reading rank', () => {
+  const state = { readingRank: { rank: 1, progress: 2 } };
+  module.mutations.updateReadingRank(state, {rank: 2, progress: 4});
+  expect(state).toEqual({
+    readingRank: {rank: 2, progress: 4},
+  });
+});
+
+it('should update last read to today', () => {
+  const state = { lastRead: null };
+  module.mutations.setLastReadToToday(state);
+  expect(state).toEqual({
+    lastRead: startOfToday(),
   });
 });
