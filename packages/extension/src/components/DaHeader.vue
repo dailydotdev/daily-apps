@@ -263,7 +263,7 @@ export default {
 .header__cta {
   display: flex;
   height: unset;
-  padding: 6px 6px 6px 16px;
+  padding: 4px;
   align-items: center;
   margin-left: auto;
   border-radius: 8px;
@@ -274,19 +274,28 @@ export default {
   &.first-time {
     --button-color: var(--theme-avocado);
   }
-}
 
-.header__cta__text {
-  margin-right: 10px;
+  & > .header__cta__text {
+    display: none;
+    margin-right: 8px;
 
-  & {
-    @mixin lil2;
+    & {
+      @mixin lil2;
+    }
   }
-}
 
-.header__cta__image {
-  width: 28px;
-  height: 28px;
-  color: var(--color-salt-10);
+  & > .svg-icon.header__cta__image {
+    width: 28px;
+    height: 28px;
+    margin: 0;
+  }
+
+  @media (min-width: 1316px) {
+    padding-left: 16px;
+
+    & > .header__cta__text {
+      display: inline-block;
+    }
+  }
 }
 </style>
