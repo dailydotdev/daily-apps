@@ -254,7 +254,7 @@ export default {
     DaNewSource: () => import('../components/DaNewSource.vue'),
     DaIntegrations: () => import('../components/DaIntegrations.vue'),
     DaReferral: () => import('../components/DaReferral.vue'),
-    DaTopSitesModal: () => import('../components/DaTopSitesModal.vue')
+    DaTopSitesModal: () => import('../components/DaTopSitesModal.vue'),
   },
 
   data() {

@@ -1,12 +1,14 @@
 <template>
   <div class="scroll-btn" :class="[show ? 'show' : '']" @click="scrollTop">
-    <svgicon name="arrow" class="scroll-btn-icon" />
+    <svgicon name="arrow" class="scroll-btn__icon" />
   </div>
 </template>
 
 <script>
+import '../../icons/arrow';
+
 export default {
-  name: "DaScroll",
+  name: 'DaScroll',
 
   data() {
     return {
@@ -16,26 +18,24 @@ export default {
 
   methods: {
     scrollTop() {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
   },
 
   created() {
     this.scroll = () => {
-      this.show =
-        document.documentElement.scrollTop >
-        document.documentElement.scrollHeight / 3;
+      this.show = document.documentElement.scrollTop
+        >= window.innerHeight / 2;
     };
     this.scroll = this.scroll.bind(this);
   },
 
   mounted() {
-    import("../../icons/arrow");
-    window.addEventListener("scroll", this.scroll, { passive: true });
+    window.addEventListener('scroll', this.scroll, { passive: true });
   },
 
   beforeDestroy() {
-    window.removeEventListener("scroll", this.scroll);
+    window.removeEventListener('scroll', this.scroll);
   },
 };
 </script>
@@ -52,14 +52,14 @@ export default {
   background: var(--theme-primary);
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.2);
   transform: translateY(15px);
-  transition: all 200ms linear;
-  visibility: hidden;
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out;
   cursor: pointer;
+  pointer-events: none;
 
   &.show {
     opacity: 0.8;
-    visibility: visible;
     transform: translateY(0);
+    pointer-events: all;
   }
 
   &.show:hover {
@@ -67,7 +67,7 @@ export default {
   }
 }
 
-.scroll-btn-icon {
+.scroll-btn__icon {
   width: 40px;
   height: 40px;
   color: var(--theme-background-primary);
