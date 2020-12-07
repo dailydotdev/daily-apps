@@ -128,6 +128,7 @@
       <DaSpinner v-if="loading" class="feed-spinner"/>
     </main>
     <div id="anchor" ref="anchor"></div>
+    <da-scroll/>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
     <da-congrats v-if="showCongratsModal" @close="confirmNewUser"/>
     <da-request v-if="showRequestModal" @close="showRequestModal = false"/>
@@ -177,6 +178,7 @@ import {
 } from 'vuex';
 import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
+import DaScroll from '@daily/components/src/components/DaScroll.vue';
 import { BANNER_QUERY, LATEST_NOTIFICATIONS_QUERY } from '../graphql/home';
 import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 import DaHeader from '../components/DaHeader.vue';
@@ -234,6 +236,7 @@ export default {
     DaHeader,
     DaSvg,
     DaFeed,
+    DaScroll,
     DaSidebar: () => import('../components/DaSidebar.vue'),
     DaDndMessage: () => import('../components/DaDndMessage.vue'),
     DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
