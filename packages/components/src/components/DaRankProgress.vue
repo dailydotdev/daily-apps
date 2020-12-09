@@ -1,12 +1,15 @@
 <template>
   <div class="rank-progress" :class="cls" @mouseover="onMouseOver" @mouseout="hover = false">
-    <da-radial-progress class="rank-progress__bar" :rank="rank" :progress="progress"
-                        :max-degrees="maxDegrees" @transitionend="onProgressTransitionEnd"/>
-    <da-rank class="rank-progress__badge" :rank="rank"/>
+    <div class="rank-progress__attention" ref="attention" v-if="showRankAnimation"></div>
+    <da-radial-progress class="rank-progress__bar" :steps="steps" :progress="progress"
+                        :max-degrees="maxDegrees" @transitionend="onProgressTransitionEnd"
+                        ref="progress"/>
+    <da-rank class="rank-progress__badge" :rank="shownRank" ref="badge"/>
     <da-rank class="rank-progress__next" :rank="rank+1" v-if="hasRank && !finalRank"/>
     <transition name="rank-notification-slide-down">
-      <div class="rank-progress__notification nuggets" v-if="animatingProgress">
-        +{{progressDelta}} Reading article
+      <div class="rank-progress__notification nuggets"
+           v-if="animatingProgress && !showRankAnimation">
+        +{{ progressDelta }} Reading article
       </div>
     </transition>
   </div>
@@ -39,34 +42,54 @@ export default {
       type: Boolean,
       default: false,
     },
+    showRankAnimation: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       hover: false,
       animatingProgress: false,
       progressDelta: 1,
+      forceColor: false,
+      shownRank: this.showRankAnimation ? this.rank - 1 : this.rank,
     };
   },
   computed: {
     finalRank() {
-      return this.rank === STEPS_PER_RANK.length;
+      return this.shownRank === STEPS_PER_RANK.length;
     },
     hasRank() {
-      return this.rank > 0;
+      return this.shownRank > 0;
     },
     maxDegrees() {
       return this.hover && this.hasRank ? 270 : 360;
+    },
+    steps() {
+      if (this.showRankAnimation) {
+        return STEPS_PER_RANK[this.rank - 1];
+      }
+      if (!this.finalRank) {
+        return STEPS_PER_RANK[this.rank];
+      }
+      return 0;
     },
     cls() {
       return {
         'has-rank': this.hasRank,
         hover: this.hover,
-        color: this.hover || this.fillByDefault || this.animatingProgress,
+        color: this.hover || this.fillByDefault || this.animatingProgress || this.forceColor,
       };
     },
   },
   watch: {
     rank() {
+      if (!this.showRankAnimation) {
+        this.shownRank = this.rank;
+      }
+    },
+    shownRank() {
       this.updateColors();
     },
     progress(newVal, oldVal) {
@@ -78,23 +101,82 @@ export default {
   },
   methods: {
     onMouseOver() {
-      if (this.enableHover && !this.animatingProgress) {
+      if (this.enableHover && !this.animatingProgress && !this.showRankAnimation) {
         this.hover = true;
       }
     },
     updateColors() {
-      if (this.rank > 0) {
-        this.$el.style.setProperty('--rank-color', rankToColor(this.rank));
-        this.$el.style.setProperty('--rank-stop-color1', rankToGradientStopBottom(this.rank));
-        this.$el.style.setProperty('--rank-stop-color2', rankToGradientStopTop(this.rank));
+      if (this.shownRank > 0) {
+        this.$el.style.setProperty('--rank-color', rankToColor(this.shownRank));
+        this.$el.style.setProperty('--rank-stop-color1', rankToGradientStopBottom(this.shownRank));
+        this.$el.style.setProperty('--rank-stop-color2', rankToGradientStopTop(this.shownRank));
       } else {
         this.$el.style.setProperty('--rank-color', 'var(--theme-secondary)');
       }
     },
     onProgressTransitionEnd() {
-      setTimeout(() => {
+      if (this.showRankAnimation) {
         this.animatingProgress = false;
-      }, 2000);
+        this.animateRank();
+      } else {
+        setTimeout(() => {
+          this.animatingProgress = false;
+        }, 2000);
+      }
+    },
+    animateRank() {
+      this.forceColor = true;
+      const firstAnimationDuration = 400;
+      const maxScale = 1.666;
+      const progressAnimation = this.$refs.progress.$el.animate([
+        { transform: 'scale(1)', '--radial-progress-completed-step': rankToColor(this.shownRank) },
+        { transform: `scale(${maxScale})` },
+        { transform: 'scale(1)', '--radial-progress-completed-step': rankToColor(this.rank) },
+      ], { duration: firstAnimationDuration, fill: 'forwards' });
+      const firstBadgeAnimation = this.$refs.badge.$el.animate([
+        {
+          transform: 'scale(1)',
+          '--stop-color1': rankToGradientStopBottom(this.shownRank),
+          '--stop-color2': rankToGradientStopTop(this.shownRank),
+        },
+        { transform: `scale(${maxScale})`, opacity: 1 },
+        { transform: 'scale(1)', opacity: 0 },
+      ], { duration: firstAnimationDuration, fill: 'forwards' });
+      firstBadgeAnimation.onfinish = () => {
+        this.shownRank = this.rank;
+        // Let the new rank update
+        setTimeout(() => {
+          const attentionAnimation = this.$refs.attention.animate([
+            {
+              transform: 'scale(0.5)', opacity: 1,
+            },
+            {
+              transform: 'scale(1.5)', opacity: 0,
+            },
+          ], { duration: 600, fill: 'forwards' });
+          const lastBadgeAnimation = this.$refs.badge.$el.animate([
+            {
+              transform: `scale(${2 - maxScale})`,
+              opacity: 0,
+              '--stop-color1': rankToGradientStopBottom(this.rank),
+              '--stop-color2': rankToGradientStopTop(this.rank),
+            },
+            {
+              transform: 'scale(1)',
+              opacity: 1,
+              '--stop-color1': rankToGradientStopBottom(this.rank),
+              '--stop-color2': rankToGradientStopTop(this.rank),
+            },
+          ], { duration: 100, fill: 'forwards' });
+          attentionAnimation.onfinish = () => {
+            progressAnimation.cancel();
+            firstBadgeAnimation.cancel();
+            lastBadgeAnimation.cancel();
+            attentionAnimation.cancel();
+            this.$emit('rankAnimationEnd');
+          };
+        });
+      };
     },
   },
   mounted() {
@@ -178,6 +260,18 @@ export default {
       opacity: 1;
     }
   }
+}
+
+.rank-progress__attention {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  background: var(--theme-hover);
+  z-index: -1;
+  opacity: 0;
 }
 
 .rank-notification-slide-down-enter-active, .rank-notification-slide-down-leave-active {

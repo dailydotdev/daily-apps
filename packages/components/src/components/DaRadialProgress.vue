@@ -4,10 +4,12 @@
     <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <g :id="`${id}-group-completed`">
-          <path v-for="(d, i) in completedPaths" :key="i" :d="d" class="completed"/>
+          <path v-for="(d, i) in completedPaths" :key="i" :d="d" class="completed"
+                style="stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;"/>
         </g>
         <g :id="`${id}-group-remaining`">
-          <path v-for="(d, i) in remainingPaths" :key="i" :d="d"/>
+          <path v-for="(d, i) in remainingPaths" :key="i" :d="d"
+                style="stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;"/>
         </g>
       </defs>
       <mask :id="`${id}-mask-all`" stroke="white">
@@ -28,8 +30,6 @@
 </template>
 
 <script>
-import { STEPS_PER_RANK } from '../common/rank';
-
 const RAD_TO_DEGREES = 180 / Math.PI;
 const TWO_PI = 2 * Math.PI;
 
@@ -49,7 +49,7 @@ export default {
       type: Number,
       required: true,
     },
-    rank: {
+    steps: {
       type: Number,
       required: true,
     },
@@ -70,15 +70,6 @@ export default {
     };
   },
   computed: {
-    finalRank() {
-      return this.rank === STEPS_PER_RANK.length;
-    },
-    steps() {
-      if (!this.finalRank) {
-        return STEPS_PER_RANK[this.rank];
-      }
-      return 0;
-    },
     progressRatio() {
       if (this.steps > 0) {
         return this.progress / this.steps;
@@ -138,7 +129,7 @@ export default {
     height: 100%;
   }
 
-  & path, & circle {
+  & circle {
     stroke-width: 4;
     stroke-linecap: round;
     stroke-linejoin: round;
