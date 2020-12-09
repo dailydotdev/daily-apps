@@ -1,4 +1,4 @@
-import { isToday, startOfToday } from 'date-fns';
+import { isToday, startOfToday, isThisISOWeek } from 'date-fns';
 import { apolloClient } from '../../apollo';
 import { authService } from '../../common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../../common/cache';
@@ -98,7 +98,9 @@ export default {
 
     async updateRankProgress({ commit, state, dispatch }) {
       if (!state.lastRead || !isToday(state.lastRead)) {
+        await dispatch('checkWeeklyReadingRankReset');
         commit('incrementReadingProgress');
+        // slight delay so the user won't miss it
         setTimeout(() => dispatch('updateShownProgress'), 100);
       }
     },
@@ -123,12 +125,19 @@ export default {
           commit('setLastReadToToday');
         }
         if (state.readingRank.progress < state.readingRank.shownProgress) {
-          dispatch('updateShownProgress');
+          await dispatch('updateShownProgress');
         } else {
-          // Let the rank update and then show progress animation
+          // Let the rank update and then show progress animation, slight delay so the user won't miss it
           setTimeout(() => dispatch('updateShownProgress'), 1000);
         }
       }
     },
+
+    async checkWeeklyReadingRankReset({ commit, dispatch, state }) {
+      if (!state.profile && state.readingRank.progress > 0 && !isThisISOWeek(state.lastRead)) {
+        commit('updateReadingRank', { rank: 0, progress: 0 });
+        await dispatch('updateShownProgress');
+      }
+    }
   },
 };

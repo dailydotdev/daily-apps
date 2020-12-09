@@ -102,6 +102,7 @@ beforeEach(() => {
     },
     actions: {
       validateAuth: jest.fn(),
+      checkWeeklyReadingRankReset: jest.fn(),
     },
   };
 

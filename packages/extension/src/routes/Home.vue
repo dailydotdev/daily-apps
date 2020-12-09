@@ -500,6 +500,7 @@ export default {
       checkVisitWin: 'ui/checkVisitWin',
       trackEngagementWin: 'ui/trackEngagementWin',
       updateShownProgress: 'user/updateShownProgress',
+      checkWeeklyReadingRankReset: 'user/checkWeeklyReadingRankReset',
     }),
 
     ...mapMutations({
@@ -634,6 +635,7 @@ export default {
       window.addEventListener('keydown', this.onKeyDown);
       this.fetchStage = CRITICAL_FETCH_STAGE;
       this.checkVisitWin();
+      this.checkWeeklyReadingRankReset();
       if (!this.isPremium) {
         ga('send', 'event', 'CTA', 'Impression', 'T-Shirt', { nonInteraction: true });
       }
