@@ -140,6 +140,7 @@
       <DaSpinner v-if="loading" class="feed-spinner"/>
     </main>
     <div id="anchor" ref="anchor"></div>
+    <da-scroll/>
     <da-go v-if="showGoModal" @close="showGoModal = false"/>
     <da-congrats v-if="showCongratsModal" @close="confirmNewUser"/>
     <da-request v-if="showRequestModal" @close="showRequestModal = false"/>
@@ -184,6 +185,7 @@ import DaRank from '@daily/components/src/components/DaRank.vue';
 import DaRankProgress from '@daily/components/src/components/DaRankProgress.vue';
 import { STEPS_PER_RANK } from '@daily/components/src/common/rank';
 import { BANNER_QUERY } from '../graphql/home';
+import DaScroll from '@daily/components/src/components/DaScroll.vue';
 import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 import DaHeader from '../components/DaHeader.vue';
 import DaSvg from '../components/DaSvg.vue';
@@ -228,6 +230,7 @@ export default {
     DaFeed,
     DaRank,
     DaRankProgress,
+    DaScroll,
     DaSidebar: () => import('../components/DaSidebar.vue'),
     DaDndMessage: () => import('../components/DaDndMessage.vue'),
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
