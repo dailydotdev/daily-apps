@@ -8,11 +8,7 @@ const initialState = () => ({
   dndModeTime: null,
   showDndMenu: false,
   showTopSites: false,
-  showNotificationBadge: false,
-  lastNotificationTime: null,
-  showNotifications: false,
   showSettings: false,
-  onboarding: false,
   showOnlyNotReadPosts: false,
   openNewTab: true,
   lastBannerSeen: new Date(),
@@ -26,6 +22,11 @@ const initialState = () => ({
   bookmarks: 0,
   scrolls: 0,
   showTopSitesModal: false,
+  // Onboarding
+  onboarding: true,
+  minimalUi: true,
+  showUnlockUi: false,
+  neverShowRankModal: false,
 });
 
 export default {
@@ -56,16 +57,6 @@ export default {
       state.spaciness = value;
     },
 
-    showNotifications(state) {
-      state.lastNotificationTime = new Date();
-      state.showNotificationBadge = false;
-      state.showNotifications = true;
-    },
-
-    hideNotifications(state) {
-      state.showNotifications = false;
-    },
-
     setShowSettings(state, value) {
       state.showSettings = value;
     },
@@ -82,23 +73,17 @@ export default {
       state.dndModeTime = null;
     },
 
-    updateNotificationBadge(state, timestamp) {
-      const newNotification = state.lastNotificationTime && !!timestamp
-        && timestamp > state.lastNotificationTime;
-      const neverSeen = !state.lastNotificationTime && !!timestamp;
-      state.showNotificationBadge = newNotification || neverSeen;
-    },
-
     resetSettings(state) {
       const def = initialState();
       state.insaneMode = def.insaneMode;
       state.showTopSites = def.showTopSites;
       state.showOnlyNotReadPosts = def.showOnlyNotReadPosts;
       state.openNewTab = def.openNewTab;
+      state.spaciness = def.spaciness;
     },
 
     doneOnboarding(state) {
-      state.onboarding = true;
+      state.onboarding = false;
     },
 
     setLastBannerSeen(state, value) {
@@ -131,6 +116,21 @@ export default {
     setShowTopSitesModal(state, value) {
       state.showTopSitesModal = value;
     },
+
+    checkFullUi(state) {
+      if (state.minimalUi) {
+        state.showUnlockUi = true;
+      }
+    },
+
+    unlockFullUi(state) {
+      state.showUnlockUi = false;
+      state.minimalUi = false;
+    },
+
+    setNeverShowRankModal(state, value) {
+      state.neverShowRankModal = value;
+    }
   },
   getters: {
     dndMode(state) {
@@ -143,6 +143,14 @@ export default {
 
     openNewTab(state) {
       return state.openNewTab;
+    },
+
+    showMinimalUi(state, getters, rootState, rootGetters) {
+      return state.minimalUi && !rootGetters['user/isLoggedIn'];
+    },
+
+    showOnboarding(state, getters, rootState, rootGetters) {
+      return state.onboarding && !rootGetters['user/isLoggedIn'];
     },
   },
   actions: {

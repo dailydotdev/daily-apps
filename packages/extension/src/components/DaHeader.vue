@@ -3,29 +3,28 @@
     <button class="header__logo" @click="onBackHome">
       <da-svg src="/graphics/dailydev.svg" class="header__logo__icon"/>
     </button>
-    <da-switch class="header__switch" icon="bookmark" :checked="showBookmarks"
-               v-tooltip.bottom="showBookmarks ? 'Back to feed' : 'Show your bookmarks'"
-               @toggle="toggleBookmarks"></da-switch>
     <div class="space"></div>
     <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
-       @click="ctaClick" v-if="!isPremium"
+       @click="ctaClick" v-if="!isPremium && !showMinimalUi"
        href="https://daily.dev/win-free-t-shirt"
        target="_blank" rel="noopener noreferrer">
       <span class="header__cta__text">Win a free t-shirt</span>
       <svgicon class="header__cta__image" icon="gift"/>
     </a>
-    <div class="separator"></div>
-    <button class="btn-icon btn-terminal" v-tooltip.bottom="'Latest updates'"
-            :class="{ 'active': notificationsOpened }" @click="toggleNotifications">
-      <svgicon name="terminal"/>
-      <span class="header__badge" v-if="showNotificationBadge"></span>
+    <div class="separator" v-if="!showMinimalUi"></div>
+    <button class="btn-icon btn-bookmarks" v-tooltip.bottom="'Bookmarks'"
+            :class="{ 'active': showBookmarks }" @click="toggleBookmarks(!showBookmarks)"
+            v-if="!showMinimalUi">
+      <svgicon name="bookmark"/>
     </button>
     <button class="btn-icon btn-dnd" v-tooltip.bottom="'Do Not Disturb'"
-            :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)">
+            :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)"
+            v-if="!showMinimalUi">
       <svgicon name="timer"/>
     </button>
     <button class="btn-icon btn-layout" v-tooltip.bottom="'Layout Settings'"
-            :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)">
+            :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)"
+            v-if="!showMinimalUi">
       <svgicon name="layout"/>
     </button>
     <a :href="profileLink" class="header__profile" v-if="isLoggedIn">
@@ -33,7 +32,8 @@
       <img :src="profileImage" alt="Profile image"/>
       <da-svg v-if="isPremium" src="/graphics/glitter_border.svg" class="glitter-mark"/>
     </a>
-    <button class="btn btn-water-cheese header__sign-in" v-else
+    <button class="btn header__sign-in" v-else
+            :class="showMinimalUi ? 'btn-menu' : 'btn-water-cheese'"
             @click="$emit('login')">
       <svgicon name="user_daily"/>
       <span>Sign in</span>
@@ -52,17 +52,14 @@ export default {
 
   components: {
     DaSvg,
-    DaSwitch: () => import('@daily/components/src/components/DaSwitch.vue'),
   },
 
   computed: {
-    ...mapState('ui', [
-      'showNotificationBadge', 'notificationsOpened', 'showDndMenu', 'showSettings', 'ctaClicked',
-    ]),
+    ...mapState('ui', ['showDndMenu', 'showSettings', 'ctaClicked']),
+    ...mapGetters('ui', ['showMinimalUi']),
     ...mapState('feed', ['showBookmarks']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
-      notificationsOpened: state => state.ui.showNotifications,
       profileImage(state) {
         if (this.isLoggedIn) {
           return state.user.profile.image;
@@ -96,7 +93,6 @@ export default {
       import('@daily/components/icons/layout');
       import('@daily/components/icons/bookmark');
       import('@daily/components/icons/user_daily');
-      import('@daily/components/icons/terminal');
       import('@daily/components/icons/mobile');
       import('@daily/components/icons/ph');
       import('@daily/components/icons/github');
@@ -106,15 +102,6 @@ export default {
     toggleBookmarks(pressed) {
       this.$store.dispatch('feed/setShowBookmarks', pressed);
       ga('send', 'event', 'Header', 'Bookmarks', pressed);
-    },
-
-    toggleNotifications() {
-      ga('send', 'event', 'Header', 'Terminal', !this.notificationsOpened);
-      if (this.notificationsOpened) {
-        this.hideNotifications();
-      } else {
-        this.showNotifications();
-      }
     },
 
     onBackHome() {
@@ -128,8 +115,6 @@ export default {
     },
 
     ...mapMutations({
-      hideNotifications: 'ui/hideNotifications',
-      showNotifications: 'ui/showNotifications',
       setShowSettings: 'ui/setShowSettings',
     }),
 
@@ -186,30 +171,13 @@ export default {
     margin-right: 8px;
   }
 
-  & .header__switch {
-    width: var(--da-switch-width);
-    height: var(--da-switch-height);
-    margin-left: 8px;
-
-    --da-switch-checked-color: var(--color-burger-60);
-    --da-switch-checked-background: var(--color-burger-90);
-
-    &:hover {
-      --da-switch-checked-color: var(--color-burger-50);
-    }
-
-    .bright & {
-      --da-switch-checked-background: var(--color-burger-30);
-
-      &:hover {
-        --da-switch-checked-color: var(--color-burger-70);
-      }
-    }
-  }
-
   & .header__sign-in {
     margin-left: 8px;
     margin-right: 0;
+
+    &.btn-menu {
+      --button-color: var(--theme-secondary);
+    }
   }
 
   & .space {
@@ -255,6 +223,20 @@ export default {
       }
     }
   }
+
+  & .btn-bookmarks {
+    width: var(--da-switch-width);
+    height: var(--da-switch-height);
+    margin-left: 8px;
+
+    &:hover {
+      --button-color: var(--color-burger-50);
+    }
+
+    &.active {
+      --button-color: var(--color-burger-60);
+    }
+  }
 }
 
 .header__badge {
@@ -280,7 +262,7 @@ export default {
 .header__cta {
   display: flex;
   height: unset;
-  padding: 6px 6px 6px 16px;
+  padding: 4px;
   align-items: center;
   margin-left: auto;
   border-radius: 8px;
@@ -291,30 +273,28 @@ export default {
   &.first-time {
     --button-color: var(--theme-avocado);
   }
-}
 
-.header__cta__text {
-  margin-right: 10px;
+  & > .header__cta__text {
+    display: none;
+    margin-right: 8px;
 
-  & {
-    @mixin lil2;
+    & {
+      @mixin lil2;
+    }
   }
-}
 
-.header__cta__image {
-  width: 28px;
-  height: 28px;
-  color: var(--color-salt-10);
-}
+  & > .svg-icon.header__cta__image {
+    width: 28px;
+    height: 28px;
+    margin: 0;
+  }
 
-@media (min-width: 1062px) {
-  .header .header__switch {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
+  @media (min-width: 1316px) {
+    padding-left: 16px;
+
+    & > .header__cta__text {
+      display: inline-block;
+    }
   }
 }
 </style>

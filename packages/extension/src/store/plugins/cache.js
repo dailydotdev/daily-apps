@@ -36,10 +36,8 @@ const stateToCache = (state) => {
     toCache.feed.conflictBookmarks = state.feed.conflictBookmarks.map(post2Cache);
   }
   const ui = Object.assign({}, state.ui);
-  delete ui.showNotifications;
   delete ui.showDndMenu;
   delete ui.showSettings;
-  delete ui.notifications;
   delete ui.showPremium;
   delete ui.showNewSource;
   toCache.ui = {
@@ -48,6 +46,9 @@ const stateToCache = (state) => {
     lastBannerSeen: time2Cache(state.ui.lastBannerSeen),
   };
   toCache.user = vue2Json(state.user);
+  if (state.user.lastRead) {
+    toCache.user.lastRead = time2Cache(state.user.lastRead);
+  }
 
   return JSON.parse(JSON.stringify(toCache));
 };

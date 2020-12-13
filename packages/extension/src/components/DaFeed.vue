@@ -242,10 +242,15 @@ export default {
     },
 
     onPostClick(post) {
+      const { read } = post;
       // eslint-disable-next-line no-param-reassign
       post.read = true;
       this.trackEngagementWin({ action: 'POST_CLICK' });
       ga('send', 'event', 'Post', 'Click', post.source);
+      this.checkFullUi();
+      if (!read) {
+        this.updateRankProgress();
+      }
       this.updateCommentPopup(post);
     },
 
@@ -367,12 +372,14 @@ export default {
       toggleUpvote: 'feed/toggleUpvote',
       addBookmarkToList: 'feed/addBookmarkToList',
       trackEngagementWin: 'ui/trackEngagementWin',
+      updateRankProgress: 'user/updateRankProgress',
     }),
 
     ...mapMutations({
       removePost: 'feed/removePost',
       updatePost: 'feed/updatePost',
       setShowPremium: 'ui/setShowPremium',
+      checkFullUi: 'ui/checkFullUi',
     }),
   },
   async mounted() {

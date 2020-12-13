@@ -7,9 +7,10 @@ export const BANNER_QUERY = gql`
     }
   }`;
 
-export const LATEST_NOTIFICATIONS_QUERY = gql`
-  query LatestNotifications {
-    latestNotifications {
-      timestamp, html
+export const USER_READING_RANK_QUERY = gql`
+  query UserReadingRank($id: ID!) {
+    userReadingRank(id: $id) {
+      currentRank, progressThisWeek, readToday
     }
-  }`;
+  }
+  `;

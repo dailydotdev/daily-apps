@@ -10,11 +10,6 @@ import DaHeader from '../src/components/DaHeader.vue';
 import DaSidebar from '../src/components/DaSidebar.vue';
 import DaFeed from '../src/components/DaFeed.vue';
 import { createDummyEvent } from './fixtures/helpers';
-import { LATEST_NOTIFICATIONS_QUERY } from '../src/graphql/home';
-import { SOURCES_QUERY } from '../src/graphql/sidebar';
-import { apolloClient } from '../src/apollo';
-import { POPULAR_TAGS_QUERY } from '../src/graphql/tags';
-import { BOOKMARK_LISTS_QUERY } from '../src/graphql/bookmarkList';
 
 jest.mock('../src/apollo');
 
@@ -72,11 +67,13 @@ beforeEach(() => {
     state: {
       insaneMode: false,
       showDndMenu: false,
+      showUnlockUi: false,
     },
     mutations: {
       setDndModeTime: jest.fn(),
       setShowDndMenu: jest.fn(),
-      updateNotificationBadge: jest.fn(),
+      doneOnboarding: jest.fn(),
+      unlockFullUi: jest.fn(),
     },
     getters: {
       topSitesInstructions: jest.fn(),
@@ -84,6 +81,8 @@ beforeEach(() => {
       showReadyModal: jest.fn(),
       dndMode: jest.fn(),
       dndModeTime: jest.fn(),
+      showOnboarding: jest.fn(),
+      showMinimalUi: jest.fn(),
     },
     actions: {
       checkVisitWin: jest.fn(),
@@ -94,6 +93,11 @@ beforeEach(() => {
     namespaced: true,
     state: {
       profile: null,
+      readingRank: {
+        rank: 0,
+        progress: 0,
+        shownProgress: 0,
+      },
     },
     getters: {
       isLoggedIn: state => !!state.profile,
@@ -101,6 +105,7 @@ beforeEach(() => {
     },
     actions: {
       validateAuth: jest.fn(),
+      checkWeeklyReadingRankReset: jest.fn(),
     },
   };
 
@@ -187,23 +192,6 @@ it('should show banner when data is available', (done) => {
   });
 });
 
-it('should fetch notifications and update badge', (done) => {
-  const now = new Date();
-  apolloClient.setRequestHandler(SOURCES_QUERY, () => Promise.resolve({data: { sources: {} }}));
-  apolloClient.setRequestHandler(POPULAR_TAGS_QUERY, () => Promise.resolve({data: { popularTags: {} }}));
-  apolloClient.setRequestHandler(
-    LATEST_NOTIFICATIONS_QUERY,
-    () => Promise.resolve({ data: { latestNotifications: [{html: 'hello world', timestamp: now.toISOString()}] } }));
-  apolloClient.setRequestHandler(BOOKMARK_LISTS_QUERY, () => Promise.resolve({data: {bookmarkLists: {}}}));
-  const wrapper = mount(DaHome, { store, localVue, apolloProvider: new VueApollo({defaultClient: apolloClient }) });
-  wrapper.vm.$apollo.queries.notifications.setOptions({ fetchPolicy: 'network-only' });
-  setTimeout(() => {
-    expect(wrapper.vm.notifications).toEqual([{html: 'hello world', timestamp: now}]);
-    expect(ui.mutations.updateNotificationBadge).toBeCalledWith(expect.anything(), now);
-    done();
-  });
-});
-
 it('should open integrations popup', async () => {
   const wrapper = mount(DaHome, { store, localVue });
   expect(wrapper.find('.integrations').element).toBeFalsy();
@@ -236,4 +224,71 @@ it('should hide sidebar when showing bookmarks', async () => {
   feed.state.showBookmarks = true;
   const wrapper = mount(DaHome, { store, localVue });
   expect(wrapper.find('.sidebar-container').element.style.display).toEqual('none');
+});
+
+it('should not show welcome balloon by default', async () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.welcome-balloon').element).toBeFalsy();
+});
+
+it('should show welcome balloon during onboarding', async () => {
+  ui.getters.showOnboarding.mockReturnValue(true);
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.welcome-balloon').element).toBeTruthy();
+});
+
+it('should open rank popup when clicking on the rank', async () => {
+  ui.getters.showOnboarding.mockReturnValue(true);
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.rank-modal').element).toBeFalsy();
+  wrapper.find('.rank-btn').trigger('click');
+  await wrapper.vm.$nextTick();
+  await wrapper.vm.$nextTick();
+  expect(wrapper.find('.rank-modal').element).toBeTruthy();
+});
+
+it('should open rank popup when clicking on the rank', async () => {
+  ui.getters.showOnboarding.mockReturnValue(true);
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.rank-modal').element).toBeFalsy();
+  wrapper.find('.rank-btn').trigger('click');
+  await wrapper.vm.$nextTick();
+  await wrapper.vm.$nextTick();
+  expect(wrapper.find('.rank-modal').element).toBeTruthy();
+});
+
+it('should finish onboarding when closing the rank popup', async () => {
+  ui.getters.showOnboarding.mockReturnValue(true);
+  const wrapper = mount(DaHome, { store, localVue });
+  wrapper.find('.rank-btn').trigger('click');
+  await wrapper.vm.$nextTick();
+  await wrapper.vm.$nextTick();
+  wrapper.find('.rank-modal').vm.$emit('close');
+  await wrapper.vm.$nextTick();
+  expect(ui.mutations.doneOnboarding).toBeCalledTimes(1);
+});
+
+it('should show onboarding rank button during the onboarding', async () => {
+  ui.getters.showOnboarding.mockReturnValue(true);
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.rank-btn').classes()).toContain('signal');
+  expect(wrapper.find('.rank-btn .rank-progress').element).toBeFalsy();
+  expect(wrapper.find('.rank-btn .rank-btn__inner').element).toBeTruthy();
+});
+
+it('should show regular rank button', async () => {
+  const wrapper = mount(DaHome, { store, localVue });
+  expect(wrapper.find('.rank-btn').classes()).not.toContain('signal');
+  expect(wrapper.find('.rank-btn .rank-progress').element).toBeTruthy();
+  expect(wrapper.find('.rank-btn .rank-btn__inner').element).toBeFalsy();
+});
+
+it('should unlock full ui when closing the unlock ui modal', async () => {
+  ui.state.showUnlockUi = true;
+  const wrapper = mount(DaHome, { store, localVue });
+  await wrapper.vm.$nextTick();
+  expect(wrapper.find('.unlock-ui-modal').element).toBeTruthy();
+  wrapper.find('.unlock-ui-modal').vm.$emit('close');
+  await wrapper.vm.$nextTick();
+  expect(ui.mutations.unlockFullUi).toBeCalledTimes(1);
 });

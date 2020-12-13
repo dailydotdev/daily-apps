@@ -15,6 +15,18 @@
         <svgicon name="arrow"/>
       </button>
     </div>
+    <button class="rank-btn" @click="openRankPopup" :class="{ signal: showOnboarding }">
+      <div class="rank-btn__inner" v-if="showOnboarding">
+        <da-rank :rank="1"/>
+      </div>
+      <da-rank-progress v-else :rank="rank" :progress="rankProgress"
+        :show-rank-animation="readingRankLevelUp && neverShowRankModal"
+        @rank-animation-end="confirmedRankLevelUp"/>
+    </button>
+    <div v-if="showOnboarding" class="welcome-balloon micro2">
+      Dear developer, our mission is to serve all the best programming news you’ll ever need.
+      Ready?
+    </div>
     <da-settings v-if="showSettings"/>
     <da-bookmark-list v-if="showBookmarks"/>
     <main class="content">
@@ -76,7 +88,7 @@
                     <img :src="getIconUrl(item.url)" class="top-site__image"/>
                   </a>
                 </template>
-                <template v-else>
+                <template v-else-if="!showMinimalUi">
                   <label for="top-sites-btn">
                     Show most visited sites
                   </label>
@@ -140,20 +152,11 @@
                    @requested-source="showRequestModal = true"/>
     <da-integrations v-if="showIntegrations" @close="showIntegrations = false"/>
     <da-top-sites-modal v-if="showTopSitesModal" @close="setShowTopSitesModal(false)"/>
-    <da-terminal v-if="showNotifications" class="notifications" @close="hideNotifications">
-      <template slot="title">Terminal</template>
-      <template slot="content">
-        <div class="notifications__item" v-for="(item, index) in notifications" :key="index">
-          <div class="notifications__item__time">{{ item.timestamp | terminalTime }}</div>
-          <div v-html="item.html"></div>
-        </div>
-        <div class="notifications__empty" v-if="!notifications.length">
-          From time to time the terminal will announce
-          new product releases and other surprises so stay tuned
-        </div>
-      </template>
-    </da-terminal>
     <da-referral v-if="showReferral" @close="setShowReferral(false)"/>
+    <da-rank-popup v-if="showRankPopup" @close="closeRankPopup"/>
+    <da-unlock-ui-modal v-if="showUnlockUi" @close="unlockFullUi"/>
+    <da-new-rank-modal v-if="readingRankLevelUp && !neverShowRankModal"
+                       @close="closeNewRankModal"/>
     <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened"
                 @close="setShowDndMenu(false)">
       <template v-if="!dndMode">
@@ -178,8 +181,11 @@ import {
 } from 'vuex';
 import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
+import DaRank from '@daily/components/src/components/DaRank.vue';
+import DaRankProgress from '@daily/components/src/components/DaRankProgress.vue';
+import { STEPS_PER_RANK } from '@daily/components/src/common/rank';
+import { BANNER_QUERY } from '../graphql/home';
 import DaScroll from '@daily/components/src/components/DaScroll.vue';
-import { BANNER_QUERY, LATEST_NOTIFICATIONS_QUERY } from '../graphql/home';
 import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 import DaHeader from '../components/DaHeader.vue';
 import DaSvg from '../components/DaSvg.vue';
@@ -202,20 +208,6 @@ export default {
         return !this.lastBannerSeen || !this.lastBannerSeen.toISOString;
       },
     },
-    notifications: {
-      query: LATEST_NOTIFICATIONS_QUERY,
-      fetchPolicy: 'cache-only',
-      manual: true,
-      async result({ data, networkStatus, loading }) {
-        if (networkStatus === NetworkStatus.ready && !loading && data && data.latestNotifications) {
-          const DOMPurify = await import('dompurify');
-          this.notifications = data.latestNotifications
-            .map(n => ({ timestamp: new Date(n.timestamp), html: DOMPurify.sanitize(n.html) }));
-          const timestamp = this.notifications.length && this.notifications[0].timestamp;
-          this.updateNotificationBadge(timestamp);
-        }
-      },
-    },
     bookmarkLists: {
       query: BOOKMARK_LISTS_QUERY,
       fetchPolicy: 'cache-only',
@@ -236,10 +228,11 @@ export default {
     DaHeader,
     DaSvg,
     DaFeed,
+    DaRank,
+    DaRankProgress,
     DaScroll,
     DaSidebar: () => import('../components/DaSidebar.vue'),
     DaDndMessage: () => import('../components/DaDndMessage.vue'),
-    DaTerminal: () => import('@daily/components/src/components/DaTerminal.vue'),
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
     DaSearch: () => import('@daily/components/src/components/DaSearch.vue'),
     DaLogin: () => import('../components/DaLogin.vue'),
@@ -255,6 +248,9 @@ export default {
     DaIntegrations: () => import('../components/DaIntegrations.vue'),
     DaReferral: () => import('../components/DaReferral.vue'),
     DaTopSitesModal: () => import('../components/DaTopSitesModal.vue'),
+    DaRankPopup: () => import('../components/DaRankPopup.vue'),
+    DaUnlockUiModal: () => import('../components/DaUnlockUiModal.vue'),
+    DaNewRankModal: () => import('../components/DaNewRankModal.vue'),
   },
 
   data() {
@@ -264,6 +260,7 @@ export default {
       showLoginModal: false,
       showIntegrations: false,
       showSearch: false,
+      showRankPopup: false,
       searchSuggestions: [],
       fetchStage: null,
       banner: null,
@@ -409,7 +406,9 @@ export default {
     engagementFetch() {
       if (this.$apollo.queries.banner) {
         this.$apollo.queries.banner.setOptions({ fetchPolicy: 'cache-and-network' });
-        this.$apollo.queries.notifications.setOptions({ fetchPolicy: 'cache-and-network' });
+      }
+      if (!this.isLoggedIn) {
+        this.updateShownProgress();
       }
     },
 
@@ -491,6 +490,23 @@ export default {
       return `https://api.daily.dev/icon?url=${encodeURIComponent(url)}&size=20`;
     },
 
+    openRankPopup() {
+      ga('send', 'event', 'Rank', 'Click');
+      this.showRankPopup = true;
+    },
+
+    closeRankPopup() {
+      this.showRankPopup = false;
+      this.doneOnboarding();
+    },
+
+    closeNewRankModal(neverShow) {
+      this.confirmedRankLevelUp();
+      if (neverShow) {
+        this.setNeverShowRankModal(true);
+      }
+    },
+
     ...mapActions({
       backToMainFeed: 'feed/backToMainFeed',
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
@@ -500,6 +516,8 @@ export default {
       validateAuth: 'user/validateAuth',
       checkVisitWin: 'ui/checkVisitWin',
       trackEngagementWin: 'ui/trackEngagementWin',
+      updateShownProgress: 'user/updateShownProgress',
+      checkWeeklyReadingRankReset: 'user/checkWeeklyReadingRankReset',
     }),
 
     ...mapMutations({
@@ -507,23 +525,26 @@ export default {
       clearBookmarksConflicts: 'feed/clearBookmarksConflicts',
       setDndModeTime: 'ui/setDndModeTime',
       disableDndMode: 'ui/disableDndMode',
-      hideNotifications: 'ui/hideNotifications',
       setShowDndMenu: 'ui/setShowDndMenu',
       setLastBannerSeen: 'ui/setLastBannerSeen',
-      updateNotificationBadge: 'ui/updateNotificationBadge',
       setShowPremium: 'ui/setShowPremium',
       setShowNewSource: 'ui/setShowNewSource',
       setShowReferral: 'ui/setShowReferral',
       setShowTopSitesModal: 'ui/setShowTopSitesModal',
       confirmNewUser: 'user/confirmNewUser',
+      doneOnboarding: 'ui/doneOnboarding',
+      unlockFullUi: 'ui/unlockFullUi',
+      confirmedRankLevelUp: 'user/confirmedRankLevelUp',
+      setNeverShowRankModal: 'ui/setNeverShowRankModal',
     }),
   },
 
   computed: {
-    ...mapState('ui', ['showNotifications', 'showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal']),
-    ...mapGetters('ui', ['showReadyModal', 'dndMode']),
+    ...mapState('ui', ['showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'showUnlockUi', 'neverShowRankModal']),
+    ...mapGetters('ui', ['showReadyModal', 'dndMode', 'showMinimalUi', 'showOnboarding']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
+    ...mapState('user', ['readingRank', 'readingRankLevelUp']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
       title(state) {
@@ -543,6 +564,7 @@ export default {
           [state.ui.insaneMode ? 'insane-mode' : 'card-mode']: true,
           'show-banner': this.showBanner,
           'show-bookmarks': this.showBookmarks,
+          onboarding: this.showOnboarding,
         };
       },
 
@@ -556,6 +578,20 @@ export default {
 
       showSearchFeed(state) {
         return state.feed.search && state.feed.search.length;
+      },
+
+      rank(state) {
+        if (this.readingRankLevelUp && this.neverShowRankModal) {
+          return state.user.readingRank.nextRank;
+        }
+        return state.user.readingRank && state.user.readingRank.rank;
+      },
+
+      rankProgress(state) {
+        if (this.readingRankLevelUp && this.neverShowRankModal) {
+          return STEPS_PER_RANK[this.rank - 1];
+        }
+        return state.user.readingRank && state.user.readingRank.shownProgress;
       },
     }),
     showFilterHeader() {
@@ -632,6 +668,7 @@ export default {
       window.addEventListener('keydown', this.onKeyDown);
       this.fetchStage = CRITICAL_FETCH_STAGE;
       this.checkVisitWin();
+      this.checkWeeklyReadingRankReset();
       if (!this.isPremium) {
         ga('send', 'event', 'CTA', 'Impression', 'T-Shirt', { nonInteraction: true });
       }
@@ -887,52 +924,6 @@ export default {
   height: 1px;
   width: 1px;
   opacity: 0;
-}
-
-.notifications {
-  position: fixed;
-  width: 300px;
-  height: 234px;
-  right: 35px;
-  top: 44px;
-  z-index: 100;
-
-  & .notifications__item {
-    margin: 16px 0;
-
-    &:first-child {
-      margin-top: 0;
-    }
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-
-    & > * {
-      margin: 4px 0;
-
-      &:first-child {
-        margin-top: 0;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  & .notifications__item__time {
-    color: var(--theme-disabled);
-  }
-
-  & a {
-    text-decoration: none;
-    color: var(--theme-primary);
-
-    &:visited, &:active {
-      color: inherit;
-    }
-  }
 }
 
 .v-context.context {
@@ -1269,5 +1260,81 @@ export default {
       box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.08);
     }
   }
+}
+
+@keyframes rank-attention {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.rank-btn {
+  position: absolute;
+  display: flex;
+  left: 0;
+  right: 0;
+  top: 16px;
+  width: 80px;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background: var(--theme-background-primary);
+  border: none;
+  border-radius: 100%;
+  cursor: pointer;
+  z-index: 31;
+
+  &.signal {
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--theme-hover);
+      border-radius: 100%;
+      z-index: -1;
+      transition: background 0.1s linear;
+      animation: rank-attention 2s infinite ease-in-out;
+    }
+
+    &:hover {
+      &:before {
+        background: var(--theme-active);
+      }
+    }
+  }
+}
+
+.rank-btn__inner {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  background: var(--theme-primary);
+  border-radius: 100%;
+  box-shadow: 0 8px 16px 2px var(--theme-active);
+
+  --stop-color1: var(--theme-background-primary);
+  --stop-color2: var(--theme-background-primary);
+}
+
+.welcome-balloon {
+  max-width: 420px;
+  margin-top: 56px;
+  padding: 16px 24px;
+  color: var(--theme-secondary);
+  border: 1px solid var(--theme-active);
+  border-radius: 16px;
+  text-align: center;
+  align-self: center;
 }
 </style>

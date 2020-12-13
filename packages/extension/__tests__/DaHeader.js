@@ -27,18 +27,15 @@ beforeEach(() => {
     namespaced: true,
     state: {
       showTopSites: true,
+      minimalUi: false,
     },
     actions: {
       setShowTopSites: jest.fn(),
     },
-    mutations: {
-      hideNotifications: jest.fn(),
-      showNotifications: jest.fn(),
-      nextInstruction: jest.fn(),
-    },
     getters: {
       topSitesInstructions: () => true,
-    },
+      showMinimalUi: jest.fn(),
+    }
   };
 
   feed = {
@@ -67,34 +64,11 @@ beforeEach(() => {
   });
 });
 
-it('should commit "setShowBookmarks" when switch is toggled', (done) => {
+it('should commit "setShowBookmarks" when clicking on the bookmarks', async () => {
   const wrapper = mount(DaHeader, { store, localVue });
-  wrapper.find('.header__switch').trigger('click');
-  wrapper.find('.header__switch').find('.switch__handle').trigger('transitionend');
-  wrapper.find('.header__switch').find('.switch__handle').trigger('transitionend');
-  setTimeout(() => {
-    expect(feed.actions.setShowBookmarks).toBeCalledWith(expect.anything(), true);
-    done();
-  }, 100);
-});
-
-it('should commit "showNotifications" when terminal button is clicked', (done) => {
-  const wrapper = mount(DaHeader, { store, localVue });
-  wrapper.find('.btn-terminal').trigger('click');
-  setTimeout(() => {
-    expect(ui.mutations.showNotifications).toBeCalledWith(expect.anything(), undefined);
-    done();
-  }, 100);
-});
-
-it('should commit "hideNotifications" when terminal button is clicked', (done) => {
-  store.state.ui.showNotifications = true;
-  const wrapper = mount(DaHeader, { store, localVue });
-  wrapper.find('.btn-terminal').trigger('click');
-  setTimeout(() => {
-    expect(ui.mutations.hideNotifications).toBeCalledWith(expect.anything(), undefined);
-    done();
-  }, 100);
+  wrapper.find('.btn-bookmarks').trigger('click');
+  await wrapper.vm.$nextTick();
+  expect(feed.actions.setShowBookmarks).toBeCalledWith(expect.anything(), true);
 });
 
 it('should emit "login" on sign-in button click', () => {
@@ -107,4 +81,20 @@ it('should emit "menu" on dnd-mode button click', () => {
   const wrapper = mount(DaHeader, { store, localVue });
   wrapper.find('button.btn-dnd').trigger('click');
   expect(wrapper.emitted().menu).toBeTruthy();
+});
+
+it('should set sign in button style to default while not in minimal ui mode', () => {
+  const wrapper = mount(DaHeader, { store, localVue });
+  expect(wrapper.find('.header__sign-in').classes()).toContain('btn-water-cheese');
+});
+
+it('should remove some buttons while in minimal ui mode', () => {
+  ui.getters.showMinimalUi.mockReturnValue(true);
+  const wrapper = mount(DaHeader, { store, localVue });
+  expect(wrapper.find('.btn-bookmarks').element).toBeFalsy();
+  expect(wrapper.find('.header__cta').element).toBeFalsy();
+  expect(wrapper.find('.separator').element).toBeFalsy();
+  expect(wrapper.find('.btn-dnd').element).toBeFalsy();
+  expect(wrapper.find('.btn-layout').element).toBeFalsy();
+  expect(wrapper.find('.header__sign-in').classes()).toContain('btn-menu');
 });

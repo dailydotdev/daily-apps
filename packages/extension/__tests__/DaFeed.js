@@ -112,6 +112,9 @@ beforeEach(() => {
     state: {
       insaneMode: false,
     },
+    mutations: {
+      checkFullUi: jest.fn(),
+    },
     actions: {
       trackEngagementWin: jest.fn(),
     },
@@ -125,6 +128,9 @@ beforeEach(() => {
     getters: {
       isLoggedIn: state => !!state.profile,
       isPremium: state => !!state.profile && !!state.profile.premium,
+    },
+    actions: {
+      updateRankProgress: jest.fn(),
     },
   };
 
@@ -429,4 +435,27 @@ it('should close comment popup on close button click', async () => {
   await wrapper.vm.$nextTick();
   wrapper.vm.$refs.posts[0].$emit('closeCommentPopup');
   expect(wrapper.vm.commentPostId).toEqual(null);
+});
+
+it('should check for full ui eligibility on post click', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
+  await wrapper.vm.$nextTick();
+  expect(ui.mutations.checkFullUi).toBeCalledTimes(1);
+});
+
+it('should update rank progress on post click', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  feed.state.posts[0].read = false;
+  wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
+  await wrapper.vm.$nextTick();
+  expect(user.actions.updateRankProgress).toBeCalledTimes(1);
+});
+
+it('should not update rank progress when post was read', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  feed.state.posts[0].read = true;
+  wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
+  await wrapper.vm.$nextTick();
+  expect(user.actions.updateRankProgress).toBeCalledTimes(0);
 });

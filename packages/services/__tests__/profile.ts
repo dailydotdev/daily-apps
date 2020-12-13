@@ -45,20 +45,3 @@ it('should update settings', async () => {
 
   await service.updateSettings(body);
 });
-
-it('should fetch notifications', async () => {
-  nock(baseURL)
-    .get('/v1/notifications')
-    .query({since: '2018-11-28T08:27:45.612Z'})
-    .reply(200, [{
-      html: '<p>hello</p>',
-      timestamp: '2018-11-29T08:27:45.612Z',
-    }]);
-
-  const actual = await service.fetchNotifications(new Date('2018-11-28T08:27:45.612Z'));
-
-  expect(actual).toEqual([{
-    html: '<p>hello</p>',
-    timestamp: new Date('2018-11-29T08:27:45.612Z'),
-  }]);
-});

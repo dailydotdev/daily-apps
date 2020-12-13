@@ -36,6 +36,7 @@ export default {
   align-items: center;
   color: var(--theme-secondary);
   transition: color 0.1s linear;
+  z-index: 1;
   @mixin nuggets;
 
   & input {

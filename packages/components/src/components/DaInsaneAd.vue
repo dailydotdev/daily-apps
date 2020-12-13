@@ -3,7 +3,7 @@
     <div class="post__vseparator post__vmargin"></div>
     <div class="insane__main">
       <a class="post__link" :href="ad.link" target="_blank" rel="noopener noreferrer"
-         :title="ad.description" @click="onClick">
+         :title="ad.description" @click="onClick" @click.middle="onClick">
         <div class="post__title lil1 multiline-text-overflow">{{ad.description}}</div>
       </a>
       <div class="post__metadata">

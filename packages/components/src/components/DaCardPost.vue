@@ -33,7 +33,7 @@
       </button>
     </div>
     <a class="post__link" :href="post.url" :target="shouldOpenNewTab" rel="noopener noreferrer"
-       :title="post.title" @click="onLinkClick" v-show="!showComment">
+       :title="post.title" @click="onLinkClick" @click.middle="onLinkClick" v-show="!showComment">
       <div
         class="post__title card__hmargin post__vmargin lil1 multiline-text-overflow">
         {{post.title}}

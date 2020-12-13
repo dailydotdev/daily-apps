@@ -3,24 +3,12 @@ import { applyTheme } from '@daily/services';
 import module from '../src/store/modules/ui';
 import { testAction } from './fixtures/helpers';
 
-jest.mock('../src/common/services', () => ({
-  profileService: {
-    fetchNotifications: jest.fn(),
-  },
-}));
-
 jest.mock('@daily/services', () => ({
   applyTheme: jest.fn(),
 }));
 
 beforeEach(() => {
   window.ga = jest.fn();
-});
-
-it('should set onboarding to true in state', () => {
-  const state = { onboarding: false };
-  module.mutations.doneOnboarding(state);
-  expect(state.onboarding).toEqual(true);
 });
 
 it('should set theme in state', () => {
@@ -67,71 +55,20 @@ it('should set show settings in state', () => {
   expect(state.showSettings).toEqual(true);
 });
 
-it('should show notifications and set state', () => {
-  const now = new Date();
-  MockDate.set(now);
-  const state = {
-    showNotificationBadge: true,
-  };
-  module.mutations.showNotifications(state);
-  MockDate.reset();
-  expect(state.lastNotificationTime).toEqual(now);
-  expect(state.showNotificationBadge).toEqual(false);
-  expect(state.showNotifications).toEqual(true);
-});
-
-it('should show notification badge when never seen notification', () => {
-  const state = {};
-  module.mutations.updateNotificationBadge(state, new Date());
-  expect(state.showNotificationBadge).toEqual(true);
-});
-
-it('should show notification badge when timestamp is newer than last seen', () => {
-  const now = new Date();
-  const state = {lastNotificationTime: new Date(now.getTime() - 1000)};
-  module.mutations.updateNotificationBadge(state, now);
-  expect(state.showNotificationBadge).toEqual(true);
-});
-
-it('should not show notification badge when timestamp is older than last seen', () => {
-  const now = new Date();
-  const state = {lastNotificationTime: now};
-  module.mutations.updateNotificationBadge(state, new Date(now.getTime() - 1000));
-  expect(state.showNotificationBadge).toEqual(false);
-});
-
-it('should not show notification badge when timestamp is undefined', () => {
-  const state = {};
-  module.mutations.updateNotificationBadge(state, undefined);
-  expect(state.showNotificationBadge).toEqual(false);
-});
-
-it('should hide notifications and set state', () => {
-  const state = {
-    showNotifications: true,
-  };
-  module.mutations.hideNotifications(state);
-  expect(state.showNotifications).toEqual(false);
-});
-
 it('should reset settings', () => {
-  const notifications = [{ timestamp: new Date() }, { timestamp: new Date(Date.now() - 1000) }];
   const state = {
     insaneMode: true,
     showTopSites: true,
     showOnlyNotReadPosts: true,
-    showNotificationBadge: true,
     openNewTab: false,
-    notifications,
   };
   module.mutations.resetSettings(state);
   expect(state).toEqual({
     insaneMode: false,
     showTopSites: false,
     showOnlyNotReadPosts: false,
-    showNotificationBadge: true,
     openNewTab: true,
-    notifications,
+    spaciness: 'roomy',
   });
 });
 
@@ -225,4 +162,29 @@ it('should trigger referral due to scroll', async () => {
   await testAction(module.actions.trackEngagementWin, {action: 'SCROLL'}, state, [
     { type: 'setTriggeredReferral', payload: true },
   ]);
+});
+
+it('should show unlock ui', async () => {
+  const state = { minimalUi: true };
+  module.mutations.checkFullUi(state);
+  expect(state.showUnlockUi).toEqual(true);
+});
+
+it('should not show unlock ui when minimal ui is off', async () => {
+  const state = { minimalUi: false };
+  module.mutations.checkFullUi(state);
+  expect(state.showUnlockUi).toBeFalsy();
+});
+
+it('should turn off minimal ui', async () => {
+  const state = { minimalUi: true, showUnlockUi: true };
+  module.mutations.unlockFullUi(state);
+  expect(state.showUnlockUi).toBeFalsy();
+  expect(state.minimalUi).toBeFalsy();
+});
+
+it('should set never show rank modal', async () => {
+  const state = { neverShowRankModal: true };
+  module.mutations.setNeverShowRankModal(state, false);
+  expect(state.neverShowRankModal).toBeFalsy();
 });
