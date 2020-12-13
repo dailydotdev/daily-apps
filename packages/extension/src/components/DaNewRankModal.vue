@@ -1,5 +1,5 @@
 <template>
-  <da-modal class="new-rank-modal" @close="$emit('close')">
+  <da-modal class="new-rank-modal" @close="close">
     <div class="new-rank-modal__rank" v-if="isLoggedIn && rankAnimationEnded">
       <da-radial-progress class="new-rank-modal__progress" :progress="steps" :max-degrees="270"
                           :steps="steps"/>
@@ -19,7 +19,7 @@
       </template>
     </p>
     <button class="btn btn-big btn-invert new-rank-modal__confirm"
-            v-if="isLoggedIn" @click="$emit('close')">Awesome!
+            v-if="isLoggedIn" @click="close">Awesome!
     </button>
     <div class="new-rank-modal__login" v-else>
       <a :href="getLoginLink('github')" class="btn btn-big btn-invert"
@@ -33,7 +33,7 @@
         <svgicon name="google"/>
       </a>
     </div>
-    <da-checkbox name="hide" :checked="neverShowRankModal" @toggle="setNeverShowRankModal">
+    <da-checkbox name="hide" :checked="neverShowRankModal" @toggle="neverShowRankModal = $event">
       Never show this popup again
     </da-checkbox>
     <transition name="confetti-transition" slot="background">
@@ -51,7 +51,7 @@ import DaRadialProgress from '@daily/components/src/components/DaRadialProgress.
 import DaRank from '@daily/components/src/components/DaRank.vue';
 import DaRankProgress from '@daily/components/src/components/DaRankProgress.vue';
 import DaCheckbox from '@daily/components/src/components/DaCheckbox.vue';
-import { mapGetters, mapState, mapMutations } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import {
   RANK_NAMES,
   rankToColor,
@@ -78,6 +78,7 @@ export default {
     return {
       animatingRank: false,
       rankAnimationEnded: false,
+      neverShowRankModal: false,
     };
   },
 
@@ -88,7 +89,6 @@ export default {
     overrideConfettiColor() {
       return this.nextRank < RANK_NAMES.length;
     },
-    ...mapState('ui', ['neverShowRankModal']),
     ...mapGetters('user', ['isLoggedIn']),
     ...mapState({
       profileImage(state) {
@@ -158,7 +158,7 @@ export default {
 
     onLogin(provider) {
       ga('send', 'event', 'Login', 'Initialized', provider);
-      this.$emit('close');
+      this.close();
     },
 
     updateColors() {
@@ -181,9 +181,9 @@ export default {
       }
     },
 
-    ...mapMutations({
-      setNeverShowRankModal: 'ui/setNeverShowRankModal',
-    }),
+    close() {
+      this.$emit('close', this.neverShowRankModal);
+    },
   },
 
   mounted() {

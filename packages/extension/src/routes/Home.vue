@@ -19,10 +19,13 @@
       <div class="rank-btn__inner" v-if="onboarding">
         <da-rank :rank="1"/>
       </div>
-      <da-rank-progress v-else :rank="readingRank.rank" :progress="readingRank.shownProgress"/>
+      <da-rank-progress v-else :rank="rank" :progress="rankProgress"
+        :show-rank-animation="readingRankLevelUp && neverShowRankModal"
+        @rank-animation-end="confirmedRankLevelUp"/>
     </button>
     <div v-if="onboarding" class="welcome-balloon micro2">
-      Welcome to your feed! The last place you’ll ever need to stay updated 📚 Click above to start.
+      Welcome to your feed! Our mission is to provide you all the best programming news
+      you’ll ever need. Click above to start.
     </div>
     <da-settings v-if="showSettings"/>
     <da-bookmark-list v-if="showBookmarks"/>
@@ -151,7 +154,8 @@
     <da-referral v-if="showReferral" @close="setShowReferral(false)"/>
     <da-rank-popup v-if="showRankPopup" @close="closeRankPopup"/>
     <da-unlock-ui-modal v-if="showUnlockUi" @close="unlockFullUi"/>
-    <da-new-rank-modal v-if="readingRankLevelUp" @close="confirmedRankLevelUp"/>
+    <da-new-rank-modal v-if="readingRankLevelUp && !neverShowRankModal"
+                       @close="closeNewRankModal"/>
     <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened"
                 @close="setShowDndMenu(false)">
       <template v-if="!dndMode">
@@ -178,6 +182,7 @@ import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import DaRank from '@daily/components/src/components/DaRank.vue';
 import DaRankProgress from '@daily/components/src/components/DaRankProgress.vue';
+import { STEPS_PER_RANK } from '@daily/components/src/common/rank';
 import { BANNER_QUERY } from '../graphql/home';
 import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 import DaHeader from '../components/DaHeader.vue';
@@ -492,6 +497,13 @@ export default {
       this.doneOnboarding();
     },
 
+    closeNewRankModal(neverShow) {
+      this.confirmedRankLevelUp();
+      if (neverShow) {
+        this.setNeverShowRankModal(true);
+      }
+    },
+
     ...mapActions({
       backToMainFeed: 'feed/backToMainFeed',
       fetchNextFeedPage: 'feed/fetchNextFeedPage',
@@ -520,11 +532,12 @@ export default {
       doneOnboarding: 'ui/doneOnboarding',
       unlockFullUi: 'ui/unlockFullUi',
       confirmedRankLevelUp: 'user/confirmedRankLevelUp',
+      setNeverShowRankModal: 'ui/setNeverShowRankModal',
     }),
   },
 
   computed: {
-    ...mapState('ui', ['showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'minimalUi', 'onboarding', 'showUnlockUi']),
+    ...mapState('ui', ['showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'minimalUi', 'onboarding', 'showUnlockUi', 'neverShowRankModal']),
     ...mapGetters('ui', ['showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
@@ -562,6 +575,20 @@ export default {
 
       showSearchFeed(state) {
         return state.feed.search && state.feed.search.length;
+      },
+
+      rank(state) {
+        if (this.readingRankLevelUp && this.neverShowRankModal) {
+          return state.user.readingRank.nextRank;
+        }
+        return state.user.readingRank && state.user.readingRank.rank;
+      },
+
+      rankProgress(state) {
+        if (this.readingRankLevelUp && this.neverShowRankModal) {
+          return STEPS_PER_RANK[this.rank - 1];
+        }
+        return state.user.readingRank && state.user.readingRank.shownProgress;
       },
     }),
     showFilterHeader() {
@@ -1261,8 +1288,6 @@ export default {
   z-index: 31;
 
   &.signal {
-    overflow: hidden;
-
     &:before {
       content: '';
       position: absolute;

@@ -177,6 +177,7 @@ export default {
             firstBadgeAnimation.cancel();
             lastBadgeAnimation.cancel();
             attentionAnimation.cancel();
+            this.forceColor = false;
             this.$emit('rank-animation-end');
           };
         });
