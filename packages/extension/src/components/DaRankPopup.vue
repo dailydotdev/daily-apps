@@ -1,5 +1,5 @@
 <template>
-  <da-modal class="rank-modal border" :close-on-click="false" @close="$emit('close')">
+  <da-modal class="rank-modal border" @close="$emit('close')">
     <div class="rank-modal__progress-container top-icon">
       <da-rank-progress :rank="readingRank.rank" :progress="readingRank.progress"
                         :enable-hover="false" :fill-by-default="true"/>
@@ -8,8 +8,8 @@
     <div class="text micro2">Read content you love to stay updated</div>
     <ul class="rank-modal__ranks-list">
       <li v-for="rank in ranks" :key="rank.rank" class="ranks-list__item"
-          :class="{ active: rank.rank === readingRank }">
-        <da-rank :rank="rank.rank" :color-by-rank="rank.rank <= readingRank"/>
+          :class="{ active: rank.rank === readingRank.rank }">
+        <da-rank :rank="rank.rank" :color-by-rank="rank.rank <= readingRank.rank"/>
         <div class="ranks-list__items__description">
           <header class="lil2">{{rank.name}} level</header>
           <div class="text micro2">Read at least 1 article on {{rank.steps}} different days</div>

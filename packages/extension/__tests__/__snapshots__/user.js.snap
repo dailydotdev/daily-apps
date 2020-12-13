@@ -5,6 +5,7 @@ Object {
   "lastRead": null,
   "profile": null,
   "readingRank": Object {
+    "nextRank": 0,
     "progress": 0,
     "rank": 0,
     "shownProgress": 0,

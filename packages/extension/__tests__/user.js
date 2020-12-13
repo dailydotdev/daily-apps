@@ -180,12 +180,29 @@ it('should not increment progress when reading on the same day', async () => {
   );
 });
 
+it('should increment reading progress and level up rank', () => {
+  const now = new Date();
+  const state = {readingRank: {rank: 0, progress: 2}};
+  module.mutations.incrementReadingProgress(state, now);
+  expect(state).toEqual({
+    lastRead: now,
+    readingRank: {rank: 0, progress: 3, nextRank: 1},
+    readingRankLevelUp: true,
+  });
+});
+
 it('should update shown reading progress', () => {
   const state = {readingRank: {rank: 1, progress: 2, shownProgress: 0}};
   module.mutations.updateShownProgress(state);
   expect(state).toEqual({
     readingRank: {rank: 1, progress: 2, shownProgress: 2},
   });
+});
+
+it('should not update shown reading progress when leveling up', () => {
+  const state = {readingRank: {rank: 1, progress: 2, shownProgress: 0}, readingRankLevelUp: true};
+  module.mutations.updateShownProgress(state);
+  expect(state.readingRank.shownProgress).toEqual(0);
 });
 
 it('should fetch reading rank', async () => {
@@ -255,9 +272,17 @@ it('should not fetch reading rank when logged-out', async () => {
 
 it('should update reading rank', () => {
   const state = {readingRank: {rank: 1, progress: 2}};
+  module.mutations.updateReadingRank(state, {rank: 1, progress: 4});
+  expect(state).toEqual({
+    readingRank: {rank: 1, progress: 4},
+  });
+});
+
+it('should set leveling up when updating rank to a higher one', () => {
+  const state = {readingRank: {rank: 1, progress: 2}};
   module.mutations.updateReadingRank(state, {rank: 2, progress: 4});
   expect(state).toEqual({
-    readingRank: {rank: 2, progress: 4},
+    readingRank: {rank: 1, progress: 4, nextRank: 2}, readingRankLevelUp: true,
   });
 });
 
@@ -312,4 +337,12 @@ it('should reset rank', async () => {
     [{type: 'updateReadingRank', payload: {rank: 0, progress: 0}}],
     [{type: 'updateShownProgress'}]
   );
+});
+
+it('should finish the level up process', () => {
+  const state = {readingRank: {rank: 1, progress: 2, nextRank: 2}, readingRankLevelUp: true};
+  module.mutations.confirmedRankLevelUp(state, {rank: 2, progress: 4});
+  expect(state).toEqual({
+    readingRank: {rank: 2, progress: 2, nextRank: 2, shownProgress: 2}, readingRankLevelUp: false,
+  });
 });

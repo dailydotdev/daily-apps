@@ -26,6 +26,7 @@ const initialState = () => ({
   onboarding: true,
   minimalUi: true,
   showUnlockUi: false,
+  neverShowRankModal: false,
 });
 
 export default {
@@ -126,6 +127,10 @@ export default {
       state.showUnlockUi = false;
       state.minimalUi = false;
     },
+
+    setNeverShowRankModal(state, value) {
+      state.neverShowRankModal = value;
+    }
   },
   getters: {
     dndMode(state) {

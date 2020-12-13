@@ -1,5 +1,5 @@
 <template>
-  <da-modal class="unlock-ui-modal border" :close-on-click="false" @close="$emit('close')">
+  <da-modal class="unlock-ui-modal border" @close="$emit('close')">
     <svgicon name="v" class="top-icon"/>
     <h1>You made it!</h1>
     <p>Let’s show you cool stuff we got for you</p>
