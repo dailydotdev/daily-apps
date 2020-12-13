@@ -15,17 +15,17 @@
         <svgicon name="arrow"/>
       </button>
     </div>
-    <button class="rank-btn" @click="openRankPopup" :class="{ signal: onboarding }">
-      <div class="rank-btn__inner" v-if="onboarding">
+    <button class="rank-btn" @click="openRankPopup" :class="{ signal: showOnboarding }">
+      <div class="rank-btn__inner" v-if="showOnboarding">
         <da-rank :rank="1"/>
       </div>
       <da-rank-progress v-else :rank="rank" :progress="rankProgress"
         :show-rank-animation="readingRankLevelUp && neverShowRankModal"
         @rank-animation-end="confirmedRankLevelUp"/>
     </button>
-    <div v-if="onboarding" class="welcome-balloon micro2">
-      Welcome to your feed! Our mission is to provide you all the best programming news
-      you’ll ever need. Click above to start.
+    <div v-if="showOnboarding" class="welcome-balloon micro2">
+      Dear developer, our mission is to serve all the best programming news you’ll ever need.
+      Ready?
     </div>
     <da-settings v-if="showSettings"/>
     <da-bookmark-list v-if="showBookmarks"/>
@@ -88,7 +88,7 @@
                     <img :src="getIconUrl(item.url)" class="top-site__image"/>
                   </a>
                 </template>
-                <template v-else-if="!minimalUi">
+                <template v-else-if="!showMinimalUi">
                   <label for="top-sites-btn">
                     Show most visited sites
                   </label>
@@ -537,8 +537,8 @@ export default {
   },
 
   computed: {
-    ...mapState('ui', ['showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'minimalUi', 'onboarding', 'showUnlockUi', 'neverShowRankModal']),
-    ...mapGetters('ui', ['showReadyModal', 'dndMode']),
+    ...mapState('ui', ['showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'showUnlockUi', 'neverShowRankModal']),
+    ...mapGetters('ui', ['showReadyModal', 'dndMode', 'showMinimalUi', 'showOnboarding']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapState('user', ['readingRank', 'readingRankLevelUp']),
@@ -561,7 +561,7 @@ export default {
           [state.ui.insaneMode ? 'insane-mode' : 'card-mode']: true,
           'show-banner': this.showBanner,
           'show-bookmarks': this.showBookmarks,
-          onboarding: this.onboarding,
+          onboarding: this.showOnboarding,
         };
       },
 

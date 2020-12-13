@@ -144,6 +144,39 @@ it('should increment reading progress', () => {
   });
 });
 
+it('should increment reading progress and level up rank', () => {
+  const now = new Date();
+  const state = {readingRank: {rank: 0, progress: 2}};
+  module.mutations.incrementReadingProgress(state, now);
+  expect(state).toEqual({
+    lastRead: now,
+    readingRank: {rank: 0, progress: 3, nextRank: 1},
+    readingRankLevelUp: true,
+  });
+});
+
+it('should not increment reading progress when reached limit', () => {
+  const now = new Date();
+  const state = {readingRank: {rank: 0, progress: 3}};
+  module.mutations.incrementReadingProgress(state, now);
+  expect(state).toEqual({
+    lastRead: now,
+    readingRank: {rank: 0, progress: 3},
+  });
+});
+
+it('should increment reading progress when reached limit if logged-in', () => {
+  const now = new Date();
+  const state = { profile: { id: '1' }, readingRank: {rank: 0, progress: 3}};
+  module.mutations.incrementReadingProgress(state, now);
+  expect(state).toEqual({
+    profile: { id: '1' },
+    lastRead: now,
+    readingRank: {rank: 0, progress: 4, nextRank: 1},
+    readingRankLevelUp: true,
+  });
+});
+
 it('should increment progress if the user never read', async () => {
   const state = {profile: null, readingRank: {rank: 0, progress: 0}, lastRead: null};
   await testAction(
@@ -178,17 +211,6 @@ it('should not increment progress when reading on the same day', async () => {
     state,
     [],
   );
-});
-
-it('should increment reading progress and level up rank', () => {
-  const now = new Date();
-  const state = {readingRank: {rank: 0, progress: 2}};
-  module.mutations.incrementReadingProgress(state, now);
-  expect(state).toEqual({
-    lastRead: now,
-    readingRank: {rank: 0, progress: 3, nextRank: 1},
-    readingRankLevelUp: true,
-  });
 });
 
 it('should update shown reading progress', () => {
@@ -340,9 +362,18 @@ it('should reset rank', async () => {
 });
 
 it('should finish the level up process', () => {
-  const state = {readingRank: {rank: 1, progress: 2, nextRank: 2}, readingRankLevelUp: true};
-  module.mutations.confirmedRankLevelUp(state, {rank: 2, progress: 4});
+  const state = { profile: {id: '1'}, readingRank: {rank: 1, progress: 2, nextRank: 2}, readingRankLevelUp: true};
+  module.mutations.confirmedRankLevelUp(state);
   expect(state).toEqual({
+    profile: {id: '1'},
     readingRank: {rank: 2, progress: 2, nextRank: 2, shownProgress: 2}, readingRankLevelUp: false,
+  });
+});
+
+it('should finish the level up process and keep the same rank when not logged-in', () => {
+  const state = { readingRank: {rank: 0, progress: 2, nextRank: 2}, readingRankLevelUp: true};
+  module.mutations.confirmedRankLevelUp(state);
+  expect(state).toEqual({
+    readingRank: {rank: 0, progress: 2, nextRank: 2, shownProgress: 2}, readingRankLevelUp: false,
   });
 });

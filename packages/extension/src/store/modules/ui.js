@@ -144,6 +144,14 @@ export default {
     openNewTab(state) {
       return state.openNewTab;
     },
+
+    showMinimalUi(state, getters, rootState, rootGetters) {
+      return state.minimalUi && !rootGetters['user/isLoggedIn'];
+    },
+
+    showOnboarding(state, getters, rootState, rootGetters) {
+      return state.onboarding && !rootGetters['user/isLoggedIn'];
+    },
   },
   actions: {
     setTheme({ commit, state }, theme) {

@@ -34,7 +34,8 @@ beforeEach(() => {
     },
     getters: {
       topSitesInstructions: () => true,
-    },
+      showMinimalUi: jest.fn(),
+    }
   };
 
   feed = {
@@ -88,7 +89,7 @@ it('should set sign in button style to default while not in minimal ui mode', ()
 });
 
 it('should remove some buttons while in minimal ui mode', () => {
-  ui.state.minimalUi = true;
+  ui.getters.showMinimalUi.mockReturnValue(true);
   const wrapper = mount(DaHeader, { store, localVue });
   expect(wrapper.find('.btn-bookmarks').element).toBeFalsy();
   expect(wrapper.find('.header__cta').element).toBeFalsy();

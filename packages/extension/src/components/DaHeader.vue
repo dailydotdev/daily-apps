@@ -5,26 +5,26 @@
     </button>
     <div class="space"></div>
     <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
-       @click="ctaClick" v-if="!isPremium && !minimalUi"
+       @click="ctaClick" v-if="!isPremium && !showMinimalUi"
        href="https://daily.dev/win-free-t-shirt"
        target="_blank" rel="noopener noreferrer">
       <span class="header__cta__text">Win a free t-shirt</span>
       <svgicon class="header__cta__image" icon="gift"/>
     </a>
-    <div class="separator" v-if="!minimalUi"></div>
+    <div class="separator" v-if="!showMinimalUi"></div>
     <button class="btn-icon btn-bookmarks" v-tooltip.bottom="'Bookmarks'"
             :class="{ 'active': showBookmarks }" @click="toggleBookmarks(!showBookmarks)"
-            v-if="!minimalUi">
+            v-if="!showMinimalUi">
       <svgicon name="bookmark"/>
     </button>
     <button class="btn-icon btn-dnd" v-tooltip.bottom="'Do Not Disturb'"
             :class="{ 'active': showDndMenu }" @click="$emit('menu', $event)"
-            v-if="!minimalUi">
+            v-if="!showMinimalUi">
       <svgicon name="timer"/>
     </button>
     <button class="btn-icon btn-layout" v-tooltip.bottom="'Layout Settings'"
             :class="{ 'active': showSettings }" @click="setShowSettings(!showSettings)"
-            v-if="!minimalUi">
+            v-if="!showMinimalUi">
       <svgicon name="layout"/>
     </button>
     <a :href="profileLink" class="header__profile" v-if="isLoggedIn">
@@ -33,7 +33,7 @@
       <da-svg v-if="isPremium" src="/graphics/glitter_border.svg" class="glitter-mark"/>
     </a>
     <button class="btn header__sign-in" v-else
-            :class="minimalUi ? 'btn-menu' : 'btn-water-cheese'"
+            :class="showMinimalUi ? 'btn-menu' : 'btn-water-cheese'"
             @click="$emit('login')">
       <svgicon name="user_daily"/>
       <span>Sign in</span>
@@ -55,9 +55,8 @@ export default {
   },
 
   computed: {
-    ...mapState('ui', [
-      'showDndMenu', 'showSettings', 'ctaClicked', 'minimalUi',
-    ]),
+    ...mapState('ui', ['showDndMenu', 'showSettings', 'ctaClicked']),
+    ...mapGetters('ui', ['showMinimalUi']),
     ...mapState('feed', ['showBookmarks']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({

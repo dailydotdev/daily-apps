@@ -37,10 +37,12 @@ export default {
     },
     incrementReadingProgress(state, now = new Date()) {
       state.lastRead = now;
-      state.readingRank.progress += 1;
-      if (state.readingRank.progress >= STEPS_PER_RANK[state.readingRank.rank]) {
-        state.readingRank.nextRank = state.readingRank.rank + 1;
-        state.readingRankLevelUp = true;
+      if (!!state.profile || state.readingRank.progress < STEPS_PER_RANK[state.readingRank.rank]) {
+        state.readingRank.progress += 1;
+        if (state.readingRank.progress >= STEPS_PER_RANK[state.readingRank.rank]) {
+          state.readingRank.nextRank = state.readingRank.rank + 1;
+          state.readingRankLevelUp = true;
+        }
       }
     },
     updateShownProgress(state) {
@@ -64,7 +66,9 @@ export default {
     confirmedRankLevelUp(state) {
       state.readingRankLevelUp = false;
       state.readingRank.shownProgress = state.readingRank.progress;
-      state.readingRank.rank = state.readingRank.nextRank;
+      if (!!state.profile) {
+        state.readingRank.rank = state.readingRank.nextRank;
+      }
     },
   },
   getters: {
