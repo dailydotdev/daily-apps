@@ -182,3 +182,9 @@ it('should turn off minimal ui', async () => {
   expect(state.showUnlockUi).toBeFalsy();
   expect(state.minimalUi).toBeFalsy();
 });
+
+it('should set never show rank modal', async () => {
+  const state = { neverShowRankModal: true };
+  module.mutations.setNeverShowRankModal(state, false);
+  expect(state.neverShowRankModal).toBeFalsy();
+});

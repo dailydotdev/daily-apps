@@ -151,6 +151,7 @@
     <da-referral v-if="showReferral" @close="setShowReferral(false)"/>
     <da-rank-popup v-if="showRankPopup" @close="closeRankPopup"/>
     <da-unlock-ui-modal v-if="showUnlockUi" @close="unlockFullUi"/>
+    <da-new-rank-modal v-if="readingRankLevelUp" @close="confirmedRankLevelUp"/>
     <da-context ref="dndContext" class="dnd-context" @open="onDndMenuOpened"
                 @close="setShowDndMenu(false)">
       <template v-if="!dndMode">
@@ -241,6 +242,7 @@ export default {
     DaTopSitesModal: () => import('../components/DaTopSitesModal.vue'),
     DaRankPopup: () => import('../components/DaRankPopup.vue'),
     DaUnlockUiModal: () => import('../components/DaUnlockUiModal.vue'),
+    DaNewRankModal: () => import('../components/DaNewRankModal.vue'),
   },
 
   data() {
@@ -517,6 +519,7 @@ export default {
       confirmNewUser: 'user/confirmNewUser',
       doneOnboarding: 'ui/doneOnboarding',
       unlockFullUi: 'ui/unlockFullUi',
+      confirmedRankLevelUp: 'user/confirmedRankLevelUp',
     }),
   },
 
@@ -525,7 +528,7 @@ export default {
     ...mapGetters('ui', ['showReadyModal', 'dndMode']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
-    ...mapState('user', ['readingRank']),
+    ...mapState('user', ['readingRank', 'readingRankLevelUp']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
       title(state) {

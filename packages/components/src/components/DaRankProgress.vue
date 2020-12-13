@@ -46,6 +46,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showCurrentRankSteps: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -67,7 +71,7 @@ export default {
       return this.hover && this.hasRank ? 270 : 360;
     },
     steps() {
-      if (this.showRankAnimation) {
+      if (this.showRankAnimation || this.showCurrentRankSteps) {
         return STEPS_PER_RANK[this.rank - 1];
       }
       if (!this.finalRank) {
@@ -173,7 +177,7 @@ export default {
             firstBadgeAnimation.cancel();
             lastBadgeAnimation.cancel();
             attentionAnimation.cancel();
-            this.$emit('rankAnimationEnd');
+            this.$emit('rank-animation-end');
           };
         });
       };
@@ -205,6 +209,8 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
+    width: 66.666%;
+    height: 66.666%;
     margin: auto;
 
     --stop-color1: var(--theme-active);
@@ -217,10 +223,10 @@ export default {
 
   & .rank-progress__next {
     position: absolute;
-    left: 32px;
-    top: 32px;
-    width: 24px;
-    height: 24px;
+    left: 66.666%;
+    top: 66.666%;
+    width: 50%;
+    height: 50%;
     opacity: 0;
 
     --stop-color1: var(--theme-active);

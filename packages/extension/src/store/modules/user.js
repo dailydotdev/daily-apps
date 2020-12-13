@@ -3,6 +3,7 @@ import { apolloClient } from '../../apollo';
 import { authService } from '../../common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../../common/cache';
 import { USER_READING_RANK_QUERY } from '../../graphql/home';
+import {STEPS_PER_RANK} from "@daily/components/src/common/rank";
 
 const updateAnalyticsUser = id => setCache(ANALYTICS_ID_KEY, id);
 
@@ -12,7 +13,9 @@ const initialState = () => ({
     rank: 0,
     progress: 0,
     shownProgress: 0,
+    nextRank: 0,
   },
+  readingRankLevelUp: false,
   lastRead: null,
 });
 
@@ -35,16 +38,33 @@ export default {
     incrementReadingProgress(state, now = new Date()) {
       state.lastRead = now;
       state.readingRank.progress += 1;
+      if (state.readingRank.progress >= STEPS_PER_RANK[state.readingRank.rank]) {
+        state.readingRank.nextRank = state.readingRank.rank + 1;
+        state.readingRankLevelUp = true;
+      }
     },
     updateShownProgress(state) {
+      if (state.readingRankLevelUp) {
+        return;
+      }
       state.readingRank.shownProgress = state.readingRank.progress;
     },
     updateReadingRank(state, { rank, progress }) {
-      state.readingRank.rank = rank;
+      if (rank > state.readingRank.rank) {
+        state.readingRankLevelUp = true;
+        state.readingRank.nextRank = rank;
+      } else {
+        state.readingRank.rank = rank;
+      }
       state.readingRank.progress = progress;
     },
     setLastReadToToday(state) {
       state.lastRead = startOfToday();
+    },
+    confirmedRankLevelUp(state) {
+      state.readingRankLevelUp = false;
+      state.readingRank.shownProgress = state.readingRank.progress;
+      state.readingRank.rank = state.readingRank.nextRank;
     },
   },
   getters: {
