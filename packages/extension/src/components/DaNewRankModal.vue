@@ -9,7 +9,7 @@
     </div>
     <da-rank-progress class="new-rank-modal__rank-progress" v-else
                       :progress="steps" :rank="currentRank" :enable-hover="false"
-                      :show-rank-animation="animatingRank"
+                      :show-rank-animation="animatingRank" fill-by-default
                       @rank-animation-end="onRankAnimationEnd"/>
     <h1>{{ title }}</h1>
     <p>
@@ -173,6 +173,14 @@ export default {
       this.rankAnimationEnded = true;
     },
 
+    animateRank() {
+      if (document.visibilityState === 'hidden') {
+        document.addEventListener('visibilitychange', () => setTimeout(() => this.animateRank(), 1000), { once: true });
+      } else {
+        this.animatingRank = true;
+      }
+    },
+
     ...mapMutations({
       setNeverShowRankModal: 'ui/setNeverShowRankModal',
     }),
@@ -180,9 +188,7 @@ export default {
 
   mounted() {
     this.updateColors();
-    setTimeout(() => {
-      this.animatingRank = true;
-    }, 1000);
+    setTimeout(() => this.animateRank(), 1000);
   },
 };
 </script>
