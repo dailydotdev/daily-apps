@@ -5,7 +5,6 @@
                         :max-degrees="maxDegrees" @transitionend="onProgressTransitionEnd"
                         ref="progress"/>
     <da-rank class="rank-progress__badge" :rank="shownRank" ref="badge"/>
-    <da-rank class="rank-progress__next" :rank="rank+1" v-if="hasRank && !finalRank"/>
     <transition name="rank-notification-slide-down">
       <div class="rank-progress__notification nuggets"
            v-if="animatingProgress && !showRankAnimation">
@@ -58,6 +57,7 @@ export default {
       progressDelta: 1,
       forceColor: false,
       shownRank: this.showRankAnimation ? this.rank - 1 : this.rank,
+      maxDegrees: 360,
     };
   },
   computed: {
@@ -67,11 +67,9 @@ export default {
     hasRank() {
       return this.shownRank > 0;
     },
-    maxDegrees() {
-      return this.hover && this.hasRank ? 270 : 360;
-    },
     steps() {
-      if (this.showRankAnimation || this.showCurrentRankSteps) {
+      if (this.showRankAnimation || this.showCurrentRankSteps
+        || (this.finalRank && this.progress < STEPS_PER_RANK[this.rank - 1])) {
         return STEPS_PER_RANK[this.rank - 1];
       }
       if (!this.finalRank) {
@@ -222,18 +220,6 @@ export default {
     }
   }
 
-  & .rank-progress__next {
-    position: absolute;
-    left: 66.666%;
-    top: 66.666%;
-    width: 50%;
-    height: 50%;
-    opacity: 0;
-
-    --stop-color1: var(--theme-active);
-    --stop-color2: var(--theme-active);
-  }
-
   & .rank-progress__notification {
     position: absolute;
     left: -51px;
@@ -259,12 +245,6 @@ export default {
 
     & .rank-progress__bar {
       --radial-progress-completed-step: var(--rank-color);
-    }
-  }
-
-  &.hover {
-    & .rank-progress__next {
-      opacity: 1;
     }
   }
 }
