@@ -247,7 +247,9 @@ export default {
       post.read = true;
       this.trackEngagementWin({ action: 'POST_CLICK' });
       ga('send', 'event', 'Post', 'Click', post.source);
-      this.checkFullUi();
+      if (!this.isLoggedIn) {
+        this.checkFullUi();
+      }
       if (!read) {
         this.updateRankProgress();
       }

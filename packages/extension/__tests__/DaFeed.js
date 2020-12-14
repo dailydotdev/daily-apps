@@ -438,10 +438,18 @@ it('should close comment popup on close button click', async () => {
 });
 
 it('should check for full ui eligibility on post click', async () => {
+  store.state.user.profile = null;
   const wrapper = mount(DaFeed, {store, localVue});
   wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
   await wrapper.vm.$nextTick();
   expect(ui.mutations.checkFullUi).toBeCalledTimes(1);
+});
+
+it('should not check for full ui eligibility on post click when logged-in', async () => {
+  const wrapper = mount(DaFeed, {store, localVue});
+  wrapper.vm.$refs.posts[0].$emit('click', feed.state.posts[0]);
+  await wrapper.vm.$nextTick();
+  expect(ui.mutations.checkFullUi).toBeCalledTimes(0);
 });
 
 it('should update rank progress on post click', async () => {
