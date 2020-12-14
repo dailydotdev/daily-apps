@@ -9,7 +9,7 @@
     <transition name="rank-notification-slide-down">
       <div class="rank-progress__notification nuggets"
            v-if="animatingProgress && !showRankAnimation">
-        +{{ progressDelta }} Reading article
+        +{{ progressDelta }} Article{{ progressDelta > 1 ? 's' : ''}} read
       </div>
     </transition>
   </div>

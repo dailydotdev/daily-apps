@@ -400,6 +400,7 @@ export default {
     },
 
     async backToMainFeed({ commit, dispatch }) {
+      commit('setShowBookmarks', false);
       commit('setSearch', null);
       return dispatch('setFilter', null);
     },
