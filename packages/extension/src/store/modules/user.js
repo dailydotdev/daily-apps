@@ -36,8 +36,10 @@ export default {
       state.lastRead = null;
     },
     incrementReadingProgress(state, now = new Date()) {
+      const maxProgress = STEPS_PER_RANK[STEPS_PER_RANK.length - 1];
+      const { progress } = state.readingRank;
       state.lastRead = now;
-      if (!!state.profile || state.readingRank.progress < STEPS_PER_RANK[state.readingRank.rank]) {
+      if ((!!state.profile || progress < STEPS_PER_RANK[state.readingRank.rank]) && progress < maxProgress) {
         state.readingRank.progress += 1;
         if (state.readingRank.progress >= STEPS_PER_RANK[state.readingRank.rank]) {
           state.readingRank.nextRank = state.readingRank.rank + 1;

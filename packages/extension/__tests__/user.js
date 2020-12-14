@@ -155,7 +155,7 @@ it('should increment reading progress and level up rank', () => {
   });
 });
 
-it('should not increment reading progress when reached limit', () => {
+it('should not increment reading progress when reached anonymous limit', () => {
   const now = new Date();
   const state = {readingRank: {rank: 0, progress: 3}};
   module.mutations.incrementReadingProgress(state, now);
@@ -174,6 +174,16 @@ it('should increment reading progress when reached limit if logged-in', () => {
     lastRead: now,
     readingRank: {rank: 0, progress: 4, nextRank: 1},
     readingRankLevelUp: true,
+  });
+});
+
+it('should not increment reading progress when reached limit', () => {
+  const now = new Date();
+  const state = {readingRank: {rank: 5, progress: 7}};
+  module.mutations.incrementReadingProgress(state, now);
+  expect(state).toEqual({
+    lastRead: now,
+    readingRank: {rank: 5, progress: 7},
   });
 });
 
