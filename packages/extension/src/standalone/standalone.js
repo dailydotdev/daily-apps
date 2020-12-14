@@ -43,7 +43,7 @@ const loadFromCache = async () => {
 
   document.documentElement.classList.add('loaded');
 
-  if (state.ui.dndModeTime && !isDnd) {
+  if (state.ui && state.ui.dndModeTime && !isDnd) {
     store.commit('ui/disableDndMode');
   }
   await apolloCacheLoad;

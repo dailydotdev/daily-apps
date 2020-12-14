@@ -170,7 +170,9 @@ export default {
     },
 
     onRankAnimationEnd() {
-      this.rankAnimationEnded = true;
+      setTimeout(() => {
+        this.rankAnimationEnded = true;
+      }, 700);
     },
 
     animateRank() {
@@ -188,7 +190,7 @@ export default {
 
   mounted() {
     this.updateColors();
-    setTimeout(() => this.animateRank(), 1000);
+    setTimeout(() => this.animateRank(), 1500);
   },
 };
 </script>
@@ -310,7 +312,7 @@ export default {
 
 .confetti-transition-enter-active, .confetti-transition-leave-active {
   transform-origin: center;
-  transition: opacity 0.2s linear, transform 0.2s ease-out;
+  transition: opacity 0.3s linear, transform 0.3s ease-out;
   will-change: opacity, transform;
 }
 
