@@ -1,10 +1,12 @@
 <template>
   <div class="home page" :class="clsObj">
-    <da-banner :theme="banner.theme" :title="banner.title"
-               :subtitle="banner.subtitle" :cta="banner.cta"
-               :url="banner.url" v-if="showBanner" @close="closeBanner"/>
+    <div class="home banners">
+      <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
+      <da-banner :theme="banner.theme" :title="banner.title"
+                :subtitle="banner.subtitle" :cta="banner.cta"
+                :url="banner.url" v-if="showBanner" @close="closeBanner"/>
+    </div>
     <da-header @go="onGoClicked" @login="onLogin('Header')" @menu="onDndMenu"></da-header>
-    <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
     <div class="sidebar-container" :class="{opened: sidebarOpened}" v-show="!showBookmarks">
       <da-sidebar
         @loaded="fetchStage += 1"
@@ -813,11 +815,13 @@ export default {
     }
   }
 
-  & .banner {
+  & .banners {
     position: fixed;
     left: 0;
+    right: 0;
     top: 0;
     height: var(--banner-height);
+    z-index: 31;
   }
 }
 
@@ -1288,7 +1292,7 @@ export default {
   border: none;
   border-radius: 100%;
   cursor: pointer;
-  z-index: 31;
+  z-index: 30;
 
   &.signal {
     &:before {
