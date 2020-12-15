@@ -4,7 +4,10 @@
        :title="ad.description" @click="onClick" @click.middle="onClick">
       <div class="post__title card__hmargin lil1 multiline-text-overflow">{{ad.description}}</div>
       <div class="card__image post__vmargin" :style="imgStyle">
-        <img :data-src="ad.image" :data-lowsrc="ad.placeholder" alt="Ad image" class="lazyload"/>
+        <img :data-src="ad.image" :data-lowsrc="ad.placeholder" alt="Ad image"
+             class="lazyload main"/>
+        <img :data-src="ad.image" :data-lowsrc="ad.placeholder" alt="Ad background image"
+             class="lazyload blur" v-if="ad.source === 'Carbon'"/>
       </div>
     </a>
     <div class="post__metadata card__hmargin">
@@ -54,15 +57,18 @@ export default {
     margin-top: auto;
   }
 
-  &.BSA .card__image img {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    max-width: 250px;
-    max-height: 100px;
-    margin: auto;
+  &.Carbon .card__image {
+    & .main {
+      object-fit: contain;
+    }
+
+    & .blur {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      filter: blur(20px);
+    }
   }
 
   & .post__metadata {
