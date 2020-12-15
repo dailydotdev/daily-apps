@@ -40,6 +40,7 @@ export default {
 .banner {
   display: flex;
   width: 100%;
+  height: var(--banner-height);
   padding: 0 12px;
   color: var(--theme-primary);
   background: var(--theme-background-primary);
