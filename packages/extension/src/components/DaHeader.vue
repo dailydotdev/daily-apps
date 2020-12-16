@@ -38,6 +38,14 @@
       <svgicon name="user_daily"/>
       <span>Sign in</span>
     </button>
+    <button class="rank-btn" @click="$emit('rank', $event)" :class="{ signal: showOnboarding }">
+      <div class="rank-btn__inner" v-if="showOnboarding">
+        <da-rank :rank="1"/>
+      </div>
+      <da-rank-progress v-else :rank="rank" :progress="rankProgress"
+        :show-rank-animation="readingRankLevelUp && neverShowRankModal"
+        @rank-animation-end="confirmedRankLevelUp"/>
+    </button>
   </header>
 </template>
 
@@ -46,19 +54,25 @@ import {
   mapState, mapMutations, mapGetters, mapActions,
 } from 'vuex';
 import DaSvg from './DaSvg.vue';
+import DaRank from '@daily/components/src/components/DaRank.vue';
+import DaRankProgress from '@daily/components/src/components/DaRankProgress.vue';
+import { STEPS_PER_RANK } from '@daily/components/src/common/rank';
 
 export default {
   name: 'DaHeader',
 
   components: {
     DaSvg,
+    DaRank,
+    DaRankProgress,
   },
 
   computed: {
-    ...mapState('ui', ['showDndMenu', 'showSettings', 'ctaClicked']),
-    ...mapGetters('ui', ['showMinimalUi']),
+    ...mapState('ui', ['showDndMenu', 'showSettings', 'ctaClicked', 'neverShowRankModal']),
+    ...mapGetters('ui', ['showMinimalUi', 'showOnboarding']),
     ...mapState('feed', ['showBookmarks']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
+    ...mapState('user', ['readingRank', 'readingRankLevelUp']),
     ...mapState({
       profileImage(state) {
         if (this.isLoggedIn) {
@@ -80,6 +94,20 @@ export default {
         }
 
         return 0;
+      },
+
+      rank(state) {
+        if (this.readingRankLevelUp && this.neverShowRankModal) {
+          return state.user.readingRank.nextRank;
+        }
+        return state.user.readingRank && state.user.readingRank.rank;
+      },
+
+      rankProgress(state) {
+        if (this.readingRankLevelUp && this.neverShowRankModal) {
+          return STEPS_PER_RANK[this.rank - 1];
+        }
+        return state.user.readingRank && state.user.readingRank.shownProgress;
       },
     }),
   },
@@ -116,6 +144,7 @@ export default {
 
     ...mapMutations({
       setShowSettings: 'ui/setShowSettings',
+      confirmedRankLevelUp: 'user/confirmedRankLevelUp',
     }),
 
     ...mapActions({
@@ -127,9 +156,6 @@ export default {
 
 <style>
 .header {
-  position: absolute;
-  left: 0;
-  top: 0;
   display: flex;
   width: 100%;
   height: 56px;
@@ -296,5 +322,70 @@ export default {
       display: inline-block;
     }
   }
+}
+
+@keyframes rank-attention {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.rank-btn {
+  position: absolute;
+  display: flex;
+  left: 0;
+  right: 0;
+  top: 16px ;
+  width: 80px;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background: var(--theme-background-primary);
+  border: none;
+  border-radius: 100%;
+  cursor: pointer;
+  z-index: 30;
+
+  &.signal {
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--theme-hover);
+      border-radius: 100%;
+      z-index: -1;
+      transition: background 0.1s linear;
+      animation: rank-attention 2s infinite ease-in-out;
+    }
+
+    &:hover {
+      &:before {
+        background: var(--theme-active);
+      }
+    }
+  }
+}
+
+.rank-btn__inner {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  background: var(--theme-primary);
+  border-radius: 100%;
+  box-shadow: 0 8px 16px 2px var(--theme-active);
+
+  --stop-color1: var(--theme-background-primary);
+  --stop-color2: var(--theme-background-primary);
 }
 </style>
