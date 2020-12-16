@@ -247,16 +247,6 @@ it('should open rank popup when clicking on the rank', async () => {
   expect(wrapper.find('.rank-modal').element).toBeTruthy();
 });
 
-it('should open rank popup when clicking on the rank', async () => {
-  ui.getters.showOnboarding.mockReturnValue(true);
-  const wrapper = mount(DaHome, { store, localVue });
-  expect(wrapper.find('.rank-modal').element).toBeFalsy();
-  wrapper.find('.rank-btn').trigger('click');
-  await wrapper.vm.$nextTick();
-  await wrapper.vm.$nextTick();
-  expect(wrapper.find('.rank-modal').element).toBeTruthy();
-});
-
 it('should finish onboarding when closing the rank popup', async () => {
   ui.getters.showOnboarding.mockReturnValue(true);
   const wrapper = mount(DaHome, { store, localVue });
