@@ -4,7 +4,9 @@
   <da-banner :theme="banner.theme" :title="banner.title"
             :subtitle="banner.subtitle" :cta="banner.cta"
             :url="banner.url" v-if="showBanner" @close="closeBanner"/>
-    <da-header @go="onGoClicked" @login="onLogin('Header')" @menu="onDndMenu" @rank="openRankPopup"></da-header>
+    <da-header @go="onGoClicked" @login="onLogin('Header')" @menu="onDndMenu"
+      @rank="openRankPopup">
+    </da-header>
     <div class="sidebar-container" :class="{opened: sidebarOpened}" v-show="!showBookmarks">
       <da-sidebar
         @loaded="fetchStage += 1"

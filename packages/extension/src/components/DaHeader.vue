@@ -53,10 +53,10 @@
 import {
   mapState, mapMutations, mapGetters, mapActions,
 } from 'vuex';
-import DaSvg from './DaSvg.vue';
 import DaRank from '@daily/components/src/components/DaRank.vue';
 import DaRankProgress from '@daily/components/src/components/DaRankProgress.vue';
 import { STEPS_PER_RANK } from '@daily/components/src/common/rank';
+import DaSvg from './DaSvg.vue';
 
 export default {
   name: 'DaHeader',
