@@ -551,7 +551,6 @@ export default {
         return {
           [state.ui.spaciness]: true,
           [state.ui.insaneMode ? 'insane-mode' : 'card-mode']: true,
-          'show-banner': this.showBanner,
           'show-bookmarks': this.showBookmarks,
           onboarding: this.showOnboarding,
         };
@@ -776,14 +775,6 @@ export default {
 
     @media (min-width: 2438px) {
       @mixin cards-xl;
-    }
-  }
-
-  &.show-banner {
-    margin-top: var(--banner-height);
-
-    & .sidebar {
-      padding-top: var(--banner-height);
     }
   }
 }
