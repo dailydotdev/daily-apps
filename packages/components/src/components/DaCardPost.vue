@@ -64,8 +64,7 @@
         <!-- eslint-disable-next-line max-len -->
         <div class="post__comment-content post__vmargin lil1 multiline-text-overflow">{{selectedComment.content}}</div>
       </div>
-      <div class="post__buttons">
-        <div class="post__hseparator"></div>
+      <div class="post__buttons post__buttons-featured-comment">
         <a class="btn btn-menu"
            :href="selectedComment.permalink" target="_blank"
            rel="noopener noreferrer" @click="onCommentClick">
@@ -167,6 +166,13 @@ export default {
 
   & .post__comment {
     margin-bottom: 16px;
+  }
+
+  & .post__buttons-featured-comment {
+    flex-direction: column;
+    margin: 0 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--theme-hover);
   }
 
   & .post__comment-popup__buttons {
