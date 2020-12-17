@@ -40,13 +40,13 @@ export default {
 .banner {
   display: flex;
   width: 100%;
+  height: var(--banner-height);
   padding: 0 12px;
   color: var(--theme-primary);
   background: var(--theme-background-primary);
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  z-index: 31;
 
   --bacon-onion: linear-gradient(270deg, var(--color-bacon-60) 0%, var(--color-onion-60) 100%);
 

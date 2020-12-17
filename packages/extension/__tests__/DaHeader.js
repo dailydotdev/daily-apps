@@ -35,6 +35,7 @@ beforeEach(() => {
     getters: {
       topSitesInstructions: () => true,
       showMinimalUi: jest.fn(),
+      showOnboarding: jest.fn(),
     }
   };
 
@@ -52,6 +53,11 @@ beforeEach(() => {
     namespaced: true,
     state: {
       profile: null,
+      readingRank: {
+        rank: 0,
+        progress: 0,
+        shownProgress: 0,
+      },
     },
     getters: {
       isLoggedIn: state => !!state.profile,

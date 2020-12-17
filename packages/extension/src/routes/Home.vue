@@ -1,10 +1,12 @@
 <template>
   <div class="home page" :class="clsObj">
-    <da-banner :theme="banner.theme" :title="banner.title"
-               :subtitle="banner.subtitle" :cta="banner.cta"
-               :url="banner.url" v-if="showBanner" @close="closeBanner"/>
-    <da-header @go="onGoClicked" @login="onLogin('Header')" @menu="onDndMenu"></da-header>
-    <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
+  <da-dnd-message v-if="dndMode" @dndOff="onDisableDndMode"/>
+  <da-banner :theme="banner.theme" :title="banner.title"
+            :subtitle="banner.subtitle" :cta="banner.cta"
+            :url="banner.url" v-if="showBanner" @close="closeBanner"/>
+    <da-header @go="onGoClicked" @login="onLogin('Header')" @menu="onDndMenu"
+      @rank="openRankPopup">
+    </da-header>
     <div class="sidebar-container" :class="{opened: sidebarOpened}" v-show="!showBookmarks">
       <da-sidebar
         @loaded="fetchStage += 1"
@@ -15,14 +17,6 @@
         <svgicon name="arrow"/>
       </button>
     </div>
-    <button class="rank-btn" @click="openRankPopup" :class="{ signal: showOnboarding }">
-      <div class="rank-btn__inner" v-if="showOnboarding">
-        <da-rank :rank="1"/>
-      </div>
-      <da-rank-progress v-else :rank="rank" :progress="rankProgress"
-        :show-rank-animation="readingRankLevelUp && neverShowRankModal"
-        @rank-animation-end="confirmedRankLevelUp"/>
-    </button>
     <div v-if="showOnboarding" class="welcome-balloon micro2">
       Dear developer, our mission is to serve all the best programming news you’ll ever need.
       Ready?
@@ -181,9 +175,6 @@ import {
 } from 'vuex';
 import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
-import DaRank from '@daily/components/src/components/DaRank.vue';
-import DaRankProgress from '@daily/components/src/components/DaRankProgress.vue';
-import { STEPS_PER_RANK } from '@daily/components/src/common/rank';
 import DaScroll from '@daily/components/src/components/DaScroll.vue';
 import { BANNER_QUERY } from '../graphql/home';
 import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
@@ -228,8 +219,6 @@ export default {
     DaHeader,
     DaSvg,
     DaFeed,
-    DaRank,
-    DaRankProgress,
     DaScroll,
     DaSidebar: () => import('../components/DaSidebar.vue'),
     DaDndMessage: () => import('../components/DaDndMessage.vue'),
@@ -544,7 +533,7 @@ export default {
     ...mapGetters('ui', ['showReadyModal', 'dndMode', 'showMinimalUi', 'showOnboarding']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
-    ...mapState('user', ['readingRank', 'readingRankLevelUp']),
+    ...mapState('user', ['readingRankLevelUp']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState({
       title(state) {
@@ -562,7 +551,6 @@ export default {
         return {
           [state.ui.spaciness]: true,
           [state.ui.insaneMode ? 'insane-mode' : 'card-mode']: true,
-          'show-banner': this.showBanner,
           'show-bookmarks': this.showBookmarks,
           onboarding: this.showOnboarding,
         };
@@ -578,20 +566,6 @@ export default {
 
       showSearchFeed(state) {
         return state.feed.search && state.feed.search.length;
-      },
-
-      rank(state) {
-        if (this.readingRankLevelUp && this.neverShowRankModal) {
-          return state.user.readingRank.nextRank;
-        }
-        return state.user.readingRank && state.user.readingRank.rank;
-      },
-
-      rankProgress(state) {
-        if (this.readingRankLevelUp && this.neverShowRankModal) {
-          return STEPS_PER_RANK[this.rank - 1];
-        }
-        return state.user.readingRank && state.user.readingRank.shownProgress;
       },
     }),
     showFilterHeader() {
@@ -738,7 +712,6 @@ export default {
 }
 
 .home.page {
-  padding-top: 56px;
 
   --banner-height: 40px;
   --cards-margin: 32px;
@@ -803,21 +776,6 @@ export default {
     @media (min-width: 2438px) {
       @mixin cards-xl;
     }
-  }
-
-  &.show-banner {
-    margin-top: var(--banner-height);
-
-    & .sidebar {
-      padding-top: var(--banner-height);
-    }
-  }
-
-  & .banner {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: var(--banner-height);
   }
 }
 
@@ -1260,71 +1218,6 @@ export default {
       box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.08);
     }
   }
-}
-
-@keyframes rank-attention {
-  0% {
-    transform: scale(0.5);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-.rank-btn {
-  position: absolute;
-  display: flex;
-  left: 0;
-  right: 0;
-  top: 16px;
-  width: 80px;
-  height: 80px;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  background: var(--theme-background-primary);
-  border: none;
-  border-radius: 100%;
-  cursor: pointer;
-  z-index: 31;
-
-  &.signal {
-    &:before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--theme-hover);
-      border-radius: 100%;
-      z-index: -1;
-      transition: background 0.1s linear;
-      animation: rank-attention 2s infinite ease-in-out;
-    }
-
-    &:hover {
-      &:before {
-        background: var(--theme-active);
-      }
-    }
-  }
-}
-
-.rank-btn__inner {
-  display: flex;
-  width: 48px;
-  height: 48px;
-  align-items: center;
-  justify-content: center;
-  background: var(--theme-primary);
-  border-radius: 100%;
-  box-shadow: 0 8px 16px 2px var(--theme-active);
-
-  --stop-color1: var(--theme-background-primary);
-  --stop-color2: var(--theme-background-primary);
 }
 
 .welcome-balloon {
