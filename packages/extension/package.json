@@ -3,15 +3,15 @@
   "version": "2.27.3",
   "private": true,
   "scripts": {
-    "serve": "TARGET=development yarn manifest && vue-cli-service build --mode development --watch",
+    "serve": "cross-env TARGET=development yarn manifest && vue-cli-service build --mode development --watch",
     "build": "yarn manifest && vue-cli-service build",
-    "build:chrome": "TARGET=chrome yarn build --mode chrome",
-    "build:firefox": "TARGET=firefox yarn build --mode firefox",
+    "build:chrome": "cross-env TARGET=chrome yarn build --mode chrome",
+    "build:firefox": "cross-env TARGET=firefox yarn build --mode firefox",
     "build:all": "yarn build:chrome && yarn build:firefox && yarn zip:src",
     "test": "yarn lint && vue-cli-service test:unit",
     "lint": "vue-cli-service lint ./src/**/*.js ./src/**/*.vue ./__tests__/**/*.js",
     "test:unit": "vue-cli-service test:unit",
-    "test:ci": "yarn lint && JEST_JUNIT_OUTPUT=../../test-results/extension/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit && bundlesize",
+    "test:ci": "yarn lint && cross-env JEST_JUNIT_OUTPUT=../../test-results/extension/junit.xml vue-cli-service test:unit --ci --reporters=jest-junit && bundlesize",
     "zip:src": "node build/zip-src.js",
     "manifest": "node build/manifest.js"
   },
@@ -41,7 +41,8 @@
     "vue-apollo": "^3.0.3",
     "vue-router": "^3.0.2",
     "vuex": "^3.0.1",
-    "webextension-polyfill": "^0.4.0"
+    "webextension-polyfill": "^0.4.0",
+    "cross-env": "^7.0.3"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.4.4",
