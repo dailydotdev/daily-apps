@@ -68,7 +68,7 @@ it('should reset settings', () => {
     showTopSites: false,
     showOnlyNotReadPosts: false,
     openNewTab: true,
-    spaciness: 'roomy',
+    spaciness: 'eco',
   });
 });
 

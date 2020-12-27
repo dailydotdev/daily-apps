@@ -1,4 +1,4 @@
-import { isToday, startOfToday, isThisISOWeek } from 'date-fns';
+import { isToday, startOfToday, isThisISOWeek, differenceInMilliseconds } from 'date-fns';
 import { apolloClient } from '../../apollo';
 import { authService } from '../../common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../../common/cache';
@@ -110,6 +110,12 @@ export default {
           const redirectUri = browser.extension.getURL('index.html');
           window.location.href = `${profile.registrationLink}?redirect_uri=${encodeURI(redirectUri)}`;
           return;
+        }
+        if (profile.accessToken) {
+          const expiresInMillis = differenceInMilliseconds(new Date(), new Date(profile.accessToken.expiresIn));
+          // Refresh token before it expires
+          setTimeout(() => dispatch('validateAuth'), expiresInMillis - 1000 * 60 * 2);
+          profile.accessToken = undefined;
         }
         if (state.profile && state.profile.id === profile.id) {
           // Keep newUser true according multiple sessions until confirmed
