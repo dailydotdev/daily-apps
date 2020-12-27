@@ -112,7 +112,7 @@ export default {
           return;
         }
         if (profile.accessToken) {
-          const expiresInMillis = differenceInMilliseconds(new Date(), new Date(profile.accessToken.expiresIn));
+          const expiresInMillis = differenceInMilliseconds(new Date(profile.accessToken.expiresIn), new Date());
           // Refresh token before it expires
           setTimeout(() => dispatch('validateAuth'), expiresInMillis - 1000 * 60 * 2);
           profile.accessToken = undefined;
