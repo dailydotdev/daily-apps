@@ -4,7 +4,7 @@ import { FIRST_INSTALL_KEY, getCache } from '../../common/cache';
 const initialState = () => ({
   theme: null,
   insaneMode: false,
-  spaciness: 'roomy',
+  spaciness: 'eco',
   dndModeTime: null,
   showDndMenu: false,
   showTopSites: false,

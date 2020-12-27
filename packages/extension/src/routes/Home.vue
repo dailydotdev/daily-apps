@@ -376,11 +376,10 @@ export default {
       }
     },
 
-    criticalFetch() {
-      const loadFeed = this.fetchNextFeedPage()
+    async criticalFetch() {
+      await this.validateAuth();
+      return this.fetchNextFeedPage()
         .then(() => requestIdleCallback(() => this.contentObserver.observe(this.$refs.anchor)));
-      const loadAuth = this.validateAuth();
-      return Promise.all([loadFeed, loadAuth]);
     },
 
     operationalFetch() {
