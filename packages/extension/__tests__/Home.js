@@ -40,6 +40,7 @@ beforeEach(() => {
   feed = {
     namespaced: true,
     state: {
+      enabledTags: {},
       publications: [],
       posts: [],
       showBookmarks: false,
