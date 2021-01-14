@@ -212,6 +212,7 @@ it('should commit "setEnableTag" when adding tag', (done) => {
 it('should activate request source form', async () => {
   user.state.profile = { name: 'John' };
   const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.vm.filterChecked = false;
   await wrapper.vm.$nextTick();
   wrapper.find('.sidebar__sources__act-req').trigger('click');
   expect(ui.mutations.setShowNewSource).toBeCalledWith(expect.anything(), true);
@@ -220,6 +221,7 @@ it('should activate request source form', async () => {
 it('should dispatch "setFilter" with publication filter', (done) => {
   const wrapper = mount(DaSidebar, { store, localVue });
   wrapper.setData({ rawPublications: pubs, rawTags: tags });
+  wrapper.vm.filterChecked = false;
   wrapper.vm.$nextTick(() => {
     wrapper
       .find('.sidebar__sources .sidebar__disabled')
@@ -277,6 +279,7 @@ it('should get the right placeholder name for the search input', async () => {
   let expected;
 
   const wrapper = mount(DaSidebar, { store, localVue });
+  wrapper.vm.filterChecked = false;
   expected = 'Search Sources';
 
   expect(wrapper.vm.searchPlaceholder).toBe(expected);
@@ -292,6 +295,7 @@ describe('SEARCH: Publications', () => {
   it('should filter publications depending on input value', async () => {
     const wrapper = mount(DaSidebar, { store, localVue });
     wrapper.setData({ rawPublications: pubs, rawTags: tags });
+    wrapper.vm.filterChecked = false;
     const disabledPublicationsSelector = '.sidebar__sources .sidebar__disabled .sidebar__element.btn';
     const enabledPublicationsSelector = '.sidebar__sources .sidebar__enabled .sidebar__element.btn';
     const expected = pubs[1];

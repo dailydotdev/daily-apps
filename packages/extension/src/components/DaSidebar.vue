@@ -159,7 +159,7 @@ export default {
 
   data() {
     return {
-      filterChecked: false,
+      filterChecked: true,
       searchedTags: [],
       searchFocused: false,
       query: '',
