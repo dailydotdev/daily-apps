@@ -742,6 +742,10 @@ export default {
 
   @media (min-width: 1920px) {
     @mixin cards-l;
+
+    #anchor {
+      bottom: 110vh;
+    }
   }
 
   @media (min-width: 2222px) {
