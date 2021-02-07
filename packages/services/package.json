@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@types/es6-promise": "^3.3.0",
-    "redaxios": "^0.3.0"
+    "redaxios": "^0.4.1"
   },
   "jest": {
     "moduleFileExtensions": [
