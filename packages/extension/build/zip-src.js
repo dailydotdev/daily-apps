@@ -44,7 +44,9 @@ archive.glob('**/*', {
     '**/dist/**',
     '.git/**',
     '**/components/icons/**',
+    '**/components/storybook-static/**',
     '**/services/lib/**',
+    '**/services/.rpt_cache2/**',
   ]
 });
 archive.finalize();

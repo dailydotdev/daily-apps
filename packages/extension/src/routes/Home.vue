@@ -203,8 +203,7 @@ export default {
       query: BOOKMARK_LISTS_QUERY,
       fetchPolicy: 'cache-only',
       result({ networkStatus, loading }) {
-        if (networkStatus === NetworkStatus.ready && !loading
-          && this.fetchStage >= OPERATIONAL_FETCH_STAGE) {
+        if (networkStatus === NetworkStatus.ready && !loading) {
           this.fetchStage += 1;
         }
       },

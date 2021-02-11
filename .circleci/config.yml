@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:10.21.0
+      - image: circleci/node:10.23.0
     steps:
       - checkout
       - run:
@@ -24,7 +24,7 @@ jobs:
             - packages
   deploy_mod:
     docker:
-      - image: circleci/node:10.21.0
+      - image: circleci/node:10.23.0
     steps:
       - attach_workspace:
           at: .
@@ -34,7 +34,7 @@ jobs:
           working_directory: packages/moderator
   deploy_storybook:
     docker:
-      - image: circleci/node:10.21.0
+      - image: circleci/node:10.23.0
     steps:
       - attach_workspace:
           at: .
