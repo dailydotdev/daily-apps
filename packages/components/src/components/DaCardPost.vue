@@ -51,7 +51,7 @@
           <div class="post__author__name">{{post.author.name}}</div>
           <svgicon name="feather"/>
         </div>
-        <img class="lazyload" :data-src="post.image"
+        <img class="lazyload" :data-src="post.image" :src="post.image"
              :data-lowsrc="post.placeholder" alt="Post image" :key="post.image"
              @error="useDefaultImage"/>
       </div>
@@ -136,7 +136,8 @@ export default {
 
   methods: {
     useDefaultImage(e) {
-      e.target.src = 'https://res.cloudinary.com/daily-now/image/upload/f_auto/v1/placeholders/1';
+      // eslint-disable-next-line global-require
+      e.target.src = require('../placeholder/1.jpeg');
     },
   },
 };
