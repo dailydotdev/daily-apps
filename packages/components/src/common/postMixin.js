@@ -49,10 +49,10 @@ export default {
       type: Boolean,
       default: false,
     },
-    placeholder: {
+    fallbackImage: {
       type: String,
       default: null,
-    }
+    },
   },
 
   data() {
