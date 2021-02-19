@@ -136,7 +136,7 @@ export default {
 
   methods: {
     useDefaultImage(e) {
-      e.target.src = 'https://res.cloudinary.com/daily-now/image/upload/f_auto/v1/placeholders/1';
+      e.target.src = this.fallbackImage;
     },
   },
 };
