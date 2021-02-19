@@ -41,7 +41,7 @@
                       :selected="focusedPost === item" :open-new-tab="openNewTab"
                       :show-comment-popup="commentPostId === item.id"
                       :sending-comment="sendingComment" :comment="lastSavedComment"
-                      :disable-counter="disableCounter"/>
+                      :disable-counter="disableCounter" :placeholder="placeholder" />
       </template>
     </div>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
@@ -125,6 +125,7 @@ export default {
       sendingComment: false,
       lastSavedComment: '',
       disableCounter: true,
+      placeholder: '/placeholder/1.jpeg',
     };
   },
   computed: {

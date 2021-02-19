@@ -136,8 +136,7 @@ export default {
 
   methods: {
     useDefaultImage(e) {
-      // eslint-disable-next-line global-require
-      e.target.src = require('../placeholder/1.jpeg');
+      e.target.src = this.placeholder;
     },
   },
 };
