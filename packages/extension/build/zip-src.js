@@ -46,7 +46,7 @@ archive.glob('**/*', {
     '**/components/icons/**',
     '**/components/storybook-static/**',
     '**/services/lib/**',
-    '**/services/.rpt_cache2/**',
+    '**/services/.rpt2_cache/**',
   ]
 });
 archive.finalize();
