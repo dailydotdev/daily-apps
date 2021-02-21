@@ -69,10 +69,7 @@ npx lerna run build
 
 ## Firefox Review
 
-* Install node v10.23.3 and yarn 
-* Bootstrap project `npx lerna bootstrap`
-* Build project `npx lerna run build`
-* Change working directory to extension project `cd packages/extension`
-* Build Firefox version `yarn build:firefox`
-* Firefox build should be located at `dist`
+* Install docker
+* Build project `./build.sh` (might take some time to download everything)
+* Firefox build should be located at `packages/extension/dist`
 
