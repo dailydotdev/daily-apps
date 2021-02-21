@@ -16,7 +16,7 @@ jobs:
           command: npx lerna run test:ci
       - run:
           name: Zip
-          command: yarn run build:all
+          command: yarn build:all
           working_directory: packages/extension
       - store_test_results:
           path: ./test-results
