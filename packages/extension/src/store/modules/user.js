@@ -1,9 +1,11 @@
-import { isToday, startOfToday, isThisISOWeek, differenceInMilliseconds } from 'date-fns';
+import {
+  isToday, startOfToday, isThisISOWeek, differenceInMilliseconds,
+} from 'date-fns';
+import { STEPS_PER_RANK } from '@daily/components/src/common/rank';
 import { apolloClient } from '../../apollo';
 import { authService } from '../../common/services';
 import { setCache, ANALYTICS_ID_KEY } from '../../common/cache';
 import { USER_READING_RANK_QUERY } from '../../graphql/home';
-import {STEPS_PER_RANK} from "@daily/components/src/common/rank";
 
 const updateAnalyticsUser = id => setCache(ANALYTICS_ID_KEY, id);
 
@@ -39,7 +41,8 @@ export default {
       const maxProgress = STEPS_PER_RANK[STEPS_PER_RANK.length - 1];
       const { progress } = state.readingRank;
       state.lastRead = now;
-      if ((!!state.profile || progress < STEPS_PER_RANK[state.readingRank.rank]) && progress < maxProgress) {
+      if ((!!state.profile
+        || progress < STEPS_PER_RANK[state.readingRank.rank]) && progress < maxProgress) {
         state.readingRank.progress += 1;
         if (state.readingRank.progress >= STEPS_PER_RANK[state.readingRank.rank]) {
           state.readingRank.nextRank = state.readingRank.rank + 1;
@@ -68,7 +71,7 @@ export default {
     confirmedRankLevelUp(state) {
       state.readingRankLevelUp = false;
       state.readingRank.shownProgress = state.readingRank.progress;
-      if (!!state.profile) {
+      if (state.profile) {
         state.readingRank.rank = state.readingRank.nextRank;
       }
     },
@@ -112,7 +115,8 @@ export default {
           return;
         }
         if (profile.accessToken) {
-          const expiresInMillis = differenceInMilliseconds(new Date(profile.accessToken.expiresIn), new Date());
+          const tokenExpiration = new Date(profile.accessToken.expiresIn);
+          const expiresInMillis = differenceInMilliseconds(tokenExpiration, new Date());
           // Refresh token before it expires
           setTimeout(() => dispatch('validateAuth'), expiresInMillis - 1000 * 60 * 2);
           profile.accessToken = undefined;
@@ -159,7 +163,8 @@ export default {
         if (state.readingRank.progress < state.readingRank.shownProgress) {
           await dispatch('updateShownProgress');
         } else {
-          // Let the rank update and then show progress animation, slight delay so the user won't miss it
+          // Let the rank update and then show progress animation
+          // slight delay so the user won't miss it
           setTimeout(() => dispatch('updateShownProgress'), 1000);
         }
       }
@@ -170,6 +175,6 @@ export default {
         commit('updateReadingRank', { rank: 0, progress: 0 });
         await dispatch('updateShownProgress');
       }
-    }
+    },
   },
 };

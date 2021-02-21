@@ -130,7 +130,7 @@ export default {
 
     setNeverShowRankModal(state, value) {
       state.neverShowRankModal = value;
-    }
+    },
   },
   getters: {
     dndMode(state) {
