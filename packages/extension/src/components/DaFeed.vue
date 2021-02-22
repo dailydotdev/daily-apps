@@ -82,7 +82,7 @@ import {
 import { contentService } from '../common/services';
 import { getCache, LAST_COMMENT_KEY, setCache } from '../common/cache';
 import { POSTS_ENGAGED_SUBSCRIPTION } from '../graphql/feed';
-import { ENGAGEMENT_FETCH_STAGE } from '../common/consts';
+import { CRITICAL_FETCH_STAGE } from '../common/consts';
 
 export default {
   name: 'DaFeed',
@@ -108,7 +108,7 @@ export default {
           return { loggedIn: this.isLoggedIn, ids: this.posts.map(post => post.id) };
         },
         skip() {
-          return !this.posts || !this.posts.length || this.fetchStage < ENGAGEMENT_FETCH_STAGE;
+          return !this.posts || !this.posts.length || this.fetchStage <= CRITICAL_FETCH_STAGE;
         },
         result({ data }) {
           this.updatePost({ post: data.postsEngaged });
@@ -254,7 +254,6 @@ export default {
       if (!read) {
         this.updateRankProgress();
       }
-      this.updateCommentPopup(post);
     },
 
     async onUpvote({ post, upvoted }) {
@@ -271,13 +270,9 @@ export default {
 
     async updateCommentPopup(post) {
       this.lastSavedComment = '';
-      if (post.numComments > 0) {
-        this.commentPostId = null;
-      } else {
-        this.commentPostId = post.id;
-        ga('send', 'event', 'Comment Popup', 'Impression');
-        await this.saveLastComment();
-      }
+      this.commentPostId = post.id;
+      ga('send', 'event', 'Comment Popup', 'Impression');
+      await this.saveLastComment();
     },
 
     async onComment({ post, comment }) {
