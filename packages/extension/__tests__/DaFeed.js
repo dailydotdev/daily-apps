@@ -381,25 +381,6 @@ it('should open comment popup on upvote', async () => {
   expect(wrapper.vm.commentPostId).toEqual(feed.state.posts[0].id);
 });
 
-it('should not open comment popup on upvote when there are comments', async () => {
-  const wrapper = mount(DaFeed, {store, localVue});
-  feed.state.posts[0].numComments = 1;
-  wrapper.vm.$refs.posts[0].$emit('upvote', {
-    post: feed.state.posts[0],
-    upvoted: true,
-  });
-  await wrapper.vm.$nextTick();
-  expect(wrapper.vm.commentPostId).toEqual(null);
-});
-
-it('should open comment popup on upvote', async () => {
-  const wrapper = mount(DaFeed, {store, localVue});
-  feed.state.posts[0].numComments = 0;
-  wrapper.vm.$refs.posts[0].$emit('upvote', {post: feed.state.posts[0], upvoted: true});
-  await wrapper.vm.$nextTick();
-  expect(wrapper.vm.commentPostId).toEqual(feed.state.posts[0].id);
-});
-
 it('should submit comment', (done) => {
   const wrapper = mount(DaFeed, {
     store,
