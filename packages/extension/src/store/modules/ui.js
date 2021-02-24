@@ -11,7 +11,7 @@ const initialState = () => ({
   showSettings: false,
   showOnlyNotReadPosts: false,
   openNewTab: true,
-  lastBannerSeen: new Date(),
+  lastBannerSeen: new Date(0),
   showPremium: false,
   showNewSource: false,
   showReferral: false,
