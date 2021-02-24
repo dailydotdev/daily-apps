@@ -1,3 +1,3 @@
 export const CRITICAL_FETCH_STAGE = 1;
 export const OPERATIONAL_FETCH_STAGE = 2;
-export const ENGAGEMENT_FETCH_STAGE = 4;
+export const ENGAGEMENT_FETCH_STAGE = 3;
