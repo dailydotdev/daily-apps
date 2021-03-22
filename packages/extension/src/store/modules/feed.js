@@ -123,6 +123,7 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
       query: queries.MOST_UPVOTED_FEED_QUERY,
       variables: {
         ...base,
+        period: state.timePeriod,
       },
       fetchPolicy: 'no-cache',
     });
@@ -354,6 +355,9 @@ export default {
         upvoted,
         numUpvotes: state[feed][index].numUpvotes + add,
       });
+    },
+    setTimePeriod(state, period) {
+      state.timePeriod = period;
     },
   },
   actions: {
@@ -595,6 +599,11 @@ export default {
           commit('toggleUpvote', { id, upvoted: !upvoted });
         }
       }
+    },
+
+    async setTimePeriod({ commit, dispatch }, period) {
+      commit('setTimePeriod', period);
+      return dispatch('refreshFeed');
     },
   },
 };

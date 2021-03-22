@@ -76,8 +76,8 @@ export const SEARCH_POSTS_QUERY = gql`
 ${FEED_POST_CONNECTION_FRAGMENT}`;
 
 export const MOST_UPVOTED_FEED_QUERY = gql`
-  query MostUpvotedFeed($loggedIn: Boolean! = false, $first: Int, $after: String) {
-    feed: mostUpvotedFeed(first: $first, after: $after) {
+  query MostUpvotedFeed($loggedIn: Boolean! = false, $first: Int, $after: String, $period: Int) {
+    feed: mostUpvotedFeed(first: $first, after: $after, period: $period) {
       ...FeedPostConnection
     }
   }

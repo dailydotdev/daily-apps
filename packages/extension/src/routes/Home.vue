@@ -95,6 +95,10 @@
                   </button>
                 </template>
               </div>
+              <da-dropdown v-if="sortBy === 'upvotes'" class="feed-dropdown"
+                           :selected-index="0" :items="upvotedFilters" label="Time period"
+                           v-tooltip="'Set time period'"
+                           @selected="setTimePeriod(upvotedFilters[$event].value)"/>
             </div>
           </transition>
         </template>
@@ -180,6 +184,7 @@ import {
 import { NetworkStatus } from 'apollo-client';
 import DaSpinner from '@daily/components/src/components/DaSpinner.vue';
 import DaScroll from '@daily/components/src/components/DaScroll.vue';
+import DaDropdown from '@daily/components/src/components/DaDropdown.vue';
 import { BANNER_QUERY } from '../graphql/home';
 import { BOOKMARK_LISTS_QUERY } from '../graphql/bookmarkList';
 import DaHeader from '../components/DaHeader.vue';
@@ -223,6 +228,7 @@ export default {
     DaSvg,
     DaFeed,
     DaScroll,
+    DaDropdown,
     DaSidebar: () => import('../components/DaSidebar.vue'),
     DaDndMessage: () => import('../components/DaDndMessage.vue'),
     DaContext: () => import('@daily/components/src/components/DaContext.vue'),
@@ -259,6 +265,11 @@ export default {
       topSites: [],
       sidebarOpened: false,
       sidebarTooltip: 'Open sidebar',
+      upvotedFilters: [
+        { value: 7, text: 'Last week' },
+        { value: 30, text: 'Last month' },
+        { value: 365, text: 'Last year' },
+      ],
     };
   },
 
@@ -509,6 +520,7 @@ export default {
       trackEngagementWin: 'ui/trackEngagementWin',
       updateShownProgress: 'user/updateShownProgress',
       checkWeeklyReadingRankReset: 'user/checkWeeklyReadingRankReset',
+      setTimePeriod: 'feed/setTimePeriod',
     }),
 
     ...mapMutations({
@@ -1235,5 +1247,10 @@ export default {
   border-radius: 16px;
   text-align: center;
   align-self: center;
+}
+
+.feed-dropdown {
+  width: 130px;
+  margin-left: 24px;
 }
 </style>
