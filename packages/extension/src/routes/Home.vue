@@ -67,7 +67,11 @@
                   </button>
                   <button class="btn btn-menu sort-by"
                           :class="{'not-selected': sortBy !== 'upvotes'}"
-                          @click="setSortBy('upvotes')">Most upvoted
+                          @click="setSortBy('upvotes')">Upvoted
+                  </button>
+                  <button class="btn btn-menu sort-by"
+                          :class="{'not-selected': sortBy !== 'discussions'}"
+                          @click="setSortBy('discussions')">Discussed
                   </button>
                   <button class="btn btn-menu sort-by"
                           :class="{'not-selected': sortBy !== 'creation'}"
