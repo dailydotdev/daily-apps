@@ -128,6 +128,16 @@ const fetchPosts = async (state, loggedIn, showOnlyNotReadPosts) => {
     });
   }
 
+  if (state.sortBy === 'discussions') {
+    return apolloClient.query({
+      query: queries.MOST_DISCUSSED_FEED_QUERY,
+      variables: {
+        ...base,
+      },
+      fetchPolicy: 'no-cache',
+    });
+  }
+
   const ranking = state.sortBy === 'popularity' ? 'POPULARITY' : 'TIME';
 
   if (loggedIn) {

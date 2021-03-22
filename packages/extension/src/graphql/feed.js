@@ -83,6 +83,14 @@ export const MOST_UPVOTED_FEED_QUERY = gql`
   }
 ${FEED_POST_CONNECTION_FRAGMENT}`;
 
+export const MOST_DISCUSSED_FEED_QUERY = gql`
+  query MostDiscussedFeed($loggedIn: Boolean! = false, $first: Int, $after: String) {
+    feed: mostDiscussedFeed(first: $first, after: $after) {
+      ...FeedPostConnection
+    }
+  }
+${FEED_POST_CONNECTION_FRAGMENT}`;
+
 export const UPVOTE_MUTATION = gql`
   mutation Upvote($id: ID!) {
     upvote(id: $id) {
