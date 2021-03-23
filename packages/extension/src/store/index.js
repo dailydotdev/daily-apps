@@ -42,6 +42,9 @@ export default new Vuex.Store({
           if (cached.ui.lastBannerSeen !== undefined) {
             state.ui.lastBannerSeen = cache2Time(cached.ui.lastBannerSeen);
           }
+          if (cached.ui.lastGreeting !== undefined) {
+            state.ui.lastGreeting = cache2Time(cached.ui.lastGreeting);
+          }
         }
 
         if (cached.feed) {

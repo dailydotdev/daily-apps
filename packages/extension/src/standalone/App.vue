@@ -199,6 +199,10 @@ a {
   transition: opacity 0.15s;
 }
 
+.long.fade-enter-active, .long.fade-leave-active {
+  transition: opacity 0.5s linear;
+}
+
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }

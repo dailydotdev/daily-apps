@@ -131,6 +131,10 @@ export default {
     setNeverShowRankModal(state, value) {
       state.neverShowRankModal = value;
     },
+
+    setLastGreeting(state, time) {
+      state.lastGreeting = time;
+    },
   },
   getters: {
     dndMode(state) {

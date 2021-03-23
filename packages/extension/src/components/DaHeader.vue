@@ -1,8 +1,12 @@
 <template>
   <header class="header">
     <button class="header__logo" @click="onBackHome">
-      <da-svg src="/graphics/dailydev.svg" class="header__logo__icon"/>
+      <da-svg src="/graphics/icon.svg" class="header__logo__icon"/>
+      <transition name="fade">
+        <da-svg src="/graphics/logo_text.svg" class="header__logo__text long" v-if="!showGreeting"/>
+      </transition>
     </button>
+    <da-greeting @show="showGreeting = true" @hide="showGreeting = false"/>
     <div class="space"></div>
     <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
        @click="ctaClick" v-if="!isPremium && !showMinimalUi"
@@ -57,6 +61,7 @@ import DaRank from '@daily/components/src/components/DaRank.vue';
 import DaRankProgress from '@daily/components/src/components/DaRankProgress.vue';
 import { STEPS_PER_RANK } from '@daily/components/src/common/rank';
 import DaSvg from './DaSvg.vue';
+import DaGreeting from './DaGreeting.vue';
 
 export default {
   name: 'DaHeader',
@@ -65,6 +70,13 @@ export default {
     DaSvg,
     DaRank,
     DaRankProgress,
+    DaGreeting,
+  },
+
+  data() {
+    return {
+      showGreeting: false,
+    };
   },
 
   computed: {
@@ -182,6 +194,8 @@ export default {
   }
 
   & .header__logo {
+    display: flex;
+    position: relative;
     background: none;
     border: none;
     padding: 0;
@@ -189,7 +203,17 @@ export default {
   }
 
   & .header__logo__icon {
-    width: 114px;
+    width: 32px;
+  }
+
+  & .header__logo__text {
+    width: 63px;
+    margin-left: 4px;
+
+    &.fade-enter-active, &.fade-leave-active {
+      position: absolute;
+      left: 100%;
+    }
   }
 
   & .separator {
