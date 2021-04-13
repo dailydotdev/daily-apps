@@ -8,11 +8,11 @@
     </button>
     <da-greeting @show="showGreeting = true" @hide="showGreeting = false"/>
     <div class="space"></div>
-    <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked === false}"
+    <a class="header__cta btn btn-menu" :class="{'first-time': ctaClicked !== 2}"
        @click="ctaClick" v-if="!isPremium && !showMinimalUi"
-       href="https://daily.dev/win-free-t-shirt"
+       href="https://daily.dev/monthly-prize"
        target="_blank" rel="noopener noreferrer">
-      <span class="header__cta__text">Win a free t-shirt</span>
+      <span class="header__cta__text">Win epic prizes</span>
       <svgicon class="header__cta__image" icon="gift"/>
     </a>
     <div class="separator" v-if="!showMinimalUi"></div>
@@ -151,7 +151,7 @@ export default {
 
     ctaClick() {
       ga('send', 'event', 'CTA', 'Click', 'T-Shirt');
-      this.$store.commit('ui/setCtaClicked', true);
+      this.$store.commit('ui/setCtaClicked', 2);
     },
 
     ...mapMutations({
@@ -321,7 +321,7 @@ export default {
   --button-color: var(--theme-secondary);
 
   &.first-time {
-    --button-color: var(--theme-avocado);
+    --button-color: var(--theme-premium);
   }
 
   & > .header__cta__text {
