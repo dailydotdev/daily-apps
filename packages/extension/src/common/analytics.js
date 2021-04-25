@@ -1,6 +1,11 @@
+import amplitude from 'amplitude-js';
 import { version } from './config';
 import { browserName } from './browser';
 import { getCache, ANALYTICS_ID_KEY } from './cache';
+
+if (window.global === undefined) {
+  window.global = window;
+}
 
 const queue = [];
 
@@ -62,6 +67,15 @@ const initialize = async () => {
     });
     ga('require', 'displayfeatures');
   }
+
+  const ampClient = amplitude.getInstance();
+  ampClient.init(process.env.VUE_APP_AMPLITUDE, undefined, {
+    includeReferrer: true,
+    includeUtm: true,
+    sameSiteCookie: 'Lax',
+    domain: process.env.VUE_APP_AMPLITUDE_DOMAIN,
+  });
+  ampClient.setVersionName(`extension v${version}`);
 };
 
 if (window.location.protocol.indexOf('moz-extension') > -1) {
@@ -92,4 +106,13 @@ export const trackPageView = (page) => {
   const suffix = browserName ? `v=${version}&b=${browserName}` : `v=${version}`;
   ga('set', 'page', `${prefix}${page}?${suffix}`);
   ga('send', 'pageview');
+};
+
+export const logRevenue = async (productId) => {
+  const revenue = new amplitude.Revenue().setProductId(productId).setPrice(1);
+  amplitude.getInstance().logRevenueV2(revenue);
+};
+
+export const logReadArticle = (origin) => {
+  amplitude.getInstance().logEvent('read article', { origin });
 };

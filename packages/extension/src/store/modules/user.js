@@ -1,3 +1,4 @@
+import amplitude from 'amplitude-js';
 import {
   isToday, startOfToday, isThisISOWeek, differenceInMilliseconds,
 } from 'date-fns';
@@ -107,6 +108,7 @@ export default {
     },
 
     async validateAuth({ commit, dispatch, state }) {
+      const ampClient = amplitude.getInstance();
       const profile = await authService.getUserProfile();
       if (profile.providers) {
         if (!profile.infoConfirmed) {
@@ -114,6 +116,7 @@ export default {
           window.location.href = `${profile.registrationLink}?redirect_uri=${encodeURI(redirectUri)}`;
           return;
         }
+        ampClient.setUserId(profile.id);
         if (profile.accessToken) {
           const tokenExpiration = new Date(profile.accessToken.expiresIn);
           const expiresInMillis = differenceInMilliseconds(tokenExpiration, new Date());
@@ -127,8 +130,11 @@ export default {
         } else {
           await dispatch('login', profile);
         }
-      } else if (state.profile) {
-        await dispatch('logout');
+      } else {
+        ampClient.setUserId(null);
+        if (state.profile) {
+          await dispatch('logout');
+        }
       }
     },
 

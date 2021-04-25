@@ -83,6 +83,7 @@ import { contentService } from '../common/services';
 import { getCache, LAST_COMMENT_KEY, setCache } from '../common/cache';
 import { POSTS_ENGAGED_SUBSCRIPTION } from '../graphql/feed';
 import { CRITICAL_FETCH_STAGE } from '../common/consts';
+import { logReadArticle, logRevenue } from '../common/analytics';
 
 export default {
   name: 'DaFeed',
@@ -164,8 +165,11 @@ export default {
       ga('send', 'event', 'Ad', 'Click', ad.source);
     },
 
-    onAdImpression(ad) {
+    async onAdImpression(ad) {
       ga('send', 'event', 'Ad', 'Impression', ad.source, { nonInteraction: true });
+      if (ad.providerId && ad.providerId.length) {
+        await logRevenue(ad.providerId);
+      }
     },
 
     async onBookmark({ event, post, bookmarked }) {
@@ -248,6 +252,7 @@ export default {
       post.read = true;
       this.trackEngagementWin({ action: 'POST_CLICK' });
       ga('send', 'event', 'Post', 'Click', post.source);
+      logReadArticle('feed');
       if (!this.isLoggedIn) {
         this.checkFullUi();
       }
