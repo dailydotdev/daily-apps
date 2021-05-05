@@ -42,8 +42,8 @@
       <svgicon name="user_daily"/>
       <span>Sign in</span>
     </button>
-    <button class="rank-btn" @click="$emit('rank', $event)" :class="{ signal: showOnboarding }">
-      <div class="rank-btn__inner" v-if="showOnboarding">
+    <button class="rank-btn" @click="$emit('rank', $event)" :class="{ signal: highlightRank }">
+      <div class="rank-btn__inner" v-if="highlightRank">
         <da-rank :rank="1"/>
       </div>
       <da-rank-progress v-else :rank="rank" :progress="rankProgress"
@@ -81,7 +81,7 @@ export default {
 
   computed: {
     ...mapState('ui', ['showDndMenu', 'showSettings', 'ctaClicked', 'neverShowRankModal']),
-    ...mapGetters('ui', ['showMinimalUi', 'showOnboarding']),
+    ...mapGetters('ui', ['showMinimalUi', 'highlightRank']),
     ...mapState('feed', ['showBookmarks']),
     ...mapGetters('user', ['isLoggedIn', 'isPremium']),
     ...mapState('user', ['readingRank', 'readingRankLevelUp']),

@@ -73,7 +73,7 @@ beforeEach(() => {
     mutations: {
       setDndModeTime: jest.fn(),
       setShowDndMenu: jest.fn(),
-      doneOnboarding: jest.fn(),
+      incrementOnboarding: jest.fn(),
       unlockFullUi: jest.fn(),
     },
     getters: {
@@ -82,7 +82,7 @@ beforeEach(() => {
       showReadyModal: jest.fn(),
       dndMode: jest.fn(),
       dndModeTime: jest.fn(),
-      showOnboarding: jest.fn(),
+      highlightRank: jest.fn(),
       showMinimalUi: jest.fn(),
     },
     actions: {
@@ -234,13 +234,13 @@ it('should not show welcome balloon by default', async () => {
 });
 
 it('should show welcome balloon during onboarding', async () => {
-  ui.getters.showOnboarding.mockReturnValue(true);
+  ui.getters.highlightRank.mockReturnValue(true);
   const wrapper = mount(DaHome, { store, localVue });
   expect(wrapper.find('.welcome-balloon').element).toBeTruthy();
 });
 
 it('should open rank popup when clicking on the rank', async () => {
-  ui.getters.showOnboarding.mockReturnValue(true);
+  ui.getters.highlightRank.mockReturnValue(true);
   const wrapper = mount(DaHome, { store, localVue });
   expect(wrapper.find('.rank-modal').element).toBeFalsy();
   wrapper.find('.rank-btn').trigger('click');
@@ -250,18 +250,18 @@ it('should open rank popup when clicking on the rank', async () => {
 });
 
 it('should finish onboarding when closing the rank popup', async () => {
-  ui.getters.showOnboarding.mockReturnValue(true);
+  ui.getters.highlightRank.mockReturnValue(true);
   const wrapper = mount(DaHome, { store, localVue });
   wrapper.find('.rank-btn').trigger('click');
   await wrapper.vm.$nextTick();
   await wrapper.vm.$nextTick();
   wrapper.find('.rank-modal').vm.$emit('close');
   await wrapper.vm.$nextTick();
-  expect(ui.mutations.doneOnboarding).toBeCalledTimes(1);
+  expect(ui.mutations.incrementOnboarding).toBeCalledTimes(1);
 });
 
 it('should show onboarding rank button during the onboarding', async () => {
-  ui.getters.showOnboarding.mockReturnValue(true);
+  ui.getters.highlightRank.mockReturnValue(true);
   const wrapper = mount(DaHome, { store, localVue });
   expect(wrapper.find('.rank-btn').classes()).toContain('signal');
   expect(wrapper.find('.rank-btn .rank-progress').element).toBeFalsy();

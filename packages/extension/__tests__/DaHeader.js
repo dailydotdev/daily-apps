@@ -35,7 +35,7 @@ beforeEach(() => {
     getters: {
       topSitesInstructions: () => true,
       showMinimalUi: jest.fn(),
-      showOnboarding: jest.fn(),
+      highlightRank: jest.fn(),
     }
   };
 
