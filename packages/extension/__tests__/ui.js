@@ -188,3 +188,22 @@ it('should set never show rank modal', async () => {
   module.mutations.setNeverShowRankModal(state, false);
   expect(state.neverShowRankModal).toBeFalsy();
 });
+
+it('should increment onboarding step with backwards compatibility', async () => {
+  const state = { onboarding: true };
+  module.mutations.incrementOnboarding(state);
+  expect(state.onboarding).toEqual(2);
+});
+
+it('should increment onboarding step to users who completed the process already', async () => {
+  const state = { onboarding: false };
+  module.mutations.incrementOnboarding(state);
+  expect(state.onboarding).toEqual(3);
+});
+
+it('should increment onboarding step', async () => {
+  const state = { onboarding: 1 };
+  module.mutations.incrementOnboarding(state);
+  expect(state.onboarding).toEqual(2);
+});
+

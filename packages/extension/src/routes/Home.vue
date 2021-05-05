@@ -12,12 +12,13 @@
         @loaded="fetchStage += 1"
         @login="onLogin('Sidebar')"></da-sidebar>
       <button class="sidebar-trigger"
+              :class="{ signal: highlightSidebar }"
               v-tooltip="sidebarTooltip"
               @click="toggleSidebar">
         <svgicon name="arrow"/>
       </button>
     </div>
-    <div v-if="showOnboarding" class="welcome-balloon micro2">
+    <div v-if="highlightRank" class="welcome-balloon micro2">
       Dear developer, our mission is to serve all the best programming news you’ll ever need.
       Ready?
     </div>
@@ -281,6 +282,9 @@ export default {
       } else {
         ga('send', 'event', 'Sidebar', 'Toggle', 'Open');
         this.sidebarOpened = true;
+        if (this.highlightSidebar) {
+          this.incrementOnboarding();
+        }
       }
     },
     onKeyDown({ keyCode, target }) {
@@ -499,7 +503,7 @@ export default {
 
     closeRankPopup() {
       this.showRankPopup = false;
-      this.doneOnboarding();
+      this.incrementOnboarding();
     },
 
     closeNewRankModal(neverShow) {
@@ -535,7 +539,7 @@ export default {
       setShowReferral: 'ui/setShowReferral',
       setShowTopSitesModal: 'ui/setShowTopSitesModal',
       confirmNewUser: 'user/confirmNewUser',
-      doneOnboarding: 'ui/doneOnboarding',
+      incrementOnboarding: 'ui/incrementOnboarding',
       unlockFullUi: 'ui/unlockFullUi',
       confirmedRankLevelUp: 'user/confirmedRankLevelUp',
       setNeverShowRankModal: 'ui/setNeverShowRankModal',
@@ -544,7 +548,7 @@ export default {
 
   computed: {
     ...mapState('ui', ['showSettings', 'theme', 'showDndMenu', 'lastBannerSeen', 'showPremium', 'showNewSource', 'showReferral', 'insaneMode', 'showTopSites', 'showTopSitesModal', 'showUnlockUi', 'neverShowRankModal']),
-    ...mapGetters('ui', ['showReadyModal', 'dndMode', 'showMinimalUi', 'showOnboarding']),
+    ...mapGetters('ui', ['showReadyModal', 'dndMode', 'showMinimalUi', 'highlightRank', 'highlightSidebar']),
     ...mapState('feed', ['showBookmarks', 'filter', 'sortBy', 'showFeed', 'loading', 'bookmarkList', 'hoveredPostAndIndex']),
     ...mapGetters('feed', ['emptyFeed', 'hasFilter', 'hasConflicts']),
     ...mapState('user', ['readingRankLevelUp']),
@@ -566,7 +570,7 @@ export default {
           [state.ui.spaciness]: true,
           [state.ui.insaneMode ? 'insane-mode' : 'card-mode']: true,
           'show-bookmarks': this.showBookmarks,
-          onboarding: this.showOnboarding,
+          onboarding: this.highlightRank,
         };
       },
 
@@ -1234,6 +1238,27 @@ export default {
 
     .bright & {
       box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  &.signal {
+    background: var(--theme-primary);
+
+    & .svg-icon {
+      color: var(--theme-background-primary);
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: -12px;
+      width: 64px;
+      height: 88px;
+      background: var(--theme-hover);
+      border-radius: 0 24px 24px 0;
+      z-index: -1;
+      animation: rank-attention 2s infinite ease-in-out;
     }
   }
 }

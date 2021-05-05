@@ -23,7 +23,7 @@ const initialState = () => ({
   scrolls: 0,
   showTopSitesModal: false,
   // Onboarding
-  onboarding: true,
+  onboarding: 1,
   minimalUi: true,
   showUnlockUi: false,
   neverShowRankModal: false,
@@ -82,8 +82,14 @@ export default {
       state.spaciness = def.spaciness;
     },
 
-    doneOnboarding(state) {
-      state.onboarding = false;
+    incrementOnboarding(state) {
+      if (state.onboarding === true) {
+        state.onboarding = 2;
+      } else if (state.onboarding === false) {
+        state.onboarding = 3;
+      } else {
+        state.onboarding += 1;
+      }
     },
 
     setLastBannerSeen(state, value) {
@@ -153,8 +159,12 @@ export default {
       return state.minimalUi && !rootGetters['user/isLoggedIn'];
     },
 
-    showOnboarding(state, getters, rootState, rootGetters) {
-      return state.onboarding && !rootGetters['user/isLoggedIn'];
+    highlightRank(state, getters, rootState, rootGetters) {
+      return (state.onboarding === 1 || state.onboarding === true) && !rootGetters['user/isLoggedIn'];
+    },
+
+    highlightSidebar(state, getters, rootState, rootGetters) {
+      return (state.onboarding === 2 || state.onboarding === false) && !rootGetters['user/isLoggedIn'];
     },
   },
   actions: {
