@@ -28,8 +28,8 @@
       </button>
       <button class="btn-icon post__show-on-hover post__menu" :class="{ hover: menuOpened }"
               @click="onMenuClick"
-              v-tooltip="'More'" v-if="showMenu" v-show="!showComment">
-        <svgicon name="menu"/>
+              v-tooltip="'Report post'" v-if="showMenu" v-show="!showComment">
+        <svgicon name="flag"/>
       </button>
     </div>
     <a class="post__link" :href="post.url" :target="shouldOpenNewTab" rel="noopener noreferrer"

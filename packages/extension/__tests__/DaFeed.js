@@ -210,7 +210,8 @@ it('should hide post', (done) => {
     event: createDummyEvent(wrapper.vm.$refs.posts[0].$el),
   });
   setTimeout(() => {
-    wrapper.findAll('.feed__context .btn').at(2).trigger('click');
+    const buttons = wrapper.findAll('.feed__context .btn');
+    buttons.at(buttons.length - 1).trigger('click');
     expect(contentService.hidePost).toBeCalledWith(feed.state.posts[0].id);
     expect(feed.mutations.removePost)
       .toBeCalledWith(expect.anything(), feed.state.posts[0].id);
