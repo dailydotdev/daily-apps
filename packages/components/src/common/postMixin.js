@@ -1,5 +1,5 @@
 import '../../icons/bookmark';
-import '../../icons/menu';
+import '../../icons/flag';
 import '../../icons/upvote';
 import '../../icons/comment';
 import '../../icons/arrow';

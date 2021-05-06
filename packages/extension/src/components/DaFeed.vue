@@ -46,8 +46,8 @@
     </div>
     <da-context ref="context" class="feed__context" @open="onPostMenuOpened"
                 @close="selectedPostId = null">
-      <button class="btn btn-menu" @click="reportPost('broken')">Broken link</button>
-      <button class="btn btn-menu" @click="reportPost('nsfw')">Report NSFW</button>
+      <button v-for="item in reportReaons" :key="item.code" class="btn btn-menu"
+              @click="reportPost(item.code)">{{item.text}}</button>
       <button class="btn btn-menu" @click="hidePost">Hide post</button>
     </da-context>
     <da-context v-if="isPremium" ref="bookmarkContext" class="feed__bookmark-context scrollbar"
@@ -127,6 +127,12 @@ export default {
       lastSavedComment: '',
       disableCounter: true,
       placeholderImage: '/placeholder/1.jpeg',
+      reportReaons: [
+        { code: 'broken', text: 'Broken link' },
+        { code: 'clickbait', text: 'Report clickbait' },
+        { code: 'low', text: 'Low-quality content' },
+        { code: 'nsfw', text: 'Report NSFW' },
+      ],
     };
   },
   computed: {
@@ -351,7 +357,7 @@ export default {
         .catch(console.error);
 
       setTimeout(() => {
-        this.$refs.posts.find(com => com.post && com.post.id === postId).notify('Thanks for reporting!');
+        this.$refs.posts.find(com => com.post && com.post.id === postId).notify('Thanks for reporting! 🚨');
         setTimeout(() => this.removePost(postId), 1000);
       }, 100);
     },
