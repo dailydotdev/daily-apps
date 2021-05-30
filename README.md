@@ -1,6 +1,5 @@
 <div align="center">
-  <h1>Daily Apps</h1>
-  <strong>Everything you see on Daily 👀</strong>
+  <h1>Deprecated - Daily Apps</h1>
 </div>
 <br>
 <p align="center">
@@ -18,7 +17,7 @@
   </a>
 </p>
 
-This is a monorepo with most of Daily's frontend projects. It was created as part of Daily 2.0 refactor to separate concerns to different standalone projects. The main concept of the refactor was to enable others use Daily style guidelines in their applications as well.
+Please check the new repository [dailydotdev/apps](https://github.com/dailydotdev/apps).
 
 ## Technology
 
